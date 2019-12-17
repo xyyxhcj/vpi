@@ -1,13 +1,13 @@
 <template>
     <el-scrollbar wrap-class="scrollbar-wrapper">
         <el-menu class="aside-common"
-                 :collapse="isCollapse" show-timeout="100"
+                 :collapse="isCollapse" show-timeout="100" hide-timeout="100"
                  :default-active="$route.path">
             <div class="aside-collapse">
                 <el-menu-item type="text" @click="isCollapse=!isCollapse" style="width: 100%"
                               class="reset-padding-left">
                     <i :class="isCollapse?'el-icon-s-unfold':'el-icon-s-fold'"/>
-                    <span slot="title">{{isCollapse?'展开':'折叠'}}</span>
+                    <span slot="title">{{isCollapse?'unfold':'collapse'}}</span>
                 </el-menu-item>
             </div>
             <div>
@@ -60,4 +60,7 @@
             line-height 40px
             border-bottom 1px solid #d9d9d9
             overflow hidden
+            .is-active
+                color #303133
+
 </style>
