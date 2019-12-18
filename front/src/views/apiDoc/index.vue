@@ -1,5 +1,5 @@
 <template>
-
+    <div>api doc</div>
 </template>
 
 <script type="text/ecmascript-6">

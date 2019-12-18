@@ -1,5 +1,5 @@
 <template>
-
+    <div>environment config</div>
 </template>
 
 <script type="text/ecmascript-6">

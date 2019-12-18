@@ -1,5 +1,5 @@
 <template>
-
+    <div>data structure</div>
 </template>
 
 <script type="text/ecmascript-6">
