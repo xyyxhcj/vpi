@@ -40,7 +40,7 @@
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
     #app
-        font-family 'Microsoft YaHei UI', Helvetica, Arial, sans-serif
+        font-family 'Source Han Sans CN', Helvetica, Arial, sans-serif
         -webkit-font-smoothing antialiased
         -moz-osx-font-smoothing grayscale
         height 100%
@@ -50,8 +50,8 @@
 
     .header-common
         max-height 40px
-        border-bottom 1px solid #d9d9d9
         padding 13px 20px
+        border-bottom 1px solid #d9d9d9
         font-size 14px
         background-color white
 
@@ -62,6 +62,7 @@
             text-align right
 
     .main-common
+        padding 9px
         background-color rgb(245,245,245)
 
     /*margin-top 60px*/
