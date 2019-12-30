@@ -80,7 +80,7 @@ public class ApiServiceImpl implements ApiService {
 		MongoPage<ApiVo> page = apiDto.getPage();
 		Criteria criteria = Criteria.where(ColumnName.PROJECT_ID).is(apiDto.getProjectId());
 		if (!StringUtils.isEmpty(apiDto.getGroupId())) {
-			criteria.and(ColumnName.GROUP_$ID).is(apiDto.getGroupId());
+			criteria = criteria.and(ColumnName.GROUP_$ID).is(apiDto.getGroupId());
 		}
 		Query query = new Query(criteria);
 		query.with(page.buildPageRequest()).with(QSort.by(Sort.Direction.DESC, ColumnName.UPDATE_TIME));

@@ -53,11 +53,9 @@ public class ApiGroupServiceImpl implements ApiGroupService {
 	@Override
 	public List<ApiGroupVo> findList(ApiGroup apiGroupDto) {
 		FastUtils.checkParams(apiGroupDto.getProjectId());
-		Criteria definition;
-		if (StringUtils.isEmpty(apiGroupDto.getParentId())) {
-			definition = new Criteria();
-		} else {
-			definition = Criteria.where(ColumnName.PARENT_ID).is(apiGroupDto.getParentId());
+		Criteria definition = Criteria.where(ColumnName.PROJECT_ID).is(apiGroupDto.getProjectId());
+		if (!StringUtils.isEmpty(apiGroupDto.getParentId())) {
+			definition = definition.and(ColumnName.PARENT_ID).is(apiGroupDto.getParentId());
 		}
 		return mongoTemplate.find(new Query(definition).with(Sort.by(ColumnName.SORT)),
 				ApiGroupVo.class, Constant.CollectionName.API_GROUP);

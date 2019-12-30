@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 			synchronized (userDto.getLoginName().intern()) {
 				Criteria checkLoginNameCriteria = Criteria.where(ColumnName.LOGIN_NAME).is(userDto.getLoginName());
 				if (isUpdate) {
-					checkLoginNameCriteria.and(ColumnName.ID).ne(userDto.getId());
+					checkLoginNameCriteria = checkLoginNameCriteria.and(ColumnName.ID).ne(userDto.getId());
 				}
 				User checkLoginNameExist = mongoTemplate.findOne(new Query(checkLoginNameCriteria), User.class);
 				if (checkLoginNameExist != null) {

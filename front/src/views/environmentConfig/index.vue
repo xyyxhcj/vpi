@@ -3,7 +3,7 @@
     <div id="env-container">
         <el-table
                 :data="tableData"
-                header-cell-style="color:#44B549;font-weight:bold"
+                :header-cell-style="{color:'#44B549','font-weight':'bold'}"
         >
             <el-table-column
                     label="name"
@@ -45,13 +45,17 @@
                 </template>
             </el-table-column>
         </el-table>
+        <env-config-edit-dialog :dialog="editDialog" :form="form"/>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
 
+    import EnvConfigEditDialog from "./envConfigEditDialog";
+
     export default {
         name: 'index',
+        components: {EnvConfigEditDialog},
         data() {
             return {
                 envConfigList: [{
@@ -75,7 +79,13 @@
                     desc: '测试',
                     frontUri: 'http://77.55.2.2'
                 }],
-                search: ''
+                search: '',
+                editDialog: {
+                    show: false,
+                    title: '',
+                    url: ''
+                },
+                form: {},
             }
         },
         computed: {
@@ -100,7 +110,13 @@
                 console.log(index, row);
             },
             addEnvConfig() {
-                console.log('add');
+                this.editDialog = {
+                    show: true,
+                    title: 'Add',
+                    // cjTodo 2019/12/30
+                    url: 'tod'
+                };
+                this.form = Object();
             },
             batchOperate() {
                 console.log('batchOperate');
