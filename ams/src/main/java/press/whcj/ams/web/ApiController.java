@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import press.whcj.ams.entity.MongoPage;
-import press.whcj.ams.entity.User;
 import press.whcj.ams.entity.dto.ApiDto;
 import press.whcj.ams.entity.vo.ApiVo;
 import press.whcj.ams.entity.vo.UserVo;
@@ -15,7 +14,6 @@ import press.whcj.ams.util.FastUtils;
 import press.whcj.ams.util.UserUtils;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 
 /**
  * @author xyyxhcj@qq.com
@@ -30,10 +28,7 @@ public class ApiController extends BaseController {
 	@RequestMapping("add")
 	public Result<String> add(@RequestBody ApiDto apiDto) {
 		UserVo operator = UserUtils.getOperator();
-		LocalDateTime now = LocalDateTime.now();
-		apiDto.setCreate(new User(operator.getId()));
-		apiDto.setCreateTime(now);
-		apiDto.setUpdateTime(now);
+		apiDto.initCreate(operator);
 		String id = apiService.save(apiDto, operator);
 		return ok(id);
 	}
@@ -42,8 +37,7 @@ public class ApiController extends BaseController {
 	public Result<String> edit(@RequestBody ApiDto apiDto) {
 		FastUtils.checkParams(apiDto.getId());
 		UserVo operator = UserUtils.getOperator();
-		apiDto.setUpdate(new User(operator.getId()));
-		apiDto.setUpdateTime(LocalDateTime.now());
+		apiDto.initUpdate(operator);
 		apiService.save(apiDto, operator);
 		return ok(apiDto.getId());
 	}

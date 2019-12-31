@@ -4,10 +4,10 @@ package press.whcj.ams.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * @author xyyxhcj@qq.com
@@ -15,10 +15,8 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-public class Api implements Serializable {
-
-	private String id;
-
+@Accessors(chain = true)
+public class Api extends BaseEntity implements Serializable {
 	private String name;
 	@DBRef
 	private ApiGroup group;
@@ -59,32 +57,6 @@ public class Api implements Serializable {
 	 * 0json 1form-data
 	 */
 	private Byte requestParamType;
-	@DBRef
-	@JsonBackReference("create")
-	private User create;
-
-	private LocalDateTime createTime;
-	@DBRef
-	@JsonBackReference("update")
-	private User update;
-
-	private LocalDateTime updateTime;
 
 	private static final long serialVersionUID = 1L;
-
-	public String getCreateId() {
-		return create == null ? null : create.getId();
-	}
-
-	public String getCreateName() {
-		return create == null ? null : create.getUserName();
-	}
-
-	public String getUpdateId() {
-		return update == null ? null : update.getId();
-	}
-
-	public String getUpdateName() {
-		return update == null ? null : update.getUserName();
-	}
 }

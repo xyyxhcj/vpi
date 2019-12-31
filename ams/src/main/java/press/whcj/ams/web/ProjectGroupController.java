@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import press.whcj.ams.entity.ProjectGroup;
-import press.whcj.ams.entity.User;
 import press.whcj.ams.entity.vo.ProjectGroupVo;
 import press.whcj.ams.entity.vo.UserVo;
 import press.whcj.ams.service.ProjectGroupService;
@@ -14,7 +13,6 @@ import press.whcj.ams.util.FastUtils;
 import press.whcj.ams.util.UserUtils;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -30,10 +28,7 @@ public class ProjectGroupController extends BaseController {
 	@RequestMapping("add")
 	public Result<String> add(@RequestBody ProjectGroup projectGroup) {
 		UserVo operator = UserUtils.getOperator();
-		LocalDateTime now = LocalDateTime.now();
-		projectGroup.setCreate(new User(operator.getId()));
-		projectGroup.setCreateTime(now);
-		projectGroup.setUpdateTime(now);
+		projectGroup.initCreate(operator);
 		String id = projectGroupService.save(projectGroup, operator);
 		return ok(id);
 	}
@@ -42,8 +37,7 @@ public class ProjectGroupController extends BaseController {
 	public Result<String> edit(@RequestBody ProjectGroup projectGroup) {
 		FastUtils.checkParams(projectGroup.getId());
 		UserVo operator = UserUtils.getOperator();
-		projectGroup.setUpdate(new User(operator.getId()));
-		projectGroup.setUpdateTime(LocalDateTime.now());
+		projectGroup.initUpdate(operator);
 		projectGroupService.save(projectGroup, operator);
 		return ok(projectGroup.getId());
 	}

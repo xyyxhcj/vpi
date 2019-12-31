@@ -19,7 +19,6 @@ import press.whcj.ams.util.PermUtils;
 import press.whcj.ams.util.UserUtils;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -39,10 +38,7 @@ public class ProjectController extends BaseController {
 	@RequestMapping("add")
 	public Result<String> add(@RequestBody ProjectDto projectDto) {
 		UserVo operator = UserUtils.getOperator();
-		LocalDateTime now = LocalDateTime.now();
-		projectDto.setCreate(new User(operator.getId()));
-		projectDto.setCreateTime(now);
-		projectDto.setUpdateTime(now);
+		projectDto.initCreate(operator);
 		String id = projectService.save(projectDto, operator);
 		return ok(id);
 	}
@@ -51,8 +47,7 @@ public class ProjectController extends BaseController {
 	public Result<String> edit(@RequestBody ProjectDto projectDto) {
 		FastUtils.checkParams(projectDto.getId());
 		UserVo operator = UserUtils.getOperator();
-		projectDto.setUpdate(new User(operator.getId()));
-		projectDto.setUpdateTime(LocalDateTime.now());
+		projectDto.initUpdate(operator);
 		projectService.save(projectDto, operator);
 		return ok(projectDto.getId());
 	}

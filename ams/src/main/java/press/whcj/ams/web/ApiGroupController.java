@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import press.whcj.ams.entity.ApiGroup;
-import press.whcj.ams.entity.User;
 import press.whcj.ams.entity.vo.ApiGroupVo;
 import press.whcj.ams.entity.vo.UserVo;
 import press.whcj.ams.service.ApiGroupService;
@@ -14,7 +13,6 @@ import press.whcj.ams.util.FastUtils;
 import press.whcj.ams.util.UserUtils;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -30,10 +28,7 @@ public class ApiGroupController extends BaseController {
 	@RequestMapping("add")
 	public Result<String> add(@RequestBody ApiGroup apiGroupDto) {
 		UserVo operator = UserUtils.getOperator();
-		LocalDateTime now = LocalDateTime.now();
-		apiGroupDto.setCreate(new User(operator.getId()));
-		apiGroupDto.setCreateTime(now);
-		apiGroupDto.setUpdateTime(now);
+		apiGroupDto.initCreate(operator);
 		String id = apiGroupService.save(apiGroupDto, operator);
 		return ok(id);
 	}
@@ -42,8 +37,7 @@ public class ApiGroupController extends BaseController {
 	public Result<String> edit(@RequestBody ApiGroup apiGroupDto) {
 		FastUtils.checkParams(apiGroupDto.getId());
 		UserVo operator = UserUtils.getOperator();
-		apiGroupDto.setUpdate(new User(operator.getId()));
-		apiGroupDto.setUpdateTime(LocalDateTime.now());
+		apiGroupDto.initUpdate(operator);
 		apiGroupService.save(apiGroupDto, operator);
 		return ok(apiGroupDto.getId());
 	}
