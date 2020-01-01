@@ -1,5 +1,5 @@
 const HOST_URL = {
-    dev: 'http://120.132.18.250',
+    dev: 'http://127.0.0.1:11111',
     prod: 'http://120.132.18.250',
 };
 const debug = process.env.NODE_ENV !== 'production';
@@ -50,12 +50,12 @@ module.exports = {
                     '^/api/system': ''
                 }
             },*/
-            '/api/wechat': {
-                target: HOST_URL[profilesActive] + ':10007/wechat',
+            '/api': {
+                target: HOST_URL[profilesActive],
                 ws: true,
                 changOrigin: true,
                 pathRewrite: {
-                    '^/api/wechat': ''
+                    '^/api': ''
                 }
             }
         },

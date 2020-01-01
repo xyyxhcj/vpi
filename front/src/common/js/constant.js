@@ -33,12 +33,12 @@ export const CONSTANT = {
         DATE_FORMAT_QUERY: 'yyyy-MM-dd',
     },
     LOCAL_STORAGE_KEY: {
-        LOGIN_TOKEN: 'auth',
+        LOGIN_AUTH: 'auth',
         USER: 'user',
     },
     REQUEST_URL: {
         DETAIL: '/system/user/detail',
-        LOGIN: '/system/user/login',
+        LOGIN: '/user/login',
         LOGIN_OUT: '/system/user/loginOut',
         USER_UPDATE: '/system/user/update',
     },
@@ -52,8 +52,8 @@ export const CONSTANT = {
     },
     RESULT_CODE: {
         SUCCESS: 200,
+        USER_INVALID: 10004,
         LOGIN_NOT: 10005,
-        SYS_USER_INVALID: 10009,
     },
     STATUS: {
         0: 'Enable',

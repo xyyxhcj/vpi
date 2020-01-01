@@ -16,7 +16,7 @@ let router = new Router({
 /*router.beforeEach((to, from, next) => {
     // allows uri
     let allows = ['/login*', '/notFound'];
-    let isLogin = !!localStorage[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_TOKEN];
+    let isLogin = !!localStorage[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH];
     if (utils.contains(allows, to.path, function (allow, path) {
         return allow === path || path.match(allow);
     })) {

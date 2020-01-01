@@ -17,11 +17,11 @@ export default new Vuex.Store({
                 return JSON.parse(localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.USER));
             }
         },
-        menuTree(state) {
-            if (state.menuTree) {
-                return state.menuTree;
+        loginAuth(state) {
+            if (state.loginAuth) {
+                return state.loginAuth;
             } else {
-                return JSON.parse(localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.MENU_TREE));
+                return localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH);
             }
         },
     },
@@ -29,21 +29,17 @@ export default new Vuex.Store({
     // mutations only use sync method
     mutations: {
         login(state, user) {
-            if (user.authorization) {
-                localStorage.setItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_TOKEN, user.authorization);
+            if (user.auth) {
+                localStorage.setItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH, user.auth);
             }
             state.user = user;
             localStorage.setItem(CONSTANT.LOCAL_STORAGE_KEY.USER, JSON.stringify(user));
         },
         loginOut(state) {
-            localStorage.removeItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_TOKEN);
+            localStorage.removeItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH);
             state.user = undefined;
             localStorage.setItem(CONSTANT.LOCAL_STORAGE_KEY.USER, {});
         },
-        syncMenuTree(state, data) {
-            state.menuTree = data;
-            localStorage.setItem(CONSTANT.LOCAL_STORAGE_KEY.MENU_TREE, JSON.stringify(data));
-        }
     },
     // async actions
     // actions can't directly modify global variables, need use commit() to trigger mutations method
@@ -54,8 +50,5 @@ export default new Vuex.Store({
         loginOut(context) {
             context.commit('loginOut');
         },
-        syncMenuTree(context, data) {
-            context.commit('syncMenuTree', data);
-        }
     }
 });

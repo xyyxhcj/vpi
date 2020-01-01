@@ -1,7 +1,7 @@
 <template>
 
     <el-container id="app">
-        <left-menu></left-menu>
+        <left-menu/>
         <el-container>
             <el-header class="header-common">
                 <el-row>
@@ -17,22 +17,27 @@
                 <router-view/>
             </el-main>
         </el-container>
+        <login-dialog :dialog="loginDialog"/>
     </el-container>
 </template>
 
 <script>
 
     import leftMenu from "@/components/leftMenu/leftMenu";
+    import LoginDialog from "./components/login/loginDialog";
 
     export default {
         name: 'app',
-        components: {leftMenu},
+        components: {LoginDialog, leftMenu},
         data() {
-            return {}
+            return {
+                loginDialog: {
+                    show: !this.$store.getters.loginAuth,
+                },
+            }
         },
         methods: {},
-        computed: {
-        },
+        computed: {},
         created() {
         }
     }
@@ -63,7 +68,7 @@
 
     .main-common
         padding 9px
-        background-color rgb(245,245,245)
+        background-color rgb(245, 245, 245)
 
     /*margin-top 60px*/
 
