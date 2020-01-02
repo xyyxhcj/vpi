@@ -1,28 +1,15 @@
 <template>
-    <!--<div id="env-container">environment config</div>-->
     <div id="env-container">
-        <el-table
-                :data="tableData"
-                :header-cell-style="{color:'#44B549','font-weight':'bold'}"
-        >
-            <el-table-column
-                    label="name"
-                    prop="name">
-            </el-table-column>
-            <el-table-column
-                    label="desc"
-                    prop="desc">
-            </el-table-column>
-            <el-table-column
-                    align="left">
+        <el-table :data="tableData" :header-cell-style="{color:'#44B549','font-weight':'bold'}">
+            <el-table-column label="name" prop="name"/>
+            <el-table-column label="desc" prop="desc"/>
+            <el-table-column>
                 <!-- eslint-disable-next-line vue/no-unused-vars -->
                 <template slot="header" slot-scope="scope">
                     <el-row :gutter="11">
                         <el-col :span="8" style="margin-bottom: 5px">
                             <el-input
-                                    v-model="search"
-                                    size="mini"
-                                    placeholder="enter keyword search"/>
+                                    v-model="search" size="mini" placeholder="enter keyword search"/>
                         </el-col>
                     </el-row>
                     <el-row>

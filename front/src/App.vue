@@ -5,10 +5,22 @@
         <el-container>
             <el-header class="header-common">
                 <el-row>
-                    <el-col :span="12">
+                    <el-col :span="10">
                         <div class="project-path">{{$route.name}} > myTest</div>
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="4">
+                        <div class="project-name">
+                            <el-dropdown @command="changeProject">
+                              <span class="el-dropdown-link">
+                                项目名称1111111111111<i class="el-icon-arrow-down el-icon--right"/>
+                              </span>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item>switch project</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </div>
+                    </el-col>
+                    <el-col :span="10">
                         <div class="user-info">vpi</div>
                     </el-col>
                 </el-row>
@@ -25,6 +37,7 @@
 
     import leftMenu from "@/components/leftMenu/leftMenu";
     import LoginDialog from "./components/login/loginDialog";
+    import {CONSTANT} from "./common/js/constant";
 
     export default {
         name: 'app',
@@ -36,9 +49,14 @@
                 },
             }
         },
-        methods: {},
+        methods: {
+            changeProject() {
+                this.$router.push('/');
+            }
+        },
         computed: {},
         created() {
+            this.$axios.post(CONSTANT.REQUEST_URL.USER_UPDATE)
         }
     }
 </script>
@@ -62,6 +80,14 @@
 
         .project-path
             text-align left
+
+        .project-name
+            .el-dropdown-link
+                cursor: pointer
+                color: #409EFF
+
+            .el-icon-arrow-down
+                font-size: 12px
 
         .user-info
             text-align right

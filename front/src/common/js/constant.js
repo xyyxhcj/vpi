@@ -41,6 +41,7 @@ export const CONSTANT = {
         LOGIN: '/user/login',
         LOGIN_OUT: '/system/user/loginOut',
         USER_UPDATE: '/system/user/update',
+
     },
     CLOSE_LOADING_URL: [
         '/system/sysUserWechat/loginAsync',
