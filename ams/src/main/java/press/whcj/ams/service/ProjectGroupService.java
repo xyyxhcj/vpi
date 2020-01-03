@@ -15,4 +15,6 @@ public interface ProjectGroupService {
 	String save(ProjectGroup projectGroupDto, UserVo operator);
 
 	List<ProjectGroupVo> findList(ProjectGroup projectGroupDto, UserVo operator);
+
+	List<ProjectGroupVo> findListByParent(ProjectGroup projectGroupDto, UserVo operator);
 }

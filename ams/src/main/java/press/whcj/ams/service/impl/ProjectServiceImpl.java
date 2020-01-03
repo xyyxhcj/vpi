@@ -29,72 +29,99 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ProjectServiceImpl implements ProjectService {
-	@Resource
-	private MongoTemplate mongoTemplate;
+    @Resource
+    private MongoTemplate mongoTemplate;
 
-	@Override
-	public String save(ProjectDto projectDto, UserVo operator) {
-		boolean isUpdate = projectDto.getId() != null;
-		String name = projectDto.getName();
-		String operatorId = operator.getId();
-		FastUtils.checkParams(name);
-		Project project;
-		if (isUpdate) {
-			project = mongoTemplate.findById(projectDto.getId(), Project.class);
-			FastUtils.checkNull(project);
-			if (!operatorId.equals(Objects.requireNonNull(project).getCreateId())) {
-				throw new ServiceException(ResultCode.PERMISSION_DENIED);
-			}
-			project.setUpdate(null);
+    @Override
+    public String save(ProjectDto projectDto, UserVo operator) {
+        boolean isUpdate = projectDto.getId() != null;
+        String name = projectDto.getName();
+        String operatorId = operator.getId();
+        FastUtils.checkParams(name);
+        Project project;
+        if (isUpdate) {
+            project = mongoTemplate.findById(projectDto.getId(), Project.class);
+            FastUtils.checkNull(project);
+            if (!operatorId.equals(Objects.requireNonNull(project).getCreateId())) {
+                throw new ServiceException(ResultCode.PERMISSION_DENIED);
+            }
+            project.setUpdate(null);
+        } else {
+            project = new Project();
+        }
+        FastUtils.copyProperties(projectDto, project);
+        synchronized (operatorId.intern()) {
+            FastUtils.checkNameAndSave(projectDto.getId(), isUpdate, name, project, mongoTemplate, Criteria.where(ColumnName.CREATE_$ID).is(new ObjectId(operatorId)));
+        }
+        return project.getId();
+    }
+
+    @Override
+    public void assign(ProjectDto projectDto, UserVo operator) {
+        if (projectDto.getProjectUsers() == null) {
+            return;
+        }
+        String projectId = projectDto.getId();
+        FastUtils.checkParams(projectId);
+        Project project = new Project(projectId);
+        ObjectId projectObjectId = new ObjectId(projectId);
+        if (projectDto.getProjectUsers().size() > 0) {
+            for (ProjectUser projectUser : projectDto.getProjectUsers()) {
+                FastUtils.checkParams(projectUser.getUserId(), projectUser.getUserType());
+                if (operator.getId().equals(projectUser.getUserId())) {
+                    throw new ServiceException(ResultCode.PARAMS_ERROR);
+                }
+                projectUser.setProject(project);
+                projectUser.setUser(new User(projectUser.getUserId()));
+            }
+            DeleteResult remove = mongoTemplate.remove(new Query(Criteria
+                    .where(ColumnName.PROJECT_$ID).is(projectObjectId)), ProjectUser.class);
+            mongoTemplate.insertAll(projectDto.getProjectUsers());
+        } else {
+            mongoTemplate.remove(new Query(Criteria
+                    .where(ColumnName.PROJECT_$ID).is(projectObjectId)), ProjectUser.class);
+        }
+    }
+
+    @Override
+    public List<Project> findList(ProjectDto projectDto, UserVo operator) {
+        ObjectId operatorObjectId = new ObjectId(operator.getId());
+        List<Project> projects = mongoTemplate.find(new Query(
+                Criteria.where(ColumnName.CREATE_$ID).is(operatorObjectId)), Project.class);
+        projects.forEach(project -> project.setUserType(Constant.UserType.CREATOR));
+        List<ProjectUser> projectUsers = mongoTemplate.find(new Query(
+                Criteria.where(ColumnName.USER_$ID).is(operatorObjectId)), ProjectUser.class);
+        List<Project> userProjects = projectUsers.stream().filter(item -> item.getProject() != null)
+                .map(projectUser -> projectUser.getProject().setUserType(projectUser.getUserType()))
+                .collect(Collectors.toList());
+        projects.addAll(userProjects);
+        return projects;
+    }
+
+    @Override
+    public List<Project> findListByGroup(ProjectDto projectDto, UserVo operator) {
+        ObjectId operatorObjectId = new ObjectId(operator.getId());
+        String groupId = projectDto.getGroupId();
+        boolean findByGroup = groupId != null;
+        Criteria criteria = Criteria.where(ColumnName.CREATE_$ID).is(operatorObjectId);
+        if (findByGroup) {
+            criteria = criteria.and(ColumnName.GROUP_ID).is(groupId);
+        } else {
+            criteria = criteria.and(ColumnName.GROUP_ID).is(null);
+        }
+        List<Project> projects = mongoTemplate.find(new Query(criteria), Project.class);
+        projects.forEach(project -> project.setUserType(Constant.UserType.CREATOR));
+        criteria = Criteria.where(ColumnName.USER_$ID).is(operatorObjectId);
+		if (findByGroup) {
+			criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(groupId);
 		} else {
-			project = new Project();
+			criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(null);
 		}
-		FastUtils.copyProperties(projectDto, project);
-		synchronized (operatorId.intern()) {
-			FastUtils.checkNameAndSave(projectDto.getId(), isUpdate, name, project, mongoTemplate, Criteria.where(ColumnName.CREATE_$ID).is(new ObjectId(operatorId)));
-		}
-		return project.getId();
-	}
-
-	@Override
-	public void assign(ProjectDto projectDto, UserVo operator) {
-		if (projectDto.getProjectUsers() == null) {
-			return;
-		}
-		String projectId = projectDto.getId();
-		FastUtils.checkParams(projectId);
-		Project project = new Project(projectId);
-		ObjectId projectObjectId = new ObjectId(projectId);
-		if (projectDto.getProjectUsers().size() > 0) {
-			for (ProjectUser projectUser : projectDto.getProjectUsers()) {
-				FastUtils.checkParams(projectUser.getUserId(), projectUser.getUserType());
-				if (operator.getId().equals(projectUser.getUserId())) {
-					throw new ServiceException(ResultCode.PARAMS_ERROR);
-				}
-				projectUser.setProject(project);
-				projectUser.setUser(new User(projectUser.getUserId()));
-			}
-			DeleteResult remove = mongoTemplate.remove(new Query(Criteria
-					.where(ColumnName.PROJECT_$ID).is(projectObjectId)), ProjectUser.class);
-			mongoTemplate.insertAll(projectDto.getProjectUsers());
-		} else {
-			mongoTemplate.remove(new Query(Criteria
-					.where(ColumnName.PROJECT_$ID).is(projectObjectId)), ProjectUser.class);
-		}
-	}
-
-	@Override
-	public List<Project> findList(ProjectDto projectDto, UserVo operator) {
-		ObjectId operatorObjectId = new ObjectId(operator.getId());
-		List<Project> projects = mongoTemplate.find(new Query(
-				Criteria.where(ColumnName.CREATE_$ID).is(operatorObjectId)), Project.class);
-		projects.forEach(project -> project.setUserType(Constant.UserType.CREATOR));
-		List<ProjectUser> projectUsers = mongoTemplate.find(new Query(
-				Criteria.where(ColumnName.USER_$ID).is(operatorObjectId)), ProjectUser.class);
-		List<Project> userProjects = projectUsers.stream().filter(item -> item.getProject() != null)
-				.map(projectUser -> projectUser.getProject().setUserType(projectUser.getUserType()))
-				.collect(Collectors.toList());
-		projects.addAll(userProjects);
-		return projects;
-	}
+        List<ProjectUser> projectUsers = mongoTemplate.find(new Query(criteria), ProjectUser.class);
+        List<Project> userProjects = projectUsers.stream().filter(item -> item.getProject() != null)
+                .map(projectUser -> projectUser.getProject().setUserType(projectUser.getUserType()))
+                .collect(Collectors.toList());
+        projects.addAll(userProjects);
+        return projects;
+    }
 }

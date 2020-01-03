@@ -63,4 +63,15 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
 		}
 		return mongoTemplate.find(new Query(definition), ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
 	}
+
+	@Override
+	public List<ProjectGroupVo> findListByParent(ProjectGroup projectGroupDto, UserVo operator) {
+		Criteria definition;
+		if (StringUtils.isEmpty(projectGroupDto.getParentId())) {
+			definition = Criteria.where(ColumnName.PARENT_ID).is(null);
+		} else {
+			definition = Criteria.where(ColumnName.PARENT_ID).is(projectGroupDto.getParentId());
+		}
+		return mongoTemplate.find(new Query(definition), ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
+	}
 }

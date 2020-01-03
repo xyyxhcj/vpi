@@ -10,6 +10,7 @@ public interface ColumnName {
 	String USER_$ID = "user.$id";
 	String PROJECT_ID = "projectId";
 	String PROJECT_$ID = "project.$id";
+	String PROJECT_$GROUP_ID = "project.$groupId";
 	String USER_TYPE = "userType";
 	String LOGIN_NAME = "loginName";
 	String PHONE = "phone";
@@ -21,6 +22,7 @@ public interface ColumnName {
 	String TYPE = "type";
 	String SORT = "sort";
 	String STRUCTURE_ID = "structureId";
+	String GROUP_ID = "groupId";
 	String GROUP_$ID = "group.id";
 	String API_ID = "apiId";
 }
