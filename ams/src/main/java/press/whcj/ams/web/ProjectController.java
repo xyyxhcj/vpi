@@ -1,6 +1,7 @@
 package press.whcj.ams.web;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -80,6 +81,9 @@ public class ProjectController extends BaseController {
 	@RequestMapping("findListByGroup")
 	public Result<List<Object>> findListByGroup(@RequestBody ProjectDto projectDto) {
 		ProjectGroup projectGroupDto = new ProjectGroup();
+		if (StringUtils.isEmpty(projectDto.getGroupId())) {
+			projectDto.setGroupId(null);
+		}
 		projectGroupDto.setParentId(projectDto.getGroupId());
 		UserVo operator = UserUtils.getOperator();
 		List<ProjectGroupVo> listByParent = projectGroupService.findListByParent(projectGroupDto, operator);

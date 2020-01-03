@@ -37,7 +37,8 @@
 
     import leftMenu from "@/components/leftMenu/leftMenu";
     import LoginDialog from "./components/login/loginDialog";
-    import {CONSTANT} from "./common/js/constant";
+    // import {CONSTANT} from "./common/js/constant";
+    // import {utils} from "./common/js/utils";
 
     export default {
         name: 'app',
@@ -56,7 +57,7 @@
         },
         computed: {},
         created() {
-            this.$axios.post(CONSTANT.REQUEST_URL.USER_UPDATE)
+            // this.$axios.post(CONSTANT.REQUEST_URL.USER_UPDATE)
         }
     }
 </script>

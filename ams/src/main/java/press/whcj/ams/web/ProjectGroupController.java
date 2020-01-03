@@ -46,4 +46,9 @@ public class ProjectGroupController extends BaseController {
 	public Result<List<ProjectGroupVo>> findList(@RequestBody ProjectGroup projectGroup) {
 		return ok(projectGroupService.findList(projectGroup, UserUtils.getOperator()));
 	}
+
+	@RequestMapping("findDetail")
+	public Result<ProjectGroupVo> findDetail(@RequestBody ProjectGroup projectGroup) {
+		return ok(projectGroupService.findDetail(projectGroup));
+	}
 }

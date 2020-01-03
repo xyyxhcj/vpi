@@ -58,7 +58,7 @@
                                 this.dialog.show = false;
                             } else {
                                 this.$message({
-                                    message: resp.data ? resp.data.message : '登录失败',
+                                    message: resp.data ? resp.data.message : 'login failed',
                                     type: 'error'
                                 });
                             }

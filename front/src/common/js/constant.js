@@ -41,6 +41,9 @@ export const CONSTANT = {
         LOGIN: '/user/login',
         LOGIN_OUT: '/system/user/loginOut',
         USER_UPDATE: '/system/user/update',
+        PROJECT_FIND_LIST_BY_GROUP: '/project/findListByGroup',
+        PROJECT_GROUP_ADD: '/projectGroup/add',
+        PROJECT_GROUP_FIND_DETAIL: '/projectGroup/findDetail',
 
     },
     CLOSE_LOADING_URL: [
@@ -57,12 +60,13 @@ export const CONSTANT = {
         LOGIN_NOT: 10005,
     },
     STATUS: {
-        0: 'Enable',
-        1: 'Disable'
+        0: 'Enable', 1: 'Disable'
     },
     READ: {
-        READ: 1,
-        UNREAD: 0
+        READ: 1, UNREAD: 0
     },
+    PROJECT_TYPE: {
+        0: 'web', 1: 'app', 2: 'pc', 3: 'others'
+    }
 };
 

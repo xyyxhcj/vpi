@@ -167,10 +167,6 @@ export const utils = {
     showResult: function (obj, resp, func = function () {
     }) {
         if (this.checkResp(resp)) {
-            obj.$message({
-                message: 'operate success',
-                type: 'success'
-            });
             func(obj);
             obj.dialog.show = false;
         } else {
@@ -204,11 +200,7 @@ export const utils = {
     },
     checkAuth: function (obj, permissionId) {
         return this.contains(obj.btnList, permissionId, function (btn, element) {
-            if (element === btn.menuId) {
-                return true;
-            } else {
-                return false;
-            }
+            return element === btn.menuId;
         })
     },
 };

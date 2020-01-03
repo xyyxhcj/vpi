@@ -74,4 +74,10 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
 		}
 		return mongoTemplate.find(new Query(definition), ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
 	}
+
+	@Override
+	public ProjectGroupVo findDetail(ProjectGroup projectGroup) {
+		FastUtils.checkParams(projectGroup.getId());
+		return mongoTemplate.findById(projectGroup.getId(), ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
+	}
 }
