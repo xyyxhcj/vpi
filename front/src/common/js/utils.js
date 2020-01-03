@@ -7,7 +7,7 @@ function concatZero(str) {
     return ('00' + str).substr(str.length);
 }
 
-export const utils = {
+export const UTILS = {
     /**
      * get url param
      */
@@ -105,10 +105,10 @@ export const utils = {
     syncRouterData: function (localId, localKey, data) {
         if (typeof (data) === 'undefined') {
             // get form local
-            data = utils.loadFromLocal(localId, localKey, []);
+            data = this.loadFromLocal(localId, localKey, []);
         } else {
             // save to local
-            utils.saveToLocal(localId, localKey, data);
+            this.saveToLocal(localId, localKey, data);
         }
         return data;
     },

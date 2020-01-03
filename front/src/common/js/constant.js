@@ -31,6 +31,8 @@ export const CONSTANT = {
         PAGE_SIZES: [20, 50, 100, 1000],
         DATE_FORMAT: 'yyyy-MM-dd hh:mm:ss',
         DATE_FORMAT_QUERY: 'yyyy-MM-dd',
+        DEFAULT_PROJECT_VERSION: '1.0',
+        DEFAULT_PROJECT_TYPE: 0,
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
@@ -41,8 +43,13 @@ export const CONSTANT = {
         LOGIN: '/user/login',
         LOGIN_OUT: '/system/user/loginOut',
         USER_UPDATE: '/system/user/update',
+
+        PROJECT_ADD: '/project/add',
+        PROJECT_EDIT: '/project/edit',
         PROJECT_FIND_LIST_BY_GROUP: '/project/findListByGroup',
+
         PROJECT_GROUP_ADD: '/projectGroup/add',
+        PROJECT_GROUP_EDIT: '/projectGroup/edit',
         PROJECT_GROUP_FIND_DETAIL: '/projectGroup/findDetail',
 
     },

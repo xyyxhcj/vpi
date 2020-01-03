@@ -38,7 +38,7 @@
     import leftMenu from "@/components/leftMenu/leftMenu";
     import LoginDialog from "./components/login/loginDialog";
     // import {CONSTANT} from "./common/js/constant";
-    // import {utils} from "./common/js/utils";
+    // import {UTILS} from "./common/js/utils";
 
     export default {
         name: 'app',

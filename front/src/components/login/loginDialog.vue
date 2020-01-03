@@ -20,7 +20,7 @@
 
 <script type="text/ecmascript-6">
     import {CONSTANT} from "../../common/js/constant";
-    import {utils} from "../../common/js/utils";
+    import {UTILS} from "../../common/js/utils";
 
     export default {
         name: 'loginDialog',
@@ -53,7 +53,7 @@
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
                         this.$axios.post(CONSTANT.REQUEST_URL.LOGIN, this.user).then(resp => {
-                            if (utils.checkResp(resp)) {
+                            if (UTILS.checkResp(resp)) {
                                 this.logined(resp);
                                 this.dialog.show = false;
                             } else {

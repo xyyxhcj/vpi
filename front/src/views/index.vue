@@ -6,7 +6,7 @@
             <el-table-column>
                 <template slot="header">
                     name
-                    <el-tag style="margin-left:10px;cursor:pointer;" @click="return2Previous"
+                    <el-tag size="mini" style="margin:0 10px;cursor:pointer;" @click="return2Previous"
                             v-if="selectedGroup!==undefined">
                         return to previous
                     </el-tag>
@@ -30,32 +30,39 @@
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            @click.native.stop="edit(scope.$index, scope.row)">Edit
+                            @click.native.stop="edit(scope.row)">Edit
                     </el-button>
                     <el-button
                             size="mini"
                             type="danger"
-                            @click.native.stop="del(scope.$index, scope.row)">Delete
+                            @click.native.stop="del(scope.row)">Delete
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
         <project-group-edit-dialog :dialog="editProjectGroupDialog" :form="editProjectGroupForm"
                                    @flush="findListByGroup"/>
-        <!--        <env-config-edit-dialog :dialog="editDialog" :form="form"/>-->
+        <project-edit-dialog :dialog="editProjectDialog" :form="editProjectForm" @flush="findListByGroup"/>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {CONSTANT} from "../common/js/constant";
-    import {utils} from "../common/js/utils";
+    import {UTILS} from "../common/js/utils";
     import ProjectGroupEditDialog from "./projectGroupEditDialog";
+    import ProjectEditDialog from "./projectEditDialog";
 
     export default {
         name: 'index',
-        components: {ProjectGroupEditDialog},
+        components: {ProjectEditDialog, ProjectGroupEditDialog},
         data() {
             return {
+                editProjectDialog: {
+                    show: false,
+                    title: '',
+                    url: ''
+                },
+                editProjectForm: {},
                 editProjectGroupDialog: {
                     show: false,
                     title: '',
@@ -70,13 +77,28 @@
             };
         },
         methods: {
-            edit() {
-
+            edit(row) {
+                if (row.projectType !== undefined) {
+                    this.editProjectDialog = {
+                        show: true,
+                        title: 'edit project',
+                        url: CONSTANT.REQUEST_URL.PROJECT_EDIT
+                    };
+                    this.editProjectForm = UTILS.copyProperty(row, ['id', 'name', 'groupId', 'projectType', 'projectVersion', 'desc']);
+                } else {
+                    this.editProjectGroupDialog = {
+                        show: true,
+                        title: 'edit project group',
+                        url: CONSTANT.REQUEST_URL.PROJECT_GROUP_EDIT
+                    };
+                    this.editProjectGroupForm = UTILS.copyProperty(row, ['id', 'name', 'parentId']);
+                }
             },
             del() {
 
             },
             addProjectGroup() {
+                this.editProjectGroupForm = {parentId: this.query.groupId};
                 this.editProjectGroupDialog = {
                     show: true,
                     title: 'add project group',
@@ -84,7 +106,16 @@
                 };
             },
             addProject() {
-
+                this.editProjectForm = {
+                    groupId: this.query.groupId,
+                    projectVersion: CONSTANT.CONFIG.DEFAULT_PROJECT_VERSION,
+                    projectType: CONSTANT.CONFIG.DEFAULT_PROJECT_TYPE,
+                };
+                this.editProjectDialog = {
+                    show: true,
+                    title: 'add project',
+                    url: CONSTANT.REQUEST_URL.PROJECT_ADD
+                };
             },
             batchOperate() {
 
@@ -93,11 +124,11 @@
                 return row.projectType !== undefined ? CONSTANT.PROJECT_TYPE[row.projectType] : '';
             },
             dateFormat(time) {
-                return utils.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
+                return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
             },
             findListByGroup() {
                 this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_FIND_LIST_BY_GROUP, this.query).then(resp => {
-                    if (utils.checkResp(resp)) {
+                    if (UTILS.checkResp(resp)) {
                         this.tableData = resp.data.data;
                     }
                 })
@@ -114,7 +145,7 @@
                 if (this.query.groupId !== null) {
                     this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_GROUP_FIND_DETAIL, {id: this.query.groupId})
                         .then(resp => {
-                            if (utils.checkResp(resp)) {
+                            if (UTILS.checkResp(resp)) {
                                 this.selectedGroup = resp.data.data;
                             }
                         });

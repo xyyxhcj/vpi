@@ -1,17 +1,13 @@
 import axios from 'axios';
 import {Loading, Message} from 'element-ui';
 import {CONSTANT} from "./constant";
-import {utils} from "./utils";
+import {UTILS} from "./utils";
 
 let loading;
 
 function startLoading(url) {
-    if (!utils.contains(CONSTANT.CLOSE_LOADING_URL, url, function (url1, url2) {
-        if (url2.endsWith(url1)) {
-            return true;
-        } else {
-            return false;
-        }
+    if (!UTILS.contains(CONSTANT.CLOSE_LOADING_URL, url, function (url1, url2) {
+        return url2.endsWith(url1);
     })) {
         loading = Loading.service({
             lock: true,
@@ -23,12 +19,8 @@ function startLoading(url) {
 }
 
 function endLoading(url) {
-    if (!utils.contains(CONSTANT.CLOSE_LOADING_URL, url, function (url1, url2) {
-        if (url2.endsWith(url1)) {
-            return true;
-        } else {
-            return false;
-        }
+    if (!UTILS.contains(CONSTANT.CLOSE_LOADING_URL, url, function (url1, url2) {
+        return url2.endsWith(url1);
     })) {
         loading.close();
     }
