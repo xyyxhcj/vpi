@@ -8,6 +8,8 @@ export default new Vuex.Store({
     state: {
         user: undefined,
         menuTree: undefined,
+        selectedProjectId: undefined,
+        selectedProjectName: undefined,
     },
     getters: {
         user(state) {
@@ -22,6 +24,20 @@ export default new Vuex.Store({
                 return state.loginAuth;
             } else {
                 return localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH);
+            }
+        },
+        selectedProjectId(state) {
+            if (state.selectedProjectId) {
+                return state.selectedProjectId;
+            } else {
+                return sessionStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_ID);
+            }
+        },
+        selectedProjectName(state) {
+            if (state.selectedProjectName) {
+                return state.selectedProjectName;
+            } else {
+            return sessionStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_NAME);
             }
         },
     },
@@ -40,6 +56,12 @@ export default new Vuex.Store({
             state.user = undefined;
             localStorage.setItem(CONSTANT.LOCAL_STORAGE_KEY.USER, {});
         },
+        selectProject(state, project) {
+            state.selectedProjectId = project.id;
+            state.selectedProjectName = project.name;
+            sessionStorage.setItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_ID, project.id);
+            sessionStorage.setItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_NAME, project.name);
+        },
     },
     // async actions
     // actions can't directly modify global variables, need use commit() to trigger mutations method
@@ -49,6 +71,9 @@ export default new Vuex.Store({
         },
         loginOut(context) {
             context.commit('loginOut');
+        },
+        selectProject(context, project) {
+            context.commit('selectProject', project);
         },
     }
 });

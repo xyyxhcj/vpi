@@ -50,12 +50,12 @@ module.exports = {
                     '^/api/system': ''
                 }
             },*/
-            '/api': {
+            '/api/': {
                 target: HOST_URL[profilesActive],
                 ws: true,
                 changOrigin: true,
                 pathRewrite: {
-                    '^/api': ''
+                    '^/api/': '/'
                 }
             }
         },

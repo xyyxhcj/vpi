@@ -38,6 +38,10 @@ export const CONSTANT = {
         LOGIN_AUTH: 'auth',
         USER: 'user',
     },
+    SESSION_STORAGE_KEY: {
+        SELECTED_PROJECT_ID: 'selectedProjectId',
+        SELECTED_PROJECT_NAME: 'selectedProjectName',
+    },
     REQUEST_URL: {
         DETAIL: '/system/user/detail',
         LOGIN: '/user/login',
@@ -74,6 +78,6 @@ export const CONSTANT = {
     },
     PROJECT_TYPE: {
         0: 'web', 1: 'app', 2: 'pc', 3: 'others'
-    }
+    },
 };
 

@@ -12,7 +12,8 @@
                         <div class="project-name">
                             <el-dropdown @command="changeProject">
                               <span class="el-dropdown-link">
-                                项目名称1111111111111<i class="el-icon-arrow-down el-icon--right"/>
+                                {{selectedProjectName}}
+                                  <i class="el-icon-arrow-down el-icon--right"/>
                               </span>
                                 <el-dropdown-menu>
                                     <el-dropdown-item>switch project</el-dropdown-item>
@@ -37,7 +38,7 @@
 
     import leftMenu from "@/components/leftMenu/leftMenu";
     import LoginDialog from "./components/login/loginDialog";
-    // import {CONSTANT} from "./common/js/constant";
+    import {CONSTANT} from "./common/js/constant";
     // import {UTILS} from "./common/js/utils";
 
     export default {
@@ -45,6 +46,7 @@
         components: {LoginDialog, leftMenu},
         data() {
             return {
+                CONSTANT: CONSTANT,
                 loginDialog: {
                     show: !this.$store.getters.loginAuth,
                 },
@@ -53,11 +55,21 @@
         methods: {
             changeProject() {
                 this.$router.push('/');
-            }
+            },
         },
-        computed: {},
+        computed: {
+            selectedProjectId: {
+                get() {
+                    return this.$store.getters.selectedProjectId;
+                },
+            },
+            selectedProjectName: {
+                get() {
+                    return this.$store.getters.selectedProjectName;
+                },
+            },
+        },
         created() {
-            // this.$axios.post(CONSTANT.REQUEST_URL.USER_UPDATE)
         }
     }
 </script>

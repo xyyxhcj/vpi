@@ -138,6 +138,9 @@
                     this.selectedGroup = row;
                     this.query.groupId = row.id;
                     this.findListByGroup();
+                } else {
+                    this.$store.dispatch('selectProject', row);
+                    this.$router.push('/apiDoc');
                 }
             },
             return2Previous() {
