@@ -27,36 +27,37 @@
                     <el-button size="mini" type="success" @click="addProject">Add Project</el-button>
                     <el-button size="mini" type="warning" @click="batchOperate">batch operate</el-button>
                 </template>
-                <template slot-scope="scope">
-                    <el-button
-                            size="mini"
-                            @click.native.stop="edit(scope.row)">Edit
-                    </el-button>
-                    <el-button
-                            size="mini"
-                            type="danger"
-                            @click.native.stop="del(scope.row)">Delete
-                    </el-button>
+                <template slot-scope="scope" v-if="scope.row.createId===user.id">
+                    <el-button size="mini" @click.native.stop="auth(scope.row)">Auth</el-button>
+                    <el-button size="mini" @click.native.stop="edit(scope.row)">Edit</el-button>
+                    <el-button size="mini" type="danger" @click.native.stop="del(scope.row)">Delete</el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <project-group-edit-dialog :dialog="editProjectGroupDialog" :form="editProjectGroupForm"
+        <edit-auth-dialog :dialog="editAuthDialog"/>
+        <edit-project-group-dialog :dialog="editProjectGroupDialog" :form="editProjectGroupForm"
                                    @flush="findListByGroup"/>
-        <project-edit-dialog :dialog="editProjectDialog" :form="editProjectForm" @flush="findListByGroup"/>
+        <edit-project-dialog :dialog="editProjectDialog" :form="editProjectForm" @flush="findListByGroup"/>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {CONSTANT} from "../common/js/constant";
     import {UTILS} from "../common/js/utils";
-    import ProjectGroupEditDialog from "./projectGroupEditDialog";
-    import ProjectEditDialog from "./projectEditDialog";
+    import EditProjectGroupDialog from "./editProjectGroupDialog";
+    import EditProjectDialog from "./editProjectDialog";
+    import EditAuthDialog from "./editAuthDialog";
 
     export default {
         name: 'index',
-        components: {ProjectEditDialog, ProjectGroupEditDialog},
+        components: {EditAuthDialog, EditProjectDialog, EditProjectGroupDialog},
         data() {
             return {
+                user: this.$store.getters.user,
+                editAuthDialog: {
+                    show: false,
+                    project: Object,
+                },
                 editProjectDialog: {
                     show: false,
                     title: '',
@@ -77,6 +78,12 @@
             };
         },
         methods: {
+            auth(row) {
+                this.editAuthDialog = {
+                    show: true,
+                    project: row,
+                };
+            },
             edit(row) {
                 if (row.projectType !== undefined) {
                     this.editProjectDialog = {
@@ -160,7 +167,7 @@
         },
         created() {
             this.findListByGroup();
-        }
+        },
     };
 </script>
 

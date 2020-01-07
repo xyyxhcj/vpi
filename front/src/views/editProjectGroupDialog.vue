@@ -1,16 +1,9 @@
 <template>
     <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
-               :close-on-click-modal="false">
-        <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
-                 style="margin:10px 60px 10px 0;width:auto">
-            <el-form-item label="name" label-width="100px" prop="itemKey">
-                <el-input autocomplete="off" v-model="form.name"></el-input>
-            </el-form-item>
-            <el-form-item label="desc" label-width="100px" prop="itemValue">
-                <el-input autocomplete="off" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="frontUri" label-width="100px">
-                <el-input autocomplete="off" v-model="form.frontUri"></el-input>
+               :close-on-click-modal="false" center width="35%" @submit.native.prevent>
+        <el-form :model="form" ref="form" label-width="100px" :rules="form_rules">
+            <el-form-item label="name" prop="name">
+                <el-input autocomplete="off" v-model="form.name"/>
             </el-form-item>
         </el-form>
         <div slot="footer">
@@ -21,8 +14,10 @@
 </template>
 
 <script type="text/ecmascript-6">
+    import {UTILS} from "../common/js/utils";
+
     export default {
-        name: 'envConfigEditDialog',
+        name: 'editProjectGroupDialog',
         props: {
             dialog: {
                 type: Object,
@@ -40,13 +35,22 @@
             return {
                 form_rules: {
                     name: [
-                        {required: true, message: '名称不能为空'}
+                        {required: true, message: 'enter name'}
                     ],
                 }
             }
         },
         methods: {
             submitForm() {
+                this.$refs['form'].validate((valid) => {
+                    if (valid) {
+                        this.$axios.post(this.dialog.url, this.form).then(resp => {
+                            UTILS.showResult(this, resp, function (obj) {
+                                obj.$emit('flush');
+                            });
+                        });
+                    }
+                });
             }
         }
     };

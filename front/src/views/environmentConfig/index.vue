@@ -32,17 +32,17 @@
                 </template>
             </el-table-column>
         </el-table>
-        <env-config-edit-dialog :dialog="editDialog" :form="form"/>
+        <edit-env-config-dialog :dialog="editDialog" :form="form"/>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
 
-    import EnvConfigEditDialog from "./envConfigEditDialog";
+    import EditEnvConfigDialog from "./editEnvConfigDialog";
 
     export default {
         name: 'index',
-        components: {EnvConfigEditDialog},
+        components: {EditEnvConfigDialog},
         data() {
             return {
                 envConfigList: [{

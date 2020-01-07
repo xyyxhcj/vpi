@@ -11,7 +11,7 @@
         </div>
         <div>
             <template v-for="menu in MENUS">
-                <router-link :to="menu.path" :key="menu.name" v-if="!menu.noMenu">
+                <router-link :to="menu.path" :key="menu.path" v-if="!menu.noMenu">
                     <el-menu-item :index="menu.path" class="reset-padding-left">
                         <i :class="menu.meta.icon" aria-hidden="true"/>
                         <span v-if="menu.meta&&menu.meta.title" slot="title">{{menu.meta.title}}</span>

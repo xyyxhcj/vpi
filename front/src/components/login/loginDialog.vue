@@ -71,6 +71,7 @@
             logined(resp) {
                 let data = resp.data.data;
                 this.$store.dispatch('login', data);
+                this.$router.go(0);
             },
         }
     };
