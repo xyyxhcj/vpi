@@ -24,27 +24,31 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ProjectUserServiceImpl implements ProjectUserService {
-	@Resource
-	private MongoTemplate mongoTemplate;
+    @Resource
+    private MongoTemplate mongoTemplate;
 
-	@Override
-	public void edit(ProjectUserDto projectUserDto) {
-		FastUtils.checkParams(projectUserDto.getId());
-		if (Constant.Is.YES.equals(projectUserDto.getIsDel())) {
-			mongoTemplate.remove(new Query(Criteria.where(ColumnName.ID).is(projectUserDto.getId())), ProjectUser.class);
-		} else {
-			ProjectUser projectUser = mongoTemplate.findById(projectUserDto.getId(), ProjectUser.class);
-			FastUtils.checkNull(projectUser);
-			mongoTemplate.save(Objects.requireNonNull(FastUtils.copyProperties(projectUserDto, projectUser)));
-		}
-	}
+    @Override
+    public void edit(ProjectUserDto projectUserDto) {
+        FastUtils.checkParams(projectUserDto.getId());
+        if (Constant.Is.YES.equals(projectUserDto.getIsDel())) {
+            mongoTemplate.remove(new Query(Criteria.where(ColumnName.ID).is(projectUserDto.getId())), ProjectUser.class);
+        } else {
+            ProjectUser projectUser = mongoTemplate.findById(projectUserDto.getId(), ProjectUser.class);
+            FastUtils.checkNull(projectUser);
+            mongoTemplate.save(Objects.requireNonNull(FastUtils.copyProperties(projectUserDto, projectUser)));
+        }
+    }
 
-	@Override
-	public List<User> findProjectUser(ProjectUser projectUser) {
-		String projectId = projectUser.getProjectId();
-		FastUtils.checkParams(projectId);
-		List<ProjectUser> projectUsers = mongoTemplate.find(new Query(Criteria.where(ColumnName.PROJECT_$ID).is(new ObjectId(projectId))), ProjectUser.class);
-		return projectUsers.stream().filter(k -> k.getUser() != null)
-				.map(item -> item.getUser().setUserType(item.getUserType())).collect(Collectors.toList());
-	}
+    @Override
+    public List<User> findProjectUser(ProjectUser projectUser) {
+        String projectId = projectUser.getProjectId();
+        FastUtils.checkParams(projectId);
+        Criteria criteria = Criteria.where(ColumnName.PROJECT_$ID).is(new ObjectId(projectId));
+        if (projectUser.getUserType() != null & !Constant.UserType.CREATOR.equals(projectUser.getUserType())) {
+            criteria = criteria.and(ColumnName.USER_TYPE).is(projectUser.getUserType());
+        }
+        List<ProjectUser> projectUsers = mongoTemplate.find(new Query(criteria), ProjectUser.class);
+        return projectUsers.stream().filter(k -> k.getUser() != null)
+                .map(item -> item.getUser().setUserType(item.getUserType()).setProjectUserId(item.getId())).collect(Collectors.toList());
+    }
 }

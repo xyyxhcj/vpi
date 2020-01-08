@@ -33,6 +33,7 @@ export const CONSTANT = {
         DATE_FORMAT_QUERY: 'yyyy-MM-dd',
         DEFAULT_PROJECT_VERSION: '1.0',
         DEFAULT_PROJECT_TYPE: 0,
+        USER_SHOW_STYLE: '{userName} ({loginName})'
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
@@ -51,6 +52,8 @@ export const CONSTANT = {
         PROJECT_ADD: '/project/add',
         PROJECT_EDIT: '/project/edit',
         PROJECT_FIND_LIST_BY_GROUP: '/project/findListByGroup',
+        PROJECT_FIND_PROJECT_USER: '/project/findProjectUser',
+        PROJECT_EDIT_PROJECT_USER: '/project/editProjectUser',
 
         PROJECT_GROUP_ADD: '/projectGroup/add',
         PROJECT_GROUP_EDIT: '/projectGroup/edit',
@@ -79,5 +82,16 @@ export const CONSTANT = {
     PROJECT_TYPE: {
         0: 'web', 1: 'app', 2: 'pc', 3: 'others'
     },
+    AUTH_ROLE: {
+        ALL: '0',
+        ADMIN: '1',
+        READ_WRITE: '2',
+        READ: '3',
+    },
+    PROJECT_USER_TYPE: {
+        1: 'Admin',
+        2: 'Read-Write',
+        3: 'Read-Only',
+    }
 };
 

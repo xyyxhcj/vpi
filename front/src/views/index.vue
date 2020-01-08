@@ -17,10 +17,9 @@
                 </template>
             </el-table-column>
             <el-table-column label="projectVersion" prop="projectVersion" width="120"/>
-            <el-table-column label="projectType" prop="projectType" width="100" :formatter="projectTypeFormat"/>
+            <el-table-column label="projectType" width="100" :formatter="projectTypeFormat"/>
             <el-table-column label="desc" prop="desc"/>
-            <el-table-column label="updateTime" prop="updateTime" width="200"
-                             :formatter="(row)=>dateFormat(row.updateTime)"/>
+            <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
             <el-table-column>
                 <template slot="header">
                     <el-button size="mini" type="success" @click="addProjectGroup">Add ProjectGroup</el-button>

@@ -42,6 +42,8 @@ public class User implements Serializable {
 	private User update;
 	@Transient
 	private Byte userType;
+	@Transient
+	private String projectUserId;
 
 	public User() {
 	}

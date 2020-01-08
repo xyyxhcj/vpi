@@ -165,10 +165,12 @@ export const UTILS = {
         return CONSTANT.RESULT_CODE.SUCCESS === resp.data.code;
     },
     showResult: function (obj, resp, func = function () {
-    }) {
+    }, closeDialog = true) {
         if (this.checkResp(resp)) {
             func(obj);
-            obj.dialog.show = false;
+            if (closeDialog) {
+                obj.dialog.show = false;
+            }
         } else {
             this.errorMsg(obj, resp);
         }
