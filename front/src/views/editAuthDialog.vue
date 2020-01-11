@@ -4,7 +4,7 @@
         <el-container>
             <el-aside width="200px" class="auth-aside">
                 <el-header class="aside-header">Role</el-header>
-                <el-menu default-active="0" @select="selectRole">
+                <el-menu :default-active="projectUserQuery.userType" @select="selectRole">
                     <el-menu-item :index="CONSTANT.AUTH_ROLE.ALL">All</el-menu-item>
                     <el-menu-item :index="CONSTANT.AUTH_ROLE.ADMIN">Admin</el-menu-item>
                     <el-menu-item :index="CONSTANT.AUTH_ROLE.READ_WRITE">Read-Write</el-menu-item>
@@ -60,6 +60,7 @@
                 default() {
                     return {
                         show: false,
+                        project: Object,
                     }
                 }
             },
@@ -69,7 +70,7 @@
                 CONSTANT: CONSTANT,
                 projectId: this.$store.getters.selectedProjectId,
                 projectUserQuery: {
-                    projectId: this.$store.getters.selectedProjectId,
+                    projectId: '',
                     userType: CONSTANT.AUTH_ROLE.ALL,
                 },
                 projectUserList: [],
@@ -85,6 +86,7 @@
                 return UTILS.formatStr(CONSTANT.CONFIG.USER_SHOW_STYLE, user);
             },
             findProjectUser() {
+                this.projectUserQuery.projectId = this.dialog.project.id;
                 this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_FIND_PROJECT_USER, this.projectUserQuery).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.projectUserList = resp.data.data;
@@ -110,11 +112,12 @@
                         obj.findProjectUser();
                     }, false);
                 });
+            },
+            init() {
+                this.projectUserQuery.userType = CONSTANT.AUTH_ROLE.ALL;
+                this.findProjectUser();
             }
         },
-        created() {
-            this.findProjectUser();
-        }
     };
 </script>
 

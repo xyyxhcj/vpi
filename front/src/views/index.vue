@@ -33,7 +33,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <edit-auth-dialog :dialog="editAuthDialog"/>
+        <edit-auth-dialog :dialog="editAuthDialog" ref="authDialog"/>
         <edit-project-group-dialog :dialog="editProjectGroupDialog" :form="editProjectGroupForm"
                                    @flush="findListByGroup"/>
         <edit-project-dialog :dialog="editProjectDialog" :form="editProjectForm" @flush="findListByGroup"/>
@@ -82,6 +82,9 @@
                     show: true,
                     project: row,
                 };
+                this.$nextTick(() => {
+                    this.$refs['authDialog'].init();
+                });
             },
             edit(row) {
                 if (row.projectType !== undefined) {
