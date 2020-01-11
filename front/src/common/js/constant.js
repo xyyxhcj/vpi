@@ -33,7 +33,8 @@ export const CONSTANT = {
         DATE_FORMAT_QUERY: 'yyyy-MM-dd',
         DEFAULT_PROJECT_VERSION: '1.0',
         DEFAULT_PROJECT_TYPE: 0,
-        USER_SHOW_STYLE: '{userName} ({loginName})'
+        USER_SHOW_STYLE: '{userName} ({loginName})',
+        ADMIN_LOGIN_NAME: 'admin',
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
@@ -44,10 +45,8 @@ export const CONSTANT = {
         SELECTED_PROJECT_NAME: 'selectedProjectName',
     },
     REQUEST_URL: {
-        DETAIL: '/system/user/detail',
         LOGIN: '/user/login',
-        LOGIN_OUT: '/system/user/loginOut',
-        USER_UPDATE: '/system/user/update',
+        USER_ADD: '/user/add',
 
         PROJECT_ADD: '/project/add',
         PROJECT_EDIT: '/project/edit',

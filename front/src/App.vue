@@ -22,7 +22,12 @@
                         </div>
                     </el-col>
                     <el-col :span="10">
-                        <div class="user-info">vpi</div>
+                        <div class="user-info">
+                            <span class="add-user-icon" v-if="isAdmin">
+                                <el-button type="success" icon="el-icon-plus" circle size="mini" @click="addUser"/>
+                            </span>
+                            vpi
+                        </div>
                     </el-col>
                 </el-row>
             </el-header>
@@ -31,6 +36,7 @@
             </el-main>
         </el-container>
         <login-dialog :dialog="loginDialog"/>
+        <edit-user-dialog :dialog="editUserDialog"/>
     </el-container>
 </template>
 
@@ -38,24 +44,36 @@
 
     import leftMenu from "@/components/leftMenu/leftMenu";
     import LoginDialog from "./components/login/loginDialog";
+    import EditUserDialog from "./components/editUser/editUserDialog";
     import {CONSTANT} from "./common/js/constant";
-    // import {UTILS} from "./common/js/utils";
 
     export default {
         name: 'app',
-        components: {LoginDialog, leftMenu},
+        components: {EditUserDialog, LoginDialog, leftMenu},
         data() {
             return {
                 CONSTANT: CONSTANT,
                 loginDialog: {
                     show: !this.$store.getters.loginAuth,
                 },
+                editUserDialog: {
+                    show: false,
+                    title: '',
+                    url: '',
+                }
             }
         },
         methods: {
             changeProject() {
                 this.$router.push('/');
             },
+            addUser() {
+                this.editUserDialog = {
+                    show: true,
+                    title: 'add user',
+                    url: CONSTANT.REQUEST_URL.USER_ADD,
+                };
+            }
         },
         computed: {
             selectedProjectId: {
@@ -68,6 +86,11 @@
                     return this.$store.getters.selectedProjectName;
                 },
             },
+            isAdmin: {
+                get() {
+                    return this.$store.getters.user && CONSTANT.CONFIG.ADMIN_LOGIN_NAME === this.$store.getters.user.loginName;
+                },
+            }
         },
         created() {
         }
@@ -86,15 +109,19 @@
 
     .header-common
         max-height 40px
-        padding 13px 20px
+        padding 5px 20px
         border-bottom 1px solid #d9d9d9
         font-size 14px
         background-color white
 
         .project-path
+            line-height 20px
+            margin 5px
             text-align left
 
         .project-name
+            line-height 28px
+
             .el-dropdown-link
                 cursor: pointer
                 color: #409EFF
@@ -103,7 +130,11 @@
                 font-size: 12px
 
         .user-info
+            line-height 28px
             text-align right
+
+            .add-user-icon
+                color green
 
     .main-common
         padding 9px
