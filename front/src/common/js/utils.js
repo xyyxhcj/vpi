@@ -175,14 +175,14 @@ export const UTILS = {
             this.errorMsg(obj, resp);
         }
     },
-    findPage: function (obj) {
-        obj.$axios.post(obj.findPerm.url, obj.searchData).then(resp => {
+    findPage: function (obj, url) {
+        obj.$axios.post(url, obj.query).then(resp => {
             if (this.checkResp(resp)) {
                 const data = resp.data.data;
                 obj.dataList = data.records;
-                obj.searchData.page.total = data.total;
-                if (data.total !== 0 && (obj.searchData.page.current - 1) * obj.searchData.page.size > data.total) {
-                    obj.searchData.page.current = 1;
+                obj.query.page.total = data.total;
+                if (data.total !== 0 && (obj.query.page.current - 1) * obj.query.page.size > data.total) {
+                    obj.query.page.current = 1;
                     this.findPage(obj);
                 }
             }

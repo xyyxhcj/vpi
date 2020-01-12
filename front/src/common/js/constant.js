@@ -48,12 +48,14 @@ export const CONSTANT = {
         LOGIN: '/user/login',
         LOGIN_OUT: '/user/loginOut',
         USER_ADD: '/user/add',
+        USER_FIND_PAGE: '/user/findPage',
 
         PROJECT_ADD: '/project/add',
         PROJECT_EDIT: '/project/edit',
         PROJECT_FIND_LIST_BY_GROUP: '/project/findListByGroup',
         PROJECT_FIND_PROJECT_USER: '/project/findProjectUser',
         PROJECT_EDIT_PROJECT_USER: '/project/editProjectUser',
+        PROJECT_ASSIGN: '/project/assign',
 
         PROJECT_GROUP_ADD: '/projectGroup/add',
         PROJECT_GROUP_EDIT: '/projectGroup/edit',

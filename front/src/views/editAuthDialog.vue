@@ -32,7 +32,7 @@
                         </el-table-column>
                         <el-table-column>
                             <template slot="header">
-                                <el-button size="mini" type="success" @click="addProjectUser">set Project User
+                                <el-button size="mini" type="success" @click="setProjectUser">set Project User
                                 </el-button>
                                 <el-button size="mini" type="warning" @click="batchOperate">batch operate</el-button>
                             </template>
@@ -45,15 +45,18 @@
                 </el-main>
             </el-container>
         </el-container>
+        <select-user-dialog :dialog="selectUserDialog" ref="selectUserDialog"/>
     </el-dialog>
 </template>
 
 <script type="text/ecmascript-6">
     import {CONSTANT} from "@/common/js/constant";
     import {UTILS} from "@/common/js/utils";
+    import SelectUserDialog from "../components/selectUser/selectUserDialog";
 
     export default {
         name: 'editAuthDialog',
+        components: {SelectUserDialog},
         props: {
             dialog: {
                 type: Object,
@@ -74,6 +77,10 @@
                     userType: CONSTANT.AUTH_ROLE.ALL,
                 },
                 projectUserList: [],
+                selectUserDialog: {
+                    show: false,
+                    url: CONSTANT.REQUEST_URL.PROJECT_ASSIGN,
+                },
             }
         },
         computed: {},
@@ -93,7 +100,9 @@
                     }
                 });
             },
-            addProjectUser() {
+            setProjectUser() {
+                this.selectUserDialog.show = true;
+                this.$refs['selectUserDialog'].findPage();
 
             },
             del() {

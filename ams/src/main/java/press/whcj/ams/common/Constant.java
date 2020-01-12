@@ -49,7 +49,7 @@ public interface Constant {
 	 * system config
 	 */
 	interface SysConfig {
-		int PAGE_BEGIN = 0;
+		int PAGE_BEGIN = 1;
 		int PAGE_SIZE = 20;
 		String ADMIN_LOGIN_NAME = "admin";
 		String ADMIN_PWD = "xyyxhcj@qq.com";

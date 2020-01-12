@@ -16,12 +16,12 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class MongoPage<T> {
-	private int current = Constant.SysConfig.PAGE_BEGIN;
-	private int size = Constant.SysConfig.PAGE_SIZE;
-	private long total;
-	private List<T> records;
+    private int current = Constant.SysConfig.PAGE_BEGIN;
+    private int size = Constant.SysConfig.PAGE_SIZE;
+    private long total;
+    private List<T> records;
 
-	public QPageRequest buildPageRequest() {
-		return new QPageRequest(current, size);
-	}
+    public QPageRequest buildPageRequest() {
+        return new QPageRequest(current - 1, size);
+    }
 }
