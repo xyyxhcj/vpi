@@ -46,6 +46,7 @@ export const CONSTANT = {
     },
     REQUEST_URL: {
         LOGIN: '/user/login',
+        LOGIN_OUT: '/user/loginOut',
         USER_ADD: '/user/add',
 
         PROJECT_ADD: '/project/add',

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {Loading, Message} from 'element-ui';
+import {Loading} from 'element-ui';
 import {CONSTANT} from "./constant";
 import {UTILS} from "./utils";
 
@@ -45,7 +45,6 @@ axios.interceptors.response.use(response => {
     // clear token
     if (response.data) {
         if (CONSTANT.RESULT_CODE.USER_INVALID === response.data.code || CONSTANT.RESULT_CODE.LOGIN_NOT === response.data.code) {
-            Message.error(response.data.message);
             localStorage.removeItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH);
         }
     }

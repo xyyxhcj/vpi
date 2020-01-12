@@ -9,7 +9,7 @@
                 <el-input autocomplete="off" v-model="form.password" type="password"/>
             </el-form-item>
             <el-form-item label="rePassword" prop="rePassword">
-                <el-input autocomplete="off" v-model="form.rePassword" type="password"/>
+                <el-input autocomplete="off" v-model="form.rePassword" type="rePassword"/>
             </el-form-item>
             <el-form-item label="userName" prop="userName">
                 <el-input autocomplete="off" v-model="form.userName"/>

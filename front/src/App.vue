@@ -11,10 +11,10 @@
                     <el-col :span="4">
                         <div class="project-name">
                             <el-dropdown @command="changeProject">
-                              <span class="el-dropdown-link">
-                                {{selectedProjectName}}
-                                  <i class="el-icon-arrow-down el-icon--right"/>
-                              </span>
+                                <span class="el-dropdown-link">
+                                    {{selectedProjectName}}
+                                    <i class="el-icon-arrow-down el-icon--right"/>
+                                </span>
                                 <el-dropdown-menu>
                                     <el-dropdown-item>switch project</el-dropdown-item>
                                 </el-dropdown-menu>
@@ -26,7 +26,15 @@
                             <span class="add-user-icon" v-if="isAdmin">
                                 <el-button type="success" icon="el-icon-plus" circle size="mini" @click="addUser"/>
                             </span>
-                            vpi
+                            <el-dropdown @command="userCommand">
+                                <span class="el-dropdown-link">
+                                    {{user?user.loginName:''}}
+                                    <i class="el-icon-arrow-down el-icon--right"/>
+                                </span>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item :command="loginOut">loginOut</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
                         </div>
                     </el-col>
                 </el-row>
@@ -46,6 +54,7 @@
     import LoginDialog from "./components/login/loginDialog";
     import EditUserDialog from "./components/editUser/editUserDialog";
     import {CONSTANT} from "./common/js/constant";
+    import {UTILS} from "./common/js/utils";
 
     export default {
         name: 'app',
@@ -60,7 +69,8 @@
                     show: false,
                     title: '',
                     url: '',
-                }
+                },
+                user: this.$store.getters.user,
             }
         },
         methods: {
@@ -73,7 +83,18 @@
                     title: 'add user',
                     url: CONSTANT.REQUEST_URL.USER_ADD,
                 };
-            }
+            },
+            userCommand(command) {
+                command();
+            },
+            loginOut() {
+                this.$axios.post(CONSTANT.REQUEST_URL.LOGIN_OUT).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.$store.dispatch('loginOut');
+                        this.$router.go(0);
+                    }
+                });
+            },
         },
         computed: {
             selectedProjectId: {
@@ -132,8 +153,8 @@
         .user-info
             line-height 28px
             text-align right
-
             .add-user-icon
+                padding-right 10px
                 color green
 
     .main-common

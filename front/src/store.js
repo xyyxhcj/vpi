@@ -37,7 +37,7 @@ export default new Vuex.Store({
             if (state.selectedProjectName) {
                 return state.selectedProjectName;
             } else {
-            return sessionStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_NAME);
+                return sessionStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_NAME);
             }
         },
     },
@@ -54,7 +54,7 @@ export default new Vuex.Store({
         loginOut(state) {
             localStorage.removeItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH);
             state.user = undefined;
-            localStorage.setItem(CONSTANT.LOCAL_STORAGE_KEY.USER, {});
+            localStorage.removeItem(CONSTANT.LOCAL_STORAGE_KEY.USER);
         },
         selectProject(state, project) {
             state.selectedProjectId = project.id;
