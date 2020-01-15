@@ -1,7 +1,8 @@
 <template>
     <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
                :close-on-click-modal="false" center width="75%">
-        <el-table :data="dataList" tooltip-effect="dark" style="width: 100%" ref="userTable" row-key="id">
+        <el-table :data="dataList" tooltip-effect="dark" style="width: 100%" ref="userTable" row-key="id"
+                  @selection-change="selectedChange">
             <el-table-column type="selection" width="55" :selectable="notCreate" :reserve-selection="true">
             </el-table-column>
             <el-table-column prop="userName" label="userName" width="150"/>
@@ -9,7 +10,7 @@
             <el-table-column prop="phone" label="phone" width="150"/>
             <el-table-column prop="email" label="email" width="150"/>
         </el-table>
-        <el-pagination background layout="prev, pager, next" :total="query.page.total" style="margin-top: 10px"/>
+        <page-template :query="query" @flush="findPage"/>
         <div slot="footer" class="footer-container">
             <!--<el-select class="selectInput" v-model="selectedList" multiple @visible-change="showSelect"
                        ref="showSelected" :collapse-tags="true">
@@ -20,7 +21,7 @@
                 </el-option>
             </el-select>-->
             <el-button @click="dialog.show = false" round>Cancel</el-button>
-            <el-button @click="addUsers" type="primary" round>Submit</el-button>
+            <el-button @click="setUsers" type="primary" round>Submit</el-button>
         </div>
     </el-dialog>
 </template>
@@ -29,9 +30,11 @@
     // cjTodo 2020/1/12 如果数据中id与管理员id相同，则置灰不可选 https://blog.csdn.net/QQ_Empire/article/details/94464118
     import {CONSTANT} from "../../common/js/constant";
     import {UTILS} from "../../common/js/utils";
+    import PageTemplate from "../pageTemplate/pageTemplate";
 
     export default {
         name: 'selectUserDialog',
+        components: {PageTemplate},
         props: {
             dialog: {
                 type: Object,
@@ -55,7 +58,6 @@
                         current: 1,
                         size: CONSTANT.CONFIG.PAGE_SIZE_DEFAULT,
                         total: 0,
-                        pages: 0,
                     }
                 },
                 projectUserQuery: {
@@ -67,10 +69,10 @@
         computed: {
         },
         methods: {
-            addUsers() {
+            setUsers() {
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
-                        /*this.$axios.post(this.dialog.url, this.form).then(resp => {
+                        /* todo this.$axios.post(this.dialog.url, this.form).then(resp => {
                             UTILS.showResult(this, resp);
                         });*/
                     }
@@ -81,24 +83,24 @@
                 this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_FIND_PROJECT_USER, this.projectUserQuery).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.selectedList = resp.data.data;
+                        // console.log(this.selectedList);
                         UTILS.findPage(this, CONSTANT.REQUEST_URL.USER_FIND_PAGE,function (obj) {
                             obj.$refs['userTable'].toggleRowSelection({id: obj.user.id});
+                            obj.selectRows(resp.data.data, obj);
                         });
                     }
                 });
             },
-            /*showSelect(isShow) {
-                if (isShow) {
-                    // this.$refs['showSelected'].blur();
-                }
-            },*/
-            selectRow(rows) {
+            selectedChange(selectedRows) {
+                this.selectedList = selectedRows;
+            },
+            selectRows(rows, obj) {
                 rows.forEach(row => {
-                    this.$refs['userTable'].toggleRowSelection(row);
-                    if (!UTILS.contains(this.selectedList, row, function (selectedListElement, rowElement) {
+                    obj.$refs['userTable'].toggleRowSelection(row);
+                    if (!UTILS.contains(obj.selectedList, row, function (selectedListElement, rowElement) {
                         return selectedListElement.id === rowElement.id;
                     })) {
-                        this.selectedList.push(row);
+                        obj.selectedList.push(row);
                     }
                 });
             },

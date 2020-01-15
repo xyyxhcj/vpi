@@ -9,7 +9,7 @@
                 <el-input autocomplete="off" v-model="form.password" type="password"/>
             </el-form-item>
             <el-form-item label="rePassword" prop="rePassword">
-                <el-input autocomplete="off" v-model="form.rePassword" type="rePassword"/>
+                <el-input autocomplete="off" v-model="form.rePassword" type="password"/>
             </el-form-item>
             <el-form-item label="userName" prop="userName">
                 <el-input autocomplete="off" v-model="form.userName"/>
@@ -71,17 +71,19 @@
                         {required: true, message: 'enter password'}
                     ],
                     rePassword: [
-                        {validator: validateRePassword, trigger: 'blur'},
+                        {required: true, validator: validateRePassword, trigger: 'blur'},
                     ],
                 }
             };
         },
         methods: {
             submitForm() {
-                this.$refs['form'].validate((valid) => {
+                let form = this.$refs['form'];
+                form.validate((valid) => {
                     if (valid) {
                         this.$axios.post(this.dialog.url, this.form).then(resp => {
                             UTILS.showResult(this, resp);
+                            // form.resetFields();
                         });
                     }
                 });
