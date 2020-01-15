@@ -83,7 +83,7 @@
                     if (valid) {
                         this.$axios.post(this.dialog.url, this.form).then(resp => {
                             UTILS.showResult(this, resp);
-                            // form.resetFields();
+                            form.resetFields();
                         });
                     }
                 });
