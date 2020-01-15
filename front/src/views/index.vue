@@ -168,7 +168,9 @@
             }
         },
         created() {
-            this.findListByGroup();
+            if (this.user) {
+                this.findListByGroup();
+            }
         },
     };
 </script>

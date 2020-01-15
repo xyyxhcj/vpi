@@ -175,18 +175,24 @@ export const UTILS = {
             this.errorMsg(obj, resp);
         }
     },
-    findPage: function (obj, url) {
+    findPage: function (obj, url, func = function () {
+    }) {
         obj.$axios.post(url, obj.query).then(resp => {
             if (this.checkResp(resp)) {
                 const data = resp.data.data;
                 obj.dataList = data.records;
                 obj.query.page.total = data.total;
+                obj.query.page.pages = this.getPages(obj.query.page.total, obj.query.page.size);
                 if (data.total !== 0 && (obj.query.page.current - 1) * obj.query.page.size > data.total) {
                     obj.query.page.current = 1;
                     this.findPage(obj);
                 }
+                func(obj);
             }
         });
+    },
+    getPages: function (total, size) {
+        return Math.ceil(total / size);
     },
     findAll: function (obj) {
         obj.$axios.post(obj.dialog.url, {}).then(resp => {

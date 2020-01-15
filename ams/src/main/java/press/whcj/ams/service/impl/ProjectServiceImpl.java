@@ -1,6 +1,5 @@
 package press.whcj.ams.service.impl;
 
-import com.mongodb.client.result.DeleteResult;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -74,12 +73,10 @@ public class ProjectServiceImpl implements ProjectService {
                 projectUser.setProject(project);
                 projectUser.setUser(new User(projectUser.getUserId()));
             }
-            DeleteResult remove = mongoTemplate.remove(new Query(Criteria
-                    .where(ColumnName.PROJECT_$ID).is(projectObjectId)), ProjectUser.class);
+            mongoTemplate.remove(new Query(Criteria.where(ColumnName.PROJECT_$ID).is(projectObjectId)), ProjectUser.class);
             mongoTemplate.insertAll(projectDto.getProjectUsers());
         } else {
-            mongoTemplate.remove(new Query(Criteria
-                    .where(ColumnName.PROJECT_$ID).is(projectObjectId)), ProjectUser.class);
+            mongoTemplate.remove(new Query(Criteria.where(ColumnName.PROJECT_$ID).is(projectObjectId)), ProjectUser.class);
         }
     }
 
@@ -112,11 +109,11 @@ public class ProjectServiceImpl implements ProjectService {
         List<Project> projects = mongoTemplate.find(new Query(criteria), Project.class);
         projects.forEach(project -> project.setUserType(Constant.UserType.CREATOR));
         criteria = Criteria.where(ColumnName.USER_$ID).is(operatorObjectId);
-		if (findByGroup) {
-			criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(groupId);
-		} else {
-			criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(null);
-		}
+        if (findByGroup) {
+            criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(groupId);
+        } else {
+            criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(null);
+        }
         List<ProjectUser> projectUsers = mongoTemplate.find(new Query(criteria), ProjectUser.class);
         List<Project> userProjects = projectUsers.stream().filter(item -> item.getProject() != null)
                 .map(projectUser -> projectUser.getProject().setUserType(projectUser.getUserType()))

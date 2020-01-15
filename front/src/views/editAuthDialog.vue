@@ -101,6 +101,7 @@
                 });
             },
             setProjectUser() {
+                this.selectUserDialog.project = this.dialog.project;
                 this.selectUserDialog.show = true;
                 this.$refs['selectUserDialog'].findPage();
 
