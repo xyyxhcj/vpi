@@ -61,6 +61,10 @@ export const CONSTANT = {
         PROJECT_GROUP_EDIT: '/projectGroup/edit',
         PROJECT_GROUP_FIND_DETAIL: '/projectGroup/findDetail',
 
+        API_ENV_ADD: '/apiEnv/add',
+        API_ENV_EDIT: '/apiEnv/edit',
+        API_ENV_FIND_LIST: '/apiEnv/findList',
+
     },
     CLOSE_LOADING_URL: [
         '/system/sysUserWechat/loginAsync',

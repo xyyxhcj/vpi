@@ -3,6 +3,7 @@
         <el-table :data="tableData" :header-cell-style="{color:'#44B549','font-weight':'bold'}">
             <el-table-column label="name" prop="name"/>
             <el-table-column label="desc" prop="desc"/>
+            <el-table-column label="frontUri" prop="frontUri"/>
             <el-table-column>
                 <!-- eslint-disable-next-line vue/no-unused-vars -->
                 <template slot="header" slot-scope="scope">
@@ -22,50 +23,33 @@
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            @click="editEnvConfig(scope.$index, scope.row)">Edit
+                            @click="editEnvConfig(scope.row)">Edit
                     </el-button>
                     <el-button
                             size="mini"
                             type="danger"
-                            @click="deleteEnvConfig(scope.$index, scope.row)">Delete
+                            @click="deleteEnvConfig(scope.row)">Delete
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <edit-env-config-dialog :dialog="editDialog" :form="form"/>
+        <edit-env-config-dialog :dialog="editDialog" :form="form" @flush="findList"/>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
 
     import EditEnvConfigDialog from "./editEnvConfigDialog";
+    import {CONSTANT} from "../../common/js/constant";
+    import {UTILS} from "../../common/js/utils";
 
     export default {
         name: 'index',
         components: {EditEnvConfigDialog},
         data() {
             return {
-                envConfigList: [{
-                    id: 'aa01',
-                    name: '本地',
-                    desc: '本地',
-                    frontUri: '127.0.0.1'
-                }, {
-                    id: 'aa02',
-                    name: '阿里',
-                    desc: '',
-                    frontUri: '79.2.35.1'
-                }, {
-                    id: 'aa03',
-                    name: '腾讯',
-                    desc: '腾讯云',
-                    frontUri: '66.66.66.1'
-                }, {
-                    id: 'aa04',
-                    name: '测试云',
-                    desc: '测试',
-                    frontUri: 'http://77.55.2.2'
-                }],
+                projectId: this.$store.getters.selectedProjectId,
+                envConfigList: [],
                 search: '',
                 editDialog: {
                     show: false,
@@ -90,25 +74,41 @@
             }
         },
         methods: {
-            editEnvConfig(index, row) {
-                console.log(index, row);
+            findList() {
+                this.$axios.post(CONSTANT.REQUEST_URL.API_ENV_FIND_LIST, {projectId: this.projectId}).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.envConfigList = resp.data.data;
+                    }
+                });
             },
-            deleteEnvConfig(index, row) {
-                console.log(index, row);
+            editEnvConfig(row) {
+                this.editDialog = {
+                    show: true,
+                    title: 'Edit',
+                    url: CONSTANT.REQUEST_URL.API_ENV_EDIT
+                };
+                this.form = UTILS.copyProperty(row, ['id', 'projectId', 'name', 'desc', 'frontUri', 'envHeader', 'globalVariable', 'additionalVariable']);
+            },
+            deleteEnvConfig(row) {
+                console.log(row);
             },
             addEnvConfig() {
                 this.editDialog = {
                     show: true,
                     title: 'Add',
-                    // cjTodo 2019/12/30
-                    url: 'tod'
+                    url: CONSTANT.REQUEST_URL.API_ENV_ADD
                 };
-                this.form = Object();
+                this.form = {
+                    projectId: this.projectId
+                };
             },
             batchOperate() {
                 console.log('batchOperate');
             },
         },
+        created() {
+            this.findList();
+        }
     };
 </script>
 
