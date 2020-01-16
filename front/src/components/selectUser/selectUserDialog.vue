@@ -12,14 +12,6 @@
         </el-table>
         <page-template :query="query" @flush="findPage"/>
         <div slot="footer" class="footer-container">
-            <!--<el-select class="selectInput" v-model="selectedList" multiple @visible-change="showSelect"
-                       ref="showSelected" :collapse-tags="true">
-                <el-option
-                        v-for="item in dataList"
-                        :key="item.id"
-                        :value="item.userName+'('+item.loginName+')'">
-                </el-option>
-            </el-select>-->
             <el-button @click="dialog.show = false" round>Cancel</el-button>
             <el-button @click="setUsers" type="primary" round>Submit</el-button>
         </div>
@@ -66,15 +58,31 @@
                 selectedList: [],
             }
         },
-        computed: {
+        computed: {},
+        created() {
         },
         methods: {
             setUsers() {
-                this.$refs['form'].validate((valid) => {
-                    if (valid) {
-                        /* todo this.$axios.post(this.dialog.url, this.form).then(resp => {
-                            UTILS.showResult(this, resp);
-                        });*/
+                for (let i = this.selectedList.length - 1; i >= 0; i--) {
+                    let selected = this.selectedList[i];
+                    if (selected.id === this.user.id) {
+                        this.selectedList.splice(i, 1);
+                        continue;
+                    }
+                    selected.userId = selected.id;
+                    if (!selected.userType) {
+                        selected.userType = CONSTANT.AUTH_ROLE.READ;
+                    }
+                }
+                this.$axios.post(this.dialog.url, {
+                    id: this.dialog.project.id,
+                    projectUsers: this.selectedList
+                }).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.dialog.show = false;
+                        this.$nextTick(() => {
+                            this.$emit('flush');
+                        });
                     }
                 });
             },
@@ -82,11 +90,16 @@
                 this.projectUserQuery.projectId = this.dialog.project.id;
                 this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_FIND_PROJECT_USER, this.projectUserQuery).then(resp => {
                     if (UTILS.checkResp(resp)) {
-                        this.selectedList = resp.data.data;
-                        // console.log(this.selectedList);
-                        UTILS.findPage(this, CONSTANT.REQUEST_URL.USER_FIND_PAGE,function (obj) {
-                            obj.$refs['userTable'].toggleRowSelection({id: obj.user.id});
+                        UTILS.findPage(this, CONSTANT.REQUEST_URL.USER_FIND_PAGE, function (obj) {
                             obj.selectRows(resp.data.data, obj);
+                            let create = {id: obj.user.id};
+                            let isSelected = UTILS.contains(obj.selectedList, create, function (selectedElement, element) {
+                                return selectedElement.id === element.id;
+                            });
+                            if (!isSelected) {
+                                obj.selectedList.push(create);
+                                obj.$refs['userTable'].toggleRowSelection(create);
+                            }
                         });
                     }
                 });
@@ -95,12 +108,19 @@
                 this.selectedList = selectedRows;
             },
             selectRows(rows, obj) {
+                let dataDict = {};
+                obj.dataList.forEach(data => dataDict[data.id] = data);
                 rows.forEach(row => {
-                    obj.$refs['userTable'].toggleRowSelection(row);
-                    if (!UTILS.contains(obj.selectedList, row, function (selectedListElement, rowElement) {
-                        return selectedListElement.id === rowElement.id;
-                    })) {
+                    let dataDictElement = dataDict[row.id];
+                    if (dataDictElement && row.userType !== undefined && row.userType !== null) {
+                        dataDictElement.userType = row.userType;
+                    }
+                    let isSelected = UTILS.contains(obj.selectedList, row, function (selectedElement, element) {
+                        return selectedElement.id === element.id;
+                    });
+                    if (!isSelected) {
                         obj.selectedList.push(row);
+                        obj.$refs['userTable'].toggleRowSelection(row);
                     }
                 });
             },

@@ -21,12 +21,8 @@
                             <template slot-scope="scope">
                                 <el-select :value="scope.row.userType+''"
                                            @change="(selectedValue)=>changeUserType(selectedValue,scope.row)">
-                                    <el-option
-                                            v-for="key in Object.keys(CONSTANT.PROJECT_USER_TYPE)"
-                                            :key="key"
-                                            :label="CONSTANT.PROJECT_USER_TYPE[key]"
-                                            :value="key">
-                                    </el-option>
+                                    <el-option v-for="key in Object.keys(CONSTANT.PROJECT_USER_TYPE)"
+                                            :key="key" :label="CONSTANT.PROJECT_USER_TYPE[key]" :value="key"/>
                                 </el-select>
                             </template>
                         </el-table-column>
@@ -45,7 +41,7 @@
                 </el-main>
             </el-container>
         </el-container>
-        <select-user-dialog :dialog="selectUserDialog" ref="selectUserDialog"/>
+        <select-user-dialog :dialog="selectUserDialog" ref="selectUserDialog" @flush="findProjectUser"/>
     </el-dialog>
 </template>
 
@@ -71,7 +67,6 @@
         data() {
             return {
                 CONSTANT: CONSTANT,
-                projectId: this.$store.getters.selectedProjectId,
                 projectUserQuery: {
                     projectId: '',
                     userType: CONSTANT.AUTH_ROLE.ALL,
@@ -114,7 +109,7 @@
             },
             changeUserType(userType, row) {
                 this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_EDIT_PROJECT_USER, {
-                    projectId: this.projectId,
+                    projectId: this.dialog.project.id,
                     id: row.projectUserId,
                     userType: userType
                 }).then(resp => {

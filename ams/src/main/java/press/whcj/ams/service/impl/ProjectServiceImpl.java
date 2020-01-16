@@ -72,6 +72,7 @@ public class ProjectServiceImpl implements ProjectService {
                 }
                 projectUser.setProject(project);
                 projectUser.setUser(new User(projectUser.getUserId()));
+                projectUser.setId(null);
             }
             mongoTemplate.remove(new Query(Criteria.where(ColumnName.PROJECT_$ID).is(projectObjectId)), ProjectUser.class);
             mongoTemplate.insertAll(projectDto.getProjectUsers());
