@@ -19,7 +19,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-    // cjTodo 2020/1/12 如果数据中id与管理员id相同，则置灰不可选 https://blog.csdn.net/QQ_Empire/article/details/94464118
     import {CONSTANT} from "../../common/js/constant";
     import {UTILS} from "../../common/js/utils";
     import PageTemplate from "../pageTemplate/pageTemplate";

@@ -1,14 +1,9 @@
 <template>
     <div class="container">
-        <el-pagination background
-                :current-page="query.page.current"
-                :page-size="query.page.size"
-                :page-sizes="CONSTANT.CONFIG.PAGE_SIZES"
-                :total="query.page.total"
-                @current-change="currentChange"
-                @size-change="pageSizeChange"
-                layout="total, sizes, prev, pager, next">
-        </el-pagination>
+        <el-pagination background :current-page="query.page.current" :total="query.page.total"
+                       :page-size="query.page.size" :page-sizes="CONSTANT.CONFIG.PAGE_SIZES"
+                       @current-change="currentChange" @size-change="pageSizeChange"
+                       layout="total, sizes, prev, pager, next"/>
     </div>
 </template>
 
@@ -38,6 +33,6 @@
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
     .container
-        padding-top: 10px
+        padding: 10px
         background-color: #fff
 </style>
