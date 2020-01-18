@@ -32,5 +32,8 @@ public class StructureData implements Serializable {
 	 * 0-required 1-optional 2-special
 	 */
 	private Byte requireType;
+	/**
+	 * if reference other structure
+	 **/
 	private String referenceStructureId;
 }

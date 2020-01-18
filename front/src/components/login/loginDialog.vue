@@ -8,7 +8,7 @@
                 <el-input v-model="user.loginName"/>
             </el-form-item>
             <el-form-item label="password" prop="password">
-                <el-input type="password" v-model="user.password" autocomplete="off" @keyup.enter.native="submitForm"/>
+                <el-input type="password" v-model="user.password" @keyup.enter.native="submitForm"/>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">

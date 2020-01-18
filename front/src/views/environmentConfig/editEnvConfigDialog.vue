@@ -3,14 +3,14 @@
                :close-on-click-modal="false">
         <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
                  style="margin:10px 60px 10px 0;width:auto">
-            <el-form-item label="name" label-width="100px" prop="itemKey">
-                <el-input autocomplete="off" v-model="form.name"/>
+            <el-form-item label="name" label-width="100px" prop="name">
+                <el-input v-model="form.name"/>
             </el-form-item>
-            <el-form-item label="desc" label-width="100px" prop="itemValue">
-                <el-input autocomplete="off" v-model="form.desc"/>
+            <el-form-item label="desc" label-width="100px" prop="desc">
+                <el-input v-model="form.desc"/>
             </el-form-item>
             <el-form-item label="frontUri" label-width="100px">
-                <el-input autocomplete="off" v-model="form.frontUri"/>
+                <el-input v-model="form.frontUri"/>
             </el-form-item>
         </el-form>
         <div slot="footer">
@@ -42,7 +42,7 @@
             return {
                 form_rules: {
                     name: [
-                        {required: true, message: '名称不能为空'}
+                        {required: true, message: 'please enter name'}
                     ],
                 }
             }

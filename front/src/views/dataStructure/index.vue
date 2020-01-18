@@ -12,7 +12,7 @@
                     <el-row>
                         <el-col :span="24">
                             <el-button size="mini" type="success" @click="addDataStructure">Add</el-button>
-                            <el-button size="mini" type="warning" @click="batchOperate">batch operate</el-button>
+                            <el-button size="mini" type="warning" @click="batchOperate">Batch Operate</el-button>
                         </el-col>
                     </el-row>
                 </template>
@@ -62,7 +62,14 @@
                 UTILS.findPage(this, CONSTANT.REQUEST_URL.STRUCTURE_FIND_PAGE);
             },
             addDataStructure() {
-
+                this.editDialog = {
+                    show: true,
+                    title: 'Add',
+                    url: CONSTANT.REQUEST_URL.STRUCTURE_ADD
+                };
+                this.form = {
+                    projectId: this.projectId
+                };
             },
             batchOperate() {
 

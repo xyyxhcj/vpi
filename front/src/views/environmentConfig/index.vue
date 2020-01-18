@@ -16,7 +16,7 @@
                     <el-row>
                         <el-col :span="24">
                             <el-button size="mini" type="success" @click="addEnvConfig">Add</el-button>
-                            <el-button size="mini" type="warning" @click="batchOperate">batch operate</el-button>
+                            <el-button size="mini" type="warning" @click="batchOperate">Batch Operate</el-button>
                         </el-col>
                     </el-row>
                 </template>

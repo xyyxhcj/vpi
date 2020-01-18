@@ -24,7 +24,7 @@
                 <template slot="header">
                     <el-button size="mini" type="success" @click="addProjectGroup">Add ProjectGroup</el-button>
                     <el-button size="mini" type="success" @click="addProject">Add Project</el-button>
-                    <el-button size="mini" type="warning" @click="batchOperate">batch operate</el-button>
+                    <el-button size="mini" type="warning" @click="batchOperate">Batch Operate</el-button>
                 </template>
                 <template slot-scope="scope" v-if="scope.row.createId===user.id">
                     <el-button size="mini" @click.native.stop="auth(scope.row)">Auth</el-button>

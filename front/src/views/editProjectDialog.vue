@@ -3,7 +3,7 @@
                :close-on-click-modal="false" center width="35%">
         <el-form :model="form" ref="form" label-width="120px" :rules="form_rules">
             <el-form-item label="name" prop="name">
-                <el-input autocomplete="off" v-model="form.name"/>
+                <el-input v-model="form.name"/>
             </el-form-item>
             <el-form-item label="projectType" prop="projectType">
                 <el-select v-model="form.projectType">
@@ -14,10 +14,10 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="projectVersion" prop="projectVersion">
-                <el-input autocomplete="off" v-model="form.projectVersion"/>
+                <el-input v-model="form.projectVersion"/>
             </el-form-item>
             <el-form-item label="desc" prop="desc">
-                <el-input autocomplete="off" v-model="form.desc"/>
+                <el-input v-model="form.desc"/>
             </el-form-item>
         </el-form>
         <div slot="footer">

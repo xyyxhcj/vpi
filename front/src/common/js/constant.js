@@ -35,6 +35,7 @@ export const CONSTANT = {
         DEFAULT_PROJECT_TYPE: 0,
         USER_SHOW_STYLE: '{userName} ({loginName})',
         ADMIN_LOGIN_NAME: 'admin',
+        DEFAULT_DATA_LIST_SIZE: 5,
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
@@ -65,6 +66,7 @@ export const CONSTANT = {
         API_ENV_EDIT: '/apiEnv/edit',
         API_ENV_FIND_LIST: '/apiEnv/findList',
 
+        STRUCTURE_ADD: '/structure/add',
         STRUCTURE_FIND_PAGE: '/structure/findPage',
 
     },
@@ -84,9 +86,6 @@ export const CONSTANT = {
     STATUS: {
         0: 'Enable', 1: 'Disable'
     },
-    READ: {
-        READ: 1, UNREAD: 0
-    },
     PROJECT_TYPE: {
         0: 'web', 1: 'app', 2: 'pc', 3: 'others'
     },
@@ -100,6 +99,40 @@ export const CONSTANT = {
         1: 'Admin',
         2: 'Read-Write',
         3: 'Read-Only',
-    }
+    },
+    PARAM_TYPE: {
+        STRING: 0,
+        FILE: 1,
+        JSON: 2,
+        NUMBER: 3,
+        DOUBLE: 4,
+        TIME: 5,
+        BOOLEAN: 6,
+        ARRAY: 7,
+        OBJECT: 8,
+        NULL: 9,
+    },
+    PARAM_TYPE_STR: {
+        0: 'string',
+        1: 'file',
+        2: 'json',
+        3: 'number',
+        4: 'double',
+        5: 'time',
+        6: 'boolean',
+        7: 'array',
+        8: 'object',
+        9: 'null',
+    },
+    REQUIRED_TYPE: {
+        REQUIRED: 0,
+        OPTIONAL: 1,
+        SPECIAL: 2,
+    },
+    REQUIRED_TYPE_STR: {
+        0: 'required',
+        1: 'optional',
+        2: 'special',
+    },
 };
 
