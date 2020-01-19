@@ -11,11 +11,18 @@
             </el-form-item>
         </el-form>
         <el-table :data="dataList" style="width: 100%" height="800px">
-            <el-table-column label="paramKey" width="280">
+            <el-table-column label="paramKey" width="280" ref="param-key-container">
                 <template slot-scope="scope">
-                    <div v-for="(item,index) in Array(scope.row.level)" :key="index"
-                          style="width: 10px;border-right: 1px;display:inline;">1{{item}}</div>
-                    <el-input v-model="scope.row.paramKey" style="display:inline;width:100px"/>
+                    <!--<el-button type="success" size="mini" icon="el-icon-minus" circle style="margin-right: 8px"/>-->
+                    <span :style="{padding:countKeyPadding(scope.row)}">
+                        <i class="el-icon-remove-outline" style="padding:10px 6px 10px 0"
+                           v-if="scope.row.subList.length>0 && !scope.row.hiddenSub"/>
+                        <span style="border-left:1px solid #d9d9d9;padding:10px 2px" :key="index"
+                              v-for="(item,index) in Array(scope.row.level)">
+                            <i class="el-icon-arrow-right"/>
+                        </span>
+                    </span>
+                    <el-input v-model="scope.row.paramKey" :style="{width:countKeyInputWidth(scope.row)}"/>
                 </template>
             </el-table-column>
             <el-table-column label="paramType" width="180">
@@ -107,6 +114,16 @@
             }
         },
         methods: {
+            countKeyPadding(row) {
+                return row.level > 0 && row.subList.length === 0 ? '0 0 0 20px' : '0';
+            },
+            countKeyInputWidth(row) {
+                let preWidth = row.level > 0 || row.subList.length > 0 ? 20 : 0;
+                for (let i = 0; i < row.level; i++) {
+                    preWidth += 19;
+                }
+                return this.$refs['param-key-container'].width - 20 - preWidth + 'px';
+            },
             addSubField(index, row) {
                 let item = JSON.parse(this.itemTemplateStr);
                 item.level = row.level + 1;
