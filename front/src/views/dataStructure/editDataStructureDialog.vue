@@ -24,7 +24,7 @@
                     </span>
                     <el-input v-model.trim="scope.row.paramKey" @input="paramKeyChange(scope.$index,scope.row)"
                               :style="{width:countKeyInputWidth(scope.row)}"/>
-                    <span v-if="scope.row.paramKeyIsEmpty" style="color: red">enter paramKey</span>
+                    <span v-if="scope.row.paramKeyIsEmpty" style="font-size: 12px;color: #F56C6C">enter paramKey</span>
                 </template>
             </el-table-column>
             <el-table-column label="paramType" width="180">
@@ -99,6 +99,7 @@
                 value: '',
                 level: 0,
                 subList: [],
+                paramKeyIsEmpty: false,
             });
             let dataList = Array();
             let rootList = Array();
@@ -194,21 +195,20 @@
             },
             submitForm() {
                 this.$refs['form'].validate((valid) => {
-                    if (valid) {
-                        if (this.checkParamKey()) {
-                            // todo  使页面强制刷新
-                            this.$forceUpdate();
+                    let checkParam = this.checkParamKey();
+                    if (!valid || checkParam) {
+                        if (checkParam) {
                             this.$message.error('params lose');
                             return;
                         }
-                        let copyRootList = JSON.parse(JSON.stringify(this.rootList));
-                        this.filterParams(copyRootList)
-                        this.$axios.post(this.dialog.url, this.form).then(resp => {
-                            UTILS.showResult(this, resp, function (obj) {
-                                obj.$emit('flush');
-                            });
-                        });
                     }
+                    let copyRootList = JSON.parse(JSON.stringify(this.rootList));
+                    this.filterParams(copyRootList);
+                    this.$axios.post(this.dialog.url, this.form).then(resp => {
+                        UTILS.showResult(this, resp, function (obj) {
+                            obj.$emit('flush');
+                        });
+                    });
                 });
             },
         },
