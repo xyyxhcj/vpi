@@ -3,7 +3,7 @@
                :close-on-click-modal="false" center width="35%" @submit.native.prevent>
         <el-form :model="form" ref="form" label-width="100px" :rules="form_rules">
             <el-form-item label="name" prop="name">
-                <el-input v-model="form.name"/>
+                <el-input v-model.trim="form.name"/>
             </el-form-item>
         </el-form>
         <div slot="footer">

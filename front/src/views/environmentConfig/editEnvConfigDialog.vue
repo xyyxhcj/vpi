@@ -4,13 +4,13 @@
         <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
                  style="margin:10px 60px 10px 0;width:auto">
             <el-form-item label="name" label-width="100px" prop="name">
-                <el-input v-model="form.name"/>
+                <el-input v-model.trim="form.name"/>
             </el-form-item>
             <el-form-item label="desc" label-width="100px" prop="desc">
-                <el-input v-model="form.desc"/>
+                <el-input v-model.trim="form.desc"/>
             </el-form-item>
             <el-form-item label="frontUri" label-width="100px">
-                <el-input v-model="form.frontUri"/>
+                <el-input v-model.trim="form.frontUri"/>
             </el-form-item>
         </el-form>
         <div slot="footer">

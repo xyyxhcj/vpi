@@ -4,10 +4,10 @@
         <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
                  style="margin:10px 60px 10px 0;width:auto">
             <el-form-item label="name" label-width="100px" prop="name">
-                <el-input v-model="form.name"/>
+                <el-input v-model.trim="form.name"/>
             </el-form-item>
             <el-form-item label="remark" label-width="100px" prop="remark">
-                <el-input v-model="form.remark"/>
+                <el-input v-model.trim="form.remark"/>
             </el-form-item>
         </el-form>
         <el-table :data="dataList" style="width: 100%" height="800px">
@@ -22,7 +22,9 @@
                             <i class="el-icon-arrow-right"/>
                         </span>
                     </span>
-                    <el-input v-model="scope.row.paramKey" :style="{width:countKeyInputWidth(scope.row)}"/>
+                    <el-input v-model.trim="scope.row.paramKey" @input="paramKeyChange(scope.$index,scope.row)"
+                              :style="{width:countKeyInputWidth(scope.row)}"/>
+                    <span v-if="scope.row.paramKeyIsEmpty" style="color: red">enter paramKey</span>
                 </template>
             </el-table-column>
             <el-table-column label="paramType" width="180">
@@ -45,12 +47,12 @@
             </el-table-column>
             <el-table-column label="paramDesc" width="180">
                 <template slot-scope="scope">
-                    <el-input v-model="scope.row.paramDesc"/>
+                    <el-input v-model.trim="scope.row.paramDesc"/>
                 </template>
             </el-table-column>
             <el-table-column label="value" width="180">
                 <template slot-scope="scope">
-                    <el-input v-model="scope.row.value"/>
+                    <el-input v-model.trim="scope.row.value"/>
                 </template>
             </el-table-column>
             <el-table-column label="operate">
@@ -99,8 +101,11 @@
                 subList: [],
             });
             let dataList = Array();
+            let rootList = Array();
             for (let i = 0; i < CONSTANT.CONFIG.DEFAULT_DATA_LIST_SIZE; i++) {
-                dataList.push(JSON.parse(itemTemplateStr));
+                let item = JSON.parse(itemTemplateStr);
+                dataList.push(item);
+                rootList.push(item);
             }
             return {
                 CONSTANT: CONSTANT,
@@ -111,6 +116,7 @@
                 },
                 itemTemplateStr: itemTemplateStr,
                 dataList: dataList,
+                rootList: rootList,
             }
         },
         methods: {
@@ -134,10 +140,69 @@
             del(index, row) {
 
             },
+            paramKeyChange(index, row) {
+                if (!row.parent && this.rootList[this.rootList.length - 1] === row) {
+                    // add root
+                    let item = JSON.parse(this.itemTemplateStr);
+                    this.rootList.push(item);
+                    this.dataList.splice(index + 1, 0, item);
+                } else if (row.parent && row.parent.subList[row.parent.subList.length - 1] === row) {
+                    // add subList
+                    let item = JSON.parse(this.itemTemplateStr);
+                    item.level = row.level;
+                    item.parent = row.parent;
+                    row.parent.subList.push(item);
+                    this.dataList.splice(index + 1, 0, item);
+                }
+                if (row.paramKey === '' && (row.paramDesc !== '' || row.value !== '')) {
+                    row.paramKeyIsEmpty = true;
+                } else {
+                    row.paramKeyIsEmpty = false;
+                }
+            },
+            filterParams(params) {
+                let needFilters = Array();
+                for (let i = params.length - 1; i >= 0; i--) {
+                    let item = params[i];
+                    if (item.paramKey === '') {
+                        params.splice(i, 1);
+                    } else if (item.subList.length > 0) {
+                        needFilters.push(item.subList);
+                    }
+                }
+                while (needFilters.length > 0) {
+                    let subList = needFilters.pop();
+                    for (let i = subList.length - 1; i >= 0; i--) {
+                        let item = subList[i];
+                        if (item.paramKey === '') {
+                            subList.splice(i, 1);
+                        } else if (item.subList.length > 0) {
+                            needFilters.push(item.subList);
+                        }
+                    }
+                }
+            },
+            checkParamKey() {
+                let paramKeyIsEmpty = false;
+                this.dataList.forEach(item => {
+                    if (item.paramKey === '' && (item.paramDesc !== '' || item.value !== '')) {
+                        paramKeyIsEmpty = true;
+                        item.paramKeyIsEmpty = true;
+                    }
+                });
+                return paramKeyIsEmpty;
+            },
             submitForm() {
-                console.log(this.dataList);
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
+                        if (this.checkParamKey()) {
+                            // todo  使页面强制刷新
+                            this.$forceUpdate();
+                            this.$message.error('params lose');
+                            return;
+                        }
+                        let copyRootList = JSON.parse(JSON.stringify(this.rootList));
+                        this.filterParams(copyRootList)
                         this.$axios.post(this.dialog.url, this.form).then(resp => {
                             UTILS.showResult(this, resp, function (obj) {
                                 obj.$emit('flush');
@@ -145,8 +210,17 @@
                         });
                     }
                 });
-            }
+            },
         },
+        /*        watch: {
+                    dataList: function (val, oldVal) {
+                        if (val.length === oldVal.length) {
+                            if (oldVal[val.length - 1].paramKey === '' && val[val.length - 1].paramKey !== '') {
+                                this.dataList.push()
+                            }
+                        }
+                    }
+                },*/
         created() {
         }
     };

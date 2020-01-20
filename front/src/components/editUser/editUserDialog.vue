@@ -3,19 +3,19 @@
                :close-on-click-modal="false" center width="35%">
         <el-form :model="form" ref="form" label-width="120px" :rules="form_rules">
             <el-form-item label="loginName" prop="loginName">
-                <el-input v-model="form.loginName"/>
+                <el-input v-model.trim="form.loginName"/>
             </el-form-item>
             <el-form-item label="password" prop="password">
-                <el-input v-model="form.password" type="password"/>
+                <el-input v-model.trim="form.password" type="password"/>
             </el-form-item>
             <el-form-item label="rePassword" prop="rePassword">
-                <el-input v-model="form.rePassword" type="password"/>
+                <el-input v-model.trim="form.rePassword" type="password"/>
             </el-form-item>
             <el-form-item label="userName" prop="userName">
-                <el-input v-model="form.userName"/>
+                <el-input v-model.trim="form.userName"/>
             </el-form-item>
             <el-form-item label="phone" prop="phone">
-                <el-input v-model="form.phone"/>
+                <el-input v-model.trim="form.phone"/>
             </el-form-item>
         </el-form>
         <div slot="footer">

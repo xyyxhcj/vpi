@@ -10,7 +10,7 @@
                     <el-row :gutter="11">
                         <el-col :span="8" style="margin-bottom: 5px">
                             <el-input
-                                    v-model="search" size="mini" placeholder="enter keyword search"/>
+                                    v-model.trim="search" size="mini" placeholder="enter keyword search"/>
                         </el-col>
                     </el-row>
                     <el-row>

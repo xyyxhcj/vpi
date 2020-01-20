@@ -5,10 +5,10 @@
             center>
         <el-form :model="user" status-icon ref="form" :rules="loginRules" label-width="100px">
             <el-form-item label="loginName" prop="loginName">
-                <el-input v-model="user.loginName"/>
+                <el-input v-model.trim="user.loginName"/>
             </el-form-item>
             <el-form-item label="password" prop="password">
-                <el-input type="password" v-model="user.password" @keyup.enter.native="submitForm"/>
+                <el-input type="password" v-model.trim="user.password" @keyup.enter.native="submitForm"/>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">

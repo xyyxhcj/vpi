@@ -3,10 +3,10 @@
                :close-on-click-modal="false" center width="35%">
         <el-form :model="form" ref="form" label-width="120px" :rules="form_rules">
             <el-form-item label="name" prop="name">
-                <el-input v-model="form.name"/>
+                <el-input v-model.trim="form.name"/>
             </el-form-item>
             <el-form-item label="projectType" prop="projectType">
-                <el-select v-model="form.projectType">
+                <el-select v-model.trim="form.projectType">
                     <el-option :label="CONSTANT.PROJECT_TYPE[0]" :value="0"/>
                     <el-option :label="CONSTANT.PROJECT_TYPE[1]" :value="1"/>
                     <el-option :label="CONSTANT.PROJECT_TYPE[2]" :value="2"/>
@@ -14,10 +14,10 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="projectVersion" prop="projectVersion">
-                <el-input v-model="form.projectVersion"/>
+                <el-input v-model.trim="form.projectVersion"/>
             </el-form-item>
             <el-form-item label="desc" prop="desc">
-                <el-input v-model="form.desc"/>
+                <el-input v-model.trim="form.desc"/>
             </el-form-item>
         </el-form>
         <div slot="footer">
