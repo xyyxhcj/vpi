@@ -10,13 +10,17 @@
                 <el-input v-model.trim="form.remark"/>
             </el-form-item>
         </el-form>
-        <el-table :data="dataList" style="width: 100%" height="800px">
+        <el-table :data="dataList" style="width: 100%" height="800px" :row-style="rowStyle">
+            <el-table-column type="index" width="40"/>
             <el-table-column label="paramKey" width="280" ref="param-key-container">
                 <template slot-scope="scope">
-                    <!--<el-button type="success" size="mini" icon="el-icon-minus" circle style="margin-right: 8px"/>-->
                     <span :style="{padding:countKeyPadding(scope.row)}">
-                        <i class="el-icon-remove-outline" style="padding:10px 6px 10px 0"
-                           v-if="scope.row.subList.length>0 && !scope.row.hiddenSub"/>
+                        <template v-if="scope.row.subList.length>0">
+                            <i v-if="scope.row.showSub!==false" class="el-icon-remove-outline"
+                               style="padding:10px 6px 10px 0" @click="hiddenSub(scope.row)"/>
+                            <i v-if="scope.row.showSub===false" class="el-icon-circle-plus-outline"
+                               style="padding:10px 6px 10px 0" @click="showSub(scope.row)"/>
+                        </template>
                         <span style="border-left:1px solid #d9d9d9;padding:10px 2px" :key="index"
                               v-for="(item,index) in Array(scope.row.level)">
                             <i class="el-icon-arrow-right"/>
@@ -100,6 +104,7 @@
                 level: 0,
                 subList: [],
                 paramKeyIsEmpty: false,
+                show: true,
             });
             let dataList = Array();
             let rootList = Array();
@@ -211,16 +216,32 @@
                     });
                 });
             },
-        },
-        /*        watch: {
-                    dataList: function (val, oldVal) {
-                        if (val.length === oldVal.length) {
-                            if (oldVal[val.length - 1].paramKey === '' && val[val.length - 1].paramKey !== '') {
-                                this.dataList.push()
-                            }
-                        }
+            rowStyle({row}) {
+                return {'display': row.show ? '' : 'none'};
+            },
+            hiddenSub(row) {
+                row.showSub = false;
+                let stack = row.subList.slice(0);
+                while (stack.length > 0) {
+                    let pop = stack.pop();
+                    pop.show = false;
+                    if (pop.subList && pop.subList.length > 0) {
+                        pop.subList.forEach(item => stack.push(item));
                     }
-                },*/
+                }
+            },
+            showSub(row) {
+                row.showSub = true;
+                let stack = row.subList.slice(0);
+                while (stack.length > 0) {
+                    let pop = stack.pop();
+                    pop.show = true;
+                    if (pop.showSub !== false && pop.subList && pop.subList.length > 0) {
+                        pop.subList.forEach(item => stack.push(item));
+                    }
+                }
+            },
+        },
         created() {
         }
     };
