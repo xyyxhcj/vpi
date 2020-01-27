@@ -145,7 +145,7 @@ public class StructureServiceImpl implements StructureService {
 	 * @param parent      parent
 	 * @param parentDto   parentDto
 	 * @author xyyxhcj@qq.com
-	 * @date 2019/12/9 11:34
+	 * @date 2019/12/19 11:34
 	 **/
 	private void collectSubs(final List<StructureDataDto> subDataList, final StructureData parent, final StructureDataDto parentDto) {
 		if (!parentDto.getSubList().isEmpty()) {

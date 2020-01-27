@@ -205,12 +205,11 @@
                         this.$message.error('params lose');
                         return;
                     }
-                    console.log(this.rootList);
                     let copyRootList = JSON.parse(JSON.stringify(this.rootList, function (key, value) {
-                        return key === 'parent' ? '' : value;
+                        return key === 'parent' ? null : value;
                     }));
                     this.filterParams(copyRootList);
-                    console.log(copyRootList);
+                    this.form.dataList = copyRootList;
                     this.$axios.post(this.dialog.url, this.form).then(resp => {
                         UTILS.showResult(this, resp, function (obj) {
                             obj.$emit('flush');
