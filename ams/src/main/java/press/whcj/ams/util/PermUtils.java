@@ -54,7 +54,7 @@ public class PermUtils {
 			ProjectUser projectUser = mongoTemplate.findOne(
 					new Query(Criteria.where(ColumnName.PROJECT_$ID).is(new ObjectId(projectId))
 							.and(ColumnName.USER_$ID).is(new ObjectId(operator.getId()))), ProjectUser.class);
-			if (projectUser == null || !Constant.UserType.READ.equals(projectUser.getUserType())) {
+			if (projectUser == null || Constant.UserType.READ.equals(projectUser.getUserType())) {
 				throw new ServiceException(ResultCode.PERMISSION_DENIED);
 			}
 		}

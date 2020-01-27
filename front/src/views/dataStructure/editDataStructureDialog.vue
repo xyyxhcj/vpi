@@ -202,13 +202,15 @@
                 this.$refs['form'].validate((valid) => {
                     let checkParam = this.checkParamKey();
                     if (!valid || checkParam) {
-                        if (checkParam) {
-                            this.$message.error('params lose');
-                            return;
-                        }
+                        this.$message.error('params lose');
+                        return;
                     }
-                    let copyRootList = JSON.parse(JSON.stringify(this.rootList));
+                    console.log(this.rootList);
+                    let copyRootList = JSON.parse(JSON.stringify(this.rootList, function (key, value) {
+                        return key === 'parent' ? '' : value;
+                    }));
                     this.filterParams(copyRootList);
+                    console.log(copyRootList);
                     this.$axios.post(this.dialog.url, this.form).then(resp => {
                         UTILS.showResult(this, resp, function (obj) {
                             obj.$emit('flush');
