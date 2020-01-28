@@ -152,20 +152,64 @@
                 this.dataList.splice(index + 1, 0, item);
             },
             del(index, row) {
-                if (row.subList.length > 0) {
-                    let rootIndex = this.rootList.indexOf(row);
-                    if (this.rootList.length > rootIndex) {
-
-                    }
-                    row.subList[row.subList.length-1];
-                    this.dataList.splice();
-                } else {
-                    this.dataList.splice(index, 1);
-                }
                 let parent = row.parent;
+                // remove from dataList,with subTree
+                // get same level next element
+                if (parent) {
+                    let curr = row;
+                    while (parent.parent && parent.subList.indexOf(curr) === parent.subList.length - 1) {
+                        curr = parent;
+                        parent = parent.parent;
+                    }
+                    if (!parent.parent) {
+                        let rootIndex = this.rootList.indexOf(curr);
+                        if (rootIndex === this.rootList.length - 1) {
+                            this.dataList.splice(index, this.dataList.length - index);
+                        } else {
+                            let nextIndex = this.dataList.indexOf(this.rootList[rootIndex + 1]);
+                            this.dataList.splice(index, nextIndex - index);
+                        }
+                    } else {
+                        let nextIndex = this.dataList.indexOf(parent.subList[parent.subList.indexOf(curr) + 1]);
+                        this.dataList.splice(index, nextIndex - index);
+                    }
+                } else {
+                    let rootIndex = this.rootList.indexOf(row);
+                    if (rootIndex === this.rootList.length - 1) {
+                        this.dataList.splice(index, this.dataList.length - index);
+                    } else {
+                        let nextIndex = this.dataList.indexOf(this.rootList[rootIndex + 1]);
+                        this.dataList.splice(index, nextIndex - index);
+                    }
+                }
+
+                // remove from tree
                 if (parent) {
                     parent.subList.splice(parent.subList.indexOf(row), 1);
+                } else {
+                    this.rootList.splice(this.rootList.indexOf(row), 1);
                 }
+                /*
+                                let rootIndex = this.rootList.indexOf(row);
+                                let needRemoveNum;
+                                if (this.rootList.length - 1 > rootIndex) {
+                                    // not last element, get next element index
+                                    let nextElement = this.rootList[rootIndex + 1];
+                                    let nextIndex = this.dataList.indexOf(nextElement);
+                                    needRemoveNum = nextIndex - index;
+                                    console.log(this.rootList);
+                                    console.log(rootIndex, nextIndex, index);
+                                } else {
+                                    // last element,remove after
+                                    needRemoveNum = this.dataList.length - rootIndex;
+                                }
+                                this.dataList.splice(index, needRemoveNum);
+                                this.rootList.splice(rootIndex, 1);
+                                let parent = row.parent;
+                                if (parent) {
+                                    parent.subList.splice(parent.subList.indexOf(row), 1);
+                                }
+                */
             },
             paramKeyChange(index, row) {
                 if (!row.parent && this.rootList[this.rootList.length - 1] === row) {
@@ -274,34 +318,29 @@
                         this.rootList.push(item);
                     }
                 } else {
-                    this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, this.form).then(resp => {
-                        if (UTILS.checkResp(resp)) {
-                            this.form = resp.data.data;
-                            this.rootList = this.form.dataList;
-                            let stack = this.rootList.slice();
-                            while (stack.length > 0) {
-                                let pop = stack.shift();
-                                pop.paramKeyIsEmpty = false;
-                                pop.show = true;
-                                if (!pop.parent) {
-                                    pop.level = 0;
-                                } else {
-                                    pop.level = pop.parent.level + 1;
-                                }
-                                this.dataList.push(pop);
-                                if (pop.subList.length > 0) {
-                                    for (let i = pop.subList.length - 1; i >= 0; i--) {
-                                        let item = pop.subList[i];
-                                        item.parent = pop;
-                                        stack.splice(0, 0, item);
-                                    }
-                                }
-                            }
-                            let item = JSON.parse(this.itemTemplateStr);
-                            this.dataList.push(item);
-                            this.rootList.push(item);
+                    this.rootList = this.form.dataList;
+                    let stack = this.rootList.slice();
+                    while (stack.length > 0) {
+                        let pop = stack.shift();
+                        pop.paramKeyIsEmpty = false;
+                        pop.show = true;
+                        if (!pop.parent) {
+                            pop.level = 0;
+                        } else {
+                            pop.level = pop.parent.level + 1;
                         }
-                    });
+                        this.dataList.push(pop);
+                        if (pop.subList.length > 0) {
+                            for (let i = pop.subList.length - 1; i >= 0; i--) {
+                                let item = pop.subList[i];
+                                item.parent = pop;
+                                stack.splice(0, 0, item);
+                            }
+                        }
+                    }
+                    let item = JSON.parse(this.itemTemplateStr);
+                    this.dataList.push(item);
+                    this.rootList.push(item);
                 }
             }
         },

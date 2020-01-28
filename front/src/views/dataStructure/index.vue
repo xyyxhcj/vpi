@@ -80,16 +80,14 @@
                     title: 'Edit',
                     url: CONSTANT.REQUEST_URL.STRUCTURE_EDIT
                 };
-                this.form = data;
-                this.$nextTick(() => {
-                    this.$refs['editDataStructure'].findDetail();
-                });
-                /*this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, data).then(resp => {
+                this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, data).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.form = resp.data.data;
-                        this.$refs['editDataStructure'].findDetail();
+                        this.$nextTick(() => {
+                            this.$refs['editDataStructure'].findDetail();
+                        });
                     }
-                });*/
+                });
             },
             showReference(data) {
 

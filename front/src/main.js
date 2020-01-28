@@ -1,8 +1,9 @@
-import Vue from 'vue'
+import 'default-passive-events';
+import Vue from 'vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import router from './router';
-import App from './App.vue'
+import App from './App.vue';
 import '../public/static/css/reset.styl';
 import store from './store';
 import Axios from './common/js/http';
