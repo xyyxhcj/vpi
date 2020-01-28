@@ -67,6 +67,8 @@ export const CONSTANT = {
         API_ENV_FIND_LIST: '/apiEnv/findList',
 
         STRUCTURE_ADD: '/structure/add',
+        STRUCTURE_EDIT: '/structure/edit',
+        STRUCTURE_FIND_DETAIL: '/structure/findDetail',
         STRUCTURE_FIND_PAGE: '/structure/findPage',
 
     },

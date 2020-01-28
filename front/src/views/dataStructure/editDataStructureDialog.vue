@@ -95,6 +95,21 @@
             form: Object,
         },
         data() {
+            /*            let itemTemplateStr = JSON.stringify({
+                            id: '5e2e62ade51e623912c740e4',
+                            structureId: '5e2e62ade51e623912c740e4',
+                            parentId: '5e2e62ade51e623912c740e4',
+                            referenceStructureId: null,
+                            paramKey: 'id',
+                            paramType: 0,
+                            requireType: 0,
+                            paramDesc: null,
+                            value: null,
+                            level: 0,
+                            subList: [],
+                            paramKeyIsEmpty: false,
+                            show: true,
+                        });*/
             let itemTemplateStr = JSON.stringify({
                 paramKey: '',
                 paramType: CONSTANT.PARAM_TYPE.STRING,
@@ -106,13 +121,6 @@
                 paramKeyIsEmpty: false,
                 show: true,
             });
-            let dataList = Array();
-            let rootList = Array();
-            for (let i = 0; i < CONSTANT.CONFIG.DEFAULT_DATA_LIST_SIZE; i++) {
-                let item = JSON.parse(itemTemplateStr);
-                dataList.push(item);
-                rootList.push(item);
-            }
             return {
                 CONSTANT: CONSTANT,
                 form_rules: {
@@ -121,9 +129,9 @@
                     ],
                 },
                 itemTemplateStr: itemTemplateStr,
-                dataList: dataList,
-                rootList: rootList,
-            }
+                dataList: [],
+                rootList: [],
+            };
         },
         methods: {
             countKeyPadding(row) {
@@ -144,7 +152,20 @@
                 this.dataList.splice(index + 1, 0, item);
             },
             del(index, row) {
+                if (row.subList.length > 0) {
+                    let rootIndex = this.rootList.indexOf(row);
+                    if (this.rootList.length > rootIndex) {
 
+                    }
+                    row.subList[row.subList.length-1];
+                    this.dataList.splice();
+                } else {
+                    this.dataList.splice(index, 1);
+                }
+                let parent = row.parent;
+                if (parent) {
+                    parent.subList.splice(parent.subList.indexOf(row), 1);
+                }
             },
             paramKeyChange(index, row) {
                 if (!row.parent && this.rootList[this.rootList.length - 1] === row) {
@@ -221,11 +242,12 @@
                 return {'display': row.show ? '' : 'none'};
             },
             hiddenSub(row) {
-                row.showSub = false;
-                let stack = row.subList.slice(0);
+                this.$set(row, 'showSub', false);
+                let stack = row.subList.slice();
                 while (stack.length > 0) {
-                    let pop = stack.pop();
+                    let pop = stack.shift();
                     pop.show = false;
+                    // this.$set(pop, 'show', false);
                     if (pop.subList && pop.subList.length > 0) {
                         pop.subList.forEach(item => stack.push(item));
                     }
@@ -233,17 +255,58 @@
             },
             showSub(row) {
                 row.showSub = true;
-                let stack = row.subList.slice(0);
+                let stack = row.subList.slice();
                 while (stack.length > 0) {
-                    let pop = stack.pop();
+                    let pop = stack.shift();
                     pop.show = true;
                     if (pop.showSub !== false && pop.subList && pop.subList.length > 0) {
                         pop.subList.forEach(item => stack.push(item));
                     }
                 }
             },
+            findDetail() {
+                this.rootList = [];
+                this.dataList = [];
+                if (this.form.id === undefined) {
+                    for (let i = 0; i < CONSTANT.CONFIG.DEFAULT_DATA_LIST_SIZE; i++) {
+                        let item = JSON.parse(this.itemTemplateStr);
+                        this.dataList.push(item);
+                        this.rootList.push(item);
+                    }
+                } else {
+                    this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, this.form).then(resp => {
+                        if (UTILS.checkResp(resp)) {
+                            this.form = resp.data.data;
+                            this.rootList = this.form.dataList;
+                            let stack = this.rootList.slice();
+                            while (stack.length > 0) {
+                                let pop = stack.shift();
+                                pop.paramKeyIsEmpty = false;
+                                pop.show = true;
+                                if (!pop.parent) {
+                                    pop.level = 0;
+                                } else {
+                                    pop.level = pop.parent.level + 1;
+                                }
+                                this.dataList.push(pop);
+                                if (pop.subList.length > 0) {
+                                    for (let i = pop.subList.length - 1; i >= 0; i--) {
+                                        let item = pop.subList[i];
+                                        item.parent = pop;
+                                        stack.splice(0, 0, item);
+                                    }
+                                }
+                            }
+                            let item = JSON.parse(this.itemTemplateStr);
+                            this.dataList.push(item);
+                            this.rootList.push(item);
+                        }
+                    });
+                }
+            }
         },
         created() {
+            this.findDetail();
         }
     };
 </script>

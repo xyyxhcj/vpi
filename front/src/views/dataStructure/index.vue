@@ -24,7 +24,7 @@
             </el-table-column>
         </el-table>
         <page-template :query="query" @flush="findPage"/>
-        <edit-data-structure-dialog :dialog="editDialog" :form="form" @flush="findPage"/>
+        <edit-data-structure-dialog :dialog="editDialog" :form="form" @flush="findPage" ref="editDataStructure"/>
     </div>
 </template>
 
@@ -75,7 +75,21 @@
 
             },
             editDataStructure(data) {
-
+                this.editDialog = {
+                    show: true,
+                    title: 'Edit',
+                    url: CONSTANT.REQUEST_URL.STRUCTURE_EDIT
+                };
+                this.form = data;
+                this.$nextTick(() => {
+                    this.$refs['editDataStructure'].findDetail();
+                });
+                /*this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, data).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.form = resp.data.data;
+                        this.$refs['editDataStructure'].findDetail();
+                    }
+                });*/
             },
             showReference(data) {
 
