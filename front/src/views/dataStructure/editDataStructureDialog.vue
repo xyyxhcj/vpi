@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
+    <el-dialog id="editDataStructureDialog" :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
                :close-on-click-modal="false" width="90%">
         <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
                  style="margin:10px 60px 10px 0;width:auto">
@@ -31,7 +31,7 @@
                     <span v-if="scope.row.paramKeyIsEmpty" style="font-size: 12px;color: #F56C6C">enter paramKey</span>
                 </template>
             </el-table-column>
-            <el-table-column label="paramType" width="180">
+            <el-table-column label="paramType" width="110">
                 <template slot-scope="scope">
                     <el-select :value="scope.row.paramType+''" filterable
                                @change="(selectedValue)=>scope.row.paramType=selectedValue">
@@ -40,7 +40,7 @@
                     </el-select>
                 </template>
             </el-table-column>
-            <el-table-column label="requireType" width="180">
+            <el-table-column label="requireType" width="125">
                 <template slot-scope="scope">
                     <el-select :value="scope.row.requireType+''"
                                @change="(selectedValue)=>scope.row.requireType=selectedValue">
@@ -95,21 +95,6 @@
             form: Object,
         },
         data() {
-            /*            let itemTemplateStr = JSON.stringify({
-                            id: '5e2e62ade51e623912c740e4',
-                            structureId: '5e2e62ade51e623912c740e4',
-                            parentId: '5e2e62ade51e623912c740e4',
-                            referenceStructureId: null,
-                            paramKey: 'id',
-                            paramType: 0,
-                            requireType: 0,
-                            paramDesc: null,
-                            value: null,
-                            level: 0,
-                            subList: [],
-                            paramKeyIsEmpty: false,
-                            show: true,
-                        });*/
             let itemTemplateStr = JSON.stringify({
                 paramKey: '',
                 paramType: CONSTANT.PARAM_TYPE.STRING,
@@ -161,17 +146,18 @@
                         curr = parent;
                         parent = parent.parent;
                     }
-                    if (!parent.parent) {
-                        let rootIndex = this.rootList.indexOf(curr);
+                    if (parent.subList.indexOf(curr) !== parent.subList.length - 1) {
+                        let nextIndex = this.dataList.indexOf(parent.subList[parent.subList.indexOf(curr) + 1]);
+                        this.dataList.splice(index, nextIndex - index);
+                    } else {
+                        let rootIndex = this.rootList.indexOf(parent);
                         if (rootIndex === this.rootList.length - 1) {
                             this.dataList.splice(index, this.dataList.length - index);
                         } else {
                             let nextIndex = this.dataList.indexOf(this.rootList[rootIndex + 1]);
                             this.dataList.splice(index, nextIndex - index);
                         }
-                    } else {
-                        let nextIndex = this.dataList.indexOf(parent.subList[parent.subList.indexOf(curr) + 1]);
-                        this.dataList.splice(index, nextIndex - index);
+
                     }
                 } else {
                     let rootIndex = this.rootList.indexOf(row);
@@ -182,34 +168,12 @@
                         this.dataList.splice(index, nextIndex - index);
                     }
                 }
-
                 // remove from tree
                 if (parent) {
                     parent.subList.splice(parent.subList.indexOf(row), 1);
                 } else {
                     this.rootList.splice(this.rootList.indexOf(row), 1);
                 }
-                /*
-                                let rootIndex = this.rootList.indexOf(row);
-                                let needRemoveNum;
-                                if (this.rootList.length - 1 > rootIndex) {
-                                    // not last element, get next element index
-                                    let nextElement = this.rootList[rootIndex + 1];
-                                    let nextIndex = this.dataList.indexOf(nextElement);
-                                    needRemoveNum = nextIndex - index;
-                                    console.log(this.rootList);
-                                    console.log(rootIndex, nextIndex, index);
-                                } else {
-                                    // last element,remove after
-                                    needRemoveNum = this.dataList.length - rootIndex;
-                                }
-                                this.dataList.splice(index, needRemoveNum);
-                                this.rootList.splice(rootIndex, 1);
-                                let parent = row.parent;
-                                if (parent) {
-                                    parent.subList.splice(parent.subList.indexOf(row), 1);
-                                }
-                */
             },
             paramKeyChange(index, row) {
                 if (!row.parent && this.rootList[this.rootList.length - 1] === row) {
@@ -225,11 +189,7 @@
                     row.parent.subList.push(item);
                     this.dataList.splice(index + 1, 0, item);
                 }
-                if (row.paramKey === '' && (row.paramDesc !== '' || row.value !== '')) {
-                    row.paramKeyIsEmpty = true;
-                } else {
-                    row.paramKeyIsEmpty = false;
-                }
+                row.paramKeyIsEmpty = row.paramKey === '' && (row.paramDesc !== '' || row.value !== '');
             },
             filterParams(params) {
                 let needFilters = Array();
@@ -350,5 +310,12 @@
     };
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus" scoped>
+<style lang="stylus" rel="stylesheet/stylus">
+    #editDataStructureDialog
+        min-width 1300px
+
+        .el-table td, .el-table th
+            padding 0
+        .cell
+            padding 0
 </style>

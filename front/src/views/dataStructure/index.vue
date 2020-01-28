@@ -1,11 +1,10 @@
 <template>
-    <div id="data-container">
+    <div id="data-container" style="min-width: 1250px">
         <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}">
-            <el-table-column label="name" prop="name"/>
-            <el-table-column label="remark" prop="remark"/>
-            <el-table-column label="type" prop="type"/>
-            <el-table-column label="createName" prop="createName"/>
-            <el-table-column label="updateTime" prop="updateTime"/>
+            <el-table-column label="name" prop="name" width="200"/>
+            <el-table-column label="remark" prop="remark" width="200"/>
+            <el-table-column label="createName" prop="createName" width="150"/>
+            <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
             <el-table-column>
                 <!-- eslint-disable-next-line vue/no-unused-vars -->
                 <template slot="header" slot-scope="scope">
@@ -57,6 +56,9 @@
             };
         },
         methods: {
+            dateFormat(time) {
+                return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
+            },
             findPage() {
                 this.query.projectId = this.projectId;
                 UTILS.findPage(this, CONSTANT.REQUEST_URL.STRUCTURE_FIND_PAGE);
