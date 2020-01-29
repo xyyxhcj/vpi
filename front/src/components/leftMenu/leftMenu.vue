@@ -2,7 +2,7 @@
     <el-menu class="aside-common"
              :collapse="isCollapse" show-timeout="100" hide-timeout="10"
              :default-active="$route.path">
-        <div class="aside-collapse">
+        <div class="aside-collapse" ref="aside-collapse">
             <el-menu-item type="text" @click="isCollapse=!isCollapse"
                           class="reset-padding-left">
                 <i :class="isCollapse?'el-icon-s-unfold':'el-icon-s-fold'"/>
@@ -33,7 +33,21 @@
                 MENUS: CONSTANT.MENUS
             }
         },
-        computed: {}
+        mounted() {
+            let resizeTimer = null;
+            let $this = this;
+            window.onresize = function () {
+                if (resizeTimer) {
+                    clearTimeout(resizeTimer)
+                }
+                resizeTimer = setTimeout(function () {
+                    if (!$this.isCollapse && $this.$refs['aside-collapse'].offsetWidth < 185) {
+                        $this.isCollapse = true;
+                    }
+                }, 400);
+            }
+        },
+        computed: {},
     };
 </script>
 

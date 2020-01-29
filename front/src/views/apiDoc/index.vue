@@ -6,18 +6,18 @@
                     <el-button type="primary" icon="el-icon-plus" size="mini" @click="addSubGroup(null)">group
                     </el-button>
                 </div>
-                <div class="select-all">all</div>
+                <div class="select-all" @click="selectGroup({id:''})">all</div>
                 <el-tree
                         :data="groups"
                         :props="{label:'name',children:'childList'}"
                         node-key="id"
-                        default-expand-all
+                        default-expand-all @node-click="selectGroup"
                         draggable>
                     <span class="api-group-node" slot-scope="{node,data}">
                         <span style="float:left;padding-left: 1px">
                             <template v-if="node.label.length>15-data.getLevel(data)*3">
-                                <el-popover popper-class="api-doc-popover" placement="top" width="90" trigger="hover">
-                                    <span>{{node.label}}</span>
+                                <el-popover popper-class="api-doc-popover" placement="top-end" :close-delay="0" trigger="hover">
+                                    <span style="padding:0;font-size:5px">{{node.label}}</span>
                                     <span slot="reference">
                                         {{ node.label.substr(0,15-data.getLevel(data)*3)+'...' }}
                                     </span>
@@ -27,19 +27,53 @@
                                 {{node.label}}
                             </template>
                         </span>
-                        <el-dropdown @command="groupCommand" style="float:right;padding-right: 5px">
-                        <span class="el-dropdown-link">
-                            <i class="el-icon-arrow-down el-icon-more"/>
-                        </span>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item :command="()=>addSubGroup(data)">add sub group</el-dropdown-item>
-                            <el-dropdown-item :command="()=>editSubGroup(data)">edit</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
+                        <el-dropdown @command="command" style="float:right;padding-right: 5px">
+                            <span class="el-dropdown-link">
+                                <i class="el-icon-arrow-down el-icon-more"/>
+                            </span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item :command="()=>addSubGroup(data)">add sub group</el-dropdown-item>
+                                <el-dropdown-item :command="()=>editSubGroup(data)">edit</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
                     </span>
                 </el-tree>
             </el-aside>
-            <el-main>Main</el-main>
+            <el-main>
+                <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="895">
+                    <el-table-column label="name" prop="name" width="200"/>
+                    <el-table-column label="apiUri" prop="apiUri" width="200"/>
+                    <el-table-column label="createName" prop="createName" width="150"/>
+                    <el-table-column label="updateName" prop="updateName" width="150"/>
+                    <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
+                    <el-table-column>
+                        <!-- eslint-disable-next-line vue/no-unused-vars -->
+                        <template slot="header" slot-scope="scope">
+                            <el-row>
+                                <el-col :span="24">
+                                    <el-button size="mini" type="success" @click="addApi">Add</el-button>
+                                    <el-button size="mini" type="warning" @click="batchOperate">Batch Operate
+                                    </el-button>
+                                </el-col>
+                            </el-row>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-button size="mini" @click="editApi(scope.row)">Edit</el-button>
+                            <el-button size="mini" @click="editApiByTag(scope.row)">New Tag</el-button>
+                            <el-dropdown @command="command" style="padding-left: 10px">
+                            <span class="el-dropdown-link">
+                                <i class="el-icon-arrow-down el-icon-more"/>
+                            </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item :command="()=>copyApi(scope.row)">Copy</el-dropdown-item>
+                                    <el-dropdown-item :command="()=>delApi(scope.row)" style="color: red">Delete</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <page-template :query="query" @flush="findApiPage"/>
+            </el-main>
         </el-container>
         <edit-api-group-dialog :dialog="editApiGroupDialog" :form="editApiGroupForm" @flush="findApiGroups"/>
     </div>
@@ -49,10 +83,11 @@
     import {CONSTANT} from "../../common/js/constant";
     import {UTILS} from "../../common/js/utils";
     import EditApiGroupDialog from "./editApiGroupDialog";
+    import PageTemplate from "../../components/pageTemplate/pageTemplate";
 
     export default {
         name: 'index',
-        components: {EditApiGroupDialog},
+        components: {PageTemplate, EditApiGroupDialog},
         data() {
             return {
                 projectId: this.$store.getters.selectedProjectId,
@@ -63,13 +98,26 @@
                     url: ''
                 },
                 editApiGroupForm: {},
+                dataList: [],
+                query: {
+                    page: {
+                        current: 1,
+                        size: CONSTANT.CONFIG.PAGE_SIZE_DEFAULT,
+                        total: 0,
+                    }
+                },
+                selectedGroupId: '',
             }
         },
         methods: {
-            selectGroup(apiGroupId, path) {
-                console.log(apiGroupId);
+            dateFormat(time) {
+                return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
             },
-            groupCommand(func) {
+            selectGroup(apiGroup) {
+                this.selectedGroupId = apiGroup.id;
+                this.findApiPage();
+            },
+            command(func) {
                 func();
             },
             addSubGroup(data) {
@@ -117,6 +165,29 @@
                     }
                 });
             },
+            findApiPage() {
+                this.query.projectId = this.projectId;
+                this.query.groupId = this.selectedGroupId;
+                UTILS.findPage(this, CONSTANT.REQUEST_URL.API_FIND_PAGE);
+            },
+            addApi() {
+
+            },
+            batchOperate() {
+
+            },
+            editApi(api) {
+
+            },
+            editApiByTag(api) {
+
+            },
+            copyApi(api) {
+
+            },
+            delApi(api) {
+
+            }
         },
         created() {
             this.findApiGroups();
@@ -128,8 +199,11 @@
     #api-doc-container
         border 1px solid #d9d9d9
 
+        .select-all
+            cursor pointer
+
         .el-aside
-            background-color #D3DCE6
+            background-color #fff
             color #333
             text-align center
             line-height 26px
@@ -144,6 +218,7 @@
 
         .el-tree-node__expand-icon
             padding 1px
+
         .el-main
-            padding 5px
+            padding 0 0 0 5px
 </style>

@@ -1,5 +1,4 @@
 <template>
-
     <el-container id="app">
         <left-menu/>
         <el-container>

@@ -74,6 +74,8 @@ export const CONSTANT = {
         API_GROUP_ADD: '/apiGroup/add',
         API_GROUP_EDIT: '/apiGroup/edit',
         API_GROUP_FIND_LIST: '/apiGroup/findList',
+
+        API_FIND_PAGE: '/api/findPage',
     },
     CLOSE_LOADING_URL: [
         '/system/sysUserWechat/loginAsync',
