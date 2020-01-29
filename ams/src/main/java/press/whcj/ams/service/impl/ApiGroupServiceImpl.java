@@ -44,6 +44,10 @@ public class ApiGroupServiceImpl implements ApiGroupService {
 			apiGroup = new ApiGroup();
 		}
 		FastUtils.copyProperties(apiGroupDto, apiGroup);
+		if (apiGroupDto.getParentId() != null) {
+			// maybe = ''
+			apiGroup.setParentId(apiGroupDto.getParentId());
+		}
 		synchronized (projectId.intern()) {
 			FastUtils.checkNameAndSave(apiGroupDto.getId(), isUpdate, name, apiGroup, mongoTemplate, Criteria.where(ColumnName.PROJECT_ID).is(projectId));
 		}
