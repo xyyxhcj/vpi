@@ -3,7 +3,7 @@
              :collapse="isCollapse" show-timeout="100" hide-timeout="10"
              :default-active="$route.path">
         <div class="aside-collapse">
-            <el-menu-item type="text" @click="isCollapse=!isCollapse" style="width: 100%"
+            <el-menu-item type="text" @click="isCollapse=!isCollapse"
                           class="reset-padding-left">
                 <i :class="isCollapse?'el-icon-s-unfold':'el-icon-s-fold'"/>
                 <span slot="title">{{isCollapse?'unfold':'collapse'}}</span>

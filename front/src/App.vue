@@ -161,48 +161,5 @@
         padding 9px
         background-color rgb(245, 245, 245)
 
-    /*margin-top 60px*/
-
-    /*  .el-header
-          background-color #B3C0D1
-          color #333
-          line-height 60px
-          text-align right
-          font-size 12px
-
-      .aside-common
-          !*margin 0*!
-          background-color rgb(238, 241, 246)
-          color #333
-
-          .aside-menu
-              height 'calc(100% - %s)' % 40px
-
-          .aside-footer
-              position absolute
-              bottom 0
-              left 0
-              height 40px
-              line-height 41px
-              border-top 1px solid #d9d9d9
-              overflow hidden
-
-      !*position absolute
-      bottom 0
-      left 0
-      height 40px
-      line-height 41px
-      border-top 1px solid #d9d9d9
-      text-indent 12px
-      width 100%
-      overflow hidden*!
-
-      .aside-collapse
-          width 50px
-
-      .aside-unfold
-          width 240px*/
-
-
 </style>
 

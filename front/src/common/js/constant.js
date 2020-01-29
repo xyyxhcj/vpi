@@ -71,6 +71,9 @@ export const CONSTANT = {
         STRUCTURE_FIND_DETAIL: '/structure/findDetail',
         STRUCTURE_FIND_PAGE: '/structure/findPage',
 
+        API_GROUP_ADD: '/apiGroup/add',
+        API_GROUP_EDIT: '/apiGroup/edit',
+        API_GROUP_FIND_LIST: '/apiGroup/findList',
     },
     CLOSE_LOADING_URL: [
         '/system/sysUserWechat/loginAsync',
