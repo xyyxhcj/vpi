@@ -1,30 +1,27 @@
 <template>
     <div id="api-doc-container" style="min-width:1250px">
         <el-container>
-            <el-aside width="150px" style="font-size:5px">
+            <el-aside width="150px" style="font-size:6px">
                 <div class="api-group-header">
                     <el-button type="primary" icon="el-icon-plus" size="mini" @click="addSubGroup(null)">group
                     </el-button>
                 </div>
                 <div class="select-all" @click="selectGroup({id:''})">all</div>
-                <el-tree
-                        :data="groups"
-                        :props="{label:'name',children:'childList'}"
-                        node-key="id"
-                        default-expand-all @node-click="selectGroup"
-                        draggable>
+                <el-tree :data="groups" :props="{label:'name',children:'childList'}"
+                         node-key="id" default-expand-all @node-click="selectGroup"
+                         draggable @node-drop="moveNode">
                     <span class="api-group-node" slot-scope="{node,data}">
                         <span style="float:left;padding-left: 1px">
-                            <template v-if="node.label.length>15-data.getLevel(data)*3">
+                            <template v-if="node.label.length>14-data.getLevel(data)*3">
                                 <el-popover popper-class="api-doc-popover" placement="top-end" :close-delay="0"
                                             trigger="hover">
                                     <span style="padding:0;font-size:5px">{{node.label}}</span>
                                     <span slot="reference">
-                                        {{ node.label.substr(0,15-data.getLevel(data)*3)+'...' }}
+                                        {{ node.label.substr(0,14-data.getLevel(data)*3)+'...' }}
                                     </span>
                                 </el-popover>
                             </template>
-                            <template v-if="node.label.length<=15-data.getLevel(data)*3">
+                            <template v-if="node.label.length<=14-data.getLevel(data)*3">
                                 {{node.label}}
                             </template>
                         </span>
@@ -126,6 +123,7 @@
                 this.editApiGroupForm = {
                     name: '',
                     projectId: this.projectId,
+                    parentId: '',
                 };
                 if (data) {
                     this.editApiGroupForm.parentId = data.id;
@@ -155,8 +153,9 @@
                         for (let i = all.length - 1; i >= 0; i--) {
                             let item = all[i];
                             item.getLevel =
-                                (item) => item.parentId ? dict[item.parentId].getLevel(dict[item.parentId]) + 1 : 0;
-                            if (item.parentId === null) {
+                                (item) => (item.parentId && item.parentId !== '') ?
+                                    dict[item.parentId].getLevel(dict[item.parentId]) + 1 : 0;
+                            if (!item.parentId || item.parentId === '') {
                                 this.groups.splice(0, 0, item);
                             } else if (dict[item.parentId].childList) {
                                 dict[item.parentId].childList.splice(0, 0, item);
@@ -174,6 +173,27 @@
             },
             addApi() {
                 this.$router.push('/api/edit');
+            },
+            moveNode(before, after, inner) {
+                let parentId = '';
+                switch (inner) {
+                    case 'before':
+                        parentId = after.data.parentId;
+                        break;
+                    case 'inner':
+                    case 'after':
+                        parentId = after.data.id;
+                        break;
+                    default:
+                }
+                if (parentId !== before.data.parentId) {
+                    before.data.parentId = parentId;
+                    this.$axios.post(CONSTANT.REQUEST_URL.API_GROUP_EDIT, before.data).then(resp => {
+                        if (UTILS.checkResp(resp)) {
+                            this.findApiGroups();
+                        }
+                    });
+                }
             },
             batchOperate() {
 

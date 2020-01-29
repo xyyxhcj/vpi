@@ -47,6 +47,10 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
 			projectGroup = new ProjectGroup();
 		}
 		FastUtils.copyProperties(projectGroupDto, projectGroup);
+		if (projectGroupDto.getParentId() != null) {
+			// maybe = ''
+			projectGroup.setParentId(projectGroupDto.getParentId());
+		}
 		synchronized (operatorId.intern()) {
 			FastUtils.checkNameAndSave(projectGroupDto.getId(), isUpdate, name, projectGroup, mongoTemplate, Criteria.where(ColumnName.CREATE_$ID).is(new ObjectId(operatorId)));
 		}
