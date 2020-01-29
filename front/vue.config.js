@@ -51,12 +51,12 @@ module.exports = {
                     '^/api/system': ''
                 }
             },*/
-            '/api/': {
+            '/vpi/': {
                 target: HOST_URL[profilesActive],
                 ws: true,
                 changOrigin: true,
                 pathRewrite: {
-                    '^/api/': '/'
+                    '^/vpi/': '/'
                 }
             }
         },

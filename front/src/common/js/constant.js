@@ -1,5 +1,5 @@
 export const CONSTANT = {
-    BASE_URL: '/api',
+    BASE_URL: '/vpi',
     MENUS: [
         {
             path: '/',
@@ -25,6 +25,24 @@ export const CONSTANT = {
             component: () => import('@/views/dataStructure/index'),
             meta: {title: 'Data Structure', icon: 'el-icon-coin'}
         },
+        {
+            path: '/api',
+            name: 'api',
+            component: () => import('@/views/api/index'),
+            notMenu: true,
+            children: [
+                {
+                    path: '/api/edit',
+                    name: 'api/edit',
+                    component: () => import('@/views/api/edit'),
+                },
+                {
+                    path: '/api/detail',
+                    name: 'api/detail',
+                    component: () => import('@/views/api/detail'),
+                },
+            ],
+        }
     ],
     CONFIG: {
         PAGE_SIZE_DEFAULT: 20,

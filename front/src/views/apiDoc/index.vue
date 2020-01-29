@@ -16,7 +16,8 @@
                     <span class="api-group-node" slot-scope="{node,data}">
                         <span style="float:left;padding-left: 1px">
                             <template v-if="node.label.length>15-data.getLevel(data)*3">
-                                <el-popover popper-class="api-doc-popover" placement="top-end" :close-delay="0" trigger="hover">
+                                <el-popover popper-class="api-doc-popover" placement="top-end" :close-delay="0"
+                                            trigger="hover">
                                     <span style="padding:0;font-size:5px">{{node.label}}</span>
                                     <span slot="reference">
                                         {{ node.label.substr(0,15-data.getLevel(data)*3)+'...' }}
@@ -66,7 +67,8 @@
                             </span>
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item :command="()=>copyApi(scope.row)">Copy</el-dropdown-item>
-                                    <el-dropdown-item :command="()=>delApi(scope.row)" style="color: red">Delete</el-dropdown-item>
+                                    <el-dropdown-item :command="()=>delApi(scope.row)" style="color: red">Delete
+                                    </el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </template>
@@ -171,7 +173,7 @@
                 UTILS.findPage(this, CONSTANT.REQUEST_URL.API_FIND_PAGE);
             },
             addApi() {
-
+                this.$router.push('/api/edit');
             },
             batchOperate() {
 

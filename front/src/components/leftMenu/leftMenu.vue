@@ -11,10 +11,10 @@
         </div>
         <div>
             <template v-for="menu in MENUS">
-                <router-link :to="menu.path" :key="menu.path" v-if="!menu.noMenu">
+                <router-link :to="menu.path" :key="menu.path" v-if="menu.meta&&menu.meta.title&&!menu.noMenu">
                     <el-menu-item :index="menu.path" class="reset-padding-left">
                         <i :class="menu.meta.icon" aria-hidden="true"/>
-                        <span v-if="menu.meta&&menu.meta.title" slot="title">{{menu.meta.title}}</span>
+                        <span slot="title">{{menu.meta.title}}</span>
                     </el-menu-item>
                 </router-link>
             </template>

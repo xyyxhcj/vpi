@@ -4,10 +4,10 @@
         <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
                  style="margin:10px 60px 10px 0;width:auto">
             <el-form-item label="name" label-width="100px" prop="name">
-                <el-input v-model.trim="form.name"/>
+                <el-input v-model.trim="form.name" size="mini"/>
             </el-form-item>
             <el-form-item label="remark" label-width="100px" prop="remark">
-                <el-input v-model.trim="form.remark"/>
+                <el-input v-model.trim="form.remark" size="mini"/>
             </el-form-item>
         </el-form>
         <el-table :data="dataList" style="width: 100%" height="800px" :row-style="rowStyle">
@@ -17,9 +17,9 @@
                     <span :style="{padding:countKeyPadding(scope.row)}">
                         <template v-if="scope.row.subList.length>0">
                             <i v-if="scope.row.showSub!==false" class="el-icon-remove-outline"
-                               style="padding:10px 6px 10px 0" @click="hiddenSub(scope.row)"/>
+                               style="padding:5px 6px 5px 0" @click="hiddenSub(scope.row)"/>
                             <i v-if="scope.row.showSub===false" class="el-icon-circle-plus-outline"
-                               style="padding:10px 6px 10px 0" @click="showSub(scope.row)"/>
+                               style="padding:5px 6px 5px 0" @click="showSub(scope.row)"/>
                         </template>
                         <span style="border-left:1px solid #d9d9d9;padding:10px 2px" :key="index"
                               v-for="(item,index) in Array(scope.row.level)">
@@ -27,13 +27,13 @@
                         </span>
                     </span>
                     <el-input v-model.trim="scope.row.paramKey" @input="paramKeyChange(scope.$index,scope.row)"
-                              :style="{width:countKeyInputWidth(scope.row)}"/>
+                              :style="{width:countKeyInputWidth(scope.row)}" size="mini"/>
                     <span v-if="scope.row.paramKeyIsEmpty" style="font-size: 12px;color: #F56C6C">enter paramKey</span>
                 </template>
             </el-table-column>
             <el-table-column label="paramType" width="110">
                 <template slot-scope="scope">
-                    <el-select :value="scope.row.paramType+''" filterable
+                    <el-select :value="scope.row.paramType+''" filterable size="mini"
                                @change="(selectedValue)=>scope.row.paramType=selectedValue">
                         <el-option v-for="key in Object.keys(CONSTANT.PARAM_TYPE_STR)"
                                    :key="key" :label="CONSTANT.PARAM_TYPE_STR[key]" :value="key"/>
@@ -42,7 +42,7 @@
             </el-table-column>
             <el-table-column label="requireType" width="125">
                 <template slot-scope="scope">
-                    <el-select :value="scope.row.requireType+''"
+                    <el-select :value="scope.row.requireType+''" size="mini"
                                @change="(selectedValue)=>scope.row.requireType=selectedValue">
                         <el-option v-for="key in Object.keys(CONSTANT.REQUIRED_TYPE_STR)"
                                    :key="key" :label="CONSTANT.REQUIRED_TYPE_STR[key]" :value="key"/>
@@ -51,12 +51,12 @@
             </el-table-column>
             <el-table-column label="paramDesc" width="180">
                 <template slot-scope="scope">
-                    <el-input v-model.trim="scope.row.paramDesc"/>
+                    <el-input v-model.trim="scope.row.paramDesc" size="mini"/>
                 </template>
             </el-table-column>
             <el-table-column label="value" width="180">
                 <template slot-scope="scope">
-                    <el-input v-model.trim="scope.row.value"/>
+                    <el-input v-model.trim="scope.row.value" size="mini"/>
                 </template>
             </el-table-column>
             <el-table-column label="operate">

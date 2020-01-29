@@ -5,7 +5,14 @@
             <el-header class="header-common">
                 <el-row>
                     <el-col :span="10">
-                        <div class="project-path">{{$route.name}} > myTest</div>
+                        <div>
+                            <div class="project-path">
+                                <span style="margin-right: 15px">{{$route.name}} > myTest</span>
+                                <el-link v-if="$route.path.startsWith('/api/')" icon="el-icon-refresh-left"
+                                         @click="$router.push('/apiDoc')">Go Back
+                                </el-link>
+                            </div>
+                        </div>
                     </el-col>
                     <el-col :span="4">
                         <div class="project-name">
@@ -136,7 +143,7 @@
 
         .project-path
             line-height 20px
-            margin 5px
+            margin 0
             text-align left
 
         .project-name
@@ -152,6 +159,7 @@
         .user-info
             line-height 28px
             text-align right
+
             .add-user-icon
                 padding-right 10px
                 color green
