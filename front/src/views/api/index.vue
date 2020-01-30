@@ -3,7 +3,7 @@
         <el-header height="35px" style="padding:3px 5px;;text-align: left;line-height: 25px;background-color: #f5f5f5">
             <template v-if="$route.path==='/api/edit'">
                 <el-button type="success" size="mini">Save</el-button>
-                <el-button size="mini">Cancel</el-button>
+                <el-button size="mini" @click="$router.go(-1)">Cancel</el-button>
             </template>
             <template v-if="$route.path==='/api/detail'">
                 <el-link>Edit</el-link>

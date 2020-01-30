@@ -159,5 +159,19 @@ export const CONSTANT = {
         1: 'optional',
         2: 'special',
     },
+    REQUEST_TYPE: {
+        0: 'POST', 1: 'GET',
+    },
+    API_STATUS: {
+        0: 'enable',
+        1: 'maintaining',
+        2: 'deprecated',
+        3: 'pending',
+        4: 'plan',
+        5: 'develop',
+        6: 'test',
+        7: 'docking',
+        8: 'bug',
+    }
 };
 
