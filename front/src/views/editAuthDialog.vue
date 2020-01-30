@@ -66,7 +66,7 @@
         },
         data() {
             return {
-                CONSTANT: CONSTANT,
+                CONSTANT,
                 projectUserQuery: {
                     projectId: '',
                     userType: CONSTANT.AUTH_ROLE.ALL,

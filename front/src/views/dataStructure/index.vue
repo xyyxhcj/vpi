@@ -23,7 +23,8 @@
             </el-table-column>
         </el-table>
         <page-template :query="query" @flush="findPage"/>
-        <edit-data-structure-dialog :dialog="editDialog" :form="form" @flush="findPage" ref="editDataStructure"/>
+        <edit-data-structure-dialog :dialog="editDialog" :form="form" @flush="findPage" ref="editDataStructure"
+                                    :data-list="form.dataList" :root-list="form.rootList"/>
     </div>
 </template>
 
@@ -64,14 +65,17 @@
                 UTILS.findPage(this, CONSTANT.REQUEST_URL.STRUCTURE_FIND_PAGE);
             },
             addDataStructure() {
+                this.form = {
+                    projectId: this.projectId,
+                };
                 this.editDialog = {
                     show: true,
                     title: 'Add',
                     url: CONSTANT.REQUEST_URL.STRUCTURE_ADD
                 };
-                this.form = {
-                    projectId: this.projectId
-                };
+                this.$nextTick(() => {
+                    this.$refs['editDataStructure'].init();
+                });
             },
             batchOperate() {
 
@@ -86,7 +90,7 @@
                     if (UTILS.checkResp(resp)) {
                         this.form = resp.data.data;
                         this.$nextTick(() => {
-                            this.$refs['editDataStructure'].findDetail();
+                            this.$refs['editDataStructure'].init();
                         });
                     }
                 });

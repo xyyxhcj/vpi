@@ -53,7 +53,7 @@ export const CONSTANT = {
         DEFAULT_PROJECT_TYPE: 0,
         USER_SHOW_STYLE: '{userName} ({loginName})',
         ADMIN_LOGIN_NAME: 'admin',
-        DEFAULT_DATA_LIST_SIZE: 5,
+        DEFAULT_DATA_LIST_SIZE: 3,
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
@@ -172,6 +172,20 @@ export const CONSTANT = {
         6: 'test',
         7: 'docking',
         8: 'bug',
-    }
+    },
+    REQUEST_PARAM_TYPE: {
+        0: 'json', 1: 'form',
+    },
+    ITEM_TEMPLATE: {
+        paramKey: '',
+        paramType: 0,
+        requireType: 0,
+        paramDesc: '',
+        value: '',
+        level: 0,
+        subList: [],
+        paramKeyIsEmpty: false,
+        show: true,
+    },
 };
 

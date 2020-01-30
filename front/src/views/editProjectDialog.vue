@@ -48,7 +48,7 @@
         },
         data() {
             return {
-                CONSTANT: CONSTANT,
+                CONSTANT,
                 form_rules: {
                     name: [
                         {required: true, message: 'enter name'}

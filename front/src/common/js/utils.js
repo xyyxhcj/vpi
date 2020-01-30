@@ -196,11 +196,33 @@ export const UTILS = {
                 obj.data = resp.data.data;
             } else {
                 obj.$message({
-                    message: resp.data ? resp.data.message : '网络错误',
+                    message: resp.data ? resp.data.message : 'connect fail',
                     type: 'error'
                 });
             }
         });
+    },
+    filterEmptyParams(params) {
+        let needFilters = Array();
+        for (let i = params.length - 1; i >= 0; i--) {
+            let item = params[i];
+            if (item.paramKey === '') {
+                params.splice(i, 1);
+            } else if (item.subList.length > 0) {
+                needFilters.push(item.subList);
+            }
+        }
+        while (needFilters.length > 0) {
+            let subList = needFilters.pop();
+            for (let i = subList.length - 1; i >= 0; i--) {
+                let item = subList[i];
+                if (item.paramKey === '') {
+                    subList.splice(i, 1);
+                } else if (item.subList.length > 0) {
+                    needFilters.push(item.subList);
+                }
+            }
+        }
     },
     checkAuth: function (obj, permissionId) {
         return this.contains(obj.btnList, permissionId, function (btn, element) {

@@ -42,7 +42,7 @@
         data() {
             return {
                 user: this.$store.getters.user,
-                CONSTANT: CONSTANT,
+                CONSTANT,
                 dataList: [],
                 query: {
                     page: {

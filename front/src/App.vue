@@ -67,7 +67,7 @@
         components: {EditUserDialog, LoginDialog, leftMenu},
         data() {
             return {
-                CONSTANT: CONSTANT,
+                CONSTANT,
                 loginDialog: {
                     show: !this.$store.getters.loginAuth,
                 },
