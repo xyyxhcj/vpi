@@ -1,8 +1,9 @@
 <template>
-    <el-table :data="dataList" style="width: 100%" :row-style="rowStyle">
-        <el-table-column type="index" width="40"/>
-        <el-table-column label="paramKey" width="280" ref="param-key-container">
-            <template slot-scope="scope">
+    <div class="data-structure-common">
+        <el-table :data="dataList" style="width: 100%" :row-style="rowStyle">
+            <el-table-column type="index" width="40"/>
+            <el-table-column label="paramKey" width="280" ref="param-key-container">
+                <template slot-scope="scope">
                     <span :style="{padding:countKeyPadding(scope.row)}">
                         <template v-if="scope.row.subList.length>0">
                             <i v-if="scope.row.showSub!==false" class="el-icon-remove-outline"
@@ -15,49 +16,50 @@
                             <i class="el-icon-arrow-right"/>
                         </span>
                     </span>
-                <el-input v-model.trim="scope.row.paramKey" @input="paramKeyChange(scope.$index,scope.row)"
-                          :style="{width:countKeyInputWidth(scope.row)}" size="mini"/>
-                <span v-if="scope.row.paramKeyIsEmpty"
-                      style="font-size: 12px;color: #F56C6C">enter paramKey</span>
-            </template>
-        </el-table-column>
-        <el-table-column label="paramType" width="110">
-            <template slot-scope="scope">
-                <el-select :value="scope.row.paramType+''" filterable size="mini"
-                           @change="(selectedValue)=>scope.row.paramType=selectedValue">
-                    <el-option v-for="key in Object.keys(CONSTANT.PARAM_TYPE_STR)"
-                               :key="key" :label="CONSTANT.PARAM_TYPE_STR[key]" :value="key"/>
-                </el-select>
-            </template>
-        </el-table-column>
-        <el-table-column label="requireType" width="125">
-            <template slot-scope="scope">
-                <el-select :value="scope.row.requireType+''" size="mini"
-                           @change="(selectedValue)=>scope.row.requireType=selectedValue">
-                    <el-option v-for="key in Object.keys(CONSTANT.REQUIRED_TYPE_STR)"
-                               :key="key" :label="CONSTANT.REQUIRED_TYPE_STR[key]" :value="key"/>
-                </el-select>
-            </template>
-        </el-table-column>
-        <el-table-column label="paramDesc" width="180">
-            <template slot-scope="scope">
-                <el-input v-model.trim="scope.row.paramDesc" size="mini"/>
-            </template>
-        </el-table-column>
-        <el-table-column label="value" width="180">
-            <template slot-scope="scope">
-                <el-input v-model.trim="scope.row.value" size="mini"/>
-            </template>
-        </el-table-column>
-        <el-table-column label="operate">
-            <template slot-scope="scope">
-                <el-button size="mini" @click="addSubField(scope.$index,scope.row)">Add Sub Field
-                </el-button>
-                <el-button size="mini" type="danger" @click="del(scope.$index,scope.row)">Delete
-                </el-button>
-            </template>
-        </el-table-column>
-    </el-table>
+                    <el-input v-model.trim="scope.row.paramKey" @input="paramKeyChange(scope.$index,scope.row)"
+                              :style="{width:countKeyInputWidth(scope.row)}" size="mini"/>
+                    <span v-if="scope.row.paramKeyIsEmpty"
+                          style="font-size: 12px;color: #F56C6C">enter paramKey</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="paramType" width="110">
+                <template slot-scope="scope">
+                    <el-select :value="scope.row.paramType+''" filterable size="mini"
+                               @change="(selectedValue)=>scope.row.paramType=selectedValue">
+                        <el-option v-for="key in Object.keys(CONSTANT.PARAM_TYPE_STR)"
+                                   :key="key" :label="CONSTANT.PARAM_TYPE_STR[key]" :value="key"/>
+                    </el-select>
+                </template>
+            </el-table-column>
+            <el-table-column label="requireType" width="125">
+                <template slot-scope="scope">
+                    <el-select :value="scope.row.requireType+''" size="mini"
+                               @change="(selectedValue)=>scope.row.requireType=selectedValue">
+                        <el-option v-for="key in Object.keys(CONSTANT.REQUIRED_TYPE_STR)"
+                                   :key="key" :label="CONSTANT.REQUIRED_TYPE_STR[key]" :value="key"/>
+                    </el-select>
+                </template>
+            </el-table-column>
+            <el-table-column label="paramDesc" width="180">
+                <template slot-scope="scope">
+                    <el-input v-model.trim="scope.row.paramDesc" size="mini"/>
+                </template>
+            </el-table-column>
+            <el-table-column label="value" width="180">
+                <template slot-scope="scope">
+                    <el-input v-model.trim="scope.row.value" size="mini"/>
+                </template>
+            </el-table-column>
+            <el-table-column label="operate">
+                <template slot-scope="scope">
+                    <el-button size="mini" @click="addSubField(scope.$index,scope.row)">Add Sub Field
+                    </el-button>
+                    <el-button size="mini" type="danger" @click="del(scope.$index,scope.row)">Delete
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -185,6 +187,11 @@
     };
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus" scoped>
+<style lang="stylus" rel="stylesheet/stylus">
+    .data-structure-common
+        .el-table td, .el-table th
+            padding 0
 
+        .cell
+            padding 0
 </style>

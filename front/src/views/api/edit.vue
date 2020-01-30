@@ -113,11 +113,6 @@
     };
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus">
-    #api-edit-container
-        .el-table td, .el-table th
-            padding 0
+<style lang="stylus" rel="stylesheet/stylus" scoped>
 
-        .cell
-            padding 0
 </style>

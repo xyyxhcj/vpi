@@ -120,13 +120,8 @@
     };
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus">
+<style lang="stylus" rel="stylesheet/stylus" scoped>
     #editDataStructureDialog
         min-width 1300px
 
-        .el-table td, .el-table th
-            padding 0
-
-        .cell
-            padding 0
 </style>
