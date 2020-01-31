@@ -106,8 +106,18 @@
                             this.form = resp.data.data;
                             this.form.requestParamDto = this.form.requestParamVo;
                             this.form.responseParamDto = this.form.responseParamVo;
-                            UTILS.fillShowDataList(this.form.requestParamDto.dataList, this.reqShowDataList);
-                            UTILS.fillShowDataList(this.form.responseParamDto.dataList, this.respShowDataList);
+                            if (this.form.requestParamDto) {
+                                UTILS.fillShowDataList(this.form.requestParamDto.dataList, this.reqShowDataList);
+                            } else {
+                                this.reqShowDataList = [JSON.parse(JSON.stringify(CONSTANT.ITEM_TEMPLATE))];
+                                this.form.requestParamDto = {dataList: this.reqShowDataList};
+                            }
+                            if (this.form.responseParamDto) {
+                                UTILS.fillShowDataList(this.form.responseParamDto.dataList, this.respShowDataList);
+                            } else {
+                                this.respShowDataList = [JSON.parse(JSON.stringify(CONSTANT.ITEM_TEMPLATE))];
+                                this.form.responseParamDto = {dataList: this.respShowDataList};
+                            }
                             this.$nextTick(() => {
                                 if (this.form.requestHeaders.length === 0) {
                                     this.$refs['reqHeaders'].init();
