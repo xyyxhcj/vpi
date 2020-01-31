@@ -1,6 +1,6 @@
 <template>
     <el-container id="app">
-        <left-menu/>
+        <left-menu v-if="selectedProjectId"/>
         <el-container>
             <el-header class="header-common">
                 <el-row>

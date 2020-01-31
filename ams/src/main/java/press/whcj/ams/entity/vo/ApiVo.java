@@ -16,6 +16,7 @@ import java.util.List;
 public class ApiVo extends Api {
 	private static final long serialVersionUID = 7302871133312701808L;
 	private StructureVo requestParamVo;
-	private StructureVo resultParamVo;
-	private List<ApiHeader> headers;
+	private StructureVo responseParamVo;
+	private List<ApiHeader> requestHeaders;
+	private List<ApiHeader> responseHeaders;
 }

@@ -176,6 +176,9 @@ export const CONSTANT = {
     REQUEST_PARAM_TYPE: {
         0: 'json', 1: 'form',
     },
+    RESPONSE_PARAM_TYPE: {
+        0: 'json', 1: 'binary',
+    },
     ITEM_TEMPLATE: {
         paramKey: '',
         paramType: 0,

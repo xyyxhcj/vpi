@@ -24,6 +24,8 @@ import press.whcj.ams.util.FastUtils;
 import press.whcj.ams.util.PermUtils;
 
 import javax.annotation.Resource;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -61,15 +63,23 @@ public class ApiServiceImpl implements ApiService {
 		mongoTemplate.save(api);
 		String apiId = api.getId();
 		saveApiParams(apiDto.getRequestParamDto(), operator, projectId);
-		saveApiParams(apiDto.getResultParamDto(), operator, projectId);
+		saveApiParams(apiDto.getResponseParamDto(), operator, projectId);
 		if (isUpdate) {
 			mongoTemplate.remove(new Query(Criteria.where(ColumnName.API_ID).is(apiId)), ApiHeader.class);
 		}
-		if (!CollectionUtils.isEmpty(apiDto.getHeaders())) {
-			for (ApiHeader header : apiDto.getHeaders()) {
+		if (!CollectionUtils.isEmpty(apiDto.getRequestHeaders())) {
+			for (ApiHeader header : apiDto.getRequestHeaders()) {
 				header.setApiId(apiId);
+				header.setIsRequest(Constant.Is.YES);
 			}
-			mongoTemplate.insertAll(apiDto.getHeaders());
+			mongoTemplate.insertAll(apiDto.getRequestHeaders());
+		}
+		if (!CollectionUtils.isEmpty(apiDto.getResponseHeaders())) {
+			for (ApiHeader header : apiDto.getResponseHeaders()) {
+				header.setApiId(apiId);
+				header.setIsRequest(Constant.Is.NO);
+			}
+			mongoTemplate.insertAll(apiDto.getResponseHeaders());
 		}
 		return apiId;
 	}
@@ -97,8 +107,18 @@ public class ApiServiceImpl implements ApiService {
 		if (Objects.requireNonNull(detail).getRequestParam() != null) {
 			detail.setRequestParamVo(structureService.getStructureVoById(detail.getRequestParam().getId()));
 		}
-		if (detail.getResultParamVo() != null) {
-			detail.setResultParamVo(structureService.getStructureVoById(detail.getResultParamVo().getId()));
+		if (detail.getResponseParam() != null) {
+			detail.setResponseParamVo(structureService.getStructureVoById(detail.getResponseParam().getId()));
+		}
+		List<ApiHeader> headers = mongoTemplate.find(new Query(Criteria.where(ColumnName.API_ID).is(apiId)), ApiHeader.class);
+		detail.setRequestHeaders(new LinkedList<>());
+		detail.setResponseHeaders(new LinkedList<>());
+		for (ApiHeader header : headers) {
+			if (Constant.Is.YES.equals(header.getIsRequest())) {
+				detail.getRequestHeaders().add(header);
+			} else {
+				detail.getResponseHeaders().add(header);
+			}
 		}
 		return detail;
 	}

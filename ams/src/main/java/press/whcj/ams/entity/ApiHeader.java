@@ -28,5 +28,7 @@ public class ApiHeader implements Serializable {
      */
     private Byte requireType;
 
+    private Byte isRequest;
+
     private static final long serialVersionUID = 1L;
 }

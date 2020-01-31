@@ -23,8 +23,8 @@
                 <el-input v-model="form.name" size="mini"/>
             </el-form-item>
         </el-form>
-        <el-tabs type="card" :value="defaultCard" style="line-height: 25px">
-            <el-tab-pane label="Header">头部</el-tab-pane>
+        <el-tabs type="card" :value="reqDefaultCard" style="line-height: 25px">
+            <el-tab-pane label="Request Header">头部</el-tab-pane>
             <el-tab-pane label="Request Param" name="requestParam">
                 <div style="text-align: left;margin-left: 15px">
                     <el-radio v-model.trim="form.requestParamType" :label="0" size="mini">
@@ -34,7 +34,24 @@
                         {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
                     </el-radio>
                 </div>
-                <data-structure :data-list="showDataList" :root-list="form.requestParamDto.dataList" ref="dataStructure"/>
+                <data-structure :data-list="reqShowDataList" :root-list="form.requestParamDto.dataList"
+                                ref="reqDataStructure"/>
+            </el-tab-pane>
+        </el-tabs>
+        <el-tabs type="card" :value="respDefaultCard" style="line-height: 25px">
+            <el-tab-pane label="Response Header">头部</el-tab-pane>
+            <el-tab-pane label="Response Param" name="responseParam">
+                <div style="text-align: left;margin:0 0 10px 15px">
+                    <el-radio v-model.trim="form.responseParamType" :label="0" size="mini">
+                        {{CONSTANT.RESPONSE_PARAM_TYPE[0]}}
+                    </el-radio>
+                    <el-radio v-model.trim="form.responseParamType" :label="1" size="mini">
+                        {{CONSTANT.RESPONSE_PARAM_TYPE[1]}}
+                    </el-radio>
+                </div>
+                <data-structure :data-list="respShowDataList" :root-list="form.responseParamDto.dataList"
+                                ref="respDataStructure" v-if="form.responseParamType===0"/>
+                <el-input type="textarea" placeholder="remark" v-model="form.responseParamDto.remark" v-else/>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -61,7 +78,10 @@
                         requestParamDto: {
                             dataList: [],
                         },
-                        dataList: []
+                        responseParamType: 0,
+                        responseParamDto: {
+                            dataList: [],
+                        },
                     }
                 }
             }
@@ -69,40 +89,21 @@
         data() {
             return {
                 CONSTANT,
-                defaultCard: 'requestParam',
-                showDataList: [],
+                reqDefaultCard: 'requestParam',
+                respDefaultCard: 'responseParam',
+                reqShowDataList: [],
+                respShowDataList: [],
             }
         },
         methods: {
             init() {
                 if (this.form.id !== undefined) {
-                    /*this.rootList = this.form.dataList;
-                    let stack = this.rootList.slice();
-                    while (stack.length > 0) {
-                        let pop = stack.shift();
-                        pop.paramKeyIsEmpty = false;
-                        pop.show = true;
-                        if (!pop.parent) {
-                            pop.level = 0;
-                        } else {
-                            pop.level = pop.parent.level + 1;
-                        }
-                        this.dataList.push(pop);
-                        if (pop.subList.length > 0) {
-                            for (let i = pop.subList.length - 1; i >= 0; i--) {
-                                let item = pop.subList[i];
-                                item.parent = pop;
-                                stack.splice(0, 0, item);
-                            }
-                        }
-                    }
-                    let item = JSON.parse(this.itemTemplateStr);
-                    this.dataList.push(item);
-                    this.rootList.push(item);*/
+
                 } else {
                     this.rootList = [];
                     this.$nextTick(() => {
-                        this.$refs['dataStructure'].init();
+                        this.$refs['reqDataStructure'].init();
+                        this.$refs['respDataStructure'].init();
                     });
                 }
             }

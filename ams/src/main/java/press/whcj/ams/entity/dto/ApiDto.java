@@ -15,6 +15,6 @@ public class ApiDto extends ApiVo {
 	private static final long serialVersionUID = -2107807918182928550L;
 	private String groupId;
 	private StructureDto requestParamDto;
-	private StructureDto resultParamDto;
+	private StructureDto responseParamDto;
 	private MongoPage<ApiVo> page = new MongoPage<>();
 }

@@ -43,8 +43,8 @@ public class Api extends BaseEntity implements Serializable {
 	@JsonBackReference("requestParam")
 	private Structure requestParam;
 	@DBRef
-	@JsonBackReference("resultParam")
-	private Structure resultParam;
+	@JsonBackReference("responseParam")
+	private Structure responseParam;
 
 	/**
 	 * 0-enable 1-maintaining 2-deprecated 3-pending 4-plan 5-develop 6-test 7-docking 8-bug
@@ -57,6 +57,11 @@ public class Api extends BaseEntity implements Serializable {
 	 * 0json 1form-data
 	 */
 	private Byte requestParamType;
+
+	/**
+	 * 0json 1binary
+	 */
+	private Byte responseParamType;
 
 	private static final long serialVersionUID = 1L;
 }
