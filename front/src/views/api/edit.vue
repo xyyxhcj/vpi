@@ -63,10 +63,10 @@
 </template>
 
 <script type="text/ecmascript-6">
+    import {UTILS} from "../../common/js/utils";
     import {CONSTANT} from "../../common/js/constant";
     import DataStructure from "../../components/dataStructure/dataStructure";
     import ApiHeaders from "./components/apiHeaders";
-    import {UTILS} from "../../common/js/utils";
 
     export default {
         name: 'edit',
@@ -100,8 +100,14 @@
         },
         methods: {
             init() {
-                if (this.form.id !== undefined) {
-
+                if (this.$route.query.id !== undefined) {
+                    this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
+                        if (UTILS.checkResp(resp)) {
+                            this.form = resp.data.data;
+                            UTILS.fillShowDataList(this.form.requestParamDto.dataList, this.reqShowDataList);
+                            UTILS.fillShowDataList(this.form.responseParamDto.dataList, this.respShowDataList);
+                        }
+                    });
                 } else {
                     this.rootList = [];
                     this.$nextTick(() => {

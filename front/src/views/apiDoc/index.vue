@@ -199,7 +199,10 @@
 
             },
             editApi(api) {
-
+                this.$router.push({
+                    path: '/api/edit',
+                    query: {id: api.id}
+                });
             },
             editApiByTag(api) {
 
@@ -213,6 +216,7 @@
         },
         created() {
             this.findApiGroups();
+            this.findApiPage();
         }
     };
 </script>

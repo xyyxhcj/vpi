@@ -88,28 +88,7 @@
                 this.dataList = [];
                 if (this.form.id !== undefined) {
                     this.rootList = this.form.dataList;
-                    let stack = this.rootList.slice();
-                    while (stack.length > 0) {
-                        let pop = stack.shift();
-                        pop.paramKeyIsEmpty = false;
-                        pop.show = true;
-                        if (!pop.parent) {
-                            pop.level = 0;
-                        } else {
-                            pop.level = pop.parent.level + 1;
-                        }
-                        this.dataList.push(pop);
-                        if (pop.subList.length > 0) {
-                            for (let i = pop.subList.length - 1; i >= 0; i--) {
-                                let item = pop.subList[i];
-                                item.parent = pop;
-                                stack.splice(0, 0, item);
-                            }
-                        }
-                    }
-                    let item = JSON.parse(this.itemTemplateStr);
-                    this.dataList.push(item);
-                    this.rootList.push(item);
+                    UTILS.fillShowDataList(this.rootList, this.dataList);
                 } else {
                     this.rootList = [];
                     this.$nextTick(() => {

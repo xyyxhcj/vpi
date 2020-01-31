@@ -224,6 +224,30 @@ export const UTILS = {
             }
         }
     },
+    fillShowDataList(sourceTree, destList) {
+        let stack = sourceTree.slice();
+        while (stack.length > 0) {
+            let pop = stack.shift();
+            pop.paramKeyIsEmpty = false;
+            pop.show = true;
+            if (!pop.parent) {
+                pop.level = 0;
+            } else {
+                pop.level = pop.parent.level + 1;
+            }
+            destList.push(pop);
+            if (pop.subList.length > 0) {
+                for (let i = pop.subList.length - 1; i >= 0; i--) {
+                    let item = pop.subList[i];
+                    item.parent = pop;
+                    stack.splice(0, 0, item);
+                }
+            }
+        }
+        let item = JSON.parse(this.itemTemplateStr);
+        destList.push(item);
+        sourceTree.push(item);
+    },
     checkAuth: function (obj, permissionId) {
         return this.contains(obj.btnList, permissionId, function (btn, element) {
             return element === btn.menuId;
