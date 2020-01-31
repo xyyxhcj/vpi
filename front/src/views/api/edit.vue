@@ -25,7 +25,7 @@
         </el-form>
         <el-tabs type="card" :value="reqDefaultCard" style="line-height: 25px">
             <el-tab-pane label="Request Header">
-                <api-headers :data-list="form.requestHeaders"/>
+                <api-headers :data-list="form.requestHeaders" ref="reqHeaders"/>
             </el-tab-pane>
             <el-tab-pane label="Request Param" name="requestParam">
                 <div style="text-align: left;margin-left: 15px">
@@ -42,7 +42,7 @@
         </el-tabs>
         <el-tabs type="card" :value="respDefaultCard" style="line-height: 25px">
             <el-tab-pane label="Response Header">
-                <api-headers :data-list="form.responseHeaders"/>
+                <api-headers :data-list="form.responseHeaders" ref="respHeaders"/>
             </el-tab-pane>
             <el-tab-pane label="Response Param" name="responseParam">
                 <div style="text-align: left;margin:0 0 10px 15px">
@@ -104,8 +104,18 @@
                     this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
                         if (UTILS.checkResp(resp)) {
                             this.form = resp.data.data;
+                            this.form.requestParamDto = this.form.requestParamVo;
+                            this.form.responseParamDto = this.form.responseParamVo;
                             UTILS.fillShowDataList(this.form.requestParamDto.dataList, this.reqShowDataList);
                             UTILS.fillShowDataList(this.form.responseParamDto.dataList, this.respShowDataList);
+                            this.$nextTick(() => {
+                                if (this.form.requestHeaders.length === 0) {
+                                    this.$refs['reqHeaders'].init();
+                                }
+                                if (this.form.responseHeaders.length === 0) {
+                                    this.$refs['respHeaders'].init();
+                                }
+                            });
                         }
                     });
                 } else {
@@ -113,6 +123,8 @@
                     this.$nextTick(() => {
                         this.$refs['reqDataStructure'].init();
                         this.$refs['respDataStructure'].init();
+                        this.$refs['reqHeaders'].init();
+                        this.$refs['respHeaders'].init();
                     });
                 }
             },
@@ -165,7 +177,7 @@
                     this.filterEmptyHeader(this.form.responseHeaders);
                     this.$axios.post(CONSTANT.REQUEST_URL.API_ADD, this.form).then(resp => {
                         UTILS.showResult(this, resp, function (obj) {
-                            // obj.$emit('flush');
+                            // todo obj.$emit('flush');
                         }, false);
                     });
                 });

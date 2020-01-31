@@ -15,37 +15,44 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class Structure implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private String id;
-	private String projectId;
-	private String name;
-	private String remark;
-	/**
-	 * 0-apiCreate 1-userCreate
-	 **/
-	private Byte type;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
-	@DBRef
-	@JsonBackReference("create")
-	private User create;
-	@DBRef
-	@JsonBackReference("update")
-	private User update;
+    private static final long serialVersionUID = 1L;
+    private String id;
+    private String projectId;
+    private String name;
+    private String remark;
+    /**
+     * 0-apiCreate 1-userCreate
+     **/
+    private Byte type;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
+    @DBRef
+    @JsonBackReference("create")
+    private User create;
+    @DBRef
+    @JsonBackReference("update")
+    private User update;
 
-	public String getCreateId() {
-		return create == null ? null : create.getId();
-	}
+    public Structure() {
+    }
 
-	public String getCreateName() {
-		return create == null ? null : create.getUserName();
-	}
+    public Structure(String id) {
+        this.id = id;
+    }
 
-	public String getUpdateId() {
-		return update == null ? null : update.getId();
-	}
+    public String getCreateId() {
+        return create == null ? null : create.getId();
+    }
 
-	public String getUpdateName() {
-		return update == null ? null : update.getUserName();
-	}
+    public String getCreateName() {
+        return create == null ? null : create.getUserName();
+    }
+
+    public String getUpdateId() {
+        return update == null ? null : update.getId();
+    }
+
+    public String getUpdateName() {
+        return update == null ? null : update.getUserName();
+    }
 }

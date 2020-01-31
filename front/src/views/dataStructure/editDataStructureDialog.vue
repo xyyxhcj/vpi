@@ -41,7 +41,6 @@
             form: Object,
         },
         data() {
-            let itemTemplateStr = JSON.stringify(CONSTANT.ITEM_TEMPLATE);
             return {
                 CONSTANT,
                 form_rules: {
@@ -49,7 +48,6 @@
                         {required: true, message: 'please enter name'}
                     ],
                 },
-                itemTemplateStr: itemTemplateStr,
                 dataList: [],
                 rootList: [],
             };

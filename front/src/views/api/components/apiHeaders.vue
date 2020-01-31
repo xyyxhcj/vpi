@@ -80,7 +80,6 @@
             }
         },
         created() {
-            this.init();
         }
     };
 </script>

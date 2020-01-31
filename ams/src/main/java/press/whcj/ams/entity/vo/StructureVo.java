@@ -17,4 +17,7 @@ import java.util.List;
 public class StructureVo extends Structure {
 	private static final long serialVersionUID = -6918218483871047332L;
 	private List<StructureDataDto> dataList = new ArrayList<>();
+
+	public StructureVo() {
+	}
 }

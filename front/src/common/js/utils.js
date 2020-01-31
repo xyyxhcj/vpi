@@ -244,7 +244,8 @@ export const UTILS = {
                 }
             }
         }
-        let item = JSON.parse(this.itemTemplateStr);
+        let itemTemplateStr = JSON.stringify(CONSTANT.ITEM_TEMPLATE);
+        let item = JSON.parse(itemTemplateStr);
         destList.push(item);
         sourceTree.push(item);
     },
