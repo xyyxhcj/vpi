@@ -1,6 +1,6 @@
 <template>
     <div id="api-edit-container">
-        <el-form :model="form" label-position="left" label-width="80px">
+        <el-form :model="form" label-position="left" label-width="80px" ref="form">
             <el-form-item label="apiStatus" size="mini" style="text-align: left">
                 <el-radio v-model.trim="form.apiStatus" :label="0" size="mini">{{CONSTANT.API_STATUS[0]}}</el-radio>
                 <el-radio v-model.trim="form.apiStatus" :label="1" size="mini">{{CONSTANT.API_STATUS[1]}}</el-radio>
@@ -24,7 +24,9 @@
             </el-form-item>
         </el-form>
         <el-tabs type="card" :value="reqDefaultCard" style="line-height: 25px">
-            <el-tab-pane label="Request Header">头部</el-tab-pane>
+            <el-tab-pane label="Request Header">
+                <api-headers :data-list="form.requestHeaders"/>
+            </el-tab-pane>
             <el-tab-pane label="Request Param" name="requestParam">
                 <div style="text-align: left;margin-left: 15px">
                     <el-radio v-model.trim="form.requestParamType" :label="0" size="mini">
@@ -39,7 +41,9 @@
             </el-tab-pane>
         </el-tabs>
         <el-tabs type="card" :value="respDefaultCard" style="line-height: 25px">
-            <el-tab-pane label="Response Header">头部</el-tab-pane>
+            <el-tab-pane label="Response Header">
+                <api-headers :data-list="form.responseHeaders"/>
+            </el-tab-pane>
             <el-tab-pane label="Response Param" name="responseParam">
                 <div style="text-align: left;margin:0 0 10px 15px">
                     <el-radio v-model.trim="form.responseParamType" :label="0" size="mini">
@@ -60,35 +64,33 @@
 <script type="text/ecmascript-6">
     import {CONSTANT} from "../../common/js/constant";
     import DataStructure from "../../components/dataStructure/dataStructure";
+    import ApiHeaders from "./components/apiHeaders";
+    import {UTILS} from "../../common/js/utils";
 
     export default {
         name: 'edit',
-        components: {DataStructure},
-        props: {
-            form: {
-                type: Object,
-                default() {
-                    return {
-                        name: '',
-                        path: '/',
-                        type: '',
-                        apiRequestType: 0,
-                        apiStatus: 0,
-                        requestParamType: 0,
-                        requestParamDto: {
-                            dataList: [],
-                        },
-                        responseParamType: 0,
-                        responseParamDto: {
-                            dataList: [],
-                        },
-                    }
-                }
-            }
-        },
+        components: {ApiHeaders, DataStructure},
         data() {
             return {
                 CONSTANT,
+                form: {
+                    projectId: this.$store.getters.selectedProjectId,
+                    name: '',
+                    path: '/',
+                    type: '',
+                    apiRequestType: 0,
+                    apiStatus: 0,
+                    requestParamType: 0,
+                    requestParamDto: {
+                        dataList: [],
+                    },
+                    responseParamType: 0,
+                    responseParamDto: {
+                        dataList: [],
+                    },
+                    requestHeaders: [],
+                    responseHeaders: [],
+                },
                 reqDefaultCard: 'requestParam',
                 respDefaultCard: 'responseParam',
                 reqShowDataList: [],
@@ -107,8 +109,60 @@
                     });
                 }
             },
+            checkParam() {
+                let paramIsEmpty = false;
+                let checkParamKey = item => {
+                    if (item.paramKey === '' && (item.paramDesc !== '' || item.value !== '')) {
+                        paramIsEmpty = true;
+                        item.paramKeyIsEmpty = true;
+                    }
+                };
+                this.reqShowDataList.forEach(checkParamKey);
+                this.respShowDataList.forEach(checkParamKey);
+                let checkName = item => {
+                    if (item.name === '' && (item.desc !== '' || item.value !== '')) {
+                        paramIsEmpty = true;
+                        item.nameIsEmpty = true;
+                    }
+                };
+                this.form.requestHeaders.forEach(checkName);
+                this.form.responseHeaders.forEach(checkName);
+                return paramIsEmpty;
+            },
+            filterEmptyHeader(headers) {
+                for (let i = headers.length - 1; i >= 0; i--) {
+                    let item = headers[i];
+                    if (item.name === '') {
+                        headers.splice(i, 1);
+                    }
+                }
+            },
             save() {
-                console.log('s');
+                console.log(this.form);
+                this.$refs['form'].validate((valid) => {
+                    let checkParam = this.checkParam();
+                    if (!valid || checkParam) {
+                        this.$message.error('params lose');
+                        return;
+                    }
+                    let replacerParent = function (key, value) {
+                        return key === 'parent' ? null : value;
+                    };
+                    let copyRootList = JSON.parse(JSON.stringify(this.form.requestParamDto.dataList, replacerParent));
+                    UTILS.filterEmptyParams(copyRootList);
+                    this.form.requestParamDto.dataList = copyRootList;
+                    copyRootList = JSON.parse(JSON.stringify(this.form.responseParamDto.dataList, replacerParent));
+                    UTILS.filterEmptyParams(copyRootList);
+                    this.form.responseParamDto.dataList = copyRootList;
+                    this.filterEmptyHeader(this.form.requestHeaders);
+                    this.filterEmptyHeader(this.form.responseHeaders);
+                    this.$axios.post(CONSTANT.REQUEST_URL.API_ADD, this.form).then(resp => {
+                        UTILS.showResult(this, resp, function (obj) {
+                            // obj.$emit('flush');
+                        }, false);
+                    });
+                });
+
             }
         },
         mounted() {
