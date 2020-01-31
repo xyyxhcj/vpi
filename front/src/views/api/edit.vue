@@ -106,6 +106,9 @@
                         this.$refs['respDataStructure'].init();
                     });
                 }
+            },
+            save() {
+                console.log('s');
             }
         },
         mounted() {

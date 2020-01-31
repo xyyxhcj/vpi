@@ -7,7 +7,12 @@
                     <el-col :span="10">
                         <div>
                             <div class="project-path">
-                                <span style="margin-right: 15px">{{$route.name}} > myTest</span>
+                                <span style="margin-right: 15px">
+                                    <template v-for="(path,index) in pathList">
+                                        {{path}}
+                                        <template v-if="index!==pathList.length-1">></template>
+                                    </template>
+                                </span>
                                 <el-link v-if="$route.path.startsWith('/api/')" icon="el-icon-refresh-left"
                                          @click="$router.push('/apiDoc')">Go Back
                                 </el-link>
@@ -117,6 +122,11 @@
                 get() {
                     return this.$store.getters.user && CONSTANT.CONFIG.ADMIN_LOGIN_NAME === this.$store.getters.user.loginName;
                 },
+            },
+            pathList: {
+                get() {
+                    return this.$route.name ? this.$route.name.split('/') : [];
+                }
             }
         },
         created() {
