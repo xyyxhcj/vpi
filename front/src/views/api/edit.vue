@@ -37,7 +37,7 @@
                     </el-radio>
                 </div>
                 <data-structure :data-list="reqShowDataList" :root-list="form.requestParamDto.dataList"
-                                ref="reqDataStructure"/>
+                                ref="reqDataStructure" :config="{refPre:'editApiReq'}"/>
             </el-tab-pane>
         </el-tabs>
         <el-tabs type="card" :value="respDefaultCard" style="line-height: 25px">
@@ -54,7 +54,8 @@
                     </el-radio>
                 </div>
                 <data-structure :data-list="respShowDataList" :root-list="form.responseParamDto.dataList"
-                                ref="respDataStructure" v-if="form.responseParamType===0"/>
+                                ref="respDataStructure" v-if="form.responseParamType===0"
+                                :config="{refPre:'editApiResp'}"/>
                 <el-input type="textarea" placeholder="remark" v-model="form.responseParamDto.remark" v-else/>
             </el-tab-pane>
         </el-tabs>

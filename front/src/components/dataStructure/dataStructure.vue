@@ -17,7 +17,10 @@
                         </span>
                     </span>
                     <el-input v-model.trim="scope.row.paramKey" @input="paramKeyChange(scope.$index,scope.row)"
-                              :style="{width:countKeyInputWidth(scope.row)}" size="mini"/>
+                              :style="{width:countKeyInputWidth(scope.row)}" size="mini"
+                              :ref="config.refPre+'paramKey'+scope.$index"
+                              @keyup.down.native="moveDown(scope.$index,'paramKey')"
+                              @keyup.up.native="moveUp(scope.$index,'paramKey')"/>
                     <span v-if="scope.row.paramKeyIsEmpty"
                           style="font-size: 12px;color: #F56C6C">enter paramKey</span>
                 </template>
@@ -42,12 +45,18 @@
             </el-table-column>
             <el-table-column label="paramDesc" width="180">
                 <template slot-scope="scope">
-                    <el-input v-model.trim="scope.row.paramDesc" size="mini"/>
+                    <el-input v-model.trim="scope.row.paramDesc" size="mini"
+                              :ref="config.refPre+'paramDesc'+scope.$index"
+                              @keyup.down.native="moveDown(scope.$index,'paramDesc')"
+                              @keyup.up.native="moveUp(scope.$index,'paramDesc')"/>
                 </template>
             </el-table-column>
             <el-table-column label="value" width="180">
                 <template slot-scope="scope">
-                    <el-input v-model.trim="scope.row.value" size="mini"/>
+                    <el-input v-model.trim="scope.row.value" size="mini"
+                              :ref="config.refPre+'value'+scope.$index"
+                              @keyup.down.native="moveDown(scope.$index,'value')"
+                              @keyup.up.native="moveUp(scope.$index,'value')"/>
                 </template>
             </el-table-column>
             <el-table-column label="operate">
@@ -73,6 +82,14 @@
             },
             rootList: {
                 type: Array,
+            },
+            config: {
+                type: Object,
+                default() {
+                    return {
+                        refPre: '',
+                    }
+                }
             }
         },
         data() {
@@ -82,6 +99,16 @@
             }
         },
         methods: {
+            moveUp(index, refMid) {
+                if (index !== 0) {
+                    this.$refs[this.config.refPre + refMid + (index - 1)].focus();
+                }
+            },
+            moveDown(index, refMid) {
+                if (index !== this.dataList.length - 1) {
+                    this.$refs[this.config.refPre + refMid + (index + 1)].focus();
+                }
+            },
             rowStyle({row}) {
                 return {'display': row.show ? '' : 'none'};
             },

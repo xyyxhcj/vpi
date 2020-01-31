@@ -10,7 +10,8 @@
                 <el-input v-model.trim="form.remark" size="mini"/>
             </el-form-item>
         </el-form>
-        <data-structure :data-list="dataList" :root-list="rootList" ref="dataStructure"/>
+        <data-structure :data-list="dataList" :root-list="rootList" ref="dataStructure"
+                        :config="{refPre:'editDataStructure'}"/>
         <div slot="footer">
             <el-button @click="dialog.show = false" round>Cancel</el-button>
             <el-button @click="submitForm" type="primary" round>Submit</el-button>
