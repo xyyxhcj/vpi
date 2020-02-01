@@ -55,8 +55,10 @@ public class ApiServiceImpl implements ApiService {
             api = new Api();
         }
         FastUtils.copyProperties(apiDto, api);
-        if (!StringUtils.isEmpty(apiDto.getGroupId())) {
+        if (apiDto.getGroupId() != null) {
             api.setGroup(new ApiGroup(apiDto.getGroupId()));
+        } else {
+            api.setGroup(null);
         }
         String reqParamsId = saveApiParams(apiDto.getRequestParamDto(), operator, projectId);
         String respParamsId = saveApiParams(apiDto.getResponseParamDto(), operator, projectId);

@@ -94,6 +94,7 @@ export const CONSTANT = {
         API_GROUP_FIND_LIST: '/apiGroup/findList',
 
         API_ADD: '/api/add',
+        API_EDIT: '/api/edit',
         API_FIND_DETAIL: '/api/findDetail',
         API_FIND_PAGE: '/api/findPage',
     },

@@ -185,11 +185,19 @@
                     this.form.responseParamDto.dataList = copyRootList;
                     this.filterEmptyHeader(this.form.requestHeaders);
                     this.filterEmptyHeader(this.form.responseHeaders);
-                    this.$axios.post(CONSTANT.REQUEST_URL.API_ADD, this.form).then(resp => {
-                        UTILS.showResult(this, resp, function (obj) {
-                            // todo obj.$emit('flush');
-                        }, false);
-                    });
+                    if (this.form.id) {
+                        this.$axios.post(CONSTANT.REQUEST_URL.API_EDIT, this.form).then(resp => {
+                            UTILS.showResult(this, resp, function (obj) {
+                                // todo obj.$emit('flush');
+                            }, false);
+                        });
+                    } else {
+                        this.$axios.post(CONSTANT.REQUEST_URL.API_ADD, this.form).then(resp => {
+                            UTILS.showResult(this, resp, function (obj) {
+                                // todo obj.$emit('flush');
+                            }, false);
+                        });
+                    }
                 });
 
             }
