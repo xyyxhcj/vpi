@@ -17,7 +17,7 @@
                     <el-option :label="CONSTANT.REQUEST_TYPE[0]" :value="0"/>
                     <el-option :label="CONSTANT.REQUEST_TYPE[1]" :value="1"/>
                 </el-select>
-                <el-input v-model="form.path" size="mini" style="width: 92%"/>
+                <el-input v-model="form.apiUri" size="mini" style="width: 92%"/>
             </el-form-item>
             <el-form-item label="name" size="mini">
                 <el-input v-model="form.name" size="mini"/>
@@ -59,6 +59,16 @@
                 <el-input type="textarea" placeholder="remark" v-model="form.responseParamDto.remark" v-else/>
             </el-tab-pane>
         </el-tabs>
+        <el-row style="line-height: 25px">
+            <el-col :span="12">
+                <div style="color: #44B549">Success Example</div>
+                <el-input type="textarea" :rows="5" v-model="form.apiSuccessMock"/>
+            </el-col>
+            <el-col :span="12">
+                <div style="color: #F56C6C">Failure Example</div>
+                <el-input type="textarea" :rows="5" v-model="form.apiFailureMock"/>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -77,7 +87,7 @@
                 form: {
                     projectId: this.$store.getters.selectedProjectId,
                     name: '',
-                    path: '/',
+                    apiUri: '/',
                     type: '',
                     apiRequestType: 0,
                     apiStatus: 0,
@@ -91,6 +101,8 @@
                     },
                     requestHeaders: [],
                     responseHeaders: [],
+                    apiSuccessMock: '',
+                    apiFailureMock: '',
                 },
                 reqDefaultCard: 'requestParam',
                 respDefaultCard: 'responseParam',
@@ -167,7 +179,6 @@
                 }
             },
             save() {
-                console.log(this.form);
                 this.$refs['form'].validate((valid) => {
                     let checkParam = this.checkParam();
                     if (!valid || checkParam) {
@@ -185,19 +196,20 @@
                     this.form.responseParamDto.dataList = copyRootList;
                     this.filterEmptyHeader(this.form.requestHeaders);
                     this.filterEmptyHeader(this.form.responseHeaders);
+                    let url;
                     if (this.form.id) {
-                        this.$axios.post(CONSTANT.REQUEST_URL.API_EDIT, this.form).then(resp => {
-                            UTILS.showResult(this, resp, function (obj) {
-                                // todo obj.$emit('flush');
-                            }, false);
-                        });
+                        url = CONSTANT.REQUEST_URL.API_EDIT;
                     } else {
-                        this.$axios.post(CONSTANT.REQUEST_URL.API_ADD, this.form).then(resp => {
-                            UTILS.showResult(this, resp, function (obj) {
-                                // todo obj.$emit('flush');
-                            }, false);
-                        });
+                        url = CONSTANT.REQUEST_URL.API_ADD;
                     }
+                    this.$axios.post(url, this.form).then(resp => {
+                        if (UTILS.checkResp(resp)) {
+                            this.$router.push({
+                                path: '/api/detail',
+                                query: {id: this.form.id}
+                            });
+                        }
+                    });
                 });
 
             }

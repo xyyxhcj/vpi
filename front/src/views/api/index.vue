@@ -6,9 +6,10 @@
                 <el-button size="mini" @click="$router.go(-1)">Cancel</el-button>
             </template>
             <template v-if="$route.path==='/api/detail'">
-                <el-link>Edit</el-link>
-                <el-link>Copy</el-link>
-                <el-link>Delete</el-link>
+                <el-link class="a-link">Test</el-link>
+                <el-link class="a-link">Edit</el-link>
+                <el-link class="a-link">Copy</el-link>
+                <el-link class="a-link">Delete</el-link>
             </template>
         </el-header>
         <el-main>
@@ -46,4 +47,6 @@
             text-align center
             line-height 160px
 
+        .a-link
+            margin 5px
 </style>
