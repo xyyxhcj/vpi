@@ -6,8 +6,8 @@
                 <el-button size="mini" @click="$router.go(-1)">Cancel</el-button>
             </template>
             <template v-if="$route.path==='/api/detail'">
-                <el-link class="a-link">Test</el-link>
-                <el-link class="a-link">Edit</el-link>
+                <el-link class="a-link" @click="test">Test</el-link>
+                <el-link class="a-link" @click="edit">Edit</el-link>
                 <el-link class="a-link">Copy</el-link>
                 <el-link class="a-link">Delete</el-link>
             </template>
@@ -24,7 +24,19 @@
         methods: {
             save() {
                 this.$refs['api-sub-router'].save();
-            }
+            },
+            edit() {
+                this.$router.push({
+                    path: '/api/edit',
+                    query: {id: this.$route.query.id}
+                });
+            },
+            test() {
+                this.$router.push({
+                    path: '/api/test',
+                    query: {id: this.$route.query.id}
+                });
+            },
         },
         created() {
         }

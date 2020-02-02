@@ -41,6 +41,11 @@ export const CONSTANT = {
                     name: 'api/detail',
                     component: () => import('@/views/api/detail'),
                 },
+                {
+                    path: '/api/test',
+                    name: 'api/test',
+                    component: () => import('@/views/api/test'),
+                },
             ],
         }
     ],
