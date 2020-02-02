@@ -6,9 +6,9 @@
                     <el-option :label="CONSTANT.REQUEST_TYPE[0]" :value="0"/>
                     <el-option :label="CONSTANT.REQUEST_TYPE[1]" :value="1"/>
                 </el-select>
-                <el-input v-model="api.apiUri" size="mini" style="width: 92%">
+                <el-input v-model="api.apiUri" size="mini" style="width: 91%">
                     <el-input slot="prepend" v-model="selectedEnv.frontUri" size="mini"
-                              style="padding:0;width: 90px" v-if="selectedEnv"/>
+                              style="padding:0;width: 150px" v-if="selectedEnv"/>
                 </el-input>
             </el-col>
         </el-row>
