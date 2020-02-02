@@ -38,7 +38,8 @@
                 </el-tree>
             </el-aside>
             <el-main>
-                <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="895">
+                <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="895"
+                          :row-style="{cursor:'pointer'}" @row-click="clickRow">
                     <el-table-column label="name" prop="name" width="200"/>
                     <el-table-column label="apiUri" prop="apiUri" width="200"/>
                     <el-table-column label="createName" prop="createName" width="150"/>
@@ -135,7 +136,6 @@
                 };
             },
             editSubGroup(data) {
-                console.log(data.getLevel(data));
                 this.editApiGroupForm = JSON.parse(JSON.stringify(data));
                 this.editApiGroupDialog = {
                     show: true,
@@ -202,6 +202,12 @@
                 this.$router.push({
                     path: '/api/edit',
                     query: {id: api.id}
+                });
+            },
+            clickRow(row) {
+                this.$router.push({
+                    path: '/api/detail',
+                    query: {id: row.id}
                 });
             },
             editApiByTag(api) {

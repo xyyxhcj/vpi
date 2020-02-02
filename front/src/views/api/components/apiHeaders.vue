@@ -1,37 +1,43 @@
 <template>
     <div class="headers-common">
-        <el-table :data="dataList" style="width: 100%">
+        <el-table :data="dataList" style="width: 100%" border>
             <el-table-column type="index" width="40"/>
             <el-table-column label="name" width="280" ref="param-key-container">
                 <template slot-scope="scope">
                     <el-input v-model.trim="scope.row.name" @input="nameChange(scope.$index,scope.row)"
-                              size="mini"/>
+                              size="mini" v-if="!config.onlyRead"/>
+                    <template v-else>{{scope.row.name}}</template>
                     <span v-if="scope.row.nameIsEmpty"
                           style="font-size: 12px;color: #F56C6C">enter name</span>
                 </template>
             </el-table-column>
             <el-table-column label="requireType" width="125">
                 <template slot-scope="scope">
-                    <el-select :value="scope.row.requireType+''" size="mini"
+                    <el-select :value="scope.row.requireType+''" size="mini" v-if="!config.onlyRead"
                                @change="(selectedValue)=>scope.row.requireType=selectedValue">
                         <el-option v-for="key in Object.keys(CONSTANT.REQUIRED_TYPE_STR)"
                                    :key="key" :label="CONSTANT.REQUIRED_TYPE_STR[key]" :value="key"/>
                     </el-select>
+                    <template v-else>{{CONSTANT.REQUIRED_TYPE_STR[scope.row.requireType]}}</template>
                 </template>
             </el-table-column>
             <el-table-column label="desc" width="180">
                 <template slot-scope="scope">
-                    <el-input v-model.trim="scope.row.desc" size="mini"/>
+                    <el-input v-model.trim="scope.row.desc" size="mini" v-if="!config.onlyRead"/>
+                    <template v-else>{{scope.row.desc}}</template>
                 </template>
             </el-table-column>
             <el-table-column label="value" width="180">
                 <template slot-scope="scope">
-                    <el-input v-model.trim="scope.row.value" size="mini"/>
+                    <el-input v-model.trim="scope.row.value" size="mini" v-if="!config.onlyRead"/>
+                    <template v-else>{{scope.row.value}}</template>
                 </template>
             </el-table-column>
-            <el-table-column label="operate">
+            <el-table-column label="operate" v-if="!config.onlyRead">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="danger" @click="del(scope.$index,scope.row)">Delete</el-button>
+                    <el-button size="mini" type="danger" @click="del(scope.$index,scope.row)">
+                        Delete
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -47,6 +53,14 @@
             dataList: {
                 type: Array,
             },
+            config: {
+                type: Object,
+                default() {
+                    return {
+                        onlyRead: false
+                    };
+                }
+            }
         },
         data() {
             return {
@@ -87,8 +101,8 @@
 <style lang="stylus" rel="stylesheet/stylus">
     .headers-common
         .el-table td, .el-table th
-            padding 0
+            padding 0 0 0 3px
 
-        .cell
-            padding 0
+        .cell, div.cell
+            padding 0 0 0 3px
 </style>

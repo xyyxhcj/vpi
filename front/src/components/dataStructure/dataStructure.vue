@@ -1,6 +1,6 @@
 <template>
     <div class="data-structure-common">
-        <el-table :data="dataList" style="width: 100%" :row-style="rowStyle">
+        <el-table :data="dataList" style="width: 100%" :row-style="rowStyle" border>
             <el-table-column type="index" width="40"/>
             <el-table-column label="paramKey" width="280" ref="param-key-container">
                 <template slot-scope="scope">
@@ -20,7 +20,8 @@
                               :style="{width:countKeyInputWidth(scope.row)}" size="mini"
                               :ref="config.refPre+'paramKey'+scope.$index"
                               @keyup.down.native="moveDown(scope.$index,'paramKey')"
-                              @keyup.up.native="moveUp(scope.$index,'paramKey')"/>
+                              @keyup.up.native="moveUp(scope.$index,'paramKey')" v-if="!config.onlyRead"/>
+                    <template v-else>{{scope.row.paramKey}}</template>
                     <span v-if="scope.row.paramKeyIsEmpty"
                           style="font-size: 12px;color: #F56C6C">enter paramKey</span>
                 </template>
@@ -28,19 +29,23 @@
             <el-table-column label="paramType" width="110">
                 <template slot-scope="scope">
                     <el-select :value="scope.row.paramType+''" filterable size="mini"
-                               @change="(selectedValue)=>scope.row.paramType=selectedValue">
+                               @change="(selectedValue)=>scope.row.paramType=selectedValue"
+                               v-if="!config.onlyRead">
                         <el-option v-for="key in Object.keys(CONSTANT.PARAM_TYPE_STR)"
                                    :key="key" :label="CONSTANT.PARAM_TYPE_STR[key]" :value="key"/>
                     </el-select>
+                    <template v-else>{{CONSTANT.PARAM_TYPE_STR[scope.row.paramType]}}</template>
                 </template>
             </el-table-column>
             <el-table-column label="requireType" width="125">
                 <template slot-scope="scope">
                     <el-select :value="scope.row.requireType+''" size="mini"
-                               @change="(selectedValue)=>scope.row.requireType=selectedValue">
+                               @change="(selectedValue)=>scope.row.requireType=selectedValue"
+                               v-if="!config.onlyRead">
                         <el-option v-for="key in Object.keys(CONSTANT.REQUIRED_TYPE_STR)"
                                    :key="key" :label="CONSTANT.REQUIRED_TYPE_STR[key]" :value="key"/>
                     </el-select>
+                    <template v-else>{{CONSTANT.REQUIRED_TYPE_STR[scope.row.requireType]}}</template>
                 </template>
             </el-table-column>
             <el-table-column label="paramDesc" width="180">
@@ -48,7 +53,9 @@
                     <el-input v-model.trim="scope.row.paramDesc" size="mini"
                               :ref="config.refPre+'paramDesc'+scope.$index"
                               @keyup.down.native="moveDown(scope.$index,'paramDesc')"
-                              @keyup.up.native="moveUp(scope.$index,'paramDesc')"/>
+                              @keyup.up.native="moveUp(scope.$index,'paramDesc')"
+                              v-if="!config.onlyRead"/>
+                    <template v-else>{{scope.row.paramDesc}}</template>
                 </template>
             </el-table-column>
             <el-table-column label="value" width="180">
@@ -56,10 +63,12 @@
                     <el-input v-model.trim="scope.row.value" size="mini"
                               :ref="config.refPre+'value'+scope.$index"
                               @keyup.down.native="moveDown(scope.$index,'value')"
-                              @keyup.up.native="moveUp(scope.$index,'value')"/>
+                              @keyup.up.native="moveUp(scope.$index,'value')"
+                              v-if="!config.onlyRead"/>
+                    <template v-else>{{scope.row.value}}</template>
                 </template>
             </el-table-column>
-            <el-table-column label="operate">
+            <el-table-column label="operate" v-if="!config.onlyRead">
                 <template slot-scope="scope">
                     <el-button size="mini" @click="addSubField(scope.$index,scope.row)">Add Sub Field
                     </el-button>
@@ -88,6 +97,7 @@
                 default() {
                     return {
                         refPre: '',
+                        onlyRead: false,
                     }
                 }
             }
@@ -217,8 +227,8 @@
 <style lang="stylus" rel="stylesheet/stylus">
     .data-structure-common
         .el-table td, .el-table th
-            padding 0
+            padding 0 0 0 3px
 
-        .cell
-            padding 0
+        .cell, div.cell
+            padding 0 0 0 3px
 </style>
