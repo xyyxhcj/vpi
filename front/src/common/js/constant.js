@@ -67,6 +67,7 @@ export const CONSTANT = {
     SESSION_STORAGE_KEY: {
         SELECTED_PROJECT_ID: 'selectedProjectId',
         SELECTED_PROJECT_NAME: 'selectedProjectName',
+        SELECTED_ENV: 'selectedEnv',
     },
     REQUEST_URL: {
         LOGIN: '/user/login',

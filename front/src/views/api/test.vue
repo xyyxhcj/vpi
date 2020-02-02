@@ -6,7 +6,10 @@
                     <el-option :label="CONSTANT.REQUEST_TYPE[0]" :value="0"/>
                     <el-option :label="CONSTANT.REQUEST_TYPE[1]" :value="1"/>
                 </el-select>
-                <el-input v-model="api.apiUri" size="mini" style="width: 92%"/>
+                <el-input v-model="api.apiUri" size="mini" style="width: 92%">
+                    <el-input slot="prepend" v-model="selectedEnv.frontUri" size="mini"
+                              style="padding:0;width: 90px" v-if="selectedEnv"/>
+                </el-input>
             </el-col>
         </el-row>
         <div style="text-align: left;margin: 5px;line-height: 30px;">{{api.name}}</div>
@@ -23,57 +26,25 @@
                         {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
                     </el-radio>
                 </div>
-                <!--<data-structure :data-list="reqShowDataList" :root-list="api.requestParamDto.dataList"
-                                ref="reqDataStructure" :config="{refPre:'editApiReq'}"/>-->
+                <data-structure :data-list="reqShowDataList" :root-list="api.requestParamVo.dataList"
+                                ref="reqDataStructure" :config="{test:true}"/>
             </el-tab-pane>
         </el-tabs>
-        <!--
-        <el-tabs type="card" :value="reqDefaultCard" style="line-height: 25px">
-            <el-tab-pane label="Request Header">
-                <api-headers :data-list="api.requestHeaders" ref="reqHeaders"/>
+        <div style="text-align: left;margin: 10px">
+            <el-dropdown size="small" split-button type="success" @command="command" @click="send">
+                Send
+                <el-dropdown-menu>
+                    <el-dropdown-item :command="newTab">New Tab</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+        <el-tabs type="card" style="line-height: 25px">
+            <el-tab-pane label="Response Info">
+
             </el-tab-pane>
-            <el-tab-pane label="Request Param" name="requestParam">
-                <div style="text-align: left;margin-left: 15px">
-                    <el-radio v-model.trim="api.requestParamType" :label="0" size="mini">
-                        {{CONSTANT.REQUEST_PARAM_TYPE[0]}}
-                    </el-radio>
-                    <el-radio v-model.trim="api.requestParamType" :label="1" size="mini">
-                        {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
-                    </el-radio>
-                </div>
-                <data-structure :data-list="reqShowDataList" :root-list="api.requestParamDto.dataList"
-                                ref="reqDataStructure" :config="{refPre:'editApiReq'}"/>
+            <el-tab-pane label="Request Info">
             </el-tab-pane>
         </el-tabs>
-        <el-tabs type="card" :value="respDefaultCard" style="line-height: 25px">
-            <el-tab-pane label="Response Header">
-                <api-headers :data-list="api.responseHeaders" ref="respHeaders"/>
-            </el-tab-pane>
-            <el-tab-pane label="Response Param" name="responseParam">
-                <div style="text-align: left;margin:0 0 10px 15px">
-                    <el-radio v-model.trim="api.responseParamType" :label="0" size="mini">
-                        {{CONSTANT.RESPONSE_PARAM_TYPE[0]}}
-                    </el-radio>
-                    <el-radio v-model.trim="api.responseParamType" :label="1" size="mini">
-                        {{CONSTANT.RESPONSE_PARAM_TYPE[1]}}
-                    </el-radio>
-                </div>
-                <data-structure :data-list="respShowDataList" :root-list="api.responseParamDto.dataList"
-                                ref="respDataStructure" v-if="api.responseParamType===0"
-                                :config="{refPre:'editApiResp'}"/>
-                <el-input type="textarea" placeholder="remark" v-model="api.responseParamDto.remark" v-else/>
-            </el-tab-pane>
-        </el-tabs>
-        <el-row style="line-height: 25px">
-            <el-col :span="12">
-                <div style="color: #44B549">Success Example</div>
-                <el-input type="textarea" :rows="5" v-model="api.apiSuccessMock"/>
-            </el-col>
-            <el-col :span="12">
-                <div style="color: #F56C6C">Failure Example</div>
-                <el-input type="textarea" :rows="5" v-model="api.apiFailureMock"/>
-            </el-col>
-        </el-row>-->
     </div>
 </template>
 
@@ -111,40 +82,36 @@
                     apiFailureMock: '',
                 },
                 reqDefaultCard: 'requestParam',
-                respDefaultCard: 'responseParam',
                 reqShowDataList: [],
                 respShowDataList: [],
+                responseInfo: {},
+                requestInfo: {},
+                selectedEnv: this.$route.query.selectedEnv,
             };
         },
         methods: {
+            flushEnv(env) {
+                this.selectedEnv = env;
+            },
             init() {
                 this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
                     if (UTILS.checkResp(resp)) {
-                        this.form = resp.data.data;
-                        this.api.requestParamDto = this.api.requestParamVo;
-                        this.api.responseParamDto = this.api.responseParamVo;
-                        if (this.api.requestParamDto) {
-                            UTILS.fillShowDataList(this.api.requestParamDto.dataList, this.reqShowDataList);
-                        } else {
-                            this.reqShowDataList = [JSON.parse(JSON.stringify(CONSTANT.ITEM_TEMPLATE))];
-                            this.api.requestParamDto = {dataList: this.reqShowDataList};
+                        this.api = resp.data.data;
+                        if (this.api.requestParamVo) {
+                            UTILS.fillShowDataList(this.api.requestParamVo.dataList, this.reqShowDataList);
+                            this.$refs['reqDataStructure'].init();
                         }
-                        if (this.api.responseParamDto) {
-                            UTILS.fillShowDataList(this.api.responseParamDto.dataList, this.respShowDataList);
-                        } else {
-                            this.respShowDataList = [JSON.parse(JSON.stringify(CONSTANT.ITEM_TEMPLATE))];
-                            this.api.responseParamDto = {dataList: this.respShowDataList};
-                        }
-                        /*this.$nextTick(() => {
-                            if (this.api.requestHeaders.length === 0) {
-                                this.$refs['reqHeaders'].init();
-                            }
-                            if (this.api.responseHeaders.length === 0) {
-                                this.$refs['respHeaders'].init();
-                            }
-                        });*/
                     }
                 });
+            },
+            send() {
+                console.log('send');
+            },
+            command(func) {
+                func();
+            },
+            newTab() {
+                console.log('newTab');
             },
         },
         mounted() {
@@ -153,5 +120,13 @@
     };
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus" scoped>
+<style lang="stylus" rel="stylesheet/stylus">
+    #api-test-container
+        .el-input-group__prepend
+            padding 0
+            border 0
+
+            .el-input__inner
+                padding 0
+                background-color #f5f5f5
 </style>

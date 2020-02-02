@@ -1,7 +1,8 @@
 <template>
     <div class="data-structure-common">
-        <el-table :data="dataList" style="width: 100%" :row-style="rowStyle" border>
+        <el-table :data="dataList" style="width: 100%" :row-style="rowStyle" border :ref="config.refPre+'table'">
             <el-table-column type="index" width="40"/>
+            <el-table-column type="selection" width="25" v-if="config.test"/>
             <el-table-column label="paramKey" width="280" ref="param-key-container">
                 <template slot-scope="scope">
                     <span :style="{padding:countKeyPadding(scope.row)}">
@@ -37,7 +38,7 @@
                     <template v-else>{{CONSTANT.PARAM_TYPE_STR[scope.row.paramType]}}</template>
                 </template>
             </el-table-column>
-            <el-table-column label="requireType" width="125">
+            <el-table-column label="requireType" width="125" v-if="!config.test">
                 <template slot-scope="scope">
                     <el-select :value="scope.row.requireType+''" size="mini"
                                @change="(selectedValue)=>scope.row.requireType=selectedValue"
@@ -54,7 +55,7 @@
                               :ref="config.refPre+'paramDesc'+scope.$index"
                               @keyup.down.native="moveDown(scope.$index,'paramDesc')"
                               @keyup.up.native="moveUp(scope.$index,'paramDesc')"
-                              v-if="!config.onlyRead"/>
+                              v-if="!config.onlyRead&&!config.test"/>
                     <template v-else>{{scope.row.paramDesc}}</template>
                 </template>
             </el-table-column>
@@ -98,6 +99,7 @@
                     return {
                         refPre: '',
                         onlyRead: false,
+                        test: false,
                     }
                 }
             }
@@ -217,6 +219,12 @@
                         this.rootList.push(item);
                     }
                 }
+                let $refTable = this.$refs[this.config.refPre + 'table'];
+                this.dataList.forEach(row => {
+                    if (row.paramKey !== '' && row.requireType === 0) {
+                        $refTable.toggleRowSelection(row);
+                    }
+                });
             }
         },
         created() {

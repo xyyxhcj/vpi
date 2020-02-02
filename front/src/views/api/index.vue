@@ -1,6 +1,6 @@
 <template>
     <el-container id="api-container" style="min-width: 1250px">
-        <el-header height="35px" style="padding:3px 5px;;text-align: left;line-height: 25px;">
+        <el-header height="45px" style="padding:10px;text-align: left;line-height: 25px;">
             <template v-if="$route.path==='/api/edit'">
                 <el-button type="success" size="mini" @click="save">Save</el-button>
                 <el-button size="mini" @click="$router.go(-1)">Cancel</el-button>
@@ -11,6 +11,17 @@
                 <el-link class="a-link">Copy</el-link>
                 <el-link class="a-link">Delete</el-link>
             </template>
+            <template v-if="$route.path==='/api/test'">
+                <el-link class="a-link" @click="edit">Edit</el-link>
+            </template>
+            <el-select v-model="selectedEnvName" filterable placeholder="choose environment" clearable
+                       @change="selectEnv" style="float: right;margin-right: 30px" size="mini">
+                <el-option v-for="item in envConfigList" :key="item.id" :value="item">
+                    <el-tooltip :content="item.frontUri" placement="left">
+                        <span style="width: 100%">{{item.name}}</span>
+                    </el-tooltip>
+                </el-option>
+            </el-select>
         </el-header>
         <el-main>
             <router-view ref="api-sub-router"/>
@@ -19,9 +30,35 @@
 </template>
 
 <script type="text/ecmascript-6">
+    import {CONSTANT} from "../../common/js/constant";
+    import {UTILS} from "../../common/js/utils";
+
     export default {
         name: 'index',
+        data() {
+            return {
+                projectId: this.$store.getters.selectedProjectId,
+                envConfigList: [],
+                selectedEnv: undefined,
+                selectedEnvName: '',
+            }
+        },
         methods: {
+            init() {
+                this.$axios.post(CONSTANT.REQUEST_URL.API_ENV_FIND_LIST, {projectId: this.projectId}).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.envConfigList = resp.data.data;
+                    }
+                });
+            },
+            selectEnv(env) {
+                this.selectedEnv = env;
+                this.selectedEnvName = env.name;
+                let $ref = this.$refs['api-sub-router'];
+                if ($ref.flushEnv) {
+                    $ref.flushEnv(env);
+                }
+            },
             save() {
                 this.$refs['api-sub-router'].save();
             },
@@ -34,11 +71,15 @@
             test() {
                 this.$router.push({
                     path: '/api/test',
-                    query: {id: this.$route.query.id}
+                    query: {
+                        id: this.$route.query.id,
+                        selectedEnv: this.selectedEnv
+                    }
                 });
             },
         },
         created() {
+            this.init();
         }
     };
 </script>
