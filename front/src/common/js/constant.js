@@ -182,6 +182,10 @@ export const CONSTANT = {
         7: 'Docking',
         8: 'Bug',
     },
+    CONTENT_TYPE: [
+        ['Content-Type', 'application/json'],
+        ['Content-Type', 'application/x-www-form-urlencoded'],
+    ],
     REQUEST_PARAM_TYPE: {
         0: 'json', 1: 'form',
     },

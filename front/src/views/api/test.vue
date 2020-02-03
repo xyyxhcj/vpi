@@ -104,8 +104,101 @@
                     }
                 });
             },
+            getParams() {
+                let params = {};
+                let stack = [];
+                this.api.requestParamVo.dataList.forEach(data => {
+                    let paramKey = data.paramKey;
+                    if (paramKey !== '') {
+                        let value;
+                        if (data.subList.length > 0) {
+                            if (data.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
+                                // array
+                                value = [{}];
+                            } else {
+                                // object
+                                value = {};
+                            }
+                            data.subList.forEach(item => stack.push({keys: [paramKey], value: item}));
+                        } else {
+                            value = data.value;
+                        }
+                        params[paramKey] = value;
+                    }
+                });
+                while (stack.length > 0) {
+                    let {keys: keys, value: pop} = stack.pop();
+                    let paramKey = pop.paramKey;
+                    if (paramKey !== '') {
+                        let value;
+                        if (pop.subList.length > 0) {
+                            if (pop.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
+                                // array
+                                value = [{}];
+                            } else {
+                                // object
+                                value = {};
+                            }
+                            pop.subList.forEach(item => stack.push({
+                                keys: keys.splice(keys.length - 1, 0, paramKey),
+                                value: item
+                            }));
+                        } else {
+                            value = pop.value;
+                        }
+                        let position;
+                        keys.forEach(key => {
+                            position = params[key]
+                        });
+                        if (Array.isArray(position)) {
+                            console.log(position[0]);
+                            position[0][paramKey] = value;
+                        } else {
+                            // object
+                            position[paramKey] = value;
+                        }
+                    }
+                }
+                return params;
+            },
             send() {
                 console.log('send');
+                let url = this.selectedEnv ? (this.selectedEnv.frontUri + this.api.apiUri) : this.api.apiUri;
+                let headers = {};
+                this.api.requestHeaders.forEach(item => {
+                    headers[item.name] = item.value;
+                });
+                console.log(CONSTANT.CONTENT_TYPE[this.api.requestParamType]);
+                let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
+                console.log(contentTypeName);
+                console.log(contentTypeValue);
+                // headers[contentTypeName] = contentTypeValue;
+                // if ( === 0) {
+                //     // json
+                //     CONSTANT.CONTENT_TYPE[]
+                //     headers[]
+                // } else {
+                //     // form
+                // }
+                let params = this.getParams();
+                if (this.api.apiRequestType === 0) {
+                    // post
+                    console.log(url);
+                    this.$axios.post(url, params, {headers: headers}).then(resp => {
+                        console.log(resp);
+                    });
+                } else {
+
+                }
+                this.api.requestHeaders;
+                // this.$axios.request({
+                //     url: url,
+                //     method: CONSTANT.REQUEST_TYPE[this.api.apiRequestType],
+                //     data: this.api.requestParamVo.dataList,
+                //     headers: headers,
+                // }).then(resp => {
+                //     console.log(resp);
+                // });
             },
             command(func) {
                 func();
