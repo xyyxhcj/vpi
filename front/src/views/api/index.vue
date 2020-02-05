@@ -73,7 +73,7 @@
                     path: '/api/test',
                     query: {
                         id: this.$route.query.id,
-                        selectedEnv: this.selectedEnv
+                        selectedEnv: this.selectedEnv,
                     }
                 });
             },

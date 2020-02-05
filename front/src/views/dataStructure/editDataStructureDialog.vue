@@ -70,9 +70,7 @@
                         this.$message.error('params lose');
                         return;
                     }
-                    let copyRootList = JSON.parse(JSON.stringify(this.rootList, function (key, value) {
-                        return key === 'parent' ? null : value;
-                    }));
+                    let copyRootList = JSON.parse(JSON.stringify(this.rootList, (key, value) => key === 'parent' ? null : value));
                     UTILS.filterEmptyParams(copyRootList);
                     this.form.dataList = copyRootList;
                     this.$axios.post(this.dialog.url, this.form).then(resp => {

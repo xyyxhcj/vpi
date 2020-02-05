@@ -31,8 +31,8 @@
             </el-tab-pane>
         </el-tabs>
         <div style="text-align: left;margin: 10px">
-            <el-dropdown size="small" split-button type="success" @command="command" @click="send">
-                Send
+            <el-dropdown size="small" split-button type="success" @command="command">
+                <span id="testButton">Send</span>
                 <el-dropdown-menu>
                     <el-dropdown-item :command="newTab">New Tab</el-dropdown-item>
                 </el-dropdown-menu>
@@ -45,6 +45,11 @@
             <el-tab-pane label="Request Info">
             </el-tab-pane>
         </el-tabs>
+        <div id="app-hidden" style="width:0;height: 0" ref="test">
+            <div style="visibility: hidden" id="test-params">{{(JSON.stringify(api, (key, value) => key ===
+                'parent' ? null : value))}}
+            </div>
+        </div>
     </div>
 </template>
 
