@@ -38,19 +38,21 @@
                     <el-dropdown-item :command="newTab">New Tab</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button @click="test" value="test"/>
         </div>
-        <el-tabs type="card" style="line-height: 25px">
+        <el-tabs type="card" class="test-info">
             <el-tab-pane label="Response Info">
+                <line-text style="color: #44B549" text="Headers"/>
+                <div id="resp-headers" ref="respHeaders" class="headers"></div>
+                <line-text style="color: #44B549" text="Response Body"/>
+                <pre id="resp-data" ref="respData" class="data"/>
             </el-tab-pane>
             <el-tab-pane label="Request Info">
+                <line-text style="color: #44B549" text="Headers"/>
+                <div id="req-headers" ref="respHeaders" class="headers"></div>
+                <line-text style="color: #44B549" text="Request Body"/>
+                <pre id="req-data" ref="reqData" class="data"/>
             </el-tab-pane>
         </el-tabs>
-        <div style="visibility: hidden">
-            <div id="hidden-token" ref="respToken"></div>
-            <div id="hidden-response" ref="respData"></div>
-            <div id="hidden-response-header" ref="respHeaders"></div>
-        </div>
     </div>
 </template>
 
@@ -59,10 +61,11 @@
     import {UTILS} from "../../common/js/utils";
     import ApiHeaders from "./components/apiHeaders";
     import DataStructure from "../../components/dataStructure/dataStructure";
+    import LineText from "../../components/lineText/lineText";
 
     export default {
         name: 'test',
-        components: {DataStructure, ApiHeaders},
+        components: {LineText, DataStructure, ApiHeaders},
         data() {
             return {
                 CONSTANT,
@@ -93,15 +96,17 @@
                 responseInfo: {},
                 requestInfo: {},
                 selectedEnv: this.$route.query.selectedEnv,
-                reqToken: '',
                 sendDisable: false,
             };
         },
-        methods: {
-            test() {
-                console.log(this.$refs['respData'].innerHTML);
-                console.log(this.$refs['respHeaders'].innerHTML);
+        computed: {
+            respData: {
+                get() {
+                    return this.$refs['respData'].innerHTML;
+                }
             },
+        },
+        methods: {
             flushEnv(env) {
                 this.selectedEnv = env;
             },
@@ -183,14 +188,13 @@
                 headers[contentTypeName] = contentTypeValue;
                 let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
                 let params = this.getParams();
-                this.reqToken = new Date().getTime();
                 window.postMessage({
                     url: url,
                     headers: headers,
                     method: method,
                     params: params,
-                    token: this.reqToken,
                 }, '*');
+                setTimeout(() => this.sendDisable = false, 1000);
             },
             command(func) {
                 func();
@@ -214,4 +218,24 @@
             .el-input__inner
                 padding 0
                 background-color #f5f5f5
+
+        .test-info
+            text-align left
+            position relative
+            height 450px
+
+            .headers
+                font-size 12px
+                line-height 15px
+
+            .data
+                left 0
+                top 0
+                right 0
+                bottom 0
+                overflow-y auto
+                overflow-x hidden
+                font-size 15px
+                line-height 19px
+
 </style>
