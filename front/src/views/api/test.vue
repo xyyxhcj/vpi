@@ -31,24 +31,25 @@
             </el-tab-pane>
         </el-tabs>
         <div style="text-align: left;margin: 10px">
-            <el-dropdown size="small" split-button type="success" @command="command">
-                <span id="testButton">Send</span>
+            <el-dropdown size="small" split-button type="success" @command="command"
+                         @click="()=>!sendDisable?send():''">
+                {{!sendDisable?'Send':'Wait...'}}
                 <el-dropdown-menu>
                     <el-dropdown-item :command="newTab">New Tab</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
+            <el-button @click="test" value="test"/>
         </div>
         <el-tabs type="card" style="line-height: 25px">
             <el-tab-pane label="Response Info">
-
             </el-tab-pane>
             <el-tab-pane label="Request Info">
             </el-tab-pane>
         </el-tabs>
-        <div id="app-hidden" style="width:0;height: 0" ref="test">
-            <div style="visibility: hidden" id="test-params">{{(JSON.stringify(api, (key, value) => key ===
-                'parent' ? null : value))}}
-            </div>
+        <div style="visibility: hidden">
+            <div id="hidden-token" ref="respToken"></div>
+            <div id="hidden-response" ref="respData"></div>
+            <div id="hidden-response-header" ref="respHeaders"></div>
         </div>
     </div>
 </template>
@@ -92,9 +93,15 @@
                 responseInfo: {},
                 requestInfo: {},
                 selectedEnv: this.$route.query.selectedEnv,
+                reqToken: '',
+                sendDisable: false,
             };
         },
         methods: {
+            test() {
+                console.log(this.$refs['respData'].innerHTML);
+                console.log(this.$refs['respHeaders'].innerHTML);
+            },
             flushEnv(env) {
                 this.selectedEnv = env;
             },
@@ -156,7 +163,6 @@
                             position = params[key]
                         });
                         if (Array.isArray(position)) {
-                            console.log(position[0]);
                             position[0][paramKey] = value;
                         } else {
                             // object
@@ -167,43 +173,24 @@
                 return params;
             },
             send() {
-                console.log('send');
+                this.sendDisable = true;
                 let url = this.selectedEnv ? (this.selectedEnv.frontUri + this.api.apiUri) : this.api.apiUri;
                 let headers = {};
                 this.api.requestHeaders.forEach(item => {
                     headers[item.name] = item.value;
                 });
-                console.log(CONSTANT.CONTENT_TYPE[this.api.requestParamType]);
                 let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
-                console.log(contentTypeName);
-                console.log(contentTypeValue);
-                // headers[contentTypeName] = contentTypeValue;
-                // if ( === 0) {
-                //     // json
-                //     CONSTANT.CONTENT_TYPE[]
-                //     headers[]
-                // } else {
-                //     // form
-                // }
+                headers[contentTypeName] = contentTypeValue;
+                let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
                 let params = this.getParams();
-                if (this.api.apiRequestType === 0) {
-                    // post
-                    console.log(url);
-                    this.$axios.post(url, params, {headers: headers}).then(resp => {
-                        console.log(resp);
-                    });
-                } else {
-
-                }
-                this.api.requestHeaders;
-                // this.$axios.request({
-                //     url: url,
-                //     method: CONSTANT.REQUEST_TYPE[this.api.apiRequestType],
-                //     data: this.api.requestParamVo.dataList,
-                //     headers: headers,
-                // }).then(resp => {
-                //     console.log(resp);
-                // });
+                this.reqToken = new Date().getTime();
+                window.postMessage({
+                    url: url,
+                    headers: headers,
+                    method: method,
+                    params: params,
+                    token: this.reqToken,
+                }, '*');
             },
             command(func) {
                 func();

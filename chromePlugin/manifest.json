@@ -12,7 +12,6 @@
     "<all_urls>"
   ],
   "background": {
-    "page": "html/background.html"
   },
   "content_scripts": [
     {
@@ -20,7 +19,6 @@
         "*://*/api/test*"
       ],
       "js": [
-        "js/vue.js",
         "js/vpi.js"
       ],
       "run_at": "document_end"
