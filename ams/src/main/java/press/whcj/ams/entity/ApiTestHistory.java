@@ -31,7 +31,7 @@ public class ApiTestHistory implements Serializable {
     /**
     * json
     */
-    private String resultInfo;
+    private String responseInfo;
     @DBRef
     @JsonBackReference("create")
     private User create;
@@ -42,4 +42,12 @@ public class ApiTestHistory implements Serializable {
     private LocalDateTime createTime;
 
     private static final long serialVersionUID = 1L;
+
+    public String getCreateId() {
+        return create == null ? null : create.getId();
+    }
+
+    public String getCreateName() {
+        return create == null ? null : create.getUserName();
+    }
 }

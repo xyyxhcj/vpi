@@ -99,7 +99,6 @@ function axios(url, method, data, headers = undefined) {
 
 window.addEventListener("message", function (e) {
     if ('webpackOk' !== e.data.type) {
-        console.log(e.data);
         let {url, headers, method, params} = e.data;
         axios(url, method, JSON.stringify(params), headers).then(({resp, respHeaders}) => {
             document.getElementById('resp-headers').innerText = respHeaders;
