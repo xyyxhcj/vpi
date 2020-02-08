@@ -16,4 +16,6 @@ public interface ApiService {
 	MongoPage<ApiVo> findPage(ApiDto apiDto);
 
 	ApiVo findDetail(ApiDto apiDto);
+
+	void saveMock(ApiDto apiDto);
 }

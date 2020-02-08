@@ -33,6 +33,12 @@ public class ApiController extends BaseController {
 		return ok(id);
 	}
 
+	@RequestMapping("saveMock")
+	public Result<String> saveMock(@RequestBody ApiDto apiDto) {
+		apiService.saveMock(apiDto);
+		return ok();
+	}
+
 	@RequestMapping("edit")
 	public Result<String> edit(@RequestBody ApiDto apiDto) {
 		FastUtils.checkParams(apiDto.getId());

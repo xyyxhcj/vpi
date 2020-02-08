@@ -7,8 +7,7 @@
                     <el-option :label="CONSTANT.REQUEST_TYPE[1]" :value="1"/>
                 </el-select>
                 <el-input v-model="api.apiUri" size="mini" style="width: 91%">
-                    <el-input slot="prepend" v-model="selectedEnv.frontUri" size="mini"
-                              style="padding:0;width: 150px" v-if="selectedEnv"/>
+                    <template slot="prepend">{{selectedEnv?selectedEnv.frontUri:''}}</template>
                 </el-input>
             </el-col>
         </el-row>
@@ -44,6 +43,13 @@
                 <line-text style="color: #44B549" text="Headers"/>
                 <div id="resp-headers" ref="respHeaders" class="headers"></div>
                 <line-text style="color: #44B549" text="Response Body"/>
+                <el-dropdown size="mini" split-button type="primary" @click="saveMock(true)" @command="command"
+                             v-if="$refs['respData']&&$refs['respData'].innerHTML.length>0">
+                    Save Success Mock
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item :command="()=>saveMock(false)">saveFailureMock</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
                 <pre id="resp-data" ref="respData" class="data"/>
             </el-tab-pane>
             <el-tab-pane label="Request Info">
@@ -217,6 +223,17 @@
             newTab() {
                 console.log('newTab');
             },
+            saveMock(isSuccess) {
+                let params = this.$refs['respData'].innerHTML;
+                let mock = JSON.stringify(JSON.parse(params.replace(/<br>/g, '')));
+                let reqData = {id: this.api.id};
+                if (isSuccess) {
+                    reqData['apiSuccessMock'] = mock;
+                } else {
+                    reqData['apiFailureMock'] = mock;
+                }
+                this.$axios.post(CONSTANT.REQUEST_URL.API_SAVE_MOCK, reqData);
+            }
         },
         mounted() {
             this.init();
@@ -227,7 +244,7 @@
 <style lang="stylus" rel="stylesheet/stylus">
     #api-test-container
         .el-input-group__prepend
-            padding 0
+            padding 5px
             border 0
 
             .el-input__inner

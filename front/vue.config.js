@@ -1,8 +1,10 @@
-import {CONSTANT} from "./src/common/js/constant";
-
-const HOST_URL = CONSTANT.HOST_URL;
-const debug = CONSTANT.CONFIG.DEBUG;
-const profilesActive = CONSTANT.CONFIG.getProfilesActive(debug);
+const HOST_URL = {
+    dev: 'http://120.132.18.250:11111',
+    // dev: 'http://127.0.0.1:11111',
+    prod: 'http://120.132.18.250',
+};
+const debug = process.env.NODE_ENV !== 'production';
+const profilesActive = debug ? 'dev' : 'prod';
 
 module.exports = {
     publicPath: '/',

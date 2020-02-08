@@ -4,6 +4,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.querydsl.QSort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -123,6 +124,22 @@ public class ApiServiceImpl implements ApiService {
             }
         }
         return detail;
+    }
+
+    @Override
+    public void saveMock(ApiDto apiDto) {
+        FastUtils.checkParams(apiDto.getId());
+        String updateColumn;
+        String mock;
+        if (!StringUtils.isEmpty(apiDto.getApiSuccessMock())) {
+            mock = apiDto.getApiSuccessMock();
+            updateColumn = ColumnName.API_SUCCESS_MOCK;
+        } else {
+            FastUtils.checkParams(apiDto.getApiFailureMock());
+            mock = apiDto.getApiFailureMock();
+            updateColumn = ColumnName.API_FAILURE_MOCK;
+        }
+        mongoTemplate.updateFirst(new Query(Criteria.where(ColumnName.ID).is(apiDto.getId())), Update.update(updateColumn, mock), Api.class);
     }
 
     private String saveApiParams(StructureDto paramDto, UserVo operator, String projectId) {
