@@ -59,6 +59,13 @@ export const CONSTANT = {
         USER_SHOW_STYLE: '{userName} ({loginName})',
         ADMIN_LOGIN_NAME: 'admin',
         DEFAULT_DATA_LIST_SIZE: 3,
+        DEBUG: process.env.NODE_ENV !== 'production',
+        getProfilesActive: (debug) => debug ? 'dev' : 'prod',
+    },
+    HOST_URL: {
+        dev: 'http://120.132.18.250:11111',
+        // dev: 'http://127.0.0.1:11111',
+        prod: 'http://120.132.18.250',
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
@@ -103,6 +110,9 @@ export const CONSTANT = {
         API_EDIT: '/api/edit',
         API_FIND_DETAIL: '/api/findDetail',
         API_FIND_PAGE: '/api/findPage',
+
+        API_TEST_HISTORY_ADD: '/apiTestHistory/add',
+        API_TEST_HISTORY_FIND_PAGE: '/apiTestHistory/findPage',
     },
     CLOSE_LOADING_URL: [
         '/system/sysUserWechat/loginAsync',
@@ -183,8 +193,8 @@ export const CONSTANT = {
         8: 'Bug',
     },
     CONTENT_TYPE: [
-        ['Content-Type', 'application/json'],
-        ['Content-Type', 'application/x-www-form-urlencoded'],
+        ['Content-Type', 'application/json;charset=UTF-8'],
+        ['Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8'],
     ],
     REQUEST_PARAM_TYPE: {
         0: 'json', 1: 'form',

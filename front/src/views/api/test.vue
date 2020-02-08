@@ -71,6 +71,7 @@
                 CONSTANT,
                 UTILS,
                 api: {
+                    id: '',
                     projectId: this.$store.getters.selectedProjectId,
                     name: '',
                     apiUri: '/',
@@ -178,23 +179,37 @@
                 return params;
             },
             send() {
+                let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
                 this.sendDisable = true;
                 let url = this.selectedEnv ? (this.selectedEnv.frontUri + this.api.apiUri) : this.api.apiUri;
-                let headers = {};
-                this.api.requestHeaders.forEach(item => {
-                    headers[item.name] = item.value;
-                });
-                let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
-                headers[contentTypeName] = contentTypeValue;
-                let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
-                let params = this.getParams();
-                window.postMessage({
-                    url: url,
-                    headers: headers,
-                    method: method,
-                    params: params,
-                }, '*');
-                setTimeout(() => this.sendDisable = false, 1000);
+                try {
+                    if (url.startsWith('/')) {
+                        this.$message.error('url error：' + url);
+                        return;
+                    }
+                    let headers = {};
+                    this.api.requestHeaders.forEach(item => {
+                        headers[item.name] = item.value;
+                    });
+                    let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
+                    headers[contentTypeName] = contentTypeValue;
+                    let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
+                    let params = this.getParams();
+                    let logHeaders = {};
+                    logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
+                    logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
+                    window.postMessage({
+                        url: url,
+                        headers: headers,
+                        method: method,
+                        params: params,
+                        logUrl: HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
+                        logHeaders: logHeaders,
+                        apiId: this.api.id,
+                    }, '*');
+                } finally {
+                    setTimeout(() => this.sendDisable = false, 1000);
+                }
             },
             command(func) {
                 func();

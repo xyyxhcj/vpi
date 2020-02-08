@@ -99,7 +99,10 @@ function axios(url, method, data, headers = undefined) {
 
 window.addEventListener("message", function (e) {
     if ('webpackOk' !== e.data.type) {
-        let {url, headers, method, params} = e.data;
+        let {url, headers, method, params, logUrl, logHeaders, apiId} = e.data;
+        if (!url) {
+            return;
+        }
         axios(url, method, JSON.stringify(params), headers).then(({resp, respHeaders}) => {
             document.getElementById('resp-headers').innerText = respHeaders;
             document.getElementById('resp-data').innerText = formatJson(resp);
@@ -119,6 +122,11 @@ window.addEventListener("message", function (e) {
                 }
             });
             let jsonHeaders = JSON.stringify(headerDict);
+            axios(logUrl, 'POST', JSON.stringify({
+                apiId: apiId,
+                requestInfo: JSON.stringify({headers: headers, data: params}),
+                responseInfo: JSON.stringify({headers: headerDict, data: resp}),
+            }), logHeaders);
         });
     }
 }, false);
