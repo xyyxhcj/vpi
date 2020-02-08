@@ -3,7 +3,7 @@
         <el-header height="45px" style="padding:10px;text-align: left;line-height: 25px;">
             <template v-if="$route.path==='/api/edit'">
                 <el-button type="success" size="mini" @click="save">Save</el-button>
-                <el-button size="mini" @click="$router.go(-1)">Cancel</el-button>
+                <el-button size="mini" @click="view">Cancel</el-button>
             </template>
             <template v-if="$route.path==='/api/detail'">
                 <el-link class="a-link" @click="test">Test</el-link>
@@ -13,6 +13,7 @@
             </template>
             <template v-if="$route.path==='/api/test'">
                 <el-link class="a-link" @click="edit">Edit</el-link>
+                <el-link class="a-link" @click="view">View</el-link>
             </template>
             <el-select v-model="selectedEnvName" filterable placeholder="choose environment" clearable
                        @change="selectEnv" style="float: right;margin-right: 30px" size="mini">
@@ -77,6 +78,12 @@
                     }
                 });
             },
+            view() {
+                this.$router.push({
+                    path: '/api/detail',
+                    query: {id: this.$route.query.id}
+                });
+            }
         },
         created() {
             this.init();

@@ -232,7 +232,11 @@
                 } else {
                     reqData['apiFailureMock'] = mock;
                 }
-                this.$axios.post(CONSTANT.REQUEST_URL.API_SAVE_MOCK, reqData);
+                this.$axios.post(CONSTANT.REQUEST_URL.API_SAVE_MOCK, reqData).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.$message.success('saved');
+                    }
+                });
             }
         },
         mounted() {
