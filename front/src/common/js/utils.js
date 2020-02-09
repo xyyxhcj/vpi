@@ -228,6 +228,16 @@ export const UTILS = {
         });
         return formatted;
     },
+    isJSON: function (str) {
+        if (typeof str == 'string') {
+            try {
+                let obj = JSON.parse(str);
+                return !!(typeof obj == 'object' && obj);
+            } catch (e) {
+                return false;
+            }
+        }
+    },
     /* project common function */
     errorMsg: function (obj, resp) {
         obj.$message({

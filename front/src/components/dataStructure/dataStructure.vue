@@ -69,23 +69,29 @@
                     <template v-else>{{scope.row.value}}</template>
                 </template>
             </el-table-column>
-            <el-table-column label="operate" v-if="!config.onlyRead">
+            <el-table-column v-if="!config.onlyRead" min-width="250px">
+                <template slot="header">
+                    <el-button size="mini" type="success" @click="showImportJsonDialog">Import Json</el-button>
+                    <el-button size="mini" @click="addField">Add Field</el-button>
+                </template>
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="addSubField(scope.$index,scope.row)">Add Sub Field
-                    </el-button>
-                    <el-button size="mini" type="danger" @click="del(scope.$index,scope.row)">Delete
-                    </el-button>
+                    <el-button size="mini" type="success" @click="showImportJsonDialog(scope.$index,scope.row)">Import Json</el-button>
+                    <el-button size="mini" @click="addSubField(scope.$index,scope.row)">Add Sub Field</el-button>
+                    <el-button size="mini" type="danger" @click="del(scope.$index,scope.row)">Delete</el-button>
                 </template>
             </el-table-column>
         </el-table>
+        <import-json-dialog :dialog="importJsonDialog" :data-list="dataList" :root-list="rootList" @flush="importJson"></import-json-dialog>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {CONSTANT} from "../../common/js/constant";
+    import ImportJsonDialog from "../../views/api/importJsonDialog";
 
     export default {
         name: 'dataStructure',
+        components: {ImportJsonDialog},
         props: {
             dataList: {
                 type: Array,
@@ -108,9 +114,27 @@
             return {
                 CONSTANT,
                 itemTemplateStr: JSON.stringify(CONSTANT.ITEM_TEMPLATE),
+                importJsonDialog: {
+                    show: false,
+                    title: 'import json',
+                    row: undefined,
+                    rowIndex: undefined,
+                }
             }
         },
         methods: {
+            importJson() {
+                console.log(this.importJsonDialog);
+            },
+            showImportJsonDialog(index,row) {
+                this.importJsonDialog.row = row;
+                if (row !== undefined) {
+                    this.importJsonDialog.rowIndex = index;
+                } else {
+                    this.importJsonDialog.rowIndex = undefined;
+                }
+                this.importJsonDialog.show = true;
+            },
             moveUp(index, refMid) {
                 if (index !== 0) {
                     this.$refs[this.config.refPre + refMid + (index - 1)].focus();
@@ -152,9 +176,7 @@
             paramKeyChange(index, row) {
                 if (!row.parent && this.rootList[this.rootList.length - 1] === row) {
                     // add root
-                    let item = JSON.parse(this.itemTemplateStr);
-                    this.rootList.push(item);
-                    this.dataList.push(item);
+                    this.addField();
                 }
                 row.paramKeyIsEmpty = row.paramKey === '' && (row.paramDesc !== '' || row.value !== '');
             },
@@ -164,6 +186,11 @@
                     preWidth += 19;
                 }
                 return this.$refs['param-key-container'].width - 20 - preWidth + 'px';
+            },
+            addField() {
+                let item = JSON.parse(this.itemTemplateStr);
+                this.rootList.push(item);
+                this.dataList.push(item);
             },
             addSubField(index, row) {
                 let item = JSON.parse(this.itemTemplateStr);
@@ -239,4 +266,7 @@
 
         .cell, div.cell
             padding 0 0 0 3px
+
+        .el-button
+            padding 7px 7px
 </style>
