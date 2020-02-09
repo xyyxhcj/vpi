@@ -71,11 +71,17 @@
             </el-table-column>
             <el-table-column v-if="!config.onlyRead" min-width="250px">
                 <template slot="header">
-                    <el-button size="mini" type="success" @click="showImportJsonDialog">Import Json</el-button>
+                    <el-tooltip class="item" effect="dark" content="override" placement="left">
+                        <el-button size="mini" type="success" @click="showImportJsonDialog">Import Json</el-button>
+                    </el-tooltip>
                     <el-button size="mini" @click="addField">Add Field</el-button>
                 </template>
                 <template slot-scope="scope">
-                    <el-button size="mini" type="success" @click="showImportJsonDialog(scope.$index,scope.row)">Import Json</el-button>
+                    <el-tooltip class="item" effect="dark" content="additional" placement="left">
+                        <el-button size="mini" type="success" @click="showImportJsonDialog(scope.$index,scope.row)">
+                            Import Json
+                        </el-button>
+                    </el-tooltip>
                     <el-button size="mini" @click="addSubField(scope.$index,scope.row)">Add Sub Field</el-button>
                     <el-button size="mini" type="danger" @click="del(scope.$index,scope.row)">Delete</el-button>
                 </template>
@@ -117,6 +123,7 @@
                 importJsonDialog: {
                     show: false,
                     title: 'import json',
+                    parentLevel: -1,
                     row: undefined,
                     rowIndex: undefined,
                 }
@@ -127,19 +134,38 @@
                 if (!data) {
                     return;
                 }
+                this.dataList.splice(0);
                 if (this.importJsonDialog.row === undefined) {
-                    this.dataList.splice(0);
                     this.rootList.splice(0);
                     data.forEach(item => this.rootList.push(item));
-                    UTILS.fillShowDataList(this.rootList, this.dataList);
+                } else {
+                    if (this.importJsonDialog.row.subList !== undefined) {
+                        let dict = {};
+                        for (let i = 0; i < this.importJsonDialog.row.subList.length; i++) {
+                            dict[this.importJsonDialog.row.subList[i].paramKey] = i;
+                        }
+                        data.forEach(item => {
+                            let index = dict[item.paramKey];
+                            if (index !== undefined) {
+                                this.importJsonDialog.row.subList[index] = item;
+                            } else {
+                                this.importJsonDialog.row.subList.push(item);
+                            }
+                        });
+                    } else {
+                        this.importJsonDialog.row.subList = [];
+                    }
                 }
+                UTILS.fillShowDataList(this.rootList, this.dataList);
             },
-            showImportJsonDialog(index,row) {
+            showImportJsonDialog(index, row) {
                 this.importJsonDialog.row = row;
                 if (row !== undefined) {
                     this.importJsonDialog.rowIndex = index;
+                    this.importJsonDialog.parentLevel = row.level;
                 } else {
                     this.importJsonDialog.rowIndex = undefined;
+                    this.importJsonDialog.parentLevel = -1;
                 }
                 this.importJsonDialog.show = true;
             },

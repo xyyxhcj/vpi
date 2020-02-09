@@ -98,6 +98,7 @@
                 }
                 this.$emit('flush', result);
                 this.dialog.show = false;
+                this.jsonData = '';
             }
         }
     };
