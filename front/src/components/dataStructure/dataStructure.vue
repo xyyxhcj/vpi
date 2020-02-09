@@ -81,13 +81,14 @@
                 </template>
             </el-table-column>
         </el-table>
-        <import-json-dialog :dialog="importJsonDialog" :data-list="dataList" :root-list="rootList" @flush="importJson"></import-json-dialog>
+        <import-json-dialog :dialog="importJsonDialog" @flush="importJson"></import-json-dialog>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {CONSTANT} from "../../common/js/constant";
-    import ImportJsonDialog from "../../views/api/importJsonDialog";
+    import ImportJsonDialog from "./importJsonDialog";
+    import {UTILS} from "../../common/js/utils";
 
     export default {
         name: 'dataStructure',
@@ -113,7 +114,6 @@
         data() {
             return {
                 CONSTANT,
-                itemTemplateStr: JSON.stringify(CONSTANT.ITEM_TEMPLATE),
                 importJsonDialog: {
                     show: false,
                     title: 'import json',
@@ -123,8 +123,16 @@
             }
         },
         methods: {
-            importJson() {
-                console.log(this.importJsonDialog);
+            importJson(data) {
+                if (!data) {
+                    return;
+                }
+                if (this.importJsonDialog.row === undefined) {
+                    this.dataList.splice(0);
+                    this.rootList.splice(0);
+                    data.forEach(item => this.rootList.push(item));
+                    UTILS.fillShowDataList(this.rootList, this.dataList);
+                }
             },
             showImportJsonDialog(index,row) {
                 this.importJsonDialog.row = row;
@@ -188,12 +196,10 @@
                 return this.$refs['param-key-container'].width - 20 - preWidth + 'px';
             },
             addField() {
-                let item = JSON.parse(this.itemTemplateStr);
-                this.rootList.push(item);
-                this.dataList.push(item);
+                UTILS.pushItemTemplate(this.rootList, this.dataList);
             },
             addSubField(index, row) {
-                let item = JSON.parse(this.itemTemplateStr);
+                let item = JSON.parse(CONSTANT.ITEM_TEMPLATE);
                 item.level = row.level + 1;
                 item.parent = row;
                 row.subList.splice(0, 0, item);
@@ -241,9 +247,7 @@
             init() {
                 if (this.dataList.length === 0) {
                     for (let i = 0; i < CONSTANT.CONFIG.DEFAULT_DATA_LIST_SIZE; i++) {
-                        let item = JSON.parse(this.itemTemplateStr);
-                        this.dataList.push(item);
-                        this.rootList.push(item);
+                        UTILS.pushItemTemplate(this.rootList, this.dataList);
                     }
                 }
                 let $refTable = this.$refs[this.config.refPre + 'table'];

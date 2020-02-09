@@ -203,7 +203,7 @@ export const CONSTANT = {
     RESPONSE_PARAM_TYPE: {
         0: 'json', 1: 'binary',
     },
-    ITEM_TEMPLATE: {
+    ITEM_TEMPLATE: JSON.stringify({
         paramKey: '',
         paramType: 0,
         requireType: 0,
@@ -213,6 +213,6 @@ export const CONSTANT = {
         subList: [],
         paramKeyIsEmpty: false,
         show: true,
-    },
+    }),
 };
 

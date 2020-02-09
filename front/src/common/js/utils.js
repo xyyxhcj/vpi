@@ -311,6 +311,11 @@ export const UTILS = {
             }
         }
     },
+    pushItemTemplate: function (treeList, dataList) {
+        let item = JSON.parse(CONSTANT.ITEM_TEMPLATE);
+        treeList.push(item);
+        dataList.push(item);
+    },
     fillShowDataList(sourceTree, destList) {
         let stack = sourceTree.slice();
         while (stack.length > 0) {
@@ -331,10 +336,7 @@ export const UTILS = {
                 }
             }
         }
-        let itemTemplateStr = JSON.stringify(CONSTANT.ITEM_TEMPLATE);
-        let item = JSON.parse(itemTemplateStr);
-        destList.push(item);
-        sourceTree.push(item);
+        this.pushItemTemplate(sourceTree, destList);
     },
     checkAuth: function (obj, permissionId) {
         return this.contains(obj.btnList, permissionId, function (btn, element) {

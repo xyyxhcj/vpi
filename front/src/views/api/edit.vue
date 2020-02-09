@@ -121,13 +121,13 @@
                             if (this.form.requestParamDto) {
                                 UTILS.fillShowDataList(this.form.requestParamDto.dataList, this.reqShowDataList);
                             } else {
-                                this.reqShowDataList = [JSON.parse(JSON.stringify(CONSTANT.ITEM_TEMPLATE))];
+                                this.reqShowDataList = [JSON.parse(CONSTANT.ITEM_TEMPLATE)];
                                 this.form.requestParamDto = {dataList: this.reqShowDataList};
                             }
                             if (this.form.responseParamDto) {
                                 UTILS.fillShowDataList(this.form.responseParamDto.dataList, this.respShowDataList);
                             } else {
-                                this.respShowDataList = [JSON.parse(JSON.stringify(CONSTANT.ITEM_TEMPLATE))];
+                                this.respShowDataList = [JSON.parse(CONSTANT.ITEM_TEMPLATE)];
                                 this.form.responseParamDto = {dataList: this.respShowDataList};
                             }
                             this.$nextTick(() => {
