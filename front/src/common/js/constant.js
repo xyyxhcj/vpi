@@ -96,6 +96,7 @@ export const CONSTANT = {
 
         API_ENV_ADD: '/apiEnv/add',
         API_ENV_EDIT: '/apiEnv/edit',
+        API_ENV_DELETE: '/apiEnv/delete',
         API_ENV_FIND_LIST: '/apiEnv/findList',
 
         STRUCTURE_ADD: '/structure/add',

@@ -41,6 +41,12 @@ public class ApiEnvController extends BaseController {
         return ok(apiEnvDto.getId());
     }
 
+    @RequestMapping("delete")
+    public Result<String> delete(@RequestBody ApiEnv apiEnvDto) {
+        apiEnvService.delete(apiEnvDto, UserUtils.getOperator());
+        return ok();
+    }
+
     @RequestMapping("findList")
     public Result<List<ApiEnv>> findList(@RequestBody ApiEnv apiEnvDto) {
         return ok(apiEnvService.findList(apiEnvDto));

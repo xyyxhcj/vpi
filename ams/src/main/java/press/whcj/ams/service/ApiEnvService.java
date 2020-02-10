@@ -14,4 +14,6 @@ public interface ApiEnvService {
     String save(ApiEnv apiEnvDto, UserVo operator);
 
     List<ApiEnv> findList(ApiEnv apiEnvDto);
+
+    void delete(ApiEnv apiEnvDto, UserVo operator);
 }

@@ -52,4 +52,15 @@ public class ApiEnvServiceImpl implements ApiEnvService {
         return mongoTemplate.find(new Query(Criteria.where(ColumnName.PROJECT_ID)
                 .is(apiEnvDto.getProjectId())), ApiEnv.class);
     }
+
+    @Override
+    public void delete(ApiEnv apiEnvDto, UserVo operator) {
+        FastUtils.checkParams(apiEnvDto.getId());
+        ApiEnv apiEnv = mongoTemplate.findById(apiEnvDto.getId(), ApiEnv.class);
+        if (apiEnv == null) {
+            return;
+        }
+        PermUtils.checkProjectWrite(mongoTemplate, apiEnv.getProjectId(), operator);
+        mongoTemplate.remove(apiEnv);
+    }
 }

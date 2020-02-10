@@ -34,6 +34,7 @@
             </el-table-column>
         </el-table>
         <edit-env-config-dialog :dialog="editDialog" :form="form" @flush="findList"/>
+        <confirm-dialog :dialog="delConfirmDialog" :form="delProjectForm" @flush="findListByGroup"/>
     </div>
 </template>
 
@@ -42,10 +43,11 @@
     import EditEnvConfigDialog from "./editEnvConfigDialog";
     import {CONSTANT} from "../../common/js/constant";
     import {UTILS} from "../../common/js/utils";
+    import ConfirmDialog from "../../components/confirm/confirmDialog";
 
     export default {
         name: 'index',
-        components: {EditEnvConfigDialog},
+        components: {ConfirmDialog, EditEnvConfigDialog},
         data() {
             return {
                 projectId: this.$store.getters.selectedProjectId,
@@ -57,6 +59,13 @@
                     url: ''
                 },
                 form: {},
+                delConfirmDialog: {
+                    show: false,
+                    title: 'Delete Confirm',
+                    content: 'Are you sure delete environment config?',
+                    url: CONSTANT.REQUEST_URL.API_ENV_DELETE,
+                },
+                delEnvConfForm: {id: ''},
             }
         },
         computed: {
@@ -90,7 +99,8 @@
                 this.form = UTILS.copyProperty(row, ['id', 'projectId', 'name', 'desc', 'frontUri', 'envHeader', 'globalVariable', 'additionalVariable']);
             },
             deleteEnvConfig(row) {
-                console.log(row);
+                this.delEnvConfForm.id = row.id;
+                this.delConfirmDialog.show = true;
             },
             addEnvConfig() {
                 this.editDialog = {
