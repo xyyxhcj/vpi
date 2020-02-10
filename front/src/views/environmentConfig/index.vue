@@ -34,7 +34,7 @@
             </el-table-column>
         </el-table>
         <edit-env-config-dialog :dialog="editDialog" :form="form" @flush="findList"/>
-        <confirm-dialog :dialog="delConfirmDialog" :form="delProjectForm" @flush="findListByGroup"/>
+        <confirm-dialog :dialog="delConfirmDialog" :form="delEnvConfForm" @flush="findList"/>
     </div>
 </template>
 

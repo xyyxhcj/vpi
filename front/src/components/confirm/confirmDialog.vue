@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" width="400px">
+    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" width="450px">
         <div class="content">{{dialog.content}}</div>
         <span class="dialog-footer" slot="footer">
                 <el-button @click="dialog.show = false" round>Cancel</el-button>
