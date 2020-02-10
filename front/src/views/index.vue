@@ -3,7 +3,7 @@
         <el-table :data="tableData" @row-click="clickRow"
                   :header-cell-style="{color:'#44B549','font-weight':'bold'}"
                   :row-style="{cursor:'pointer'}">
-            <el-table-column>
+            <el-table-column min-width="200">
                 <template slot="header">
                     name
                     <el-tag size="mini" style="margin:0 10px;cursor:pointer;" @click="return2Previous"
@@ -16,11 +16,11 @@
                     <span>{{scope.row.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="projectVersion" prop="projectVersion" width="120"/>
-            <el-table-column label="projectType" width="100" :formatter="projectTypeFormat"/>
-            <el-table-column label="desc" prop="desc"/>
-            <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
-            <el-table-column>
+            <el-table-column label="projectVersion" prop="projectVersion" width="115"/>
+            <el-table-column label="projectType" width="98" :formatter="projectTypeFormat"/>
+            <el-table-column label="desc" prop="desc" min-width="150"/>
+            <el-table-column label="updateTime" width="160" :formatter="(row)=>dateFormat(row.updateTime)"/>
+            <el-table-column min-width="330">
                 <template slot="header">
                     <el-button size="mini" type="success" @click="addProjectGroup">Add ProjectGroup</el-button>
                     <el-button size="mini" type="success" @click="addProject">Add Project</el-button>
@@ -37,7 +37,7 @@
         <edit-project-group-dialog :dialog="editProjectGroupDialog" :form="editProjectGroupForm"
                                    @flush="findListByGroup"/>
         <edit-project-dialog :dialog="editProjectDialog" :form="editProjectForm" @flush="findListByGroup"/>
-        <confirm-dialog :dialog="delConfirmDialog" :form="delProjectForm"/>
+        <confirm-dialog :dialog="delConfirmDialog" :form="delProjectForm" @flush="findListByGroup"/>
     </div>
 </template>
 
@@ -80,7 +80,7 @@
                     show: false,
                     title: 'Delete Confirm',
                     content: 'Are you sure delete project?',
-                    url: CONSTANT.REQUEST_URL.PROJECT_DELETE,
+                    url: CONSTANT.REQUEST_URL.PROJECT_REMOVE,
                 },
                 delProjectForm: {id: ''},
             };
@@ -189,4 +189,7 @@
     #project-container
         border 1px solid #d9d9d9
         background-color white
+
+        .el-button
+            padding 7px 7px
 </style>

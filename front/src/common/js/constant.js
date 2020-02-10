@@ -84,7 +84,7 @@ export const CONSTANT = {
 
         PROJECT_ADD: '/project/add',
         PROJECT_EDIT: '/project/edit',
-        PROJECT_DELETE: '/project/delete',
+        PROJECT_REMOVE: '/project/remove',
         PROJECT_FIND_LIST_BY_GROUP: '/project/findListByGroup',
         PROJECT_FIND_PROJECT_USER: '/project/findProjectUser',
         PROJECT_EDIT_PROJECT_USER: '/project/editProjectUser',

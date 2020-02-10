@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" width="240px">
+    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" width="400px">
         <div class="content">{{dialog.content}}</div>
         <span class="dialog-footer" slot="footer">
                 <el-button @click="dialog.show = false" round>Cancel</el-button>
@@ -41,4 +41,12 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
+    .content
+        font-size: 18px
+        font-weight: bold
+        color: #F56C6C
+        margin-left: auto
+        margin-width: auto
+    .el-dialog__body
+        padding 10px
 </style>
