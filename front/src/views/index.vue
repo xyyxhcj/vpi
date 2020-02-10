@@ -37,6 +37,7 @@
         <edit-project-group-dialog :dialog="editProjectGroupDialog" :form="editProjectGroupForm"
                                    @flush="findListByGroup"/>
         <edit-project-dialog :dialog="editProjectDialog" :form="editProjectForm" @flush="findListByGroup"/>
+        <confirm-dialog :dialog="delConfirmDialog" :form="delProjectForm"/>
     </div>
 </template>
 
@@ -46,10 +47,11 @@
     import EditProjectGroupDialog from "./editProjectGroupDialog";
     import EditProjectDialog from "./editProjectDialog";
     import EditAuthDialog from "./editAuthDialog";
+    import ConfirmDialog from "../components/confirm/confirmDialog";
 
     export default {
         name: 'index',
-        components: {EditAuthDialog, EditProjectDialog, EditProjectGroupDialog},
+        components: {ConfirmDialog, EditAuthDialog, EditProjectDialog, EditProjectGroupDialog},
         data() {
             return {
                 user: this.$store.getters.user,
@@ -74,6 +76,13 @@
                     groupId: undefined
                 },
                 selectedGroup: undefined,
+                delConfirmDialog: {
+                    show: false,
+                    title: 'Delete Confirm',
+                    content: 'Are you sure delete project?',
+                    url: CONSTANT.REQUEST_URL.PROJECT_DELETE,
+                },
+                delProjectForm: {id: ''},
             };
         },
         methods: {
@@ -103,8 +112,9 @@
                     this.editProjectGroupForm = UTILS.copyProperty(row, ['id', 'name', 'parentId']);
                 }
             },
-            del() {
-
+            del(row) {
+                this.delProjectForm.id = row.id;
+                this.delConfirmDialog.show = true;
             },
             addProjectGroup() {
                 this.editProjectGroupForm = {parentId: this.query.groupId};

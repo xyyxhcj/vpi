@@ -49,4 +49,13 @@ public interface ProjectService {
      * @date 2020/1/3 8:51
      **/
     List<Project> findListByGroup(ProjectDto projectDto, UserVo operator);
+
+    /**
+     * remove
+     *
+     * @param projectId projectId
+     * @author xyyxhcj@qq.com
+     * @date 2020/2/10 10:36
+     **/
+    void remove(String projectId);
 }

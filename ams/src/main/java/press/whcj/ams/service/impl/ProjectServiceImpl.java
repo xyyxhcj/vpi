@@ -4,6 +4,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.common.Constant;
@@ -85,10 +86,12 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> findList(ProjectDto projectDto, UserVo operator) {
         ObjectId operatorObjectId = new ObjectId(operator.getId());
         List<Project> projects = mongoTemplate.find(new Query(
-                Criteria.where(ColumnName.CREATE_$ID).is(operatorObjectId)), Project.class);
+                Criteria.where(ColumnName.CREATE_$ID).is(operatorObjectId)
+                        .and(ColumnName.IS_DEL).ne(Constant.Is.YES)), Project.class);
         projects.forEach(project -> project.setUserType(Constant.UserType.CREATOR));
         List<ProjectUser> projectUsers = mongoTemplate.find(new Query(
-                Criteria.where(ColumnName.USER_$ID).is(operatorObjectId)), ProjectUser.class);
+                Criteria.where(ColumnName.USER_$ID).is(operatorObjectId)
+                        .and(ColumnName.PROJECT_$IS_DEL).ne(Constant.Is.YES)), ProjectUser.class);
         List<Project> userProjects = projectUsers.stream().filter(item -> item.getProject() != null)
                 .map(projectUser -> projectUser.getProject().setUserType(projectUser.getUserType()))
                 .collect(Collectors.toList());
@@ -101,7 +104,8 @@ public class ProjectServiceImpl implements ProjectService {
         ObjectId operatorObjectId = new ObjectId(operator.getId());
         String groupId = projectDto.getGroupId();
         boolean findByGroup = groupId != null;
-        Criteria criteria = Criteria.where(ColumnName.CREATE_$ID).is(operatorObjectId);
+        Criteria criteria = Criteria.where(ColumnName.CREATE_$ID).is(operatorObjectId)
+                .and(ColumnName.IS_DEL).ne(Constant.Is.YES);
         if (findByGroup) {
             criteria = criteria.and(ColumnName.GROUP_ID).is(groupId);
         } else {
@@ -109,7 +113,8 @@ public class ProjectServiceImpl implements ProjectService {
         }
         List<Project> projects = mongoTemplate.find(new Query(criteria), Project.class);
         projects.forEach(project -> project.setUserType(Constant.UserType.CREATOR));
-        criteria = Criteria.where(ColumnName.USER_$ID).is(operatorObjectId);
+        criteria = Criteria.where(ColumnName.USER_$ID).is(operatorObjectId)
+                .and(ColumnName.PROJECT_$IS_DEL).ne(Constant.Is.YES);
         if (findByGroup) {
             criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(groupId);
         } else {
@@ -121,5 +126,10 @@ public class ProjectServiceImpl implements ProjectService {
                 .collect(Collectors.toList());
         projects.addAll(userProjects);
         return projects;
+    }
+
+    @Override
+    public void remove(String projectId) {
+        mongoTemplate.updateFirst(new Query(Criteria.where(ColumnName.ID).is(projectId)), Update.update(ColumnName.IS_DEL, Constant.Is.YES), Project.class);
     }
 }

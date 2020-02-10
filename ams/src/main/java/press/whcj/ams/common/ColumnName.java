@@ -10,6 +10,7 @@ public interface ColumnName {
     String USER_$ID = "user.$id";
     String PROJECT_ID = "projectId";
     String PROJECT_$ID = "project.$id";
+    String PROJECT_$IS_DEL = "project.$isDel";
     String PROJECT_$GROUP_ID = "project.$groupId";
     String USER_TYPE = "userType";
     String LOGIN_NAME = "loginName";
@@ -28,4 +29,5 @@ public interface ColumnName {
     String API_ID = "apiId";
     String API_SUCCESS_MOCK = "apiSuccessMock";
     String API_FAILURE_MOCK = "apiFailureMock";
+    String IS_DEL = "isDel";
 }

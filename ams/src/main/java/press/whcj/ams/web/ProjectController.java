@@ -101,4 +101,14 @@ public class ProjectController extends BaseController {
 		projectUserService.edit(projectUserDto);
 		return ok();
 	}
+
+	@RequestMapping("remove")
+	public Result<Object> remove(@RequestBody ProjectDto projectDto) {
+		String projectId = projectDto.getId();
+		FastUtils.checkParams(projectId);
+		UserVo operator = UserUtils.getOperator();
+		PermUtils.checkProjectOwner(mongoTemplate, projectId, operator);
+		projectService.remove(projectId);
+		return ok();
+	}
 }
