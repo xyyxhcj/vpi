@@ -116,9 +116,6 @@ export const CONSTANT = {
         API_TEST_HISTORY_FIND_PAGE: '/apiTestHistory/findPage',
     },
     CLOSE_LOADING_URL: [
-        '/system/sysUserWechat/loginAsync',
-        '/system/rsa/getPublicKey',
-        '/system/qyWechatUser/binding',
     ],
     ROUTER_URL: {
         DICT_ITEM: '/system/dictItem',
@@ -214,5 +211,9 @@ export const CONSTANT = {
         paramKeyIsEmpty: false,
         show: true,
     }),
+    IS: {
+        NO: 0,
+        YES: 1,
+    },
 };
 

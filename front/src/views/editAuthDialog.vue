@@ -22,7 +22,7 @@
                                 <el-select :value="scope.row.userType+''"
                                            @change="(selectedValue)=>changeUserType(selectedValue,scope.row)">
                                     <el-option v-for="key in Object.keys(CONSTANT.PROJECT_USER_TYPE)"
-                                            :key="key" :label="CONSTANT.PROJECT_USER_TYPE[key]" :value="key"/>
+                                               :key="key" :label="CONSTANT.PROJECT_USER_TYPE[key]" :value="key"/>
                                 </el-select>
                             </template>
                         </el-table-column>
@@ -101,8 +101,17 @@
                 this.$refs['selectUserDialog'].findPage();
 
             },
-            del() {
-
+            del(row) {
+                this.projectUserQuery.projectId = this.dialog.project.id;
+                this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_EDIT_PROJECT_USER, {
+                    projectId: this.dialog.project.id,
+                    id: row.projectUserId,
+                    isDel: CONSTANT.IS.YES,
+                }).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.findProjectUser();
+                    }
+                });
             },
             batchOperate() {
 
