@@ -9,7 +9,7 @@
                 <div class="select-all" @click="selectGroup({id:''})">all</div>
                 <el-tree :data="groups" :props="{label:'name',children:'childList'}"
                          node-key="id" default-expand-all @node-click="selectGroup"
-                         draggable @node-drop="moveNode">
+                         draggable @node-drop="moveNode" highlight-current>
                     <span class="api-group-node" slot-scope="{node,data}">
                         <span style="float:left;padding-left: 1px">
                             <template v-if="node.label.length>14-data.getLevel(data)*3">
@@ -32,6 +32,7 @@
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item :command="()=>addSubGroup(data)">add sub group</el-dropdown-item>
                                 <el-dropdown-item :command="()=>editSubGroup(data)">edit</el-dropdown-item>
+                                <el-dropdown-item :command="()=>delApiGroup(data)" style="color: red">delete</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </span>
@@ -114,6 +115,12 @@
                 return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
             },
             selectGroup(apiGroup) {
+                if (apiGroup.id === '') {
+                    let selectElement = document.getElementsByClassName('el-tree-node is-current is-focusable');
+                    if (selectElement.length > 0) {
+                        selectElement[0].classList.remove('is-current');
+                    }
+                }
                 this.selectedGroupId = apiGroup.id;
                 this.findApiPage();
             },
@@ -209,6 +216,10 @@
                     path: '/api/detail',
                     query: {id: row.id}
                 });
+            },
+            delApiGroup(group) {
+                console.log(group);
+
             },
             editApiByTag(api) {
 
