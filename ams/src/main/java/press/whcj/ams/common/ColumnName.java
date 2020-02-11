@@ -24,6 +24,7 @@ public interface ColumnName {
     String TYPE = "type";
     String SORT = "sort";
     String STRUCTURE_ID = "structureId";
+    String GROUP = "group";
     String GROUP_ID = "groupId";
     String GROUP_$ID = "group.id";
     String API_ID = "apiId";

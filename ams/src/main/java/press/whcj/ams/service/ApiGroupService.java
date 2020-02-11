@@ -17,4 +17,6 @@ public interface ApiGroupService {
 	List<ApiGroupVo> findList(ApiGroup apiGroupDto);
 
 	String save(ApiGroup apiGroupDto, UserVo operator);
+
+    void delete(ApiGroup apiGroupDto);
 }

@@ -20,6 +20,7 @@ import press.whcj.ams.service.ApiService;
 import press.whcj.ams.service.StructureService;
 import press.whcj.ams.util.FastUtils;
 import press.whcj.ams.util.PermUtils;
+import press.whcj.ams.util.UserUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -91,7 +92,8 @@ public class ApiServiceImpl implements ApiService {
     public MongoPage<ApiVo> findPage(ApiDto apiDto) {
         FastUtils.checkParams(apiDto.getProjectId());
         MongoPage<ApiVo> page = apiDto.getPage();
-        Criteria criteria = Criteria.where(ColumnName.PROJECT_ID).is(apiDto.getProjectId());
+        Criteria criteria = Criteria.where(ColumnName.PROJECT_ID).is(apiDto.getProjectId())
+                .and(ColumnName.IS_DEL).ne(Constant.Is.YES);
         if (!StringUtils.isEmpty(apiDto.getGroupId())) {
             criteria = criteria.and(ColumnName.GROUP_$ID).is(apiDto.getGroupId());
         }
@@ -140,6 +142,19 @@ public class ApiServiceImpl implements ApiService {
             updateColumn = ColumnName.API_FAILURE_MOCK;
         }
         mongoTemplate.updateFirst(new Query(Criteria.where(ColumnName.ID).is(apiDto.getId())), Update.update(updateColumn, mock), Api.class);
+    }
+
+    @Override
+    public void remove(ApiDto apiDto) {
+        String apiId = apiDto.getId();
+        FastUtils.checkParams(apiId);
+        Api api = mongoTemplate.findById(apiId, Api.class);
+        if (api == null || Constant.Is.YES.equals(api.getIsDel())) {
+            return;
+        }
+        PermUtils.checkProjectWrite(mongoTemplate, api.getProjectId(), UserUtils.getOperator());
+        api.setIsDel(Constant.Is.YES);
+        mongoTemplate.save(api);
     }
 
     private String saveApiParams(StructureDto paramDto, UserVo operator, String projectId) {

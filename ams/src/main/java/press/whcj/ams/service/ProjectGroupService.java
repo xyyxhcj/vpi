@@ -19,4 +19,6 @@ public interface ProjectGroupService {
 	List<ProjectGroupVo> findListByParent(ProjectGroup projectGroupDto, UserVo operator);
 
 	ProjectGroupVo findDetail(ProjectGroup projectGroup);
+
+	void delete(ProjectGroup projectGroup);
 }

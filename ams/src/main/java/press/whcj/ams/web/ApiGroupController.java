@@ -22,28 +22,34 @@ import java.util.List;
 @RestController
 @RequestMapping("apiGroup")
 public class ApiGroupController extends BaseController {
-	@Resource
-	private ApiGroupService apiGroupService;
+    @Resource
+    private ApiGroupService apiGroupService;
 
-	@RequestMapping("add")
-	public Result<String> add(@RequestBody ApiGroup apiGroupDto) {
-		UserVo operator = UserUtils.getOperator();
-		apiGroupDto.initCreate(operator);
-		String id = apiGroupService.save(apiGroupDto, operator);
-		return ok(id);
-	}
+    @RequestMapping("add")
+    public Result<String> add(@RequestBody ApiGroup apiGroupDto) {
+        UserVo operator = UserUtils.getOperator();
+        apiGroupDto.initCreate(operator);
+        String id = apiGroupService.save(apiGroupDto, operator);
+        return ok(id);
+    }
 
-	@RequestMapping("edit")
-	public Result<String> edit(@RequestBody ApiGroup apiGroupDto) {
-		FastUtils.checkParams(apiGroupDto.getId());
-		UserVo operator = UserUtils.getOperator();
-		apiGroupDto.initUpdate(operator);
-		apiGroupService.save(apiGroupDto, operator);
-		return ok(apiGroupDto.getId());
-	}
+    @RequestMapping("edit")
+    public Result<String> edit(@RequestBody ApiGroup apiGroupDto) {
+        FastUtils.checkParams(apiGroupDto.getId());
+        UserVo operator = UserUtils.getOperator();
+        apiGroupDto.initUpdate(operator);
+        apiGroupService.save(apiGroupDto, operator);
+        return ok(apiGroupDto.getId());
+    }
 
-	@RequestMapping("findList")
-	public Result<List<ApiGroupVo>> findList(@RequestBody ApiGroup apiGroupDto) {
-		return ok(apiGroupService.findList(apiGroupDto));
-	}
+    @RequestMapping("findList")
+    public Result<List<ApiGroupVo>> findList(@RequestBody ApiGroup apiGroupDto) {
+        return ok(apiGroupService.findList(apiGroupDto));
+    }
+
+    @RequestMapping("delete")
+    public Result<Object> delete(@RequestBody ApiGroup apiGroupDto) {
+		apiGroupService.delete(apiGroupDto);
+        return ok();
+    }
 }

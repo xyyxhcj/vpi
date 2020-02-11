@@ -51,4 +51,10 @@ public class ProjectGroupController extends BaseController {
 	public Result<ProjectGroupVo> findDetail(@RequestBody ProjectGroup projectGroup) {
 		return ok(projectGroupService.findDetail(projectGroup));
 	}
+
+	@RequestMapping("delete")
+	public Result<Object> delete(@RequestBody ProjectGroup projectGroup) {
+		projectGroupService.delete(projectGroup);
+		return ok();
+	}
 }

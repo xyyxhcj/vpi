@@ -18,4 +18,6 @@ public interface ApiService {
 	ApiVo findDetail(ApiDto apiDto);
 
 	void saveMock(ApiDto apiDto);
+
+    void remove(ApiDto apiDto);
 }

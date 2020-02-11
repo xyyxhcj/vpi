@@ -64,4 +64,6 @@ public class Api extends BaseEntity implements Serializable {
 	private Byte responseParamType;
 
 	private static final long serialVersionUID = 1L;
+
+	private Byte isDel;
 }

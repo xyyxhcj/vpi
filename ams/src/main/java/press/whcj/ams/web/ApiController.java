@@ -57,4 +57,10 @@ public class ApiController extends BaseController {
 	public Result<ApiVo> findDetail(@RequestBody ApiDto apiDto) {
 		return ok(apiService.findDetail(apiDto));
 	}
+
+	@RequestMapping("remove")
+	public Result<Object> remove(@RequestBody ApiDto apiDto) {
+		apiService.remove(apiDto);
+		return ok();
+	}
 }
