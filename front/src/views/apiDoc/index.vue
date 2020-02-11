@@ -32,7 +32,8 @@
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item :command="()=>addSubGroup(data)">add sub group</el-dropdown-item>
                                 <el-dropdown-item :command="()=>editSubGroup(data)">edit</el-dropdown-item>
-                                <el-dropdown-item :command="()=>delApiGroup(data)" style="color: red">delete</el-dropdown-item>
+                                <el-dropdown-item :command="()=>delApiGroup(data)"
+                                                  style="color: red">delete</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </span>
@@ -77,6 +78,7 @@
             </el-main>
         </el-container>
         <edit-api-group-dialog :dialog="editApiGroupDialog" :form="editApiGroupForm" @flush="findApiGroups"/>
+        <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="delConfirmDialog.flush"/>
     </div>
 </template>
 
@@ -85,10 +87,11 @@
     import {UTILS} from "../../common/js/utils";
     import EditApiGroupDialog from "./editApiGroupDialog";
     import PageTemplate from "../../components/pageTemplate/pageTemplate";
+    import ConfirmDialog from "../../components/confirm/confirmDialog";
 
     export default {
         name: 'index',
-        components: {PageTemplate, EditApiGroupDialog},
+        components: {ConfirmDialog, PageTemplate, EditApiGroupDialog},
         data() {
             return {
                 projectId: this.$store.getters.selectedProjectId,
@@ -108,6 +111,15 @@
                     }
                 },
                 selectedGroupId: '',
+                delConfirmDialog: {
+                    show: false,
+                    title: 'Delete Confirm',
+                    content: '',
+                    url: '',
+                    flush: () => {
+                    }
+                },
+                delForm: {id: ''},
             }
         },
         methods: {
@@ -179,7 +191,11 @@
                 UTILS.findPage(this, CONSTANT.REQUEST_URL.API_FIND_PAGE);
             },
             addApi() {
-                this.$router.push('/api/edit');
+                this.$router.push({
+                    path: '/api/edit',
+                    query: {groupId: this.selectedGroupId}
+                });
+
             },
             moveNode(before, after, inner) {
                 let parentId = '';
@@ -218,8 +234,12 @@
                 });
             },
             delApiGroup(group) {
-                console.log(group);
-
+                this.delForm.id = group.id;
+                this.delConfirmDialog.content = UTILS.formatStr('Are you sure delete api group: {name}?',
+                    {name: group.name});
+                this.delConfirmDialog.url = CONSTANT.REQUEST_URL.API_GROUP_DELETE;
+                this.delConfirmDialog.flush = () => this.findApiGroups();
+                this.delConfirmDialog.show = true;
             },
             editApiByTag(api) {
 
@@ -228,7 +248,12 @@
 
             },
             delApi(api) {
-
+                this.delForm.id = api.id;
+                this.delConfirmDialog.content = UTILS.formatStr('Are you sure delete api:  {name}?',
+                    {name: api.name});
+                this.delConfirmDialog.url = CONSTANT.REQUEST_URL.API_SAVE_REMOVE;
+                this.delConfirmDialog.flush = () => this.findApiPage();
+                this.delConfirmDialog.show = true;
             }
         },
         created() {

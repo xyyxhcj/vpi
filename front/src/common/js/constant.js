@@ -107,11 +107,13 @@ export const CONSTANT = {
 
         API_GROUP_ADD: '/apiGroup/add',
         API_GROUP_EDIT: '/apiGroup/edit',
+        API_GROUP_DELETE: '/apiGroup/delete',
         API_GROUP_FIND_LIST: '/apiGroup/findList',
 
         API_ADD: '/api/add',
         API_EDIT: '/api/edit',
         API_SAVE_MOCK: '/api/saveMock',
+        API_SAVE_REMOVE: '/api/remove',
         API_FIND_DETAIL: '/api/findDetail',
         API_FIND_PAGE: '/api/findPage',
 

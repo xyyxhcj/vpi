@@ -1,6 +1,6 @@
 <template>
     <div id="api-edit-container">
-        <el-form :model="form" label-position="left" label-width="80px" ref="form">
+        <el-form :model="form" label-position="left" label-width="80px" ref="form" :rules="form_rules">
             <el-form-item label="apiStatus" size="mini" style="text-align: left">
                 <el-radio v-model.trim="form.apiStatus" :label="0" size="mini">{{CONSTANT.API_STATUS[0]}}</el-radio>
                 <el-radio v-model.trim="form.apiStatus" :label="1" size="mini">{{CONSTANT.API_STATUS[1]}}</el-radio>
@@ -19,7 +19,7 @@
                 </el-select>
                 <el-input v-model="form.apiUri" size="mini" style="width: 92%"/>
             </el-form-item>
-            <el-form-item label="name" size="mini">
+            <el-form-item label="name" size="mini" prop="name">
                 <el-input v-model="form.name" size="mini"/>
             </el-form-item>
         </el-form>
@@ -86,6 +86,7 @@
                 CONSTANT,
                 form: {
                     projectId: this.$store.getters.selectedProjectId,
+                    groupId: this.$route.query.groupId,
                     name: '',
                     apiUri: '/',
                     type: '',
@@ -108,6 +109,11 @@
                 respDefaultCard: 'responseParam',
                 reqShowDataList: [],
                 respShowDataList: [],
+                form_rules: {
+                    name: [
+                        {required: true, message: 'enter name'}
+                    ],
+                }
             }
         },
         methods: {
@@ -206,7 +212,7 @@
                         if (UTILS.checkResp(resp)) {
                             this.$router.push({
                                 path: '/api/detail',
-                                query: {id: this.form.id}
+                                query: {id: resp.data.data}
                             });
                         }
                     });
