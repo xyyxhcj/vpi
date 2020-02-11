@@ -92,6 +92,7 @@ export const CONSTANT = {
 
         PROJECT_GROUP_ADD: '/projectGroup/add',
         PROJECT_GROUP_EDIT: '/projectGroup/edit',
+        PROJECT_GROUP_DELETE: '/projectGroup/delete',
         PROJECT_GROUP_FIND_DETAIL: '/projectGroup/findDetail',
 
         API_ENV_ADD: '/apiEnv/add',

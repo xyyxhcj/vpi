@@ -27,7 +27,7 @@
                     <el-button size="mini" type="warning" @click="batchOperate">Batch Operate</el-button>
                 </template>
                 <template slot-scope="scope" v-if="scope.row.createId===user.id">
-                    <el-button size="mini" @click.native.stop="auth(scope.row)">Auth</el-button>
+                    <el-button size="mini" v-if="scope.row.projectType!==undefined" @click.native.stop="auth(scope.row)">Auth</el-button>
                     <el-button size="mini" @click.native.stop="edit(scope.row)">Edit</el-button>
                     <el-button size="mini" type="danger" @click.native.stop="del(scope.row)">Delete</el-button>
                 </template>
@@ -79,8 +79,8 @@
                 delConfirmDialog: {
                     show: false,
                     title: 'Delete Confirm',
-                    content: 'Are you sure delete project?',
-                    url: CONSTANT.REQUEST_URL.PROJECT_REMOVE,
+                    content: '',
+                    url: '',
                 },
                 delProjectForm: {id: ''},
             };
@@ -114,7 +114,15 @@
             },
             del(row) {
                 this.delProjectForm.id = row.id;
-                this.delConfirmDialog.show = true;
+                if (row.projectType !== undefined) {
+                    this.delConfirmDialog.content = 'Are you sure delete project?';
+                    this.delConfirmDialog.url = CONSTANT.REQUEST_URL.PROJECT_REMOVE;
+                    this.delConfirmDialog.show = true;
+                } else {
+                    this.delConfirmDialog.content = 'Are you sure delete project group?';
+                    this.delConfirmDialog.url = CONSTANT.REQUEST_URL.PROJECT_GROUP_DELETE;
+                    this.delConfirmDialog.show = true;
+                }
             },
             addProjectGroup() {
                 this.editProjectGroupForm = {parentId: this.query.groupId};
