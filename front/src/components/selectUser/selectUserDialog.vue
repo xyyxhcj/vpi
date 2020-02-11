@@ -89,15 +89,15 @@
                 this.projectUserQuery.projectId = this.dialog.project.id;
                 this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_FIND_PROJECT_USER, this.projectUserQuery).then(resp => {
                     if (UTILS.checkResp(resp)) {
-                        UTILS.findPage(this, CONSTANT.REQUEST_URL.USER_FIND_PAGE, function (obj) {
-                            obj.selectRows(resp.data.data, obj);
-                            let create = {id: obj.user.id};
-                            let isSelected = UTILS.contains(obj.selectedList, create, function (selectedElement, element) {
+                        UTILS.findPage(this, this, CONSTANT.REQUEST_URL.USER_FIND_PAGE, function ($this) {
+                            $this.selectRows(resp.data.data, $this);
+                            let create = {id: $this.user.id};
+                            let isSelected = UTILS.contains($this.selectedList, create, function (selectedElement, element) {
                                 return selectedElement.id === element.id;
                             });
                             if (!isSelected) {
-                                obj.selectedList.push(create);
-                                obj.$refs['userTable'].toggleRowSelection(create);
+                                $this.selectedList.push(create);
+                                $this.$refs['userTable'].toggleRowSelection(create);
                             }
                         });
                     }

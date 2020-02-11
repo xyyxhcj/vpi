@@ -112,7 +112,7 @@ window.addEventListener("message", function (e) {
                 document.getElementById('req-headers').innerText = headerStr;
             }
             document.getElementById('req-data').innerText = formatJson(params);
-            // save to history
+            // save history
             let split = respHeaders.split('\r\n');
             let headerDict = {};
             split.forEach(item => {
@@ -122,6 +122,7 @@ window.addEventListener("message", function (e) {
                 }
             });
             let jsonHeaders = JSON.stringify(headerDict);
+            // todo save  method,url,respStatus, requestTime
             axios(logUrl, 'POST', JSON.stringify({
                 apiId: apiId,
                 requestInfo: JSON.stringify({headers: headers, data: params}),

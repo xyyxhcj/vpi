@@ -188,7 +188,7 @@
             findApiPage() {
                 this.query.projectId = this.projectId;
                 this.query.groupId = this.selectedGroupId;
-                UTILS.findPage(this, CONSTANT.REQUEST_URL.API_FIND_PAGE);
+                UTILS.findPage(this, this, CONSTANT.REQUEST_URL.API_FIND_PAGE);
             },
             addApi() {
                 this.$router.push({

@@ -262,18 +262,18 @@ export const UTILS = {
             this.errorMsg(obj, resp);
         }
     },
-    findPage: function (obj, url, func = function () {
+    findPage: function ($this, dataObj, url, func = function () {
     }) {
-        obj.$axios.post(url, obj.query).then(resp => {
+        $this.$axios.post(url, dataObj.query).then(resp => {
             if (this.checkResp(resp)) {
                 const data = resp.data.data;
-                obj.dataList = data.records;
-                obj.query.page.total = data.total;
-                if (data.total !== 0 && (obj.query.page.current - 1) * obj.query.page.size > data.total) {
-                    obj.query.page.current = 1;
-                    this.findPage(obj);
+                dataObj.dataList = data.records;
+                dataObj.query.page.total = data.total;
+                if (data.total !== 0 && (dataObj.query.page.current - 1) * dataObj.query.page.size > data.total) {
+                    dataObj.query.page.current = 1;
+                    this.findPage($this, dataObj);
                 }
-                func(obj);
+                func($this, dataObj);
             }
         });
     },

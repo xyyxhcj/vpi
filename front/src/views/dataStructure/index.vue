@@ -63,7 +63,7 @@
             },
             findPage() {
                 this.query.projectId = this.projectId;
-                UTILS.findPage(this, CONSTANT.REQUEST_URL.STRUCTURE_FIND_PAGE);
+                UTILS.findPage(this, this, CONSTANT.REQUEST_URL.STRUCTURE_FIND_PAGE);
             },
             addDataStructure() {
                 this.form = {

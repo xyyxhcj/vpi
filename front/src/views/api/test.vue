@@ -38,7 +38,7 @@
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
-        <el-tabs type="card" class="test-info">
+        <el-tabs type="card" class="test-info" @tab-click="clickTab">
             <el-tab-pane label="Response Info">
                 <line-text style="color: #44B549" text="Headers"/>
                 <div id="resp-headers" ref="respHeaders" class="headers"></div>
@@ -58,6 +58,30 @@
                 <line-text style="color: #44B549" text="Request Body"/>
                 <pre id="req-data" ref="reqData" class="data"/>
             </el-tab-pane>
+            <el-tab-pane label="Test History" name="testHistory">
+                <el-table :data="testHistory.dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
+                          :row-style="{cursor:'pointer'}" @row-click="selectTestHistory">
+                    <el-table-column label="status" prop="status" width="200"/>
+                    <el-table-column label="requestTime" prop="requestTime" width="200"/>
+                    <el-table-column label="testName" prop="createName" width="150"/>
+                    <el-table-column label="testTime" width="200" :formatter="(row)=>dateFormat(row.createTime)"/>
+                    <el-table-column>
+                        <template slot="header">
+                            <el-row>
+                                <el-col :span="24">
+                                    <el-button size="mini" type="warning" @click="testHistoryBatchOperate">Batch
+                                        Operate
+                                    </el-button>
+                                </el-col>
+                            </el-row>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-button size="mini" type="danger" @click="delTestHistory(scope.row)">Delete</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <page-template :query="testHistory.query" @flush="testHistoryFindPage"/>
+            </el-tab-pane>
         </el-tabs>
     </div>
 </template>
@@ -68,10 +92,11 @@
     import ApiHeaders from "./components/apiHeaders";
     import DataStructure from "../../components/dataStructure/dataStructure";
     import LineText from "../../components/lineText/lineText";
+    import PageTemplate from "../../components/pageTemplate/pageTemplate";
 
     export default {
         name: 'test',
-        components: {LineText, DataStructure, ApiHeaders},
+        components: {PageTemplate, LineText, DataStructure, ApiHeaders},
         data() {
             return {
                 CONSTANT,
@@ -104,7 +129,17 @@
                 requestInfo: {},
                 selectedEnv: this.$route.query.selectedEnv,
                 sendDisable: false,
-            };
+                testHistory: {
+                    query: {
+                        page: {
+                            current: 1,
+                            size: CONSTANT.CONFIG.PAGE_SIZE_DEFAULT,
+                            total: 0,
+                        }
+                    },
+                    dataList: [],
+                },
+            }
         },
         computed: {
             respData: {
@@ -114,6 +149,27 @@
             },
         },
         methods: {
+            delTestHistory(row) {
+
+            },
+            testHistoryFindPage() {
+
+            },
+            testHistoryBatchOperate() {
+
+            },
+            selectTestHistory(row) {
+                // show data
+            },
+            dateFormat(time) {
+                return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
+            },
+            clickTab(tab) {
+                if ('testHistory' === tab.name) {
+                    this.testHistory.query.apiId = this.api.id;
+                    UTILS.findPage(this, this.testHistory, CONSTANT.REQUEST_URL.API_TEST_HISTORY_FIND_PAGE);
+                }
+            },
             flushEnv(env) {
                 this.selectedEnv = env;
             },
@@ -275,4 +331,12 @@
                 font-size 15px
                 line-height 19px
 
+            .el-tabs__header
+                margin 0
+
+            .el-table td, .el-table th
+                padding 1px 0
+
+                .el-button
+                    padding 7px 7px
 </style>
