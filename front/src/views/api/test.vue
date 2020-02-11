@@ -187,7 +187,8 @@
             send() {
                 let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
                 this.sendDisable = true;
-                let url = this.selectedEnv ? (this.selectedEnv.frontUri + this.api.apiUri) : this.api.apiUri;
+                let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
+                    : this.api.apiUri;
                 try {
                     if (url.startsWith('/')) {
                         this.$message.error('url error：' + url);
