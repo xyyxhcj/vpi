@@ -2,20 +2,14 @@
     <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
                :close-on-click-modal="false" center width="35%">
         <el-form :model="form" ref="form" label-width="120px" :rules="form_rules">
-            <el-form-item label="loginName" prop="loginName">
-                <el-input v-model.trim="form.loginName"/>
-            </el-form-item>
             <el-form-item label="password" prop="password">
                 <el-input v-model.trim="form.password" type="password"/>
             </el-form-item>
             <el-form-item label="rePassword" prop="rePassword">
                 <el-input v-model.trim="form.rePassword" type="password"/>
             </el-form-item>
-            <el-form-item label="userName" prop="userName">
-                <el-input v-model.trim="form.userName"/>
-            </el-form-item>
-            <el-form-item label="phone" prop="phone">
-                <el-input v-model.trim="form.phone"/>
+            <el-form-item label="old password" prop="oldPwd">
+                <el-input v-model.trim="form.oldPwd" type="password"/>
             </el-form-item>
         </el-form>
         <div slot="footer">
@@ -29,7 +23,7 @@
     import {UTILS} from "../../common/js/utils";
 
     export default {
-        name: 'editUserDialog',
+        name: 'editPasswordDialog',
         props: {
             dialog: {
                 type: Object,
@@ -45,11 +39,9 @@
                 type: Object,
                 default() {
                     return {
-                        loginName: '',
                         password: '',
                         rePassword: '',
-                        userName: '',
-                        phone: '',
+                        oldPwd: '',
                     }
                 }
             }
@@ -64,14 +56,14 @@
             };
             return {
                 form_rules: {
-                    loginName: [
-                        {required: true, message: 'enter loginName'}
-                    ],
                     password: [
                         {required: true, message: 'enter password'}
                     ],
                     rePassword: [
                         {required: true, validator: validateRePassword, trigger: 'blur'},
+                    ],
+                    oldPwd: [
+                        {required: true, message: 'enter old password'}
                     ],
                 }
             };

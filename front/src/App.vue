@@ -43,7 +43,8 @@
                                     <i class="el-icon-arrow-down el-icon--right"/>
                                 </span>
                                 <el-dropdown-menu>
-                                    <el-dropdown-item :command="loginOut">loginOut</el-dropdown-item>
+                                    <el-dropdown-item :command="modify">modify</el-dropdown-item>
+                                    <el-dropdown-item :command="loginOut">login out</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </div>
@@ -56,20 +57,22 @@
         </el-container>
         <login-dialog :dialog="loginDialog"/>
         <edit-user-dialog :dialog="editUserDialog"/>
+        <edit-password-dialog :dialog="editPwdDialog"/>
     </el-container>
 </template>
 
 <script>
 
-    import leftMenu from "@/components/leftMenu/leftMenu";
+    import leftMenu from "./components/leftMenu/leftMenu";
     import LoginDialog from "./components/login/loginDialog";
     import EditUserDialog from "./components/editUser/editUserDialog";
     import {CONSTANT} from "./common/js/constant";
     import {UTILS} from "./common/js/utils";
+    import EditPasswordDialog from "./components/editUser/editPasswordDialog";
 
     export default {
         name: 'app',
-        components: {EditUserDialog, LoginDialog, leftMenu},
+        components: {EditPasswordDialog, EditUserDialog, LoginDialog, leftMenu},
         data() {
             return {
                 CONSTANT,
@@ -77,6 +80,11 @@
                     show: !this.$store.getters.loginAuth,
                 },
                 editUserDialog: {
+                    show: false,
+                    title: '',
+                    url: '',
+                },
+                editPwdDialog: {
                     show: false,
                     title: '',
                     url: '',
@@ -106,6 +114,13 @@
                     }
                 });
             },
+            modify() {
+                this.editPwdDialog = {
+                    show: true,
+                    title: 'modify password',
+                    url: CONSTANT.REQUEST_URL.USER_UPDATE,
+                };
+            }
         },
         computed: {
             selectedProjectId: {

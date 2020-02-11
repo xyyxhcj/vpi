@@ -80,6 +80,7 @@ export const CONSTANT = {
         LOGIN: '/user/login',
         LOGIN_OUT: '/user/loginOut',
         USER_ADD: '/user/add',
+        USER_UPDATE: '/user/update',
         USER_FIND_PAGE: '/user/findPage',
 
         PROJECT_ADD: '/project/add',
