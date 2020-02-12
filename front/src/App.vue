@@ -21,7 +21,7 @@
                     </el-col>
                     <el-col :span="4">
                         <div class="project-name">
-                            <el-dropdown @command="changeProject">
+                            <el-dropdown @command="changeProject" v-if="selectedProjectName">
                                 <span class="el-dropdown-link">
                                     {{selectedProjectName}}
                                     <i class="el-icon-arrow-down el-icon--right"/>
@@ -30,6 +30,9 @@
                                     <el-dropdown-item>switch project</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
+                            <el-button type="text" style="padding: 0;color: red" @click="changeProject" v-else>
+                                choose project
+                            </el-button>
                         </div>
                     </el-col>
                     <el-col :span="10">
@@ -168,7 +171,7 @@
 
         .project-path
             line-height 20px
-            margin 0
+            margin 4px
             text-align left
 
         .project-name

@@ -39,11 +39,15 @@
         <el-row>
             <el-col :span="12" v-if="api.apiSuccessMock!==''">
                 <line-text style="color: #44B549" text="Success Example"/>
-                <pre class="json-content">{{UTILS.formatJson(JSON.stringify(JSON.parse(api.apiSuccessMock)))}}</pre>
+                <pre class="json-content" v-if="api.apiSuccessMock">
+                    {{UTILS.formatJson(JSON.stringify(JSON.parse(api.apiSuccessMock)))}}
+                </pre>
             </el-col>
             <el-col :span="12" v-if="api.apiFailureMock!==''">
                 <line-text style="color: #F56C6C" text="Failure Example"/>
-                <pre class="json-content">{{UTILS.formatJson(JSON.stringify(JSON.parse(api.apiFailureMock)))}}</pre>
+                <pre class="json-content" v-if="api.apiFailureMock">
+                    {{UTILS.formatJson(JSON.stringify(JSON.parse(api.apiFailureMock)))}}
+                </pre>
             </el-col>
         </el-row>
     </div>
