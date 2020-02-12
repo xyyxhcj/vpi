@@ -1,3 +1,14 @@
+function isJSON(str) {
+    if (typeof str == 'string') {
+        try {
+            let obj = JSON.parse(str);
+            return !!(typeof obj == 'object' && obj);
+        } catch (e) {
+            return false;
+        }
+    }
+}
+
 function formatJson(json, options) {
     let reg,
         formatted = '',
@@ -106,7 +117,7 @@ window.addEventListener("message", function (e) {
         let start = new Date().getTime();
         axios(url, method, JSON.stringify(params), headers).then(({resp, respHeaders}) => {
             document.getElementById('resp-headers').innerText = respHeaders;
-            document.getElementById('resp-data').innerText = formatJson(resp);
+            document.getElementById('resp-data').innerText = isJSON(resp) ? formatJson(resp) : resp;
             if (headers) {
                 let headerStr = '';
                 Object.keys(headers).forEach(key => headerStr = headerStr + key + ': ' + headers[key] + '\r\n');

@@ -215,7 +215,6 @@
                 let stack = [];
                 this.api.requestParamVo.dataList.forEach(data => {
                     let paramKey = data.paramKey;
-                    console.log(data.selected, paramKey);
                     if (data.selected && paramKey !== '') {
                         let value;
                         if (data.subList.length > 0) {
