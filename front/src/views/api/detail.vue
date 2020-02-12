@@ -19,7 +19,7 @@
         </div>
         <template v-if="api.requestHeaders.length>0">
             <line-text text="Request Header"/>
-            <api-headers :data-list="api.requestHeaders" :config="{onlyRead:true}"/>
+            <api-headers :data-list="api.requestHeaders" :config="{onlyRead:true,refPre:'req'}"/>
         </template>
         <template v-if="reqShowDataList.length>0">
             <line-text text="Request Param"/>
@@ -28,7 +28,7 @@
         </template>
         <template v-if="api.responseHeaders.length>0">
             <line-text text="Response Header"/>
-            <api-headers :data-list="api.responseHeaders" :config="{onlyRead:true}"/>
+            <api-headers :data-list="api.responseHeaders" :config="{onlyRead:true,refPre:'resp'}"/>
         </template>
         <template v-if="respShowDataList.length>0">
             <line-text text="Response Param"/>

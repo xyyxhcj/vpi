@@ -25,7 +25,7 @@
         </el-form>
         <el-tabs type="card" :value="reqDefaultCard" style="line-height: 25px">
             <el-tab-pane label="Request Header">
-                <api-headers :data-list="form.requestHeaders" ref="reqHeaders"/>
+                <api-headers :data-list="form.requestHeaders" ref="reqHeaders" :config="{onlyRead:false,refPre:'req'}"/>
             </el-tab-pane>
             <el-tab-pane label="Request Param" name="requestParam">
                 <div style="text-align: left;margin-left: 15px">
@@ -42,7 +42,7 @@
         </el-tabs>
         <el-tabs type="card" :value="respDefaultCard" style="line-height: 25px">
             <el-tab-pane label="Response Header">
-                <api-headers :data-list="form.responseHeaders" ref="respHeaders"/>
+                <api-headers :data-list="form.responseHeaders" ref="respHeaders" :config="{onlyRead:false,refPre:'resp'}"/>
             </el-tab-pane>
             <el-tab-pane label="Response Param" name="responseParam">
                 <div style="text-align: left;margin:0 0 10px 15px">

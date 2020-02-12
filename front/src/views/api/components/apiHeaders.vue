@@ -1,7 +1,8 @@
 <template>
     <div class="headers-common">
-        <el-table :data="dataList" style="width: 100%" border>
+        <el-table :data="dataList" style="width: 100%" border :ref="config.refPre+'headerTable'">
             <el-table-column type="index" width="40"/>
+            <el-table-column type="selection" width="25" v-if="config.test"/>
             <el-table-column label="name" width="280" ref="param-key-container">
                 <template slot-scope="scope">
                     <el-input v-model.trim="scope.row.name" @input="nameChange(scope.$index,scope.row)"
@@ -57,7 +58,9 @@
                 type: Object,
                 default() {
                     return {
-                        onlyRead: false
+                        onlyRead: false,
+                        test: false,
+                        refPre: '',
                     };
                 }
             }
@@ -91,7 +94,14 @@
                         this.dataList.push(item);
                     }
                 }
-            }
+            },
+            selectAll() {
+                this.$refs[this.config.refPre + 'headerTable'].toggleAllSelection();
+            },
+            signSelected() {
+                let selectedList = this.$refs[this.config.refPre + 'headerTable'].selection;
+                this.dataList.forEach(row => row.selected = selectedList.indexOf(row) > -1);
+            },
         },
         created() {
         }

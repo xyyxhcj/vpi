@@ -131,9 +131,10 @@
         },
         methods: {
             signSelected() {
-                let selectedDict = {};
-                this.$refs[this.config.refPre + 'table'].selection.forEach(row => selectedDict[row.id] = true);
-                this.dataList.forEach(row => row.selected = !!selectedDict[row.id]);
+                let selectedList = this.$refs[this.config.refPre + 'table'].selection;
+                this.dataList.forEach(row => {
+                    row.selected = selectedList.indexOf(row) > -1;
+                });
             },
             importJson(data) {
                 if (!data) {

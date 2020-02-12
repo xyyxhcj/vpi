@@ -14,7 +14,7 @@
         <div style="text-align: left;margin: 5px;line-height: 30px;">{{api.name}}</div>
         <el-tabs type="card" v-model="reqDefaultCard" style="line-height: 25px">
             <el-tab-pane label="Request Header">
-                <api-headers :data-list="api.requestHeaders" ref="reqHeaders"/>
+                <api-headers :data-list="api.requestHeaders" ref="reqHeaders" :config="{onlyRead:false,test:true,refPre:'req'}"/>
             </el-tab-pane>
             <el-tab-pane label="Request Param" name="requestParam">
                 <div style="text-align: left;margin-left: 15px">
@@ -205,6 +205,7 @@
                         if (this.api.requestParamVo) {
                             UTILS.fillShowDataList(this.api.requestParamVo.dataList, this.reqShowDataList);
                             this.$refs['reqDataStructure'].init();
+                            this.$refs['reqHeaders'].selectAll();
                         }
                     }
                 });
@@ -214,6 +215,7 @@
                 let stack = [];
                 this.api.requestParamVo.dataList.forEach(data => {
                     let paramKey = data.paramKey;
+                    console.log(data.selected, paramKey);
                     if (data.selected && paramKey !== '') {
                         let value;
                         if (data.subList.length > 0) {
@@ -266,7 +268,6 @@
                 return params;
             },
             send() {
-                this.$refs['reqDataStructure'].signSelected();
                 this.testInfoDefaultCard = 'respInfo';
                 let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
                 this.sendDisable = true;
@@ -277,9 +278,13 @@
                         this.$message.error('url error：' + url);
                         return;
                     }
+                    this.$refs['reqHeaders'].signSelected();
+                    this.$refs['reqDataStructure'].signSelected();
                     let headers = {};
                     this.api.requestHeaders.forEach(item => {
-                        headers[item.name] = item.value;
+                        if (item.selected) {
+                            headers[item.name] = item.value;
+                        }
                     });
                     let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
                     headers[contentTypeName] = contentTypeValue;
