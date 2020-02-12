@@ -61,8 +61,17 @@
             <el-tab-pane label="Test History" name="testHistory">
                 <el-table :data="testHistory.dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
                           :row-style="{cursor:'pointer'}" @row-click="selectTestHistory">
-                    <el-table-column label="status" prop="status" width="200"/>
-                    <el-table-column label="requestTime" prop="requestTime" width="200"/>
+                    <el-table-column label="url" width="400">
+                        <template slot-scope="scope">
+                            <el-tag size="mini" v-if="scope.row.method">{{scope.row.method}}</el-tag>
+                            {{scope.row.url}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="requestTime" width="200">
+                        <template slot-scope="scope">
+                            {{scope.row.requestTime?scope.row.requestTime+'ms':''}}
+                        </template>
+                    </el-table-column>
                     <el-table-column label="testName" prop="createName" width="150"/>
                     <el-table-column label="testTime" width="200" :formatter="(row)=>dateFormat(row.createTime)"/>
                     <el-table-column>
@@ -160,7 +169,22 @@
 
             },
             selectTestHistory(row) {
-                // show data
+                // show test data
+                this.testInfoDefaultCard = 'respInfo';
+                this.flushEnv();
+                this.api.apiUri = row.url;
+                // show request info
+                let requestInfo = JSON.parse(row.requestInfo);
+                let reqHeaderStr = '';
+                Object.keys(requestInfo.headers).forEach(key => reqHeaderStr = reqHeaderStr + key + ': ' + requestInfo.headers[key] + '\r\n');
+                document.getElementById('req-headers').innerText = reqHeaderStr;
+                document.getElementById('req-data').innerText = UTILS.formatJson(requestInfo.data);
+                // show response info
+                let responseInfo = JSON.parse(row.responseInfo);
+                let respHeaderStr = '';
+                Object.keys(responseInfo.headers).forEach(key => respHeaderStr = respHeaderStr + key + ': ' + responseInfo.headers[key] + '\r\n');
+                document.getElementById('resp-headers').innerText = respHeaderStr;
+                document.getElementById('resp-data').innerText = UTILS.formatJson(responseInfo.data);
             },
             dateFormat(time) {
                 return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
@@ -190,7 +214,7 @@
                 let stack = [];
                 this.api.requestParamVo.dataList.forEach(data => {
                     let paramKey = data.paramKey;
-                    if (paramKey !== '') {
+                    if (data.selected && paramKey !== '') {
                         let value;
                         if (data.subList.length > 0) {
                             if (data.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
@@ -210,7 +234,7 @@
                 while (stack.length > 0) {
                     let {keys: keys, value: pop} = stack.pop();
                     let paramKey = pop.paramKey;
-                    if (paramKey !== '') {
+                    if (pop.selected && paramKey !== '') {
                         let value;
                         if (pop.subList.length > 0) {
                             if (pop.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
@@ -242,6 +266,7 @@
                 return params;
             },
             send() {
+                this.$refs['reqDataStructure'].signSelected();
                 this.testInfoDefaultCard = 'respInfo';
                 let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
                 this.sendDisable = true;
@@ -317,7 +342,7 @@
         .test-info
             text-align left
             position relative
-            height 450px
+            height 460px
 
             .headers
                 font-size 12px

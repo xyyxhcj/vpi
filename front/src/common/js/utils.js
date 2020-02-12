@@ -338,9 +338,68 @@ export const UTILS = {
         }
         this.pushItemTemplate(sourceTree, destList);
     },
-    checkAuth: function (obj, permissionId) {
+    checkAuth(obj, permissionId) {
         return this.contains(obj.btnList, permissionId, function (btn, element) {
             return element === btn.menuId;
         })
+    },
+    // json transform to view
+    pushItem(list, obj, stack, level = 0) {
+        Object.keys(obj).forEach(key => {
+            let itemTemp = JSON.parse(CONSTANT.ITEM_TEMPLATE);
+            itemTemp.paramKey = key;
+            itemTemp.paramDesc = itemTemp.value = obj[key];
+            itemTemp.level = level;
+            if (constructor) {
+                if (itemTemp.value !== undefined && itemTemp.value !== null) {
+                    switch (itemTemp.value.constructor) {
+                        case String:
+                            itemTemp.paramType = CONSTANT.PARAM_TYPE.STRING;
+                            break;
+                        case Number:
+                            itemTemp.paramType = CONSTANT.PARAM_TYPE.NUMBER;
+                            break;
+                        case Object:
+                            itemTemp.paramType = CONSTANT.PARAM_TYPE.OBJECT;
+                            if (stack) {
+                                stack.push({
+                                    list: itemTemp.subList,
+                                    obj: itemTemp.value,
+                                    level: itemTemp.level
+                                });
+                                itemTemp.paramDesc = itemTemp.value = JSON.stringify(itemTemp.value);
+                            }
+                            break;
+                        case Array:
+                            itemTemp.paramType = CONSTANT.PARAM_TYPE.ARRAY;
+                            if (itemTemp.value.length > 0 && stack) {
+                                stack.push({
+                                    list: itemTemp.subList,
+                                    obj: itemTemp.value[0],
+                                    level: itemTemp.level
+                                });
+                                itemTemp.paramDesc = itemTemp.value = JSON.stringify(itemTemp.value);
+                            }
+                            break;
+                        case Date:
+                            itemTemp.paramType = CONSTANT.PARAM_TYPE.TIME;
+                            break;
+                        default:
+                    }
+                }
+            }
+            list.push(itemTemp);
+        });
+    },
+    // json transform to viewData
+    json2ViewData(jsonObj, parentLevel = -1) {
+        let result = [];
+        let stack = [];
+        this.pushItem(result, jsonObj, stack, parentLevel + 1);
+        while (stack.length > 0) {
+            let {list, obj, level} = stack.shift();
+            this.pushItem(list, obj, stack, level + 1);
+        }
+        return result;
     },
 };

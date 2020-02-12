@@ -130,6 +130,11 @@
             }
         },
         methods: {
+            signSelected() {
+                let selectedDict = {};
+                this.$refs[this.config.refPre + 'table'].selection.forEach(row => selectedDict[row.id] = true);
+                this.dataList.forEach(row => row.selected = !!selectedDict[row.id]);
+            },
             importJson(data) {
                 if (!data) {
                     return;
@@ -157,6 +162,7 @@
                     }
                 }
                 UTILS.fillShowDataList(this.rootList, this.dataList);
+                this.$refs[this.config.refPre + 'table'].toggleAllSelection();
             },
             showImportJsonDialog(index, row) {
                 this.importJsonDialog.row = row;
