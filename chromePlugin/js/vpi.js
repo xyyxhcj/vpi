@@ -103,6 +103,7 @@ window.addEventListener("message", function (e) {
         if (!url) {
             return;
         }
+        let start = new Date().getTime();
         axios(url, method, JSON.stringify(params), headers).then(({resp, respHeaders}) => {
             document.getElementById('resp-headers').innerText = respHeaders;
             document.getElementById('resp-data').innerText = formatJson(resp);
@@ -122,9 +123,12 @@ window.addEventListener("message", function (e) {
                 }
             });
             let jsonHeaders = JSON.stringify(headerDict);
-            // todo save  method,url,respStatus, requestTime
+            // save  method,url,requestTime
             axios(logUrl, 'POST', JSON.stringify({
                 apiId: apiId,
+                method: method,
+                url: url,
+                requestTime: new Date().getTime() - start,
                 requestInfo: JSON.stringify({headers: headers, data: params}),
                 responseInfo: JSON.stringify({headers: headerDict, data: resp}),
             }), logHeaders);

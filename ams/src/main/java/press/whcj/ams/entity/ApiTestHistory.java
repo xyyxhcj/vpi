@@ -23,6 +23,12 @@ public class ApiTestHistory implements Serializable {
 
     private String apiId;
 
+    private String url;
+
+    private String method;
+
+    private Integer requestTime;
+
     /**
     * json
     */
