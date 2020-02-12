@@ -12,7 +12,7 @@
             </el-col>
         </el-row>
         <div style="text-align: left;margin: 5px;line-height: 30px;">{{api.name}}</div>
-        <el-tabs type="card" :value="reqDefaultCard" style="line-height: 25px">
+        <el-tabs type="card" v-model="reqDefaultCard" style="line-height: 25px">
             <el-tab-pane label="Request Header">
                 <api-headers :data-list="api.requestHeaders" ref="reqHeaders"/>
             </el-tab-pane>
@@ -38,8 +38,8 @@
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
-        <el-tabs type="card" class="test-info" @tab-click="clickTab">
-            <el-tab-pane label="Response Info">
+        <el-tabs type="card" class="test-info" @tab-click="clickTab" v-model="testInfoDefaultCard">
+            <el-tab-pane label="Response Info" name="respInfo">
                 <line-text style="color: #44B549" text="Headers"/>
                 <div id="resp-headers" ref="respHeaders" class="headers"></div>
                 <line-text style="color: #44B549" text="Response Body"/>
@@ -52,7 +52,7 @@
                 </el-dropdown>
                 <pre id="resp-data" ref="respData" class="data"/>
             </el-tab-pane>
-            <el-tab-pane label="Request Info">
+            <el-tab-pane label="Request Info" name="reqInfo">
                 <line-text style="color: #44B549" text="Headers"/>
                 <div id="req-headers" ref="respHeaders" class="headers"></div>
                 <line-text style="color: #44B549" text="Request Body"/>
@@ -123,6 +123,7 @@
                     apiFailureMock: '',
                 },
                 reqDefaultCard: 'requestParam',
+                testInfoDefaultCard: 'respInfo',
                 reqShowDataList: [],
                 respShowDataList: [],
                 responseInfo: {},
@@ -241,6 +242,7 @@
                 return params;
             },
             send() {
+                this.testInfoDefaultCard = 'respInfo';
                 let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
                 this.sendDisable = true;
                 let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
