@@ -163,7 +163,7 @@
 
             },
             testHistoryFindPage() {
-
+                UTILS.findPage(this, this.testHistory, CONSTANT.REQUEST_URL.API_TEST_HISTORY_FIND_PAGE);
             },
             testHistoryBatchOperate() {
 
