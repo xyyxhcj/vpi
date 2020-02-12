@@ -40,6 +40,13 @@ export default new Vuex.Store({
                 return sessionStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_NAME);
             }
         },
+        leftMenuIsCollapse(state) {
+            if (state.leftMenuIsCollapse !== undefined) {
+                return state.leftMenuIsCollapse;
+            } else {
+                return Boolean(sessionStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.LEFT_MENU_IS_COLLAPSE));
+            }
+        }
     },
     // change global variables
     // mutations only use sync method
@@ -62,6 +69,10 @@ export default new Vuex.Store({
             sessionStorage.setItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_ID, project.id);
             sessionStorage.setItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_NAME, project.name);
         },
+        setLeftMenuIsCollapse(state, isCollapse) {
+            state.leftMenuIsCollapse = isCollapse;
+            sessionStorage.setItem(CONSTANT.SESSION_STORAGE_KEY.LEFT_MENU_IS_COLLAPSE, isCollapse.toString());
+        }
     },
     // async actions
     // actions can't directly modify global variables, need use commit() to trigger mutations method
@@ -75,5 +86,8 @@ export default new Vuex.Store({
         selectProject(context, project) {
             context.commit('selectProject', project);
         },
+        setLeftMenuIsCollapse(context, isCollapse) {
+            context.commit('setLeftMenuIsCollapse', isCollapse);
+        }
     }
 });

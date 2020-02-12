@@ -75,6 +75,7 @@ export const CONSTANT = {
         SELECTED_PROJECT_ID: 'selectedProjectId',
         SELECTED_PROJECT_NAME: 'selectedProjectName',
         SELECTED_ENV: 'selectedEnv',
+        LEFT_MENU_IS_COLLAPSE: 'leftMenuIsCollapse',
     },
     REQUEST_URL: {
         LOGIN: '/user/login',

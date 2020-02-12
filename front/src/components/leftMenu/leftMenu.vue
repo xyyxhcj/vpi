@@ -29,7 +29,7 @@
         name: 'leftMenu',
         data() {
             return {
-                isCollapse: false,
+                isCollapse: this.$store.getters.leftMenuIsCollapse,
                 MENUS: CONSTANT.MENUS
             }
         },
@@ -47,7 +47,11 @@
                 }, 400);
             }
         },
-        computed: {},
+        watch: {
+            isCollapse(newVal) {
+                this.$store.dispatch('setLeftMenuIsCollapse', newVal);
+            }
+        },
     };
 </script>
 
