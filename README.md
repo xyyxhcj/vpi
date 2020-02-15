@@ -13,5 +13,5 @@ http://www.whcj.press
 
 lx/123456
 
-![image](https://github.com/xyyxhcj/vpi/blob/develop/img/testVpi01.gif)
+![image](http://www.whcj.press/demoImg/testVpi01.gif)
          
