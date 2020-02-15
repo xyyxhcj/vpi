@@ -13,6 +13,6 @@ http://www.whcj.press
 
 lx/123456
 
-![](https://xyyxhcj.github.io/demoImg/testVpi01.gif)
+![image](https://xyyxhcj.github.io/demoImg/testVpi01.gif)
 https://xyyxhcj.github.io/demoImg/testVpi01.gif
 
