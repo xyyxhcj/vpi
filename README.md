@@ -12,3 +12,5 @@ mongodb(init/install-mongodb.sh)
 http://www.whcj.press  
 
 lx/123456
+
+![image](https://github.com/xyyxhcj/vpi/tree/develop/img/testVpi01.gif)
