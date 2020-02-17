@@ -32,7 +32,7 @@
                     <el-radio v-model.trim="form.requestParamType" :label="0" size="mini">
                         {{CONSTANT.REQUEST_PARAM_TYPE[0]}}
                     </el-radio>
-                    <el-radio v-model.trim="form.requestParamType" :label="1" size="mini">
+                    <el-radio v-model.trim="form.requestParamType" :label="1" size="mini" disabled>
                         {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
                     </el-radio>
                 </div>

@@ -71,12 +71,14 @@
             </el-table-column>
             <el-table-column v-if="!config.onlyRead" min-width="250px">
                 <template slot="header">
+                    <more-operate :info="{showDataStructure:showDataStructure}"/>
                     <el-tooltip class="item" effect="dark" content="override" placement="left">
                         <el-button size="mini" type="success" @click="showImportJsonDialog">Import Json</el-button>
                     </el-tooltip>
                     <el-button size="mini" @click="addField">Add Field</el-button>
                 </template>
                 <template slot-scope="scope">
+                    <more-operate :info="{index:scope.$index,row:scope.row,showDataStructure:showDataStructure}"/>
                     <el-tooltip class="item" effect="dark" content="additional" placement="left">
                         <el-button size="mini" type="success" @click="showImportJsonDialog(scope.$index,scope.row)">
                             Import Json
@@ -87,7 +89,9 @@
                 </template>
             </el-table-column>
         </el-table>
-        <import-json-dialog :dialog="importJsonDialog" @flush="importJson"></import-json-dialog>
+        <import-json-dialog :dialog="importJsonDialog" @flush="importJson"/>
+        <select-data-structure-dialog :dialog="selectDataStructureDialog" @selectDataStructure="selectDataStructure"
+                                      ref="selectDataStructureDialog"/>
     </div>
 </template>
 
@@ -95,10 +99,12 @@
     import {CONSTANT} from "../../common/js/constant";
     import ImportJsonDialog from "./importJsonDialog";
     import {UTILS} from "../../common/js/utils";
+    import MoreOperate from "./components/moreOperate";
+    import SelectDataStructureDialog from "./selectDataStructureDialog";
 
     export default {
         name: 'dataStructure',
-        components: {ImportJsonDialog},
+        components: {SelectDataStructureDialog, MoreOperate, ImportJsonDialog},
         props: {
             dataList: {
                 type: Array,
@@ -126,6 +132,12 @@
                     parentLevel: -1,
                     row: undefined,
                     rowIndex: undefined,
+                },
+                selectDataStructureDialog: {
+                    show: false,
+                    title: 'select data structure',
+                    selectedIndex: undefined,
+                    selectedRow: undefined,
                 }
             }
         },
@@ -289,8 +301,25 @@
                         $refTable.toggleRowSelection(row);
                     }
                 });
+            },
+            showDataStructure(index, row) {
+                this.selectDataStructureDialog.selectedIndex = index;
+                this.selectDataStructureDialog.selectedRow = row;
+                if (row){
+                    // add to sub
+
+                } else {
+                    // override all
+
+                }
+                this.$refs['selectDataStructureDialog'].findPage();
+                this.selectDataStructureDialog.show = true;
+            },
+            selectDataStructure(row) {
+                console.log(row);
             }
-        },
+        }
+        ,
         created() {
         }
     };
@@ -306,4 +335,9 @@
 
         .el-button
             padding 7px 7px
+
+        .more-operate
+            padding 10px
+            cursor: pointer;
+            color: #409EFF;
 </style>
