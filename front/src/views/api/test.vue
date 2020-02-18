@@ -25,7 +25,7 @@
                         {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
                     </el-radio>
                 </div>
-                <data-structure :data-list="reqShowDataList" :root-list="api.requestParamVo.dataList"
+                <data-structure :show-list="reqShowDataList" :entity="api.requestParamVo"
                                 ref="reqDataStructure" :config="{test:true}"/>
             </el-tab-pane>
         </el-tabs>
@@ -203,7 +203,7 @@
                     if (UTILS.checkResp(resp)) {
                         this.api = resp.data.data;
                         if (this.api.requestParamVo) {
-                            UTILS.fillShowDataList(this.api.requestParamVo.dataList, this.reqShowDataList);
+                            UTILS.fillShowList(this.api.requestParamVo.dataList, this.reqShowDataList);
                             this.$refs['reqDataStructure'].init();
                             this.$refs['reqHeaders'].selectAll();
                         }

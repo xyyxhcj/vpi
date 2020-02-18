@@ -23,7 +23,7 @@
         </template>
         <template v-if="reqShowDataList.length>0">
             <line-text text="Request Param"/>
-            <data-structure :data-list="reqShowDataList" :root-list="api.requestParamVo.dataList"
+            <data-structure :show-list="reqShowDataList" :entity="api.requestParamVo"
                             :config="{onlyRead:true}"/>
         </template>
         <template v-if="api.responseHeaders.length>0">
@@ -32,7 +32,7 @@
         </template>
         <template v-if="respShowDataList.length>0">
             <line-text text="Response Param"/>
-            <data-structure :data-list="respShowDataList" :root-list="api.responseParamVo.dataList"
+            <data-structure :show-list="respShowDataList" :entity="api.responseParamVo"
                             :config="{onlyRead:true}" v-if="api.responseParamType===0"/>
             <template v-else>{{api.responseParamVo.remark}}</template>
         </template>
@@ -99,10 +99,10 @@
                     if (UTILS.checkResp(resp)) {
                         this.api = resp.data.data;
                         if (this.api.requestParamVo) {
-                            UTILS.fillShowDataList(this.api.requestParamVo.dataList, this.reqShowDataList);
+                            UTILS.fillShowList(this.api.requestParamVo.dataList, this.reqShowDataList);
                         }
                         if (this.api.responseParamVo) {
-                            UTILS.fillShowDataList(this.api.responseParamVo.dataList, this.respShowDataList);
+                            UTILS.fillShowList(this.api.responseParamVo.dataList, this.respShowDataList);
                         }
                     }
                 });

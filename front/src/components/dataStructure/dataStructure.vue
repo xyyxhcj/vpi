@@ -1,6 +1,6 @@
 <template>
     <div class="data-structure-common">
-        <el-table :data="dataList" style="width: 100%" :row-style="rowStyle" border :ref="config.refPre+'table'">
+        <el-table :data="showList" style="width: 100%" :row-style="rowStyle" border :ref="config.refPre+'table'">
             <el-table-column type="index" width="40"/>
             <el-table-column type="selection" width="25" v-if="config.test"/>
             <el-table-column label="paramKey" width="280" ref="param-key-container">
@@ -106,11 +106,19 @@
         name: 'dataStructure',
         components: {SelectDataStructureDialog, MoreOperate, ImportJsonDialog},
         props: {
-            dataList: {
+            showList: {
                 type: Array,
             },
-            rootList: {
-                type: Array,
+            entity: {
+                type: Object,
+                default() {
+                    return {
+                        id: undefined,
+                        reference: undefined,
+                        // root tree
+                        dataList: [],
+                    };
+                }
             },
             config: {
                 type: Object,
@@ -144,7 +152,7 @@
         methods: {
             signSelected() {
                 let selectedList = this.$refs[this.config.refPre + 'table'].selection;
-                this.dataList.forEach(row => {
+                this.showList.forEach(row => {
                     row.selected = selectedList.indexOf(row) > -1;
                 });
             },
@@ -152,10 +160,10 @@
                 if (!data) {
                     return;
                 }
-                this.dataList.splice(0);
+                this.showList.splice(0);
                 if (this.importJsonDialog.row === undefined) {
-                    this.rootList.splice(0);
-                    data.forEach(item => this.rootList.push(item));
+                    this.entity.dataList.splice(0);
+                    data.forEach(item => this.entity.dataList.push(item));
                 } else {
                     if (this.importJsonDialog.row.subList !== undefined) {
                         let dict = {};
@@ -174,7 +182,7 @@
                         this.importJsonDialog.row.subList = [];
                     }
                 }
-                UTILS.fillShowDataList(this.rootList, this.dataList);
+                UTILS.fillShowList(this.entity.dataList, this.showList);
                 this.$refs[this.config.refPre + 'table'].toggleAllSelection();
             },
             showImportJsonDialog(index, row) {
@@ -194,7 +202,7 @@
                 }
             },
             moveDown(index, refMid) {
-                if (index !== this.dataList.length - 1) {
+                if (index !== this.showList.length - 1) {
                     this.$refs[this.config.refPre + refMid + (index + 1)].focus();
                 }
             },
@@ -227,7 +235,7 @@
                 }
             },
             paramKeyChange(index, row) {
-                if (!row.parent && this.rootList[this.rootList.length - 1] === row) {
+                if (!row.parent && this.entity.dataList[this.entity.dataList.length - 1] === row) {
                     // add root
                     this.addField();
                 }
@@ -241,18 +249,18 @@
                 return this.$refs['param-key-container'].width - 20 - preWidth + 'px';
             },
             addField() {
-                UTILS.pushItemTemplate(this.rootList, this.dataList);
+                UTILS.pushItemTemplate(this.entity.dataList, this.showList);
             },
             addSubField(index, row) {
                 let item = JSON.parse(CONSTANT.ITEM_TEMPLATE);
                 item.level = row.level + 1;
                 item.parent = row;
                 row.subList.splice(0, 0, item);
-                this.dataList.splice(index + 1, 0, item);
+                this.showList.splice(index + 1, 0, item);
             },
             del(index, row) {
                 let parent = row.parent;
-                // remove from dataList,with subTree
+                // remove from showList,with subTree
                 // get same level next element
                 if (parent) {
                     let curr = row;
@@ -261,42 +269,42 @@
                         parent = parent.parent;
                     }
                     if (parent.subList.indexOf(curr) !== parent.subList.length - 1) {
-                        let nextIndex = this.dataList.indexOf(parent.subList[parent.subList.indexOf(curr) + 1]);
-                        this.dataList.splice(index, nextIndex - index);
+                        let nextIndex = this.showList.indexOf(parent.subList[parent.subList.indexOf(curr) + 1]);
+                        this.showList.splice(index, nextIndex - index);
                     } else {
-                        let rootIndex = this.rootList.indexOf(parent);
-                        if (rootIndex === this.rootList.length - 1) {
-                            this.dataList.splice(index, this.dataList.length - index);
+                        let rootIndex = this.entity.dataList.indexOf(parent);
+                        if (rootIndex === this.entity.dataList.length - 1) {
+                            this.showList.splice(index, this.showList.length - index);
                         } else {
-                            let nextIndex = this.dataList.indexOf(this.rootList[rootIndex + 1]);
-                            this.dataList.splice(index, nextIndex - index);
+                            let nextIndex = this.showList.indexOf(this.entity.dataList[rootIndex + 1]);
+                            this.showList.splice(index, nextIndex - index);
                         }
 
                     }
                 } else {
-                    let rootIndex = this.rootList.indexOf(row);
-                    if (rootIndex === this.rootList.length - 1) {
-                        this.dataList.splice(index, this.dataList.length - index);
+                    let rootIndex = this.entity.dataList.indexOf(row);
+                    if (rootIndex === this.entity.dataList.length - 1) {
+                        this.showList.splice(index, this.showList.length - index);
                     } else {
-                        let nextIndex = this.dataList.indexOf(this.rootList[rootIndex + 1]);
-                        this.dataList.splice(index, nextIndex - index);
+                        let nextIndex = this.showList.indexOf(this.entity.dataList[rootIndex + 1]);
+                        this.showList.splice(index, nextIndex - index);
                     }
                 }
                 // remove from tree
                 if (parent) {
                     parent.subList.splice(parent.subList.indexOf(row), 1);
                 } else {
-                    this.rootList.splice(this.rootList.indexOf(row), 1);
+                    this.entity.dataList.splice(this.entity.dataList.indexOf(row), 1);
                 }
             },
             init() {
-                if (this.dataList.length === 0) {
+                if (this.showList.length === 0) {
                     for (let i = 0; i < CONSTANT.CONFIG.DEFAULT_DATA_LIST_SIZE; i++) {
-                        UTILS.pushItemTemplate(this.rootList, this.dataList);
+                        UTILS.pushItemTemplate(this.entity.dataList, this.showList);
                     }
                 }
                 let $refTable = this.$refs[this.config.refPre + 'table'];
-                this.dataList.forEach(row => {
+                this.showList.forEach(row => {
                     if (row.paramKey !== '' && row.requireType === 0) {
                         $refTable.toggleRowSelection(row);
                     }
@@ -305,18 +313,27 @@
             showDataStructure(index, row) {
                 this.selectDataStructureDialog.selectedIndex = index;
                 this.selectDataStructureDialog.selectedRow = row;
-                if (row){
-                    // add to sub
-
-                } else {
-                    // override all
-
-                }
                 this.$refs['selectDataStructureDialog'].findPage();
                 this.selectDataStructureDialog.show = true;
             },
-            selectDataStructure(row) {
-                console.log(row);
+            selectDataStructure(selectedDataStructure) {
+                this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, {id: selectedDataStructure.id}).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        if (this.selectDataStructureDialog.selectedRow){
+                            // add to sub
+                            this.selectDataStructureDialog.selectedRow.referenceStructureId = selectedDataStructure.id;
+                            this.selectDataStructureDialog.selectedRow.subList = resp.data.data.dataList;
+                        } else {
+                            // override all
+                            this.entity.dataList = resp.data.data.dataList;
+                            this.entity.id = selectedDataStructure.id;
+                            this.entity.reference = true;
+                        }
+                    }
+                    this.showList.splice(0);
+                    UTILS.fillShowList(this.entity.dataList, this.showList);
+                    this.$refs[this.config.refPre + 'table'].toggleAllSelection();
+                });
             }
         }
         ,
@@ -332,6 +349,7 @@
 
         .cell, div.cell
             padding 0 0 0 3px
+            height 28px
 
         .el-button
             padding 7px 7px

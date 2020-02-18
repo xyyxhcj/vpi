@@ -62,9 +62,23 @@ public class ApiServiceImpl implements ApiService {
         } else {
             api.setGroup(null);
         }
-        String reqParamsId = saveApiParams(apiDto.getRequestParamDto(), operator, projectId);
-        String respParamsId = saveApiParams(apiDto.getResponseParamDto(), operator, projectId);
+        // save request params
+        String reqParamsId = apiDto.getRequestParamDto().getId();
+        if (apiDto.getRequestParamDto().isReference()) {
+            api.setReqParamIsReference(true);
+        }
+        if (!api.isReqParamIsReference()) {
+            reqParamsId = saveApiParams(apiDto.getRequestParamDto(), operator, projectId);
+        }
         api.setRequestParam(new Structure(reqParamsId));
+        // save response params
+        String respParamsId = apiDto.getResponseParamDto().getId();
+        if (apiDto.getResponseParamDto().isReference()) {
+            api.setRespParamIsReference(true);
+        }
+        if (!api.isRespParamIsReference()) {
+            respParamsId = saveApiParams(apiDto.getResponseParamDto(), operator, projectId);
+        }
         api.setResponseParam(new Structure(respParamsId));
         mongoTemplate.save(api);
         String apiId = api.getId();
@@ -158,25 +172,22 @@ public class ApiServiceImpl implements ApiService {
     }
 
     private String saveApiParams(StructureDto paramDto, UserVo operator, String projectId) {
-        if (paramDto != null) {
-            if (StringUtils.isEmpty(paramDto.getId())) {
-                paramDto.setType(Constant.StructureType.API_CREATE);
-            }
-            paramDto.setProjectId(projectId);
-            paramDto.setCheckName(false);
-            paramDto.setName(UUID.randomUUID().toString());
-            LocalDateTime now = LocalDateTime.now();
-            User update = new User(operator.getId());
-            if (StringUtils.isEmpty(paramDto.getId())) {
-                paramDto.setCreate(update);
-                paramDto.setCreateTime(now);
-                paramDto.setUpdateTime(now);
-            } else {
-                paramDto.setUpdate(update);
-                paramDto.setUpdateTime(now);
-            }
-            return structureService.save(paramDto, operator);
+        if (StringUtils.isEmpty(paramDto.getId())) {
+            paramDto.setType(Constant.StructureType.API_CREATE);
         }
-        return null;
+        paramDto.setProjectId(projectId);
+        paramDto.setCheckName(false);
+        paramDto.setName(UUID.randomUUID().toString());
+        LocalDateTime now = LocalDateTime.now();
+        User update = new User(operator.getId());
+        if (StringUtils.isEmpty(paramDto.getId())) {
+            paramDto.setCreate(update);
+            paramDto.setCreateTime(now);
+            paramDto.setUpdateTime(now);
+        } else {
+            paramDto.setUpdate(update);
+            paramDto.setUpdateTime(now);
+        }
+        return structureService.save(paramDto, operator);
     }
 }

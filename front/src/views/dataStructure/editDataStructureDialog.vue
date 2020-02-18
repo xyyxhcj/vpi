@@ -4,13 +4,13 @@
         <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
                  style="margin:10px 60px 10px 0;width:auto">
             <el-form-item label="name" label-width="100px" prop="name">
-                <el-input v-model.trim="form.name" size="mini"/>
+                <el-input v-model="form.name" size="mini"/>
             </el-form-item>
             <el-form-item label="remark" label-width="100px" prop="remark">
-                <el-input v-model.trim="form.remark" size="mini"/>
+                <el-input v-model="form.remark" size="mini"/>
             </el-form-item>
         </el-form>
-        <data-structure :data-list="dataList" :root-list="rootList" ref="dataStructure"
+        <data-structure :show-list="dataList" :entity="form" ref="dataStructure"
                         :config="{refPre:'editDataStructure'}"/>
         <div slot="footer">
             <el-button @click="dialog.show = false" round>Cancel</el-button>
@@ -49,7 +49,6 @@
                     ],
                 },
                 dataList: [],
-                rootList: [],
             };
         },
         methods: {
@@ -70,7 +69,7 @@
                         this.$message.error('params lose');
                         return;
                     }
-                    let copyRootList = JSON.parse(JSON.stringify(this.rootList, (key, value) => key === 'parent' ? null : value));
+                    let copyRootList = JSON.parse(JSON.stringify(this.form.dataList, (key, value) => key === 'parent' ? null : value));
                     UTILS.filterEmptyParams(copyRootList);
                     this.form.dataList = copyRootList;
                     this.$axios.post(this.dialog.url, this.form).then(resp => {
@@ -83,10 +82,10 @@
             init() {
                 this.dataList = [];
                 if (this.form.id !== undefined) {
-                    this.rootList = this.form.dataList;
-                    UTILS.fillShowDataList(this.rootList, this.dataList);
+                    this.form.dataList;
+                    UTILS.fillShowList(this.form.dataList, this.dataList);
                 } else {
-                    this.rootList = [];
+                    this.form.dataList = [];
                     this.$nextTick(() => {
                         this.$refs['dataStructure'].init();
                     });

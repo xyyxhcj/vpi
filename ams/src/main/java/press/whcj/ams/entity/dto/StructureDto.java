@@ -15,6 +15,7 @@ public class StructureDto extends StructureVo {
 	private static final long serialVersionUID = 3823736257675941808L;
 	private MongoPage<StructureVo> page = new MongoPage<>();
 	private boolean isCheckName = true;
+	private boolean isReference;
 
 	public StructureDto() {
 	}

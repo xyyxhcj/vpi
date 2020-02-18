@@ -36,7 +36,7 @@
                         {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
                     </el-radio>
                 </div>
-                <data-structure :data-list="reqShowDataList" :root-list="form.requestParamDto.dataList"
+                <data-structure :show-list="reqShowDataList" :entity="form.requestParamDto"
                                 ref="reqDataStructure" :config="{refPre:'editApiReq'}"/>
             </el-tab-pane>
         </el-tabs>
@@ -53,7 +53,7 @@
                         {{CONSTANT.RESPONSE_PARAM_TYPE[1]}}
                     </el-radio>
                 </div>
-                <data-structure :data-list="respShowDataList" :root-list="form.responseParamDto.dataList"
+                <data-structure :show-list="respShowDataList" :entity="form.responseParamDto"
                                 ref="respDataStructure" v-if="form.responseParamType===0"
                                 :config="{refPre:'editApiResp'}"/>
                 <el-input type="textarea" placeholder="remark" v-model="form.responseParamDto.remark" v-else/>
@@ -125,13 +125,13 @@
                             this.form.requestParamDto = this.form.requestParamVo;
                             this.form.responseParamDto = this.form.responseParamVo;
                             if (this.form.requestParamDto) {
-                                UTILS.fillShowDataList(this.form.requestParamDto.dataList, this.reqShowDataList);
+                                UTILS.fillShowList(this.form.requestParamDto.dataList, this.reqShowDataList);
                             } else {
                                 this.reqShowDataList = [JSON.parse(CONSTANT.ITEM_TEMPLATE)];
                                 this.form.requestParamDto = {dataList: this.reqShowDataList};
                             }
                             if (this.form.responseParamDto) {
-                                UTILS.fillShowDataList(this.form.responseParamDto.dataList, this.respShowDataList);
+                                UTILS.fillShowList(this.form.responseParamDto.dataList, this.respShowDataList);
                             } else {
                                 this.respShowDataList = [JSON.parse(CONSTANT.ITEM_TEMPLATE)];
                                 this.form.responseParamDto = {dataList: this.respShowDataList};

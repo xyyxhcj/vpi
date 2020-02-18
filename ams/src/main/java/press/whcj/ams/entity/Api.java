@@ -17,53 +17,58 @@ import java.io.Serializable;
 @Setter
 @Accessors(chain = true)
 public class Api extends BaseEntity implements Serializable {
-	private String name;
-	@DBRef
-	private ApiGroup group;
+    private String name;
+    @DBRef
+    private ApiGroup group;
 
-	private String projectId;
+    private String projectId;
 
-	private String apiUri;
+    private String apiUri;
 
-	/**
-	 * failure example
-	 */
-	private String apiFailureMock;
+    /**
+     * failure example
+     */
+    private String apiFailureMock;
 
-	/**
-	 * success example
-	 */
-	private String apiSuccessMock;
+    /**
+     * success example
+     */
+    private String apiSuccessMock;
 
-	/**
-	 * 0post 1get
-	 */
-	private Byte apiRequestType;
-	@DBRef
-	@JsonBackReference("requestParam")
-	private Structure requestParam;
-	@DBRef
-	@JsonBackReference("responseParam")
-	private Structure responseParam;
+    /**
+     * 0post 1get
+     */
+    private Byte apiRequestType;
+    @DBRef
+    @JsonBackReference("requestParam")
+    private Structure requestParam;
 
-	/**
-	 * 0-enable 1-maintaining 2-deprecated 3-pending 4-plan 5-develop 6-test 7-docking 8-bug
-	 */
-	private Byte apiStatus;
+    private boolean reqParamIsReference;
 
-	private String desc;
+    @DBRef
+    @JsonBackReference("responseParam")
+    private Structure responseParam;
 
-	/**
-	 * 0json 1form-data
-	 */
-	private Byte requestParamType;
+    private boolean respParamIsReference;
 
-	/**
-	 * 0json 1binary
-	 */
-	private Byte responseParamType;
+    /**
+     * 0-enable 1-maintaining 2-deprecated 3-pending 4-plan 5-develop 6-test 7-docking 8-bug
+     */
+    private Byte apiStatus;
 
-	private static final long serialVersionUID = 1L;
+    private String desc;
 
-	private Byte isDel;
+    /**
+     * 0json 1form-data
+     */
+    private Byte requestParamType;
+
+    /**
+     * 0json 1binary
+     */
+    private Byte responseParamType;
+
+    private static final long serialVersionUID = 1L;
+
+    private Byte isDel;
 }

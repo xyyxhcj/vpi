@@ -115,4 +115,5 @@
 
         .cell, div.cell
             padding 0 0 0 3px
+            height 28px
 </style>

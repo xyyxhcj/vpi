@@ -316,7 +316,7 @@ export const UTILS = {
         treeList.push(item);
         dataList.push(item);
     },
-    fillShowDataList(sourceTree, destList) {
+    fillShowList(sourceTree, destList) {
         let stack = sourceTree.slice();
         while (stack.length > 0) {
             let pop = stack.shift();
