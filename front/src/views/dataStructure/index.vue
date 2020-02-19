@@ -1,7 +1,7 @@
 <template>
     <div id="data-container" style="min-width: 1250px">
         <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
-                  :row-style="{cursor:'pointer'}" @row-click="editDataStructure">
+                  :row-style="{cursor:'pointer'}" @row-click="showDataStructure">
             <el-table-column label="name" prop="name" width="200"/>
             <el-table-column label="remark" prop="remark" width="200"/>
             <el-table-column label="createName" prop="createName" width="150"/>
@@ -91,6 +91,21 @@
                     show: true,
                     title: 'Edit',
                     url: CONSTANT.REQUEST_URL.STRUCTURE_EDIT
+                };
+                this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, data).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.form = resp.data.data;
+                        this.$nextTick(() => {
+                            this.$refs['editDataStructure'].init();
+                        });
+                    }
+                });
+            },
+            showDataStructure(data) {
+                this.editDialog = {
+                    show: true,
+                    title: 'View',
+                    onlyRead: true,
                 };
                 this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, data).then(resp => {
                     if (UTILS.checkResp(resp)) {

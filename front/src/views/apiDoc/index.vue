@@ -94,8 +94,6 @@
         name: 'index',
         components: {ConfirmDialog, PageTemplate, EditApiGroupDialog},
         data() {
-            console.log(this.$store.getters.selectedProjectUserType);
-            console.log(this.$store.getters.selectedProjectUserType !== CONSTANT.AUTH_ROLE.READ);
             return {
                 selectedProjectUserType: this.$store.getters.selectedProjectUserType,
                 projectId: this.$store.getters.selectedProjectId,
@@ -254,7 +252,10 @@
 
             },
             copyApi(api) {
-
+                this.$router.push({
+                    path: '/api/edit',
+                    query: {id: api.id, copy: true}
+                });
             },
             delApi(api) {
                 this.delForm.id = api.id;

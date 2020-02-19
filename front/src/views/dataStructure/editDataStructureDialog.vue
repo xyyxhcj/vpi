@@ -11,8 +11,8 @@
             </el-form-item>
         </el-form>
         <data-structure :show-list="dataList" :entity="form" ref="dataStructure"
-                        :config="{refPre:'editDataStructure'}"/>
-        <div slot="footer">
+                        :config="{refPre:'editDataStructure',onlyRead:dialog.onlyRead}"/>
+        <div slot="footer" v-if="!dialog.onlyRead">
             <el-button @click="dialog.show = false" round>Cancel</el-button>
             <el-button @click="submitForm" type="primary" round>Submit</el-button>
         </div>
@@ -34,7 +34,8 @@
                     return {
                         show: false,
                         title: '',
-                        url: ''
+                        url: '',
+                        onlyRead: false,
                     }
                 }
             },

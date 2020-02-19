@@ -8,7 +8,7 @@
             <template v-if="$route.path==='/api/detail'">
                 <el-link class="a-link" @click="test">Test</el-link>
                 <el-link class="a-link" @click="edit" v-if="hasAuth">Edit</el-link>
-                <el-link class="a-link" v-if="hasAuth">Copy</el-link>
+                <el-link class="a-link" @click="copy" v-if="hasAuth">Copy</el-link>
                 <el-link class="a-link" v-if="hasAuth">Delete</el-link>
             </template>
             <template v-if="$route.path==='/api/test'">
@@ -88,6 +88,12 @@
                 this.$router.push({
                     path: '/api/detail',
                     query: {id: this.$route.query.id}
+                });
+            },
+            copy() {
+                this.$router.push({
+                    path: '/api/edit',
+                    query: {id: this.$route.query.id, copy: true}
                 });
             }
         },

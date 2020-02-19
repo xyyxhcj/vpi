@@ -42,7 +42,8 @@
         </el-tabs>
         <el-tabs type="card" :value="respDefaultCard" style="line-height: 25px">
             <el-tab-pane label="Response Header">
-                <api-headers :data-list="form.responseHeaders" ref="respHeaders" :config="{onlyRead:false,refPre:'resp'}"/>
+                <api-headers :data-list="form.responseHeaders" ref="respHeaders"
+                             :config="{onlyRead:false,refPre:'resp'}"/>
             </el-tab-pane>
             <el-tab-pane label="Response Param" name="responseParam">
                 <div style="text-align: left;margin:0 0 10px 15px">
@@ -124,18 +125,8 @@
                             this.form = resp.data.data;
                             this.form.requestParamDto = this.form.requestParamVo;
                             this.form.responseParamDto = this.form.responseParamVo;
-                            if (this.form.requestParamDto) {
-                                UTILS.fillShowList(this.form.requestParamDto.dataList, this.reqShowDataList);
-                            } else {
-                                this.reqShowDataList = [JSON.parse(CONSTANT.ITEM_TEMPLATE)];
-                                this.form.requestParamDto = {dataList: this.reqShowDataList};
-                            }
-                            if (this.form.responseParamDto) {
-                                UTILS.fillShowList(this.form.responseParamDto.dataList, this.respShowDataList);
-                            } else {
-                                this.respShowDataList = [JSON.parse(CONSTANT.ITEM_TEMPLATE)];
-                                this.form.responseParamDto = {dataList: this.respShowDataList};
-                            }
+                            UTILS.fillShowList(this.form.requestParamDto.dataList, this.reqShowDataList);
+                            UTILS.fillShowList(this.form.responseParamDto.dataList, this.respShowDataList);
                             this.$nextTick(() => {
                                 if (this.form.requestHeaders.length === 0) {
                                     this.$refs['reqHeaders'].init();
@@ -144,6 +135,49 @@
                                     this.$refs['respHeaders'].init();
                                 }
                             });
+                            if (this.$route.query.copy) {
+                                // if copy api
+                                this.form.id = null;
+                                if (!this.form.reqParamIsReference) {
+                                    // if no all reference
+                                    this.form.requestParamDto.id = null;
+                                    this.reqShowDataList.forEach(item => {
+                                        if (item.parent &&
+                                            (item.parent.reference ||
+                                                (item.parent.referenceStructureId && item.parent.referenceStructureId !== ''))) {
+                                            // parent is reference
+                                            item.reference = true;
+                                        } else {
+                                            item.id = null;
+                                            item.structureId = null;
+                                        }
+                                    });
+                                }
+                                if (!this.form.respParamIsReference) {
+                                    // if no all reference
+                                    this.form.responseParamDto.id = null;
+                                    this.respShowDataList.forEach(item => {
+                                        if (item.parent &&
+                                            (item.parent.reference ||
+                                                (item.parent.referenceStructureId && item.parent.referenceStructureId !== ''))) {
+                                            // parent is reference
+                                            item.reference = true;
+                                        } else {
+                                            item.id = null;
+                                            item.structureId = null;
+                                        }
+                                    });
+                                }
+                                this.form.requestHeaders.forEach(header => {
+                                    header.id = null;
+                                    header.apiId = null;
+                                });
+                                this.form.responseHeaders.forEach(header => {
+                                    header.id = null;
+                                    header.apiId = null;
+                                });
+                                console.log(this.form);
+                            }
                         }
                     });
                 } else {
