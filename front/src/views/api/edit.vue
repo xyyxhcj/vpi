@@ -185,7 +185,6 @@
                                     header.id = null;
                                     header.apiId = null;
                                 });
-                                console.log(this.form);
                             }
                         }
                     });

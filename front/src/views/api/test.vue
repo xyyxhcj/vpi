@@ -369,5 +369,6 @@
                 padding 1px 0
 
                 .el-button
-                    padding 7px 7px
+                    padding 5px 5px
+                    margin-top: 1.5px
 </style>

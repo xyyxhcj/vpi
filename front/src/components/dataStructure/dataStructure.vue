@@ -1,6 +1,6 @@
 <template>
     <div class="data-structure-common">
-        <el-table :data="showList" style="width: 100%" :row-style="rowStyle" border :ref="config.refPre+'table'">
+        <el-table :data="showList" style="width: 1247px" :row-style="rowStyle" border :ref="config.refPre+'table'">
             <el-table-column type="index" width="40"/>
             <el-table-column type="selection" width="25" v-if="config.test"/>
             <el-table-column label="paramKey" width="280" ref="param-key-container">
@@ -70,7 +70,7 @@
                     <template v-else>{{scope.row.value}}</template>
                 </template>
             </el-table-column>
-            <el-table-column v-if="!config.onlyRead" min-width="250px">
+            <el-table-column v-if="!config.onlyRead" width="330">
                 <template slot="header">
                     <more-operate :info="{showDataStructure:showDataStructure}"/>
                     <el-tooltip class="item" effect="dark" content="override" placement="left">
@@ -89,9 +89,30 @@
                         <el-button size="mini" @click="addSubField(scope.$index,scope.row)">Add Sub Field</el-button>
                     </template>
                     <template v-else>
-                        <el-tag size="mini">
-                            Use Data Structure: {{scope.row.referenceStructureName}}
-                        </el-tag>
+                        <span style="margin-right: 7px;font-size: 8px">
+                            <span>Use Data Structure： </span>
+                            <el-dropdown trigger="click" size="mini">
+                                <span style="cursor:pointer;color: #409EFF;font-size: 8px">
+                                    <template v-if="scope.row.referenceStructureName.length>10">
+                                        <el-popover popper-class="api-doc-popover" placement="top-end" :close-delay="0"
+                                                    trigger="hover">
+                                            <span style="padding:0;font-size:5px">{{scope.row.referenceStructureName}}</span>
+                                            <span slot="reference">
+                                                {{ scope.row.referenceStructureName.substr(0,10)+'...' }}
+                                            </span>
+                                        </el-popover>
+                                    </template>
+                                    <template v-if="scope.row.referenceStructureName.length<=10">
+                                        {{scope.row.referenceStructureName}}
+                                    </template>
+                                    <i class="el-icon-arrow-down el-icon--right"/>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item>disconnect Data Structure</el-dropdown-item>
+                                    <el-dropdown-item>Edit Data Structure</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </span>
                     </template>
                     <el-button size="mini" type="danger" @click="del(scope.$index,scope.row)">Delete</el-button>
                 </template>
@@ -215,7 +236,10 @@
                 }
             },
             rowStyle({row}) {
-                return {'display': row.show ? '' : 'none'};
+                return {
+                    'display': row.show ? '' : 'none',
+                    'background-color': !this.config.onlyRead && row.reference ? '#f0f0f0' : ''
+                };
             },
             countKeyPadding(row) {
                 return row.level > 0 && row.subList.length === 0 ? '0 0 0 20px' : '0';
@@ -329,12 +353,14 @@
                     if (UTILS.checkResp(resp)) {
                         if (this.selectDataStructureDialog.selectedRow) {
                             // add to sub
-                            this.selectDataStructureDialog.selectedRow.referenceStructureId = selectedDataStructure.id;
                             this.selectDataStructureDialog.selectedRow.subList = resp.data.data.dataList;
+                            this.selectDataStructureDialog.selectedRow.referenceStructureId = selectedDataStructure.id;
+                            this.selectDataStructureDialog.selectedRow.referenceStructureName = selectedDataStructure.name;
                         } else {
                             // override all
                             this.entity.dataList = resp.data.data.dataList;
                             this.entity.id = selectedDataStructure.id;
+                            this.entity.referenceStructureName = selectedDataStructure.name;
                             this.entity.reference = true;
                         }
                     }
@@ -360,7 +386,8 @@
             height 28px
 
         .el-button
-            padding 7px 7px
+            padding 5px 5px
+            margin-top: 1.5px
 
         .more-operate
             padding 10px
