@@ -153,8 +153,7 @@
             min-width 34px
             text-align left
             margin-left 1px
-            /*background-color whitesmoke*/
-            box-shadow: 1px 0 1px #bdbdbd;
+            box-shadow 1px 0 1px #bdbdbd
             border 1px solid #d9d9d9
 
             .reset-padding-left

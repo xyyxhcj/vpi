@@ -116,4 +116,7 @@
         .cell, div.cell
             padding 0 0 0 3px
             height 28px
+        .el-button
+            padding 5px 5px
+            margin-top 1.5px
 </style>

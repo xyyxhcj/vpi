@@ -391,6 +391,6 @@
 
         .more-operate
             padding 10px
-            cursor: pointer;
-            color: #409EFF;
+            cursor pointer
+            color #409EFF
 </style>
