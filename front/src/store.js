@@ -40,6 +40,13 @@ export default new Vuex.Store({
                 return sessionStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_NAME);
             }
         },
+        selectedProjectUserType(state) {
+            if (state.selectedProjectUserType) {
+                return state.selectedProjectUserType;
+            } else {
+                return sessionStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_USER_TYPE);
+            }
+        },
         leftMenuIsCollapse(state) {
             if (state.leftMenuIsCollapse !== undefined) {
                 return state.leftMenuIsCollapse;
@@ -66,8 +73,10 @@ export default new Vuex.Store({
         selectProject(state, project) {
             state.selectedProjectId = project.id;
             state.selectedProjectName = project.name;
+            state.selectedProjectUserType = project.userType.toString();
             sessionStorage.setItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_ID, project.id);
             sessionStorage.setItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_NAME, project.name);
+            sessionStorage.setItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_USER_TYPE, state.selectedProjectUserType);
         },
         setLeftMenuIsCollapse(state, isCollapse) {
             state.leftMenuIsCollapse = isCollapse;

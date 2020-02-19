@@ -7,12 +7,12 @@
             </template>
             <template v-if="$route.path==='/api/detail'">
                 <el-link class="a-link" @click="test">Test</el-link>
-                <el-link class="a-link" @click="edit">Edit</el-link>
-                <el-link class="a-link">Copy</el-link>
-                <el-link class="a-link">Delete</el-link>
+                <el-link class="a-link" @click="edit" v-if="hasAuth">Edit</el-link>
+                <el-link class="a-link" v-if="hasAuth">Copy</el-link>
+                <el-link class="a-link" v-if="hasAuth">Delete</el-link>
             </template>
             <template v-if="$route.path==='/api/test'">
-                <el-link class="a-link" @click="edit">Edit</el-link>
+                <el-link class="a-link" @click="edit" v-if="hasAuth">Edit</el-link>
                 <el-link class="a-link" @click="view">View</el-link>
             </template>
             <el-select v-model="selectedEnvName" filterable placeholder="choose environment" clearable
@@ -38,10 +38,16 @@
         name: 'index',
         data() {
             return {
+                selectedProjectUserType: this.$store.getters.selectedProjectUserType,
                 projectId: this.$store.getters.selectedProjectId,
                 envConfigList: [],
                 selectedEnv: undefined,
                 selectedEnvName: '',
+            }
+        },
+        computed: {
+            hasAuth() {
+                return this.selectedProjectUserType !== CONSTANT.AUTH_ROLE.READ;
             }
         },
         methods: {

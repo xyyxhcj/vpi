@@ -4,23 +4,22 @@
             <el-table-column label="name" prop="name"/>
             <el-table-column label="desc" prop="desc"/>
             <el-table-column label="frontUri" prop="frontUri"/>
-            <el-table-column>
-                <!-- eslint-disable-next-line vue/no-unused-vars -->
-                <template slot="header" slot-scope="scope">
+            <el-table-column width="300">
+                <template slot="header">
                     <el-row :gutter="11">
                         <el-col :span="8" style="margin-bottom: 5px">
-                            <el-input
-                                    v-model.trim="search" size="mini" placeholder="enter keyword search"/>
+                            <el-input style="width: 172px"
+                                      v-model.trim="search" size="mini" placeholder="enter keyword search"/>
                         </el-col>
                     </el-row>
-                    <el-row>
+                    <el-row v-if="hasAuth">
                         <el-col :span="24">
                             <el-button size="mini" type="success" @click="addEnvConfig">Add</el-button>
                             <el-button size="mini" type="warning" @click="batchOperate">Batch Operate</el-button>
                         </el-col>
                     </el-row>
                 </template>
-                <template slot-scope="scope">
+                <template slot-scope="scope" v-if="hasAuth">
                     <el-button
                             size="mini"
                             @click="editEnvConfig(scope.row)">Edit
@@ -50,6 +49,7 @@
         components: {ConfirmDialog, EditEnvConfigDialog},
         data() {
             return {
+                selectedProjectUserType: this.$store.getters.selectedProjectUserType,
                 projectId: this.$store.getters.selectedProjectId,
                 envConfigList: [],
                 search: '',
@@ -80,6 +80,9 @@
                     let search = this.search.toLowerCase();
                     return name.includes(search) || desc.includes(search) || frontUri.includes(search);
                 });
+            },
+            hasAuth() {
+                return this.selectedProjectUserType !== CONSTANT.AUTH_ROLE.READ;
             }
         },
         methods: {

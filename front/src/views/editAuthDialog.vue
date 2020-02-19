@@ -12,7 +12,7 @@
                 </el-menu>
             </el-aside>
             <el-container>
-                <el-header class="member-header">Member</el-header>
+                <el-header class="member-header">{{dialog.project.name}} Member</el-header>
                 <el-main>
                     <el-table :data="projectUserList"
                               :header-cell-style="{color:'#44B549','font-weight':'bold'}">
@@ -46,8 +46,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "@/common/js/constant";
-    import {UTILS} from "@/common/js/utils";
+    import {CONSTANT} from "../common/js/constant";
+    import {UTILS} from "../common/js/utils";
     import SelectUserDialog from "../components/selectUser/selectUserDialog";
 
     export default {

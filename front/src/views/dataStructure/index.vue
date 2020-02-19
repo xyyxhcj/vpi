@@ -7,8 +7,7 @@
             <el-table-column label="createName" prop="createName" width="150"/>
             <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
             <el-table-column>
-                <!-- eslint-disable-next-line vue/no-unused-vars -->
-                <template slot="header" slot-scope="scope">
+                <template slot="header" v-if="hasAuth">
                     <el-row>
                         <el-col :span="24">
                             <el-button size="mini" type="success" @click="addDataStructure">Add</el-button>
@@ -17,9 +16,9 @@
                     </el-row>
                 </template>
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="showReference(scope.row)">Show Reference</el-button>
-                    <el-button size="mini" @click="editDataStructure(scope.row)">Edit</el-button>
-                    <el-button size="mini" type="danger" @click="delDataStructure(scope.row)">Delete</el-button>
+                    <el-button size="mini" @click.stop="showReference(scope.row)">Show Reference</el-button>
+                    <el-button size="mini" @click.stop="editDataStructure(scope.row)" v-if="hasAuth">Edit</el-button>
+                    <el-button size="mini" type="danger" @click.stop="delDataStructure(scope.row)" v-if="hasAuth">Delete</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -40,6 +39,7 @@
         components: {PageTemplate, EditDataStructureDialog},
         data() {
             return {
+                selectedProjectUserType: this.$store.getters.selectedProjectUserType,
                 projectId: this.$store.getters.selectedProjectId,
                 dataList: [],
                 editDialog: {
@@ -56,6 +56,11 @@
                     }
                 },
             };
+        },
+        computed: {
+            hasAuth() {
+                return this.selectedProjectUserType !== CONSTANT.AUTH_ROLE.READ;
+            }
         },
         methods: {
             dateFormat(time) {

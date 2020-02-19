@@ -79,6 +79,9 @@
                 }).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.dialog.show = false;
+                        // clear selected
+                        this.selectedList = [];
+                        this.$refs['userTable'].clearSelection();
                         this.$nextTick(() => {
                             this.$emit('flush');
                         });

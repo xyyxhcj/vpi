@@ -3,7 +3,9 @@
         <el-container>
             <el-aside width="150px" style="font-size:6px">
                 <div class="api-group-header">
-                    <el-button type="primary" icon="el-icon-plus" size="mini" @click="addSubGroup(null)">group
+                    <el-button type="primary" icon="el-icon-plus" size="mini" @click="addSubGroup(null)"
+                               v-if="hasAuth">
+                        group
                     </el-button>
                 </div>
                 <div class="select-all" @click="selectGroup({id:''})">all</div>
@@ -47,22 +49,21 @@
                     <el-table-column label="createName" prop="createName" width="150"/>
                     <el-table-column label="updateName" prop="updateName" width="150"/>
                     <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
-                    <el-table-column>
-                        <!-- eslint-disable-next-line vue/no-unused-vars -->
-                        <template slot="header" slot-scope="scope">
+                    <el-table-column v-if="hasAuth">
+                        <template slot="header">
                             <el-row>
                                 <el-col :span="24">
-                                    <el-button size="mini" type="success" @click="addApi">Add</el-button>
-                                    <el-button size="mini" type="warning" @click="batchOperate">Batch Operate
+                                    <el-button size="mini" type="success" @click.stop="addApi">Add</el-button>
+                                    <el-button size="mini" type="warning" @click.stop="batchOperate">Batch Operate
                                     </el-button>
                                 </el-col>
                             </el-row>
                         </template>
                         <template slot-scope="scope">
-                            <el-button size="mini" @click="editApi(scope.row)">Edit</el-button>
-                            <el-button size="mini" @click="editApiByTag(scope.row)">New Tag</el-button>
+                            <el-button size="mini" @click.stop="editApi(scope.row)">Edit</el-button>
+                            <el-button size="mini" @click.stop="editApiByTag(scope.row)">New Tag</el-button>
                             <el-dropdown @command="command" style="padding-left: 10px">
-                            <span class="el-dropdown-link">
+                            <span class="el-dropdown-link" @click.stop="()=>{}">
                                 <i class="el-icon-arrow-down el-icon-more"/>
                             </span>
                                 <el-dropdown-menu slot="dropdown">
@@ -93,7 +94,10 @@
         name: 'index',
         components: {ConfirmDialog, PageTemplate, EditApiGroupDialog},
         data() {
+            console.log(this.$store.getters.selectedProjectUserType);
+            console.log(this.$store.getters.selectedProjectUserType !== CONSTANT.AUTH_ROLE.READ);
             return {
+                selectedProjectUserType: this.$store.getters.selectedProjectUserType,
                 projectId: this.$store.getters.selectedProjectId,
                 groups: [],
                 editApiGroupDialog: {
@@ -120,6 +124,11 @@
                     }
                 },
                 delForm: {id: ''},
+            }
+        },
+        computed: {
+            hasAuth() {
+                return this.selectedProjectUserType !== CONSTANT.AUTH_ROLE.READ;
             }
         },
         methods: {
