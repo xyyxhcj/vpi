@@ -17,4 +17,5 @@ import java.util.List;
 public class StructureDataVo extends StructureData {
 	private static final long serialVersionUID = -8242864518498538638L;
 	private List<StructureDataDto> subList = new LinkedList<>();
+	private String referenceStructureName;
 }

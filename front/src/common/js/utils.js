@@ -316,7 +316,7 @@ export const UTILS = {
         treeList.push(item);
         dataList.push(item);
     },
-    fillShowList(sourceTree, destList) {
+    fillShowList(sourceTree, destList, allReference = false) {
         let stack = sourceTree.slice();
         while (stack.length > 0) {
             let pop = stack.shift();
@@ -326,6 +326,13 @@ export const UTILS = {
                 pop.level = 0;
             } else {
                 pop.level = pop.parent.level + 1;
+            }
+            // sign reference
+            if (allReference || (pop.parent &&
+                (pop.parent.reference ||
+                    (pop.parent.referenceStructureId && pop.parent.referenceStructureId !== '')))) {
+                // parent is reference
+                pop.reference = true;
             }
             destList.push(pop);
             if (pop.subList.length > 0) {

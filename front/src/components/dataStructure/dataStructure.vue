@@ -21,7 +21,8 @@
                               :style="{width:countKeyInputWidth(scope.row)}" size="mini"
                               :ref="config.refPre+'paramKey'+scope.$index"
                               @keyup.down.native="moveDown(scope.$index,'paramKey')"
-                              @keyup.up.native="moveUp(scope.$index,'paramKey')" v-if="!config.onlyRead"/>
+                              @keyup.up.native="moveUp(scope.$index,'paramKey')"
+                              v-if="!config.onlyRead&&!scope.row.reference"/>
                     <template v-else>{{scope.row.paramKey}}</template>
                     <span v-if="scope.row.paramKeyIsEmpty"
                           style="font-size: 12px;color: #F56C6C">enter paramKey</span>
@@ -31,7 +32,7 @@
                 <template slot-scope="scope">
                     <el-select :value="scope.row.paramType+''" filterable size="mini"
                                @change="(selectedValue)=>scope.row.paramType=selectedValue"
-                               v-if="!config.onlyRead">
+                               v-if="!config.onlyRead&&!scope.row.reference">
                         <el-option v-for="key in Object.keys(CONSTANT.PARAM_TYPE_STR)"
                                    :key="key" :label="CONSTANT.PARAM_TYPE_STR[key]" :value="key"/>
                     </el-select>
@@ -42,7 +43,7 @@
                 <template slot-scope="scope">
                     <el-select :value="scope.row.requireType+''" size="mini"
                                @change="(selectedValue)=>scope.row.requireType=selectedValue"
-                               v-if="!config.onlyRead">
+                               v-if="!config.onlyRead&&!scope.row.reference">
                         <el-option v-for="key in Object.keys(CONSTANT.REQUIRED_TYPE_STR)"
                                    :key="key" :label="CONSTANT.REQUIRED_TYPE_STR[key]" :value="key"/>
                     </el-select>
@@ -55,7 +56,7 @@
                               :ref="config.refPre+'paramDesc'+scope.$index"
                               @keyup.down.native="moveDown(scope.$index,'paramDesc')"
                               @keyup.up.native="moveUp(scope.$index,'paramDesc')"
-                              v-if="!config.onlyRead&&!config.test"/>
+                              v-if="!config.onlyRead&&!config.test&&!scope.row.reference"/>
                     <template v-else>{{scope.row.paramDesc}}</template>
                 </template>
             </el-table-column>
@@ -65,7 +66,7 @@
                               :ref="config.refPre+'value'+scope.$index"
                               @keyup.down.native="moveDown(scope.$index,'value')"
                               @keyup.up.native="moveUp(scope.$index,'value')"
-                              v-if="!config.onlyRead"/>
+                              v-if="!config.onlyRead&&!scope.row.reference"/>
                     <template v-else>{{scope.row.value}}</template>
                 </template>
             </el-table-column>
@@ -77,14 +78,21 @@
                     </el-tooltip>
                     <el-button size="mini" @click="addField">Add Field</el-button>
                 </template>
-                <template slot-scope="scope">
-                    <more-operate :info="{index:scope.$index,row:scope.row,showDataStructure:showDataStructure}"/>
-                    <el-tooltip class="item" effect="dark" content="additional" placement="left">
-                        <el-button size="mini" type="success" @click="showImportJsonDialog(scope.$index,scope.row)">
-                            Import Json
-                        </el-button>
-                    </el-tooltip>
-                    <el-button size="mini" @click="addSubField(scope.$index,scope.row)">Add Sub Field</el-button>
+                <template slot-scope="scope" v-if="!scope.row.reference">
+                    <template v-if="!scope.row.referenceStructureId">
+                        <more-operate :info="{index:scope.$index,row:scope.row,showDataStructure:showDataStructure}"/>
+                        <el-tooltip class="item" effect="dark" content="additional" placement="left">
+                            <el-button size="mini" type="success" @click="showImportJsonDialog(scope.$index,scope.row)">
+                                Import Json
+                            </el-button>
+                        </el-tooltip>
+                        <el-button size="mini" @click="addSubField(scope.$index,scope.row)">Add Sub Field</el-button>
+                    </template>
+                    <template v-else>
+                        <el-tag size="mini">
+                            Use Data Structure: {{scope.row.referenceStructureName}}
+                        </el-tag>
+                    </template>
                     <el-button size="mini" type="danger" @click="del(scope.$index,scope.row)">Delete</el-button>
                 </template>
             </el-table-column>
@@ -319,7 +327,7 @@
             selectDataStructure(selectedDataStructure) {
                 this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, {id: selectedDataStructure.id}).then(resp => {
                     if (UTILS.checkResp(resp)) {
-                        if (this.selectDataStructureDialog.selectedRow){
+                        if (this.selectDataStructureDialog.selectedRow) {
                             // add to sub
                             this.selectDataStructureDialog.selectedRow.referenceStructureId = selectedDataStructure.id;
                             this.selectDataStructureDialog.selectedRow.subList = resp.data.data.dataList;

@@ -127,7 +127,9 @@ public class StructureServiceImpl implements StructureService {
             List<StructureDataDto> tempData = new LinkedList<>();
 			tempData.add(dataDto);
 			if (!StringUtils.isEmpty(dataDto.getReferenceStructureId())) {
-				dataDto.setSubList(getStructureVoById(dataDto.getReferenceStructureId()).getDataList());
+                StructureVo structureVo = getStructureVoById(dataDto.getReferenceStructureId());
+                dataDto.setReferenceStructureName(structureVo.getName());
+                dataDto.setSubList(structureVo.getDataList());
             }
             if (StringUtils.isEmpty(dataDto.getParentId())) {
                 rootList.addAll(tempData);

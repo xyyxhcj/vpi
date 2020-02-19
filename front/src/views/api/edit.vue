@@ -125,8 +125,16 @@
                             this.form = resp.data.data;
                             this.form.requestParamDto = this.form.requestParamVo;
                             this.form.responseParamDto = this.form.responseParamVo;
-                            UTILS.fillShowList(this.form.requestParamDto.dataList, this.reqShowDataList);
-                            UTILS.fillShowList(this.form.responseParamDto.dataList, this.respShowDataList);
+                            if (this.form.reqParamIsReference) {
+                                this.form.requestParamDto.reference = true;
+                            }
+                            if (this.form.respParamIsReference) {
+                                this.form.responseParamDto.reference = true;
+                            }
+                            UTILS.fillShowList(this.form.requestParamDto.dataList, this.reqShowDataList,
+                                this.form.requestParamDto.reference);
+                            UTILS.fillShowList(this.form.responseParamDto.dataList, this.respShowDataList,
+                                this.form.responseParamDto.reference);
                             this.$nextTick(() => {
                                 if (this.form.requestHeaders.length === 0) {
                                     this.$refs['reqHeaders'].init();
@@ -135,6 +143,7 @@
                                     this.$refs['respHeaders'].init();
                                 }
                             });
+
                             if (this.$route.query.copy) {
                                 // if copy api
                                 this.form.id = null;
