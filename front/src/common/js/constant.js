@@ -60,7 +60,8 @@ export const CONSTANT = {
         ADMIN_LOGIN_NAME: 'admin',
         DEFAULT_DATA_LIST_SIZE: 3,
         DEBUG: process.env.NODE_ENV !== 'production',
-        getProfilesActive: (debug) => debug ? 'dev' : 'prod',
+        AES_KEY: 'QuBabnE0dR1pb29h',
+        getProfilesActive: (debug) => debug ? 'dev' : 'prod'
     },
     HOST_URL: {
         dev: 'http://120.132.18.250:11111',
@@ -70,6 +71,7 @@ export const CONSTANT = {
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
         USER: 'user',
+        REMEMBER_INFO: 'rememberInfo',
     },
     SESSION_STORAGE_KEY: {
         SELECTED_PROJECT_ID: 'selectedProjectId',

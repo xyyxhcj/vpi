@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import {CONSTANT} from "./common/js/constant";
+import {UTILS} from "./common/js/utils";
 
 Vue.use(Vuex);
 
@@ -12,6 +13,18 @@ export default new Vuex.Store({
         selectedProjectName: undefined,
     },
     getters: {
+        rememberInfo(state) {
+            if (state.rememberInfo) {
+                return state.rememberInfo;
+            } else {
+                let rememberInfo = localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.REMEMBER_INFO);
+                if (rememberInfo) {
+                    return JSON.parse(UTILS.aesDecrypt(rememberInfo, CONSTANT.CONFIG.AES_KEY));
+                } else {
+                    return undefined;
+                }
+            }
+        },
         user(state) {
             if (state.user) {
                 return state.user;
@@ -81,7 +94,11 @@ export default new Vuex.Store({
         setLeftMenuIsCollapse(state, isCollapse) {
             state.leftMenuIsCollapse = isCollapse;
             sessionStorage.setItem(CONSTANT.SESSION_STORAGE_KEY.LEFT_MENU_IS_COLLAPSE, isCollapse.toString());
-        }
+        },
+        rememberInfo(state, info) {
+            state.rememberInfo = info;
+            localStorage.setItem(CONSTANT.LOCAL_STORAGE_KEY.REMEMBER_INFO, UTILS.aesEncrypt(JSON.stringify(info), CONSTANT.CONFIG.AES_KEY));
+        },
     },
     // async actions
     // actions can't directly modify global variables, need use commit() to trigger mutations method
@@ -97,6 +114,9 @@ export default new Vuex.Store({
         },
         setLeftMenuIsCollapse(context, isCollapse) {
             context.commit('setLeftMenuIsCollapse', isCollapse);
-        }
+        },
+        rememberInfo(context, info) {
+            context.commit('rememberInfo', info);
+        },
     }
 });

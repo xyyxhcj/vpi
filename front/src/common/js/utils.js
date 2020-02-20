@@ -1,3 +1,4 @@
+import CryptoJS from 'crypto-js/crypto-js';
 import {CONSTANT} from "./constant";
 
 /**
@@ -141,6 +142,24 @@ export const UTILS = {
             data += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&';
         }
         return data;
+    },
+    // aes
+    aesEncrypt: function (data, key) {
+        key = CryptoJS.enc.Utf8.parse(key);
+        let str = CryptoJS.enc.Utf8.parse(data);
+        let encrypted = CryptoJS.AES.encrypt(str, key, {
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Pkcs7
+        });
+        return encrypted.toString();
+    },
+    aesDecrypt: function (data, key) {
+        key = CryptoJS.enc.Utf8.parse(key);
+        let decryptedData = CryptoJS.AES.decrypt(data, key, {
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Pkcs7
+        });
+        return decryptedData.toString(CryptoJS.enc.Utf8);
     },
     copyProperty: function (src = {}, fields = []) {
         let desc;
