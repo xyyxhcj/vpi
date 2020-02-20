@@ -335,7 +335,8 @@ export const UTILS = {
         treeList.push(item);
         dataList.push(item);
     },
-    fillShowList(sourceTree, destList, allReference = false) {
+    fillShowList(sourceTree, destList, allReference = false, addTemplate = true) {
+        destList.splice(0);
         let stack = sourceTree.slice();
         while (stack.length > 0) {
             let pop = stack.shift();
@@ -362,7 +363,9 @@ export const UTILS = {
                 }
             }
         }
-        this.pushItemTemplate(sourceTree, destList);
+        if (addTemplate) {
+            this.pushItemTemplate(sourceTree, destList);
+        }
     },
     checkAuth(obj, permissionId) {
         return this.contains(obj.btnList, permissionId, function (btn, element) {

@@ -20,8 +20,8 @@
                     <el-input v-model.trim="scope.row.paramKey" @input="paramKeyChange(scope.$index,scope.row)"
                               :style="{width:countKeyInputWidth(scope.row)}" size="mini"
                               :ref="config.refPre+'paramKey'+scope.$index"
-                              @keyup.down.native="moveDown(scope.$index,'paramKey')"
-                              @keyup.up.native="moveUp(scope.$index,'paramKey')"
+                              @keyup.down.native="focusMoveDown(scope.$index,'paramKey')"
+                              @keyup.up.native="focusMoveUp(scope.$index,'paramKey')"
                               v-if="!config.onlyRead&&!scope.row.reference"/>
                     <template v-else>{{scope.row.paramKey}}</template>
                     <span v-if="scope.row.paramKeyIsEmpty"
@@ -54,8 +54,8 @@
                 <template slot-scope="scope">
                     <el-input v-model.trim="scope.row.paramDesc" size="mini"
                               :ref="config.refPre+'paramDesc'+scope.$index"
-                              @keyup.down.native="moveDown(scope.$index,'paramDesc')"
-                              @keyup.up.native="moveUp(scope.$index,'paramDesc')"
+                              @keyup.down.native="focusMoveDown(scope.$index,'paramDesc')"
+                              @keyup.up.native="focusMoveUp(scope.$index,'paramDesc')"
                               v-if="!config.onlyRead&&!config.test&&!scope.row.reference"/>
                     <template v-else>{{scope.row.paramDesc}}</template>
                 </template>
@@ -64,8 +64,8 @@
                 <template slot-scope="scope">
                     <el-input v-model.trim="scope.row.value" size="mini"
                               :ref="config.refPre+'value'+scope.$index"
-                              @keyup.down.native="moveDown(scope.$index,'value')"
-                              @keyup.up.native="moveUp(scope.$index,'value')"
+                              @keyup.down.native="focusMoveDown(scope.$index,'value')"
+                              @keyup.up.native="focusMoveUp(scope.$index,'value')"
                               v-if="!config.onlyRead&&!scope.row.reference"/>
                     <template v-else>{{scope.row.value}}</template>
                 </template>
@@ -114,9 +114,9 @@
                             </el-dropdown>
                         </span>
                     </template>
-                    <el-button size="mini" type="primary" class="el-icon-top"
+                    <el-button size="mini" type="primary" class="el-icon-top" @click="moveUp(scope.row)"
                                :disabled="upIsDisabled(scope.$index,scope.row)"/>
-                    <el-button size="mini" type="primary" class="el-icon-bottom"
+                    <el-button size="mini" type="primary" class="el-icon-bottom" @click="moveDown(scope.row)"
                                :disabled="downIsDisabled(scope.row)"/>
                     <el-button style="position: absolute;right: 0" size="mini" type="danger"
                                @click="del(scope.$index,scope.row)">Delete
@@ -185,6 +185,24 @@
             }
         },
         methods: {
+            moveUp(row) {
+                let arr;
+                arr = row.parent ? row.parent.subList : this.entity.dataList;
+                let curr = arr.indexOf(row);
+                if (curr > 0) {
+                    arr.splice(curr - 1, 0, arr.splice(curr, 1)[0])
+                }
+                UTILS.fillShowList(this.entity.dataList, this.showList, false, false);
+            },
+            moveDown(row) {
+                let arr;
+                arr = row.parent ? row.parent.subList : this.entity.dataList;
+                let curr = arr.indexOf(row);
+                if (curr < arr.length - 1) {
+                    arr.splice(curr + 1, 0, arr.splice(curr, 1)[0])
+                }
+                UTILS.fillShowList(this.entity.dataList, this.showList, false, false);
+            },
             upIsDisabled(index, row) {
                 if (row.parent) {
                     return row.parent.subList.indexOf(row) === 0;
@@ -207,7 +225,6 @@
                 if (!data) {
                     return;
                 }
-                this.showList.splice(0);
                 if (this.importJsonDialog.row === undefined) {
                     this.entity.dataList.splice(0);
                     data.forEach(item => this.entity.dataList.push(item));
@@ -243,12 +260,12 @@
                 }
                 this.importJsonDialog.show = true;
             },
-            moveUp(index, refMid) {
+            focusMoveUp(index, refMid) {
                 if (index !== 0) {
                     this.$refs[this.config.refPre + refMid + (index - 1)].focus();
                 }
             },
-            moveDown(index, refMid) {
+            focusMoveDown(index, refMid) {
                 if (index !== this.showList.length - 1) {
                     this.$refs[this.config.refPre + refMid + (index + 1)].focus();
                 }
@@ -382,8 +399,7 @@
                             this.entity.reference = true;
                         }
                     }
-                    this.showList.splice(0);
-                    UTILS.fillShowList(this.entity.dataList, this.showList);
+                    UTILS.fillShowList(this.entity.dataList, this.showList, this.entity.reference);
                     this.$refs[this.config.refPre + 'table'].toggleAllSelection();
                 });
             }

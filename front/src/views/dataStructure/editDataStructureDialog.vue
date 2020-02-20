@@ -81,12 +81,9 @@
                 });
             },
             init() {
-                this.dataList = [];
                 if (this.form.id !== undefined) {
-                    this.form.dataList;
                     UTILS.fillShowList(this.form.dataList, this.dataList);
                 } else {
-                    this.form.dataList = [];
                     this.$nextTick(() => {
                         this.$refs['dataStructure'].init();
                     });
