@@ -144,7 +144,9 @@
                 this.findApiPage();
             },
             command(func) {
-                func();
+                if (func) {
+                    func();
+                }
             },
             addSubGroup(data) {
                 this.editApiGroupForm = {

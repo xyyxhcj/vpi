@@ -44,18 +44,16 @@
         },
         methods: {
             findPage() {
-                UTILS.findPage(this, this, CONSTANT.REQUEST_URL.STRUCTURE_FIND_PAGE, () => {
-
-                });
+                UTILS.findPage(this, this, CONSTANT.REQUEST_URL.STRUCTURE_FIND_PAGE);
             },
             selectDataStructure(row) {
+                if (!row) {
+                    return;
+                }
                 this.$emit('selectDataStructure', row);
                 this.dialog.show = false;
             }
         },
-        mounted() {
-            this.findPage();
-        }
     };
 </script>
 

@@ -95,10 +95,12 @@
                     apiStatus: 0,
                     requestParamType: 0,
                     requestParamDto: {
+                        reference: false,
                         dataList: [],
                     },
                     responseParamType: 0,
                     responseParamDto: {
+                        reference: false,
                         dataList: [],
                     },
                     requestHeaders: [],
@@ -125,12 +127,8 @@
                             this.form = resp.data.data;
                             this.form.requestParamDto = this.form.requestParamVo;
                             this.form.responseParamDto = this.form.responseParamVo;
-                            if (this.form.reqParamIsReference) {
-                                this.form.requestParamDto.reference = true;
-                            }
-                            if (this.form.respParamIsReference) {
-                                this.form.responseParamDto.reference = true;
-                            }
+                            this.form.requestParamDto.reference = !!this.form.reqParamIsReference;
+                            this.form.responseParamDto.reference = !!this.form.respParamIsReference;
                             UTILS.fillShowList(this.form.requestParamDto.dataList, this.reqShowDataList,
                                 this.form.requestParamDto.reference);
                             UTILS.fillShowList(this.form.responseParamDto.dataList, this.respShowDataList,
@@ -143,7 +141,6 @@
                                     this.$refs['respHeaders'].init();
                                 }
                             });
-
                             if (this.$route.query.copy) {
                                 // if copy api
                                 this.form.id = null;

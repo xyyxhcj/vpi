@@ -2,7 +2,7 @@
     <div class="data-structure-common">
         <el-table :data="showList" style="width: 1267px" :row-style="rowStyle" border :ref="config.refPre+'table'">
             <el-table-column type="index" width="40"/>
-            <el-table-column type="selection" width="25" v-if="config.test"/>
+            <el-table-column type="selection" :width="config.test?25:1"/>
             <el-table-column label="paramKey" width="280" ref="param-key-container">
                 <template slot-scope="scope">
                     <span :style="{padding:countKeyPadding(scope.row)}">
@@ -72,16 +72,21 @@
             </el-table-column>
             <el-table-column v-if="!config.onlyRead" width="350">
                 <template slot="header">
-                    <more-operate :info="{showDataStructure:showDataStructure}"/>
-                    <el-tooltip class="item" effect="dark" content="override" placement="left">
-                        <el-button size="mini" type="success" @click="showImportJsonDialog">Import Json</el-button>
-                    </el-tooltip>
-                    <el-button size="mini" @click="addField">Add Field</el-button>
+                    <template v-if="!entity.reference">
+                        <more-operate :info="{showDataStructure:showDataStructure}"/>
+                        <el-tooltip class="item" effect="dark" content="override" placement="right">
+                            <el-button size="mini" type="success" @click="showImportJsonDialog">Import Json</el-button>
+                        </el-tooltip>
+                        <el-button size="mini" @click="addField">Add Field</el-button>
+                    </template>
+                    <template v-else>
+                        <reference-info :info="entity" @showDataStructure="showDataStructure"/>
+                    </template>
                 </template>
                 <template slot-scope="scope" v-if="!scope.row.reference">
                     <template v-if="!scope.row.referenceStructureId">
                         <more-operate :info="{index:scope.$index,row:scope.row,showDataStructure:showDataStructure}"/>
-                        <el-tooltip class="item" effect="dark" content="additional" placement="left">
+                        <el-tooltip class="item" effect="dark" content="additional" placement="right">
                             <el-button size="mini" type="success" @click="showImportJsonDialog(scope.$index,scope.row)">
                                 Import Json
                             </el-button>
@@ -89,30 +94,7 @@
                         <el-button size="mini" @click="addSubField(scope.$index,scope.row)">Add Sub Field</el-button>
                     </template>
                     <template v-else>
-                        <span style="margin-right: 7px;font-size: 8px">
-                            <span>Use Data Structure： </span>
-                            <el-dropdown trigger="click" size="mini">
-                                <span style="cursor:pointer;color: #409EFF;font-size: 8px">
-                                    <template v-if="scope.row.referenceStructureName.length>10">
-                                        <el-popover popper-class="api-doc-popover" placement="top-end" :close-delay="0"
-                                                    trigger="hover">
-                                            <span style="padding:0;font-size:5px">{{scope.row.referenceStructureName}}</span>
-                                            <span slot="reference">
-                                                {{ scope.row.referenceStructureName.substr(0,10)+'...' }}
-                                            </span>
-                                        </el-popover>
-                                    </template>
-                                    <template v-if="scope.row.referenceStructureName.length<=10">
-                                        {{scope.row.referenceStructureName}}
-                                    </template>
-                                    <i class="el-icon-arrow-down el-icon--right"/>
-                                </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item>disconnect Data Structure</el-dropdown-item>
-                                    <el-dropdown-item>Edit Data Structure</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </span>
+                        <reference-info :index="scope.$index" :info="scope.row" @showDataStructure="showDataStructure"/>
                     </template>
                     <el-button size="mini" type="primary" class="el-icon-top" @click="moveUp(scope.row)"
                                :disabled="upIsDisabled(scope.$index,scope.row)"/>
@@ -136,10 +118,11 @@
     import {UTILS} from "../../common/js/utils";
     import MoreOperate from "./components/moreOperate";
     import SelectDataStructureDialog from "./selectDataStructureDialog";
+    import ReferenceInfo from "./components/referenceInfo";
 
     export default {
         name: 'dataStructure',
-        components: {SelectDataStructureDialog, MoreOperate, ImportJsonDialog},
+        components: {ReferenceInfo, SelectDataStructureDialog, MoreOperate, ImportJsonDialog},
         props: {
             showList: {
                 type: Array,
@@ -149,7 +132,7 @@
                 default() {
                     return {
                         id: undefined,
-                        reference: undefined,
+                        reference: false,
                         // root tree
                         dataList: [],
                     };
@@ -384,27 +367,40 @@
                 this.selectDataStructureDialog.show = true;
             },
             selectDataStructure(selectedDataStructure) {
+                if (!selectedDataStructure) {
+                    return;
+                }
                 this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, {id: selectedDataStructure.id}).then(resp => {
                     if (UTILS.checkResp(resp)) {
-                        if (this.selectDataStructureDialog.selectedRow) {
+                        let dataList = resp.data.data.dataList;
+                        if (dataList.length === 0) {
+                            this.$message({
+                                message: 'data structure lose data: ' + resp.data.data.name,
+                                type: 'error'
+                            });
+                            return;
+                        }
+                        let addTemplate;
+                        if (this.selectDataStructureDialog.selectedIndex !== undefined) {
                             // add to sub
-                            this.selectDataStructureDialog.selectedRow.subList = resp.data.data.dataList;
+                            this.selectDataStructureDialog.selectedRow.subList = dataList;
                             this.selectDataStructureDialog.selectedRow.referenceStructureId = selectedDataStructure.id;
                             this.selectDataStructureDialog.selectedRow.referenceStructureName = selectedDataStructure.name;
+                            addTemplate = true;
                         } else {
                             // override all
-                            this.entity.dataList = resp.data.data.dataList;
+                            this.entity.dataList = dataList;
                             this.entity.id = selectedDataStructure.id;
                             this.entity.referenceStructureName = selectedDataStructure.name;
                             this.entity.reference = true;
+                            addTemplate = false;
                         }
+                        UTILS.fillShowList(this.entity.dataList, this.showList, this.entity.reference, addTemplate);
+                        this.$refs[this.config.refPre + 'table'].toggleAllSelection();
                     }
-                    UTILS.fillShowList(this.entity.dataList, this.showList, this.entity.reference);
-                    this.$refs[this.config.refPre + 'table'].toggleAllSelection();
                 });
             }
-        }
-        ,
+        },
         created() {
         }
     };

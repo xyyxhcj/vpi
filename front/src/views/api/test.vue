@@ -306,7 +306,9 @@
                 }
             },
             command(func) {
-                func();
+                if (func) {
+                    func();
+                }
             },
             newTab() {
                 console.log('newTab');

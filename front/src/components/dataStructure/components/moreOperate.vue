@@ -22,7 +22,9 @@
         },
         methods: {
             command(func) {
-                func();
+                if (func) {
+                    func();
+                }
             },
             showDataStructure() {
                 this.info.showDataStructure(this.info.index, this.info.row);
