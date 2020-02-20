@@ -1,6 +1,6 @@
 <template>
     <div class="data-structure-common">
-        <el-table :data="showList" style="width: 1247px" :row-style="rowStyle" border :ref="config.refPre+'table'">
+        <el-table :data="showList" style="width: 1267px" :row-style="rowStyle" border :ref="config.refPre+'table'">
             <el-table-column type="index" width="40"/>
             <el-table-column type="selection" width="25" v-if="config.test"/>
             <el-table-column label="paramKey" width="280" ref="param-key-container">
@@ -70,7 +70,7 @@
                     <template v-else>{{scope.row.value}}</template>
                 </template>
             </el-table-column>
-            <el-table-column v-if="!config.onlyRead" width="330">
+            <el-table-column v-if="!config.onlyRead" width="350">
                 <template slot="header">
                     <more-operate :info="{showDataStructure:showDataStructure}"/>
                     <el-tooltip class="item" effect="dark" content="override" placement="left">
@@ -114,7 +114,13 @@
                             </el-dropdown>
                         </span>
                     </template>
-                    <el-button size="mini" type="danger" @click="del(scope.$index,scope.row)">Delete</el-button>
+                    <el-button size="mini" type="primary" class="el-icon-top"
+                               :disabled="upIsDisabled(scope.$index,scope.row)"/>
+                    <el-button size="mini" type="primary" class="el-icon-bottom"
+                               :disabled="downIsDisabled(scope.row)"/>
+                    <el-button style="position: absolute;right: 0" size="mini" type="danger"
+                               @click="del(scope.$index,scope.row)">Delete
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -179,6 +185,18 @@
             }
         },
         methods: {
+            upIsDisabled(index, row) {
+                if (row.parent) {
+                    return row.parent.subList.indexOf(row) === 0;
+                }
+                return index === 0;
+            },
+            downIsDisabled(row) {
+                if (row.parent) {
+                    return row.parent.subList.indexOf(row) === row.parent.subList.length - 1;
+                }
+                return this.entity.dataList.indexOf(row) === this.entity.dataList.length - 1;
+            },
             signSelected() {
                 let selectedList = this.$refs[this.config.refPre + 'table'].selection;
                 this.showList.forEach(row => {
@@ -386,8 +404,8 @@
             height 28px
 
         .el-button
-            padding 5px 5px
-            margin-top: 1.5px
+            padding 4px 4px
+            margin-top 1.5px
 
         .more-operate
             padding 10px
