@@ -22,7 +22,7 @@
 <script type="text/ecmascript-6">
     import {UTILS} from "../../common/js/utils";
     import {CONSTANT} from "../../common/js/constant";
-    import DataStructure from "../../components/dataStructure/dataStructure";
+    import DataStructure from "./dataStructure";
 
     export default {
         name: 'editDataStructureDialog',

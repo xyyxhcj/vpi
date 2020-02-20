@@ -29,7 +29,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import EditDataStructureDialog from "./editDataStructureDialog";
+    import EditDataStructureDialog from "../../components/dataStructure/editDataStructureDialog";
     import PageTemplate from "../../components/pageTemplate/pageTemplate";
     import {CONSTANT} from "../../common/js/constant";
     import {UTILS} from "../../common/js/utils";

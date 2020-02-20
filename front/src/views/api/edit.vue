@@ -37,7 +37,8 @@
                     </el-radio>
                 </div>
                 <data-structure :show-list="reqShowDataList" :entity="form.requestParamDto"
-                                ref="reqDataStructure" :config="{refPre:'editApiReq',useReference: true}"/>
+                                ref="reqDataStructure" :config="{refPre:'editApiReq',useReference: true}"
+                                @editDataStructure="editDataStructure"/>
             </el-tab-pane>
         </el-tabs>
         <el-tabs type="card" :value="respDefaultCard" style="line-height: 25px">
@@ -56,7 +57,8 @@
                 </div>
                 <data-structure :show-list="respShowDataList" :entity="form.responseParamDto"
                                 ref="respDataStructure" v-if="form.responseParamType===0"
-                                :config="{refPre:'editApiResp',useReference: true}"/>
+                                :config="{refPre:'editApiResp',useReference: true}"
+                                @editDataStructure="editDataStructure"/>
                 <el-input type="textarea" placeholder="remark" v-model="form.responseParamDto.remark" v-else/>
             </el-tab-pane>
         </el-tabs>
@@ -70,6 +72,10 @@
                 <el-input type="textarea" :rows="5" v-model="form.apiFailureMock"/>
             </el-col>
         </el-row>
+        <edit-data-structure-dialog :dialog="editDataStructureDialog" :form="editDataStructureForm"
+                                    @flush="init" ref="editDataStructure"
+                                    :data-list="editDataStructureForm.dataList"
+                                    :root-list="editDataStructureForm.rootList"/>
     </div>
 </template>
 
@@ -78,10 +84,11 @@
     import {CONSTANT} from "../../common/js/constant";
     import DataStructure from "../../components/dataStructure/dataStructure";
     import ApiHeaders from "./components/apiHeaders";
+    import EditDataStructureDialog from "../../components/dataStructure/editDataStructureDialog";
 
     export default {
         name: 'edit',
-        components: {ApiHeaders, DataStructure},
+        components: {EditDataStructureDialog, ApiHeaders, DataStructure},
         data() {
             return {
                 CONSTANT,
@@ -118,7 +125,13 @@
                     name: [
                         {required: true, message: 'enter name'}
                     ],
-                }
+                },
+                editDataStructureDialog: {
+                    show: false,
+                    title: 'Edit',
+                    url: CONSTANT.REQUEST_URL.STRUCTURE_EDIT
+                },
+                editDataStructureForm: {},
             }
         },
         methods: {
@@ -261,7 +274,18 @@
                     });
                 });
 
-            }
+            },
+            editDataStructure(structureId) {
+                this.editDataStructureDialog.show = true;
+                this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, {id: structureId}).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.editDataStructureForm = resp.data.data;
+                        this.$nextTick(() => {
+                            this.$refs['editDataStructure'].init();
+                        });
+                    }
+                });
+            },
         },
         mounted() {
             this.init();

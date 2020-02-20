@@ -80,7 +80,9 @@
                         <el-button size="mini" @click="addField">Add Field</el-button>
                     </template>
                     <template v-else>
-                        <reference-info :info="entity" @showDataStructure="showDataStructure"/>
+                        <reference-info :info="entity"
+                                        @showDataStructure="showDataStructure"
+                                        @editDataStructure="editDataStructure"/>
                     </template>
                 </template>
                 <template slot-scope="scope" v-if="!scope.row.reference">
@@ -95,7 +97,9 @@
                         <el-button size="mini" @click="addSubField(scope.$index,scope.row)">Add Sub Field</el-button>
                     </template>
                     <template v-else>
-                        <reference-info :index="scope.$index" :info="scope.row" @showDataStructure="showDataStructure"/>
+                        <reference-info :index="scope.$index" :info="scope.row"
+                                        @showDataStructure="showDataStructure"
+                                        @editDataStructure="editDataStructure"/>
                     </template>
                     <el-button size="mini" type="primary" class="el-icon-top" @click="moveUp(scope.row)"
                                :disabled="upIsDisabled(scope.$index,scope.row)"/>
@@ -166,7 +170,7 @@
                     title: 'select data structure',
                     selectedIndex: undefined,
                     selectedRow: undefined,
-                }
+                },
             }
         },
         methods: {
@@ -392,7 +396,7 @@
                         } else {
                             // override all
                             this.entity.dataList = dataList;
-                            this.entity.id = selectedDataStructure.id;
+                            this.entity.id = this.entity.referenceStructureId = selectedDataStructure.id;
                             this.$delete(this.entity, 'referenceStructureName');
                             this.$set(this.entity, 'referenceStructureName', selectedDataStructure.name);
                             this.entity.reference = true;
@@ -402,6 +406,9 @@
                         this.$refs[this.config.refPre + 'table'].toggleAllSelection();
                     }
                 });
+            },
+            editDataStructure(structureId) {
+                this.$emit('editDataStructure', structureId);
             }
         },
         created() {
