@@ -37,7 +37,7 @@
                     </el-radio>
                 </div>
                 <data-structure :show-list="reqShowDataList" :entity="form.requestParamDto"
-                                ref="reqDataStructure" :config="{refPre:'editApiReq'}"/>
+                                ref="reqDataStructure" :config="{refPre:'editApiReq',useReference: true}"/>
             </el-tab-pane>
         </el-tabs>
         <el-tabs type="card" :value="respDefaultCard" style="line-height: 25px">
@@ -56,7 +56,7 @@
                 </div>
                 <data-structure :show-list="respShowDataList" :entity="form.responseParamDto"
                                 ref="respDataStructure" v-if="form.responseParamType===0"
-                                :config="{refPre:'editApiResp'}"/>
+                                :config="{refPre:'editApiResp',useReference: true}"/>
                 <el-input type="textarea" placeholder="remark" v-model="form.responseParamDto.remark" v-else/>
             </el-tab-pane>
         </el-tabs>
@@ -96,11 +96,13 @@
                     requestParamType: 0,
                     requestParamDto: {
                         reference: false,
+                        referenceStructureName: '',
                         dataList: [],
                     },
                     responseParamType: 0,
                     responseParamDto: {
                         reference: false,
+                        referenceStructureName: '',
                         dataList: [],
                     },
                     requestHeaders: [],
@@ -129,6 +131,8 @@
                             this.form.responseParamDto = this.form.responseParamVo;
                             this.form.requestParamDto.reference = !!this.form.reqParamIsReference;
                             this.form.responseParamDto.reference = !!this.form.respParamIsReference;
+                            this.form.requestParamDto.referenceStructureName = this.form.requestParamDto.name;
+                            this.form.responseParamDto.referenceStructureName = this.form.responseParamDto.name;
                             UTILS.fillShowList(this.form.requestParamDto.dataList, this.reqShowDataList,
                                 this.form.requestParamDto.reference);
                             UTILS.fillShowList(this.form.responseParamDto.dataList, this.respShowDataList,

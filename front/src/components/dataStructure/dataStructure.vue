@@ -73,7 +73,7 @@
             <el-table-column v-if="!config.onlyRead" width="350">
                 <template slot="header">
                     <template v-if="!entity.reference">
-                        <more-operate :info="{showDataStructure:showDataStructure}"/>
+                        <more-operate v-if="config.useReference" :info="{showDataStructure:showDataStructure}"/>
                         <el-tooltip class="item" effect="dark" content="override" placement="right">
                             <el-button size="mini" type="success" @click="showImportJsonDialog">Import Json</el-button>
                         </el-tooltip>
@@ -85,7 +85,8 @@
                 </template>
                 <template slot-scope="scope" v-if="!scope.row.reference">
                     <template v-if="!scope.row.referenceStructureId">
-                        <more-operate :info="{index:scope.$index,row:scope.row,showDataStructure:showDataStructure}"/>
+                        <more-operate v-if="config.useReference"
+                                      :info="{index:scope.$index,row:scope.row,showDataStructure:showDataStructure}"/>
                         <el-tooltip class="item" effect="dark" content="additional" placement="right">
                             <el-button size="mini" type="success" @click="showImportJsonDialog(scope.$index,scope.row)">
                                 Import Json
@@ -145,6 +146,7 @@
                         refPre: '',
                         onlyRead: false,
                         test: false,
+                        useReference: false,
                     }
                 }
             }
@@ -391,7 +393,8 @@
                             // override all
                             this.entity.dataList = dataList;
                             this.entity.id = selectedDataStructure.id;
-                            this.entity.referenceStructureName = selectedDataStructure.name;
+                            this.$delete(this.entity, 'referenceStructureName');
+                            this.$set(this.entity, 'referenceStructureName', selectedDataStructure.name);
                             this.entity.reference = true;
                             addTemplate = false;
                         }
