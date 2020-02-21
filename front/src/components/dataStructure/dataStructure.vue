@@ -36,7 +36,7 @@
                         <el-option v-for="key in Object.keys(CONSTANT.PARAM_TYPE_STR)"
                                    :key="key" :label="CONSTANT.PARAM_TYPE_STR[key]" :value="key"/>
                     </el-select>
-                    <template v-else>{{CONSTANT.PARAM_TYPE_STR[scope.row.paramType]}}</template>
+                    <span style="margin-left:15px" v-else>{{CONSTANT.PARAM_TYPE_STR[scope.row.paramType]}}</span>
                 </template>
             </el-table-column>
             <el-table-column label="requireType" width="125" v-if="!config.test">
@@ -47,7 +47,7 @@
                         <el-option v-for="key in Object.keys(CONSTANT.REQUIRED_TYPE_STR)"
                                    :key="key" :label="CONSTANT.REQUIRED_TYPE_STR[key]" :value="key"/>
                     </el-select>
-                    <template v-else>{{CONSTANT.REQUIRED_TYPE_STR[scope.row.requireType]}}</template>
+                    <span style="margin-left:15px" v-else>{{CONSTANT.REQUIRED_TYPE_STR[scope.row.requireType]}}</span>
                 </template>
             </el-table-column>
             <el-table-column label="paramDesc" width="180">
@@ -57,7 +57,7 @@
                               @keyup.down.native="focusMoveDown(scope.$index,'paramDesc')"
                               @keyup.up.native="focusMoveUp(scope.$index,'paramDesc')"
                               v-if="!config.onlyRead&&!config.test&&!scope.row.reference"/>
-                    <template v-else>{{scope.row.paramDesc}}</template>
+                    <span style="margin-left:15px" v-else>{{scope.row.paramDesc}}</span>
                 </template>
             </el-table-column>
             <el-table-column label="value" width="180">
@@ -67,7 +67,7 @@
                               @keyup.down.native="focusMoveDown(scope.$index,'value')"
                               @keyup.up.native="focusMoveUp(scope.$index,'value')"
                               v-if="!config.onlyRead&&!scope.row.reference"/>
-                    <template v-else>{{scope.row.value}}</template>
+                    <span style="margin-left:15px" v-else>{{scope.row.value}}</span>
                 </template>
             </el-table-column>
             <el-table-column v-if="!config.onlyRead" width="350">

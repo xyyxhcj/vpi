@@ -1,5 +1,5 @@
 <template>
-    <span style="margin-right: 7px;font-size: 8px">
+    <span style="margin: 0 10px 0 5px;font-size: 8px">
         <span>Use Data Structure： </span>
         <el-dropdown trigger="click" size="mini" @command="command">
             <span style="cursor:pointer;color: #409EFF;font-size: 8px">

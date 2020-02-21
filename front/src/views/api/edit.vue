@@ -147,9 +147,9 @@
                             this.form.requestParamDto.referenceStructureName = this.form.requestParamDto.name;
                             this.form.responseParamDto.referenceStructureName = this.form.responseParamDto.name;
                             UTILS.fillShowList(this.form.requestParamDto.dataList, this.reqShowDataList,
-                                this.form.requestParamDto.reference);
+                                this.form.requestParamDto.reference, !this.form.reqParamIsReference);
                             UTILS.fillShowList(this.form.responseParamDto.dataList, this.respShowDataList,
-                                this.form.responseParamDto.reference);
+                                this.form.responseParamDto.reference, !this.form.respParamIsReference);
                             this.$nextTick(() => {
                                 if (this.form.requestHeaders.length === 0) {
                                     this.$refs['reqHeaders'].init();
