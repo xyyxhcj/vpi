@@ -188,6 +188,8 @@
         created() {
             if (this.user) {
                 this.findListByGroup();
+            } else {
+                this.$router.go(0);
             }
         },
     };

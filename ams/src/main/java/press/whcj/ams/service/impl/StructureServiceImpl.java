@@ -45,7 +45,7 @@ public class StructureServiceImpl implements StructureService {
 
     @Override
     public String save(StructureDto structureDto, UserVo operator) {
-        boolean isUpdate = structureDto.getId() != null;
+        boolean isUpdate = !StringUtils.isEmpty(structureDto.getId());
         String name = structureDto.getName();
         String projectId = structureDto.getProjectId();
         FastUtils.checkParams(name, projectId);

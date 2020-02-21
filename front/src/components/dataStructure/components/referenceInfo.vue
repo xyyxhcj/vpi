@@ -18,7 +18,7 @@
                 <i class="el-icon-arrow-down el-icon--right"/>
             </span>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>disconnect Data Structure</el-dropdown-item>
+                <el-dropdown-item :command="disconnectDataStructure">disconnect Data Structure</el-dropdown-item>
                 <el-dropdown-item :command="editDataStructure">Edit Data Structure</el-dropdown-item>
                 <el-dropdown-item :command="showDataStructure">
                     reference other data structure
@@ -52,7 +52,10 @@
             },
             editDataStructure() {
                 this.$emit('editDataStructure', this.info.referenceStructureId);
-            }
+            },
+            disconnectDataStructure() {
+                this.$emit('disconnectDataStructure', this.info);
+            },
         }
     };
 </script>

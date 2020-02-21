@@ -263,7 +263,7 @@
                 this.delForm.id = api.id;
                 this.delConfirmDialog.content = UTILS.formatStr('Are you sure delete api:  {name}?',
                     {name: api.name});
-                this.delConfirmDialog.url = CONSTANT.REQUEST_URL.API_SAVE_REMOVE;
+                this.delConfirmDialog.url = CONSTANT.REQUEST_URL.API_REMOVE;
                 this.delConfirmDialog.flush = () => this.findApiPage();
                 this.delConfirmDialog.show = true;
             }

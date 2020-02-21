@@ -81,8 +81,9 @@
                     </template>
                     <template v-else>
                         <reference-info :info="entity"
-                                        @showDataStructure="showDataStructure"
-                                        @editDataStructure="editDataStructure"/>
+                                        @disconnectDataStructure="disconnectDataStructure"
+                                        @editDataStructure="editDataStructure"
+                                        @showDataStructure="showDataStructure"/>
                     </template>
                 </template>
                 <template slot-scope="scope" v-if="!scope.row.reference">
@@ -98,8 +99,9 @@
                     </template>
                     <template v-else>
                         <reference-info :index="scope.$index" :info="scope.row"
-                                        @showDataStructure="showDataStructure"
-                                        @editDataStructure="editDataStructure"/>
+                                        @disconnectDataStructure="disconnectDataStructure"
+                                        @editDataStructure="editDataStructure"
+                                        @showDataStructure="showDataStructure"/>
                     </template>
                     <el-button size="mini" type="primary" class="el-icon-top" @click="moveUp(scope.row)"
                                :disabled="upIsDisabled(scope.$index,scope.row)"/>
@@ -409,6 +411,26 @@
             },
             editDataStructure(structureId) {
                 this.$emit('editDataStructure', structureId);
+            },
+            disconnectDataStructure(info) {
+                let stack = Array(info);
+                while (stack.length > 0) {
+                    let pop = stack.pop();
+                    pop.id = '';
+                    pop.reference = false;
+                    pop.referenceStructureName = undefined;
+                    if (pop.structureId === pop.referenceStructureId) {
+                        pop.structureId = undefined;
+                    }
+                    pop.referenceStructureId = undefined;
+                    if (pop.dataList && pop.dataList.length > 0) {
+                        pop.dataList.forEach(item => stack.push(item));
+                    }
+                    if (pop.subList && pop.subList.length > 0) {
+                        pop.subList.forEach(item => stack.push(item));
+                    }
+                }
+                UTILS.fillShowList(this.entity.dataList, this.showList, this.entity.reference, false);
             }
         },
         created() {

@@ -128,7 +128,7 @@
                 },
                 editDataStructureDialog: {
                     show: false,
-                    title: 'Edit',
+                    title: 'Edit Data Structure',
                     url: CONSTANT.REQUEST_URL.STRUCTURE_EDIT
                 },
                 editDataStructureForm: {},
@@ -247,6 +247,8 @@
                         this.$message.error('params lose');
                         return;
                     }
+                    this.form.reqParamIsReference = this.form.requestParamDto.reference;
+                    this.form.respParamIsReference = this.form.responseParamDto.reference;
                     let replacerParent = function (key, value) {
                         return key === 'parent' ? null : value;
                     };

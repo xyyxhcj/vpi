@@ -9,7 +9,7 @@
                 <el-link class="a-link" @click="test">Test</el-link>
                 <el-link class="a-link" @click="edit" v-if="hasAuth">Edit</el-link>
                 <el-link class="a-link" @click="copy" v-if="hasAuth">Copy</el-link>
-                <el-link class="a-link" v-if="hasAuth">Delete</el-link>
+                <el-link class="a-link" @click="del" v-if="hasAuth">Delete</el-link>
             </template>
             <template v-if="$route.path==='/api/test'">
                 <el-link class="a-link" @click="edit" v-if="hasAuth">Edit</el-link>
@@ -27,15 +27,18 @@
         <el-main>
             <router-view ref="api-sub-router"/>
         </el-main>
+        <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="delConfirmDialog.flush"/>
     </el-container>
 </template>
 
 <script type="text/ecmascript-6">
     import {CONSTANT} from "../../common/js/constant";
     import {UTILS} from "../../common/js/utils";
+    import ConfirmDialog from "../../components/confirm/confirmDialog";
 
     export default {
         name: 'index',
+        components: {ConfirmDialog},
         data() {
             return {
                 selectedProjectUserType: this.$store.getters.selectedProjectUserType,
@@ -43,6 +46,16 @@
                 envConfigList: [],
                 selectedEnv: undefined,
                 selectedEnvName: '',
+                delConfirmDialog: {
+                    show: false,
+                    title: 'Delete Confirm',
+                    content: 'Are you sure delete api ?',
+                    url: CONSTANT.REQUEST_URL.API_REMOVE,
+                    flush: () => {
+                        this.$router.push('/apiDoc');
+                    }
+                },
+                delForm:{id: this.$route.query.id},
             }
         },
         computed: {
@@ -74,6 +87,9 @@
                     path: '/api/edit',
                     query: {id: this.$route.query.id}
                 });
+            },
+            del() {
+                this.delConfirmDialog.show = true;
             },
             test() {
                 this.$router.push({

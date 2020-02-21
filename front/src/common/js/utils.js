@@ -348,12 +348,9 @@ export const UTILS = {
                 pop.level = pop.parent.level + 1;
             }
             // sign reference
-            if (allReference || (pop.parent &&
+            pop.reference = !!(allReference || (pop.parent &&
                 (pop.parent.reference ||
-                    (pop.parent.referenceStructureId && pop.parent.referenceStructureId !== '')))) {
-                // parent is reference
-                pop.reference = true;
-            }
+                    (pop.parent.referenceStructureId && pop.parent.referenceStructureId !== ''))));
             destList.push(pop);
             if (pop.subList.length > 0) {
                 for (let i = pop.subList.length - 1; i >= 0; i--) {
