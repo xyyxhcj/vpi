@@ -32,12 +32,8 @@ export default new Vuex.Store({
                 return JSON.parse(localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.USER));
             }
         },
-        loginAuth(state) {
-            if (state.loginAuth) {
-                return state.loginAuth;
-            } else {
-                return localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH);
-            }
+        loginAuth() {
+            return localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH);
         },
         selectedProjectId(state) {
             if (state.selectedProjectId) {
