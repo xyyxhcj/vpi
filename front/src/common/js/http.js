@@ -43,7 +43,8 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(response => {
     endLoading(response.config.url);
     // clear token
-    if (response.data && localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH)) {
+    console.log(localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH));
+    if (response.data && localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH) !== undefined) {
         if (CONSTANT.RESULT_CODE.USER_INVALID === response.data.code || CONSTANT.RESULT_CODE.LOGIN_NOT === response.data.code) {
             localStorage.removeItem(CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH);
             location.reload();
