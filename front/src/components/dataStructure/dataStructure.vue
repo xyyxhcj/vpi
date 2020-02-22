@@ -201,6 +201,9 @@
                 return index === 0;
             },
             downIsDisabled(row) {
+                if (!this.entity.dataList) {
+                    return;
+                }
                 if (row.parent) {
                     return row.parent.subList.indexOf(row) === row.parent.subList.length - 1;
                 }
@@ -356,6 +359,7 @@
                 }
             },
             init() {
+                console.log(this.showList);
                 if (this.showList.length === 0) {
                     if (!this.entity.dataList) {
                         this.entity.dataList = [];
@@ -370,6 +374,7 @@
                         $refTable.toggleRowSelection(row);
                     }
                 });
+                console.log(this.showList);
             },
             showDataStructure(index, row) {
                 this.selectDataStructureDialog.selectedIndex = index;

@@ -18,7 +18,9 @@
                 <template slot-scope="scope">
                     <el-button size="mini" @click.stop="showReference(scope.row)">Show Reference</el-button>
                     <el-button size="mini" @click.stop="editDataStructure(scope.row)" v-if="hasAuth">Edit</el-button>
-                    <el-button size="mini" type="danger" @click.stop="delDataStructure(scope.row)" v-if="hasAuth">Delete</el-button>
+                    <el-button size="mini" type="danger" @click.stop="delDataStructure(scope.row)" v-if="hasAuth">
+                        Delete
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>

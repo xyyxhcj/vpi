@@ -101,10 +101,14 @@
                 });
             },
             view() {
-                this.$router.push({
-                    path: '/api/detail',
-                    query: {id: this.$route.query.id}
-                });
+                if (this.$route.query.id) {
+                    this.$router.push({
+                        path: '/api/detail',
+                        query: {id: this.$route.query.id}
+                    });
+                } else {
+                    this.$router.go(-1);
+                }
             },
             copy() {
                 this.$router.push({

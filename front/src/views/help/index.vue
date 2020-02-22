@@ -44,10 +44,10 @@
                 <img src="../../../public/static/img/addApiGroup&Api.gif" alt=""/><br/>
                 <br/>
                 <div class="title">add data structure/添加数据结构:</div>
-                <img src="../../../public/static/img/addApiGroup&Api.gif" alt=""/><br/>
+                <img src="../../../public/static/img/addDataStructure.gif" alt=""/><br/>
                 <br/>
                 <div class="title">param use json import & reference data structure/接口参数使用json导入&引用数据结构:</div>
-                <img src="../../../public/static/img/addApiGroup&Api.gif" alt=""/><br/>
+                <img src="../../../public/static/img/referenceDataStructure&importJson.gif" alt=""/><br/>
                 <br/>
             </div>
         </el-collapse-item>

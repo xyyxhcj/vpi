@@ -75,6 +75,7 @@
                     this.form.dataList = copyRootList;
                     this.$axios.post(this.dialog.url, this.form).then(resp => {
                         UTILS.showResult(this, resp, function (obj) {
+                            obj.$refs['form'].resetFields();
                             obj.$emit('flush');
                         });
                     });
@@ -84,6 +85,8 @@
                 if (this.form.id !== undefined) {
                     UTILS.fillShowList(this.form.dataList, this.dataList);
                 } else {
+                    this.form.dataList = [];
+                    this.dataList = [];
                     this.$nextTick(() => {
                         this.$refs['dataStructure'].init();
                     });

@@ -99,10 +99,10 @@
                     if (UTILS.checkResp(resp)) {
                         this.api = resp.data.data;
                         if (this.api.requestParamVo) {
-                            UTILS.fillShowList(this.api.requestParamVo.dataList, this.reqShowDataList);
+                            UTILS.fillShowList(this.api.requestParamVo.dataList, this.reqShowDataList, false, false);
                         }
                         if (this.api.responseParamVo) {
-                            UTILS.fillShowList(this.api.responseParamVo.dataList, this.respShowDataList);
+                            UTILS.fillShowList(this.api.responseParamVo.dataList, this.respShowDataList, false, false);
                         }
                     }
                 });
