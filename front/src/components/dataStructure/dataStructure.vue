@@ -357,6 +357,9 @@
             },
             init() {
                 if (this.showList.length === 0) {
+                    if (!this.entity.dataList) {
+                        this.entity.dataList = [];
+                    }
                     for (let i = 0; i < CONSTANT.CONFIG.DEFAULT_DATA_LIST_SIZE; i++) {
                         UTILS.pushItemTemplate(this.entity.dataList, this.showList);
                     }

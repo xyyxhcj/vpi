@@ -37,6 +37,18 @@
                 <div class="title">add user&auth/添加用户及授权:</div>
                 <img src="../../../public/static/img/addUser&Auth.gif" alt=""/><br/>
                 <br/>
+                <div class="title">add project/添加项目:</div>
+                <img src="../../../public/static/img/addProject.gif" alt=""/><br/>
+                <br/>
+                <div class="title">add apiGroup&api/添加接口组及接口:</div>
+                <img src="../../../public/static/img/addApiGroup&Api.gif" alt=""/><br/>
+                <br/>
+                <div class="title">add data structure/添加数据结构:</div>
+                <img src="../../../public/static/img/addApiGroup&Api.gif" alt=""/><br/>
+                <br/>
+                <div class="title">param use json import & reference data structure/接口参数使用json导入&引用数据结构:</div>
+                <img src="../../../public/static/img/addApiGroup&Api.gif" alt=""/><br/>
+                <br/>
             </div>
         </el-collapse-item>
         <el-collapse-item title="Api test/接口测试" class="collapse-title">
@@ -67,6 +79,7 @@
     .help
         .el-collapse-item__header
             padding-left 10px
+
             &.is-active
                 color #409EFF
 

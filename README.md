@@ -10,7 +10,6 @@ mongodb(init/install-mongodb.sh)
 ## Demo: 
 http://www.whcj.press  
 testAccount: lx/123456
-
 ## Help:  
 http://www.whcj.press/help
 

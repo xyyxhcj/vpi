@@ -61,7 +61,7 @@
                         </template>
                         <template slot-scope="scope">
                             <el-button size="mini" @click.stop="editApi(scope.row)">Edit</el-button>
-                            <el-button size="mini" @click.stop="editApiByTag(scope.row)">New Tag</el-button>
+                            <el-button size="mini" @click.stop="viewApiByTag(scope.row)">New Tag</el-button>
                             <el-dropdown @command="command" style="padding-left: 10px">
                             <span class="el-dropdown-link" @click.stop="()=>{}">
                                 <i class="el-icon-arrow-down el-icon-more"/>
@@ -250,8 +250,12 @@
                 this.delConfirmDialog.flush = () => this.findApiGroups();
                 this.delConfirmDialog.show = true;
             },
-            editApiByTag(api) {
-
+            viewApiByTag(api) {
+                let newTag = this.$router.resolve({
+                    path: '/api/detail',
+                    query: {id: api.id},
+                });
+                window.open(newTag.href, '_blank');
             },
             copyApi(api) {
                 this.$router.push({
