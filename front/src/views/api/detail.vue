@@ -3,7 +3,10 @@
         <el-row>
             <el-col :span="12" style="text-align: left">
                 <el-tag>{{CONSTANT.REQUEST_TYPE[api.apiRequestType]}}</el-tag>
-                <el-button style="margin-left: 10px" type="success" size="mini" circle plain
+                <el-button style="margin-left: 10px"
+                           :type="api.apiStatus===0?'success':api.apiStatus===2||api.apiStatus===8?'danger':'warning'"
+                           size="mini"
+                           circle plain
                            icon="el-icon-s-help" @click="switchStatus">
                     {{CONSTANT.API_STATUS[api.apiStatus]}}
                 </el-button>
@@ -51,7 +54,7 @@
                 </pre>
             </el-col>
         </el-row>
-        <select-api-status-dialog :dialog="selectApiStatusDialog"/>
+        <select-api-status-dialog :dialog="selectApiStatusDialog" @flush="init"/>
     </div>
 </template>
 
@@ -94,8 +97,8 @@
                 respDefaultCard: 'responseParam',
                 reqShowDataList: [],
                 respShowDataList: [],
-                selectApiStatusDialog:{
-                    show:false,
+                selectApiStatusDialog: {
+                    show: false,
                     ids: [],
                     projectId: '',
                     apiStatus: '',

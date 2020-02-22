@@ -52,7 +52,9 @@
         methods: {
             submitForm() {
                 this.$axios.post(CONSTANT.REQUEST_URL.API_SWITCH_STATUS, this.dialog).then(resp => {
-                    UTILS.showResult(this, resp);
+                    UTILS.showResult(this, resp,()=>{
+                        this.$emit('flush');
+                    });
                 });
             }
         }
