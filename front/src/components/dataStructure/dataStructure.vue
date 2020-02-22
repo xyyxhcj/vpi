@@ -359,7 +359,6 @@
                 }
             },
             init() {
-                console.log(this.showList);
                 if (this.showList.length === 0) {
                     if (!this.entity.dataList) {
                         this.entity.dataList = [];
@@ -374,7 +373,6 @@
                         $refTable.toggleRowSelection(row);
                     }
                 });
-                console.log(this.showList);
             },
             showDataStructure(index, row) {
                 this.selectDataStructureDialog.selectedIndex = index;

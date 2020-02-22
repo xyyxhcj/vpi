@@ -49,13 +49,19 @@
                 <div class="title">param use json import & reference data structure/接口参数使用json导入&引用数据结构:</div>
                 <img src="../../../public/static/img/referenceDataStructure&importJson.gif" alt=""/><br/>
                 <br/>
+                <div class="title">add api environment/添加接口环境:</div>
+                <img src="../../../public/static/img/addApiEnv.gif" alt=""/><br/>
+                <br/>
             </div>
         </el-collapse-item>
         <el-collapse-item title="Api test/接口测试" class="collapse-title">
             <div class="content">
                 <div class="title">
                     if need use test,need install chrome plugin<br/>
-                    如果需要使用接口测试功能,需要安装chrome插件
+                    如果需要使用接口测试功能,需要安装chrome插件<br/>
+                    <div class="title">test api&save mock/测试接口&保存示例:</div>
+                    <img src="../../../public/static/img/testApi&saveMock.gif" alt=""/><br/>
+                    <br/>
                 </div>
             </div>
         </el-collapse-item>

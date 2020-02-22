@@ -311,7 +311,11 @@
                 }
             },
             newTab() {
-                console.log('newTab');
+                let newTab = this.$router.resolve({
+                    path: '/api/test',
+                    query: {id: this.api.id},
+                });
+                window.open(newTab.href, '_blank');
             },
             saveMock(isSuccess) {
                 let params = this.$refs['respData'].innerHTML;

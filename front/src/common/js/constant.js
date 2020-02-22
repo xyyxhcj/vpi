@@ -128,7 +128,7 @@ export const CONSTANT = {
         API_FIND_DETAIL: '/api/findDetail',
         API_FIND_PAGE: '/api/findPage',
 
-        API_TEST_HISTORY_ADD: '/apiTestHistory/add',
+        API_TEST_HISTORY_ADD: '/vpi/apiTestHistory/add',
         API_TEST_HISTORY_FIND_PAGE: '/apiTestHistory/findPage',
     },
     CLOSE_LOADING_URL: [],
