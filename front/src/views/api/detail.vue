@@ -4,7 +4,8 @@
             <el-col :span="12" style="text-align: left">
                 <el-tag>{{CONSTANT.REQUEST_TYPE[api.apiRequestType]}}</el-tag>
                 <el-button style="margin-left: 10px" type="success" size="mini" circle plain
-                           icon="el-icon-s-help">{{CONSTANT.API_STATUS[api.apiStatus]}}
+                           icon="el-icon-s-help" @click="switchStatus">
+                    {{CONSTANT.API_STATUS[api.apiStatus]}}
                 </el-button>
             </el-col>
         </el-row>
@@ -50,6 +51,7 @@
                 </pre>
             </el-col>
         </el-row>
+        <select-api-status-dialog :dialog="selectApiStatusDialog"/>
     </div>
 </template>
 
@@ -59,10 +61,11 @@
     import ApiHeaders from "./components/apiHeaders";
     import LineText from "../../components/lineText/lineText";
     import DataStructure from "../../components/dataStructure/dataStructure";
+    import SelectApiStatusDialog from "../../components/selectApiStatus/selectApiStatusDialog";
 
     export default {
         name: 'detail',
-        components: {DataStructure, LineText, ApiHeaders},
+        components: {SelectApiStatusDialog, DataStructure, LineText, ApiHeaders},
         data() {
             return {
                 CONSTANT,
@@ -91,6 +94,12 @@
                 respDefaultCard: 'responseParam',
                 reqShowDataList: [],
                 respShowDataList: [],
+                selectApiStatusDialog:{
+                    show:false,
+                    ids: [],
+                    projectId: '',
+                    apiStatus: '',
+                }
             }
         },
         methods: {
@@ -110,6 +119,15 @@
             dateFormat(time) {
                 return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
             },
+            switchStatus() {
+                if (this.$store.getters.selectedProjectUserType === CONSTANT.AUTH_ROLE.READ) {
+                    return;
+                }
+                this.selectApiStatusDialog.projectId = this.api.projectId;
+                this.selectApiStatusDialog.ids = [this.api.id];
+                this.selectApiStatusDialog.apiStatus = this.api.apiStatus;
+                this.selectApiStatusDialog.show = true;
+            }
         },
         mounted() {
             this.init();

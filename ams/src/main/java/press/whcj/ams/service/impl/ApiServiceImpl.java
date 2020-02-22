@@ -173,6 +173,7 @@ public class ApiServiceImpl implements ApiService {
 
     @Override
     public void switchStatus(ApiDto apiDto, UserVo operator) {
+        PermUtils.checkProjectWrite(mongoTemplate, apiDto.getProjectId(), UserUtils.getOperator());
         mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(apiDto.getIds())),
                 Update.update(ColumnName.API_STATUS, apiDto.getApiStatus())
                         .set(ColumnName.UPDATE, new User(operator.getId()))
