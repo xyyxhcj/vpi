@@ -5,6 +5,9 @@ import lombok.Setter;
 import press.whcj.ams.entity.MongoPage;
 import press.whcj.ams.entity.vo.ApiVo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author xyyxhcj@qq.com
  * @since 2019/12/31
@@ -17,4 +20,5 @@ public class ApiDto extends ApiVo {
 	private StructureDto requestParamDto;
 	private StructureDto responseParamDto;
 	private MongoPage<ApiVo> page = new MongoPage<>();
+	private List<String> ids = new ArrayList<>();
 }

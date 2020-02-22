@@ -20,4 +20,6 @@ public interface ApiService {
 	void saveMock(ApiDto apiDto);
 
     void remove(ApiDto apiDto);
+
+	void switchStatus(ApiDto apiDto, UserVo operator);
 }

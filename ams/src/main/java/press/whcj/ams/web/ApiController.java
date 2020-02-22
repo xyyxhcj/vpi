@@ -48,6 +48,13 @@ public class ApiController extends BaseController {
 		return ok(apiDto.getId());
 	}
 
+	@RequestMapping("switchStatus")
+	public Result<Object> switchStatus(@RequestBody ApiDto apiDto) {
+		FastUtils.checkParams(apiDto.getApiStatus(), apiDto.getIds());
+		apiService.switchStatus(apiDto, UserUtils.getOperator());
+		return ok();
+	}
+
 	@RequestMapping("findPage")
 	public Result<MongoPage<ApiVo>> findPage(@RequestBody ApiDto apiDto) {
 		return ok(apiService.findPage(apiDto));

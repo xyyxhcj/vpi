@@ -15,6 +15,7 @@ public interface ColumnName {
     String USER_TYPE = "userType";
     String LOGIN_NAME = "loginName";
     String PHONE = "phone";
+    String UPDATE = "update";
     String UPDATE_TIME = "updateTime";
     String CREATE_TIME = "createTime";
     String NAME = "name";
@@ -31,4 +32,5 @@ public interface ColumnName {
     String API_SUCCESS_MOCK = "apiSuccessMock";
     String API_FAILURE_MOCK = "apiFailureMock";
     String IS_DEL = "isDel";
+    String API_STATUS = "apiStatus";
 }

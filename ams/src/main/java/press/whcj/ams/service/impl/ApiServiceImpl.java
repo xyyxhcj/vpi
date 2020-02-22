@@ -171,6 +171,14 @@ public class ApiServiceImpl implements ApiService {
         mongoTemplate.save(api);
     }
 
+    @Override
+    public void switchStatus(ApiDto apiDto, UserVo operator) {
+        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(apiDto.getIds())),
+                Update.update(ColumnName.API_STATUS, apiDto.getApiStatus())
+                        .set(ColumnName.UPDATE, new User(operator.getId()))
+                        .set(ColumnName.UPDATE_TIME, LocalDateTime.now()), Api.class);
+    }
+
     private String saveApiParams(StructureDto paramDto, UserVo operator, String projectId) {
         if (StringUtils.isEmpty(paramDto.getId())) {
             paramDto.setType(Constant.StructureType.API_CREATE);
