@@ -79,9 +79,6 @@
         data() {
             return {
                 CONSTANT,
-                loginDialog: {
-                    show: !this.$store.getters.loginAuth,
-                },
                 editUserDialog: {
                     show: false,
                     title: '',
@@ -126,6 +123,14 @@
             }
         },
         computed: {
+            loginDialog: {
+                get() {
+                    return {
+                        show: this.$route.path !== '/help' && !this.$store.getters.loginAuth,
+                    }
+                },
+
+            },
             selectedProjectId: {
                 get() {
                     return this.$store.getters.selectedProjectId;

@@ -52,7 +52,6 @@ axios.interceptors.response.use(response => {
     return response;
 }, error => {
     endLoading(error.response.config.url);
-    // Message.error(error.response.data);
     return Promise.reject(error);
 });
 export default axios;

@@ -1,18 +1,16 @@
-## configFile:
+## Config files:
 front/vue.config.js  
-
 front/src/common/js/constant.js  
-
-## need install: 
+ams/src/main/java/press/whcj/ams/common.SysConfig
+ams/src/main/resources/application.yml
+ams/src/main/resources/application-dev.yml
+## Need install: 
 chromePlugin,  
-
 mongodb(init/install-mongodb.sh)
-
-## demo: 
+## Demo: 
 http://www.whcj.press  
+testAccount: lx/123456
 
-lx/123456
-
-![image](https://xyyxhcj.github.io/demoImg/testVpi01.gif)
-https://xyyxhcj.github.io/demoImg/testVpi01.gif
+## Help:  
+http://www.whcj.press/help
 

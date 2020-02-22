@@ -8,6 +8,12 @@ export const CONSTANT = {
             noMenu: true
         },
         {
+            path: '/help',
+            name: 'help',
+            component: () => import('@/views/help/index'),
+            noMenu: true
+        },
+        {
             path: '/apiDoc',
             name: 'apiDoc',
             component: () => import('@/views/apiDoc/index'),
@@ -125,11 +131,7 @@ export const CONSTANT = {
         API_TEST_HISTORY_ADD: '/apiTestHistory/add',
         API_TEST_HISTORY_FIND_PAGE: '/apiTestHistory/findPage',
     },
-    CLOSE_LOADING_URL: [
-    ],
-    ROUTER_URL: {
-        DICT_ITEM: '/system/dictItem',
-    },
+    CLOSE_LOADING_URL: [],
     RESULT_CODE: {
         SUCCESS: 200,
         USER_INVALID: 10004,
