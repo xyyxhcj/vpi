@@ -39,6 +39,7 @@
                         <div class="user-info">
                             <span class="add-user-icon" v-if="isAdmin">
                                 <el-button type="success" icon="el-icon-plus" circle size="mini" @click="addUser"/>
+                                <el-button type="danger" icon="el-icon-minus" circle size="mini" @click="delUser"/>
                             </span>
                             <el-dropdown @command="userCommand">
                                 <span class="el-dropdown-link">
@@ -61,6 +62,7 @@
         <login-dialog :dialog="loginDialog"/>
         <edit-user-dialog :dialog="editUserDialog"/>
         <edit-password-dialog :dialog="editPwdDialog"/>
+        <select-user-dialog :dialog="selectUserDialog" ref="selectUserDialog"/>
     </el-container>
 </template>
 
@@ -72,10 +74,11 @@
     import {CONSTANT} from "./common/js/constant";
     import {UTILS} from "./common/js/utils";
     import EditPasswordDialog from "./components/editUser/editPasswordDialog";
+    import SelectUserDialog from "./components/selectUser/selectUserDialog";
 
     export default {
         name: 'app',
-        components: {EditPasswordDialog, EditUserDialog, LoginDialog, leftMenu},
+        components: {SelectUserDialog, EditPasswordDialog, EditUserDialog, LoginDialog, leftMenu},
         data() {
             return {
                 CONSTANT,
@@ -90,6 +93,11 @@
                     url: '',
                 },
                 user: this.$store.getters.user,
+                selectUserDialog: {
+                    show: false,
+                    url: CONSTANT.REQUEST_URL.USER_REMOVE,
+                    forDel: true,
+                },
             }
         },
         methods: {
@@ -120,6 +128,10 @@
                     title: 'modify password',
                     url: CONSTANT.REQUEST_URL.USER_UPDATE,
                 };
+            },
+            delUser() {
+                this.selectUserDialog.show = true;
+                this.$refs['selectUserDialog'].findPageForDelete();
             }
         },
         computed: {
@@ -129,7 +141,6 @@
                         show: this.$route.path !== '/help' && !this.$store.getters.loginAuth,
                     }
                 },
-
             },
             selectedProjectId: {
                 get() {

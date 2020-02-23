@@ -1,7 +1,6 @@
 package press.whcj.ams.service;
 
 import press.whcj.ams.entity.MongoPage;
-import press.whcj.ams.entity.User;
 import press.whcj.ams.entity.dto.UserDto;
 import press.whcj.ams.entity.vo.UserVo;
 
@@ -15,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface UserService {
 	String save(UserDto userDto);
 
-	void remove(User user);
+	void remove(UserDto userDto);
 
 	UserVo findDetail(String id);
 

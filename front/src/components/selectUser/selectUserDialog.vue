@@ -3,17 +3,18 @@
                :close-on-click-modal="false" center width="75%">
         <el-table :data="dataList" tooltip-effect="dark" style="width: 100%" ref="userTable" row-key="id"
                   @selection-change="selectedChange">
-            <el-table-column type="selection" width="55" :selectable="notCreate" :reserve-selection="true">
+            <el-table-column type="selection" width="55" :selectable="notCurrUser" :reserve-selection="true">
             </el-table-column>
             <el-table-column prop="userName" label="userName" width="150"/>
             <el-table-column prop="loginName" label="loginName" width="150"/>
             <el-table-column prop="phone" label="phone" width="150"/>
             <el-table-column prop="email" label="email" width="150"/>
         </el-table>
-        <page-template :query="query" @flush="findPage"/>
+        <page-template :query="query" @flush="()=>dialog.forDel?findPageForDelete():findPage()"/>
         <div slot="footer" class="footer-container">
             <el-button @click="dialog.show = false" round>Cancel</el-button>
-            <el-button @click="setUsers" type="primary" round>Submit</el-button>
+            <el-button v-if="!dialog.forDel" @click="setUsers" type="primary" round>Submit</el-button>
+            <el-button v-else @click="delUsers" type="danger" round>Delete</el-button>
         </div>
     </el-dialog>
 </template>
@@ -35,6 +36,7 @@
                         title: '',
                         url: '',
                         project: Object,
+                        forDel: false,
                     };
                 }
             },
@@ -88,6 +90,25 @@
                     }
                 });
             },
+            delUsers() {
+                let ids = [];
+                this.selectedList.forEach(selected => {
+                    if (selected.id !== this.user.id) {
+                        ids.push(selected.id);
+                    }
+                });
+                this.$axios.post(this.dialog.url, {ids: ids}).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.dialog.show = false;
+                        // clear selected
+                        this.selectedList = [];
+                        this.$refs['userTable'].clearSelection();
+                        this.$nextTick(() => {
+                            this.$emit('flush');
+                        });
+                    }
+                });
+            },
             findPage() {
                 this.projectUserQuery.projectId = this.dialog.project.id;
                 this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_FIND_PROJECT_USER, this.projectUserQuery).then(resp => {
@@ -126,8 +147,11 @@
                     }
                 });
             },
-            notCreate(row) {
+            notCurrUser(row) {
                 return row.id !== this.user.id;
+            },
+            findPageForDelete() {
+                UTILS.findPage(this, this, CONSTANT.REQUEST_URL.USER_FIND_PAGE)
             }
         }
     };

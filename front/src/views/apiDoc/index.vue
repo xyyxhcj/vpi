@@ -70,7 +70,8 @@
                                         </el-button>
                                     </template>
                                     <template v-else>
-                                        <el-button size="mini" type="primary" @click.stop="switchStatus">Switch Status</el-button>
+                                        <el-button size="mini" type="primary" @click.stop="switchStatus">Switch Status
+                                        </el-button>
                                         <el-button size="mini" @click.stop="showSelect=false">Cancel</el-button>
                                     </template>
                                 </el-col>
@@ -141,7 +142,7 @@
                     flush: () => {
                     }
                 },
-                delForm: {id: ''},
+                delForm: {ids: [], projectId: this.$store.getters.selectedProjectId},
                 showSelect: false,
                 selectApiStatusDialog: {
                     show: false,
@@ -297,7 +298,7 @@
                 });
             },
             delApi(api) {
-                this.delForm.id = api.id;
+                this.delForm.ids = [api.id];
                 this.delConfirmDialog.content = UTILS.formatStr('Are you sure delete api:  {name}?',
                     {name: api.name});
                 this.delConfirmDialog.url = CONSTANT.REQUEST_URL.API_REMOVE;

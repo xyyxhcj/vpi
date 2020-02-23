@@ -91,6 +91,7 @@ export const CONSTANT = {
         LOGIN_OUT: '/user/loginOut',
         USER_ADD: '/user/add',
         USER_UPDATE: '/user/update',
+        USER_REMOVE: '/user/remove',
         USER_FIND_PAGE: '/user/findPage',
 
         PROJECT_ADD: '/project/add',

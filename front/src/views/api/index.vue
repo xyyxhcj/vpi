@@ -55,7 +55,10 @@
                         this.$router.push('/apiDoc');
                     }
                 },
-                delForm:{id: this.$route.query.id},
+                delForm: {
+                    ids: [this.$route.query.id],
+                    projectId: this.$store.getters.selectedProjectId,
+                },
             }
         },
         computed: {
@@ -90,6 +93,7 @@
             },
             del() {
                 this.delConfirmDialog.show = true;
+
             },
             test() {
                 this.$router.push({

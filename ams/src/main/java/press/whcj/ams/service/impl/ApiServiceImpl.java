@@ -160,15 +160,10 @@ public class ApiServiceImpl implements ApiService {
 
     @Override
     public void remove(ApiDto apiDto) {
-        String apiId = apiDto.getId();
-        FastUtils.checkParams(apiId);
-        Api api = mongoTemplate.findById(apiId, Api.class);
-        if (api == null || Constant.Is.YES.equals(api.getIsDel())) {
-            return;
-        }
-        PermUtils.checkProjectWrite(mongoTemplate, api.getProjectId(), UserUtils.getOperator());
-        api.setIsDel(Constant.Is.YES);
-        mongoTemplate.save(api);
+        List<String> ids = apiDto.getIds();
+        FastUtils.checkParams(ids);
+        PermUtils.checkProjectWrite(mongoTemplate, apiDto.getProjectId(), UserUtils.getOperator());
+        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(ids)), Update.update(ColumnName.IS_DEL, Constant.Is.YES), Api.class);
     }
 
     @Override
