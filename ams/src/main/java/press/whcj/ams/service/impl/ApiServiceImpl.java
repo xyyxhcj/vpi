@@ -179,14 +179,16 @@ public class ApiServiceImpl implements ApiService {
         String structureId = apiDto.getStructureId();
         FastUtils.checkParams(structureId);
         // find used structureIds
-        List<StructureData> structureDataList = mongoTemplate.find(new Query(Criteria.where(ColumnName.REFERENCE_STRUCTURE_ID).is(structureId)), StructureData.class);
+        List<StructureData> structureDataList = mongoTemplate.find(new Query(
+                Criteria.where(ColumnName.REFERENCE_STRUCTURE_ID).is(structureId)), StructureData.class);
         LinkedHashSet<ObjectId> ids = structureDataList.stream()
                 .map(structureData -> new ObjectId(structureData.getStructureId()))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
         ids.add(new ObjectId(structureId));
         return mongoTemplate.find(
                 new Query(Criteria.where(ColumnName.IS_DEL).ne(Constant.Is.YES)
-                        .orOperator(Criteria.where(ColumnName.REQUEST_PARAM_$ID).in(ids), Criteria.where(ColumnName.RESPONSE_PARAM_$ID).in(ids))),
+                        .orOperator(Criteria.where(ColumnName.REQUEST_PARAM_$ID).in(ids),
+                                Criteria.where(ColumnName.RESPONSE_PARAM_$ID).in(ids))),
                 ApiVo.class, Constant.CollectionName.API);
     }
 
