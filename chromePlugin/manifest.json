@@ -8,6 +8,11 @@
     "default_title": "Vpi Plugin",
     "default_popup": "html/vpi.html"
   },
+  "icons": {
+    "16": "vpi.png",
+    "48": "vpi.png",
+    "128": "vpi.png"
+  },
   "permissions": [
     "<all_urls>"
   ],

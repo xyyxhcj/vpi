@@ -44,6 +44,15 @@
             <el-main>
                 <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="895"
                           :row-style="{cursor:'pointer'}" @row-click="clickRow">
+                    <el-table-column width="79">
+                        <template slot-scope="scope">
+                            <el-tag size="mini" effect="plain" style="padding: 0 4px"
+                            :type="scope.row.apiStatus===0?'success':
+                                    scope.row.apiStatus===2||scope.row.apiStatus===8?'danger':'warning'">
+                                {{CONSTANT.API_STATUS[scope.row.apiStatus]}}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="name" prop="name" width="200"/>
                     <el-table-column label="apiUri" prop="apiUri" width="200"/>
                     <el-table-column label="createName" prop="createName" width="150"/>
@@ -95,6 +104,7 @@
         components: {ConfirmDialog, PageTemplate, EditApiGroupDialog},
         data() {
             return {
+                CONSTANT,
                 selectedProjectUserType: this.$store.getters.selectedProjectUserType,
                 projectId: this.$store.getters.selectedProjectId,
                 groups: [],
@@ -282,7 +292,11 @@
 <style lang="stylus" rel="stylesheet/stylus">
     #api-doc-container
         border 1px solid #d9d9d9
-
+        div.cell
+            padding 0 3px
+        .el-button
+            padding 4px 4px
+            margin-top 1.5px
         .select-all
             cursor pointer
 
