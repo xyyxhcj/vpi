@@ -62,7 +62,8 @@ public class UserServiceImpl implements UserService {
         }
         if (userDto.getLoginName() != null) {
             synchronized (userDto.getLoginName().intern()) {
-                Criteria checkLoginNameCriteria = Criteria.where(ColumnName.LOGIN_NAME).is(userDto.getLoginName());
+                Criteria checkLoginNameCriteria = Criteria.where(ColumnName.LOGIN_NAME).is(userDto.getLoginName())
+                        .and(ColumnName.IS_DEL).ne(Constant.Is.YES);
                 if (isUpdate) {
                     checkLoginNameCriteria = checkLoginNameCriteria.and(ColumnName.ID).ne(userDto.getId());
                 }

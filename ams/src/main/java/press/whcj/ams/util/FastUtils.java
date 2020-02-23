@@ -182,7 +182,7 @@ public class FastUtils {
 	}
 
 	public static <T> void checkNameAndSave(String id, boolean isUpdate, String name, T t, MongoTemplate mongoTemplate, Criteria checkNameCriteria) {
-		checkNameCriteria = checkNameCriteria.and(ColumnName.NAME).is(name);
+		checkNameCriteria = checkNameCriteria.and(ColumnName.NAME).is(name).and(ColumnName.IS_DEL).ne(Constant.Is.YES);
 		if (isUpdate) {
 			checkNameCriteria = checkNameCriteria.and(ColumnName.ID).ne(id);
 		}
