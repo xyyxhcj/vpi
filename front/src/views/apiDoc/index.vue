@@ -43,11 +43,12 @@
             </el-aside>
             <el-main>
                 <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="895"
-                          :row-style="{cursor:'pointer'}" @row-click="clickRow">
-                    <el-table-column width="79">
+                          :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table">
+                    <el-table-column type="selection" :width="showSelect?'20':'1'"/>
+                    <el-table-column width="81">
                         <template slot-scope="scope">
                             <el-tag size="mini" effect="plain" style="padding: 0 4px"
-                            :type="scope.row.apiStatus===0?'success':
+                                    :type="scope.row.apiStatus===0?'success':
                                     scope.row.apiStatus===2||scope.row.apiStatus===8?'danger':'warning'">
                                 {{CONSTANT.API_STATUS[scope.row.apiStatus]}}
                             </el-tag>
@@ -58,13 +59,20 @@
                     <el-table-column label="createName" prop="createName" width="150"/>
                     <el-table-column label="updateName" prop="updateName" width="150"/>
                     <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
-                    <el-table-column v-if="hasAuth">
+                    <el-table-column v-if="hasAuth" width="200">
                         <template slot="header">
                             <el-row>
                                 <el-col :span="24">
-                                    <el-button size="mini" type="success" @click.stop="addApi">Add</el-button>
-                                    <el-button size="mini" type="warning" @click.stop="batchOperate">Batch Operate
-                                    </el-button>
+                                    <template v-if="!showSelect">
+                                        <el-button size="mini" type="success" @click.stop="addApi">Add</el-button>
+                                        <el-button size="mini" type="warning" @click.stop="batchOperate">
+                                            Batch Operate
+                                        </el-button>
+                                    </template>
+                                    <template v-else>
+                                        <el-button size="mini" type="primary" @click.stop="switchStatus">Switch Status</el-button>
+                                        <el-button size="mini" @click.stop="showSelect=false">Cancel</el-button>
+                                    </template>
                                 </el-col>
                             </el-row>
                         </template>
@@ -89,6 +97,7 @@
         </el-container>
         <edit-api-group-dialog :dialog="editApiGroupDialog" :form="editApiGroupForm" @flush="findApiGroups"/>
         <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="delConfirmDialog.flush"/>
+        <select-api-status-dialog :dialog="selectApiStatusDialog" @flush="findApiPage"/>
     </div>
 </template>
 
@@ -98,10 +107,11 @@
     import EditApiGroupDialog from "./editApiGroupDialog";
     import PageTemplate from "../../components/pageTemplate/pageTemplate";
     import ConfirmDialog from "../../components/confirm/confirmDialog";
+    import SelectApiStatusDialog from "../../components/selectApiStatus/selectApiStatusDialog";
 
     export default {
         name: 'index',
-        components: {ConfirmDialog, PageTemplate, EditApiGroupDialog},
+        components: {SelectApiStatusDialog, ConfirmDialog, PageTemplate, EditApiGroupDialog},
         data() {
             return {
                 CONSTANT,
@@ -132,6 +142,13 @@
                     }
                 },
                 delForm: {id: ''},
+                showSelect: false,
+                selectApiStatusDialog: {
+                    show: false,
+                    ids: [],
+                    projectId: '',
+                    apiStatus: '',
+                },
             }
         },
         computed: {
@@ -205,6 +222,8 @@
                 });
             },
             findApiPage() {
+                this.showSelect = false;
+                this.selectApiStatusDialog.apiStatus = '';
                 this.query.projectId = this.projectId;
                 this.query.groupId = this.selectedGroupId;
                 UTILS.findPage(this, this, CONSTANT.REQUEST_URL.API_FIND_PAGE);
@@ -238,7 +257,7 @@
                 }
             },
             batchOperate() {
-
+                this.showSelect = true;
             },
             editApi(api) {
                 this.$router.push({
@@ -247,10 +266,14 @@
                 });
             },
             clickRow(row) {
-                this.$router.push({
-                    path: '/api/detail',
-                    query: {id: row.id}
-                });
+                if (this.showSelect) {
+                    this.$refs['api-doc-table'].toggleRowSelection(row);
+                } else {
+                    this.$router.push({
+                        path: '/api/detail',
+                        query: {id: row.id}
+                    });
+                }
             },
             delApiGroup(group) {
                 this.delForm.id = group.id;
@@ -280,6 +303,17 @@
                 this.delConfirmDialog.url = CONSTANT.REQUEST_URL.API_REMOVE;
                 this.delConfirmDialog.flush = () => this.findApiPage();
                 this.delConfirmDialog.show = true;
+            },
+            switchStatus() {
+                let selection = this.$refs['api-doc-table'].selection;
+                if (!selection || selection.length === 0) {
+                    this.$message.error('please select first');
+                    return;
+                }
+                this.selectApiStatusDialog.projectId = this.projectId;
+                this.selectApiStatusDialog.ids = [];
+                selection.forEach(row => this.selectApiStatusDialog.ids.push(row.id));
+                this.selectApiStatusDialog.show = true;
             }
         },
         created() {
@@ -292,11 +326,13 @@
 <style lang="stylus" rel="stylesheet/stylus">
     #api-doc-container
         border 1px solid #d9d9d9
+
         div.cell
-            padding 0 3px
+            padding 0 5px
+
         .el-button
-            padding 4px 4px
             margin-top 1.5px
+
         .select-all
             cursor pointer
 
