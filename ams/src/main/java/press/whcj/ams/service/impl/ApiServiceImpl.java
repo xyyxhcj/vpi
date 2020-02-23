@@ -1,5 +1,6 @@
 package press.whcj.ams.service.impl;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -24,10 +25,8 @@ import press.whcj.ams.util.UserUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author xyyxhcj@qq.com
@@ -173,6 +172,22 @@ public class ApiServiceImpl implements ApiService {
                 Update.update(ColumnName.API_STATUS, apiDto.getApiStatus())
                         .set(ColumnName.UPDATE, new User(operator.getId()))
                         .set(ColumnName.UPDATE_TIME, LocalDateTime.now()), Api.class);
+    }
+
+    @Override
+    public List<ApiVo> findReferenceApi(ApiDto apiDto) {
+        String structureId = apiDto.getStructureId();
+        FastUtils.checkParams(structureId);
+        // find used structureIds
+        List<StructureData> structureDataList = mongoTemplate.find(new Query(Criteria.where(ColumnName.REFERENCE_STRUCTURE_ID).is(structureId)), StructureData.class);
+        LinkedHashSet<ObjectId> ids = structureDataList.stream()
+                .map(structureData -> new ObjectId(structureData.getStructureId()))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        ids.add(new ObjectId(structureId));
+        return mongoTemplate.find(
+                new Query(Criteria.where(ColumnName.IS_DEL).ne(Constant.Is.YES)
+                        .orOperator(Criteria.where(ColumnName.REQUEST_PARAM_$ID).in(ids), Criteria.where(ColumnName.RESPONSE_PARAM_$ID).in(ids))),
+                ApiVo.class, Constant.CollectionName.API);
     }
 
     private String saveApiParams(StructureDto paramDto, UserVo operator, String projectId) {

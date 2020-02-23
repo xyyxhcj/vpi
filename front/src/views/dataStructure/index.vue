@@ -11,7 +11,6 @@
                     <el-row>
                         <el-col :span="24">
                             <el-button size="mini" type="success" @click="addDataStructure">Add</el-button>
-                            <el-button size="mini" type="warning" @click="batchOperate">Batch Operate</el-button>
                         </el-col>
                     </el-row>
                 </template>
@@ -27,6 +26,7 @@
         <page-template :query="query" @flush="findPage"/>
         <edit-data-structure-dialog :dialog="editDialog" :form="form" @flush="findPage" ref="editDataStructure"
                                     :data-list="form.dataList" :root-list="form.rootList"/>
+        <show-reference-api-dialog :dialog="showReferenceApiDialog" ref="show-reference-api-dialog"/>
     </div>
 </template>
 
@@ -35,10 +35,11 @@
     import PageTemplate from "../../components/pageTemplate/pageTemplate";
     import {CONSTANT} from "../../common/js/constant";
     import {UTILS} from "../../common/js/utils";
+    import ShowReferenceApiDialog from "./showReferenceApiDialog";
 
     export default {
         name: 'index',
-        components: {PageTemplate, EditDataStructureDialog},
+        components: {ShowReferenceApiDialog, PageTemplate, EditDataStructureDialog},
         data() {
             return {
                 selectedProjectUserType: this.$store.getters.selectedProjectUserType,
@@ -57,6 +58,10 @@
                         total: 0,
                     }
                 },
+                showReferenceApiDialog: {
+                    show: false,
+                    structureId: '',
+                }
             };
         },
         computed: {
@@ -84,9 +89,6 @@
                 this.$nextTick(() => {
                     this.$refs['editDataStructure'].init();
                 });
-            },
-            batchOperate() {
-
             },
             editDataStructure(data) {
                 this.editDialog = {
@@ -119,10 +121,13 @@
                 });
             },
             showReference(data) {
-
+                this.showReferenceApiDialog.structureId = data.id;
+                this.showReferenceApiDialog.show = true;
+                this.$refs['show-reference-api-dialog'].findList();
             },
             delDataStructure(data) {
-
+                console.log(data);
+                // cjTodo 2020/2/23
             },
         },
         created() {

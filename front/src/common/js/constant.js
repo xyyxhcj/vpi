@@ -129,6 +129,7 @@ export const CONSTANT = {
         API_REMOVE: '/api/remove',
         API_FIND_DETAIL: '/api/findDetail',
         API_FIND_PAGE: '/api/findPage',
+        API_FIND_REFERENCE_API: '/api/findReferenceApi',
 
         API_TEST_HISTORY_ADD: '/vpi/apiTestHistory/add',
         API_TEST_HISTORY_FIND_PAGE: '/apiTestHistory/findPage',

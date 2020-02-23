@@ -1,5 +1,6 @@
 package press.whcj.ams.service.impl;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -39,7 +40,7 @@ public class ApiTestHistoryServiceImpl implements ApiTestHistoryService {
         MongoPage<ApiTestHistory> page = apiTestHistoryDto.getPage();
         Criteria criteria = Criteria.where(ColumnName.API_ID).is(apiTestHistoryDto.getApiId());
         if (!StringUtils.isEmpty(apiTestHistoryDto.getOperateId())) {
-            criteria = criteria.and(ColumnName.CREATE_$ID).is(apiTestHistoryDto.getOperateId());
+            criteria = criteria.and(ColumnName.CREATE_$ID).is(new ObjectId(apiTestHistoryDto.getOperateId()));
         }
         Query query = new Query(criteria);
         query.with(page.buildPageRequest()).with(QSort.by(Sort.Direction.DESC, ColumnName.CREATE_TIME));

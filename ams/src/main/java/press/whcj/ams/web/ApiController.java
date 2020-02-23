@@ -14,6 +14,7 @@ import press.whcj.ams.util.FastUtils;
 import press.whcj.ams.util.UserUtils;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author xyyxhcj@qq.com
@@ -69,5 +70,10 @@ public class ApiController extends BaseController {
     public Result<Object> remove(@RequestBody ApiDto apiDto) {
         apiService.remove(apiDto);
         return ok();
+    }
+
+    @RequestMapping("findReferenceApi")
+    public Result<List<ApiVo>> findReferenceApi(@RequestBody ApiDto apiDto) {
+        return ok(apiService.findReferenceApi(apiDto));
     }
 }
