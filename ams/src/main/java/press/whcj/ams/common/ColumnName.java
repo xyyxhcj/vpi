@@ -33,4 +33,7 @@ public interface ColumnName {
     String API_FAILURE_MOCK = "apiFailureMock";
     String IS_DEL = "isDel";
     String API_STATUS = "apiStatus";
+    String REFERENCE_STRUCTURE_ID = "referenceStructureId";
+    String REQUEST_PARAM_$ID = "requestParam.$id";
+    String RESPONSE_PARAM_$ID = "responseParam.$id";
 }
