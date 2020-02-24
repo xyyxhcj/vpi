@@ -67,8 +67,14 @@
                     <el-table-column type="selection" :width="testHistoryShowSelect?'20':'1'"/>
                     <el-table-column label="url" width="400">
                         <template slot-scope="scope">
-                            <el-tag size="mini" v-if="scope.row.method">{{scope.row.method}}</el-tag>
-                            {{scope.row.url}}
+                            <el-popover trigger="hover" placement="left-start">
+                                <pre>{{ transformInfo(scope.row.requestInfo,'Request Header','Request Parameter') }}</pre>
+                                <pre>{{ transformInfo(scope.row.responseInfo,'Response Header','Response Parameter') }}</pre>
+                                <div slot="reference" class="name-wrapper">
+                                    <el-tag size="mini" v-if="scope.row.method">{{scope.row.method}}</el-tag>
+                                    {{scope.row.url}}
+                                </div>
+                            </el-popover>
                         </template>
                     </el-table-column>
                     <el-table-column label="requestTime" width="200">
@@ -230,6 +236,12 @@
                     document.getElementById('resp-data').innerText = UTILS.formatJson(responseInfo.data);
                 }
             },
+            transformInfo(info, headerTitle, paramTitle) {
+                let infoObj = JSON.parse(info);
+                let headerStr = '';
+                Object.keys(infoObj.headers).forEach(key => headerStr = headerStr + key + ': ' + infoObj.headers[key] + '\r\n');
+                return '【' + headerTitle + '】 \r\n' + headerStr + '【' + paramTitle + '】 \r\n' + UTILS.formatJson(infoObj.data);
+            },
             dateFormat(time) {
                 return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
             },
@@ -386,6 +398,7 @@
 <style lang="stylus" rel="stylesheet/stylus">
     #api-test-container
         height 100%
+
         .el-input-group__prepend
             padding 5px
             border 0
