@@ -14,7 +14,8 @@
         <div style="text-align: left;margin: 5px;line-height: 30px;">{{api.name}}</div>
         <el-tabs type="card" v-model="reqDefaultCard" style="line-height: 25px">
             <el-tab-pane label="Request Header">
-                <api-headers :data-list="api.requestHeaders" ref="reqHeaders" :config="{onlyRead:false,test:true,refPre:'req'}"/>
+                <api-headers :data-list="api.requestHeaders" ref="reqHeaders"
+                             :config="{onlyRead:false,test:true,refPre:'req'}"/>
             </el-tab-pane>
             <el-tab-pane label="Request Param" name="requestParam">
                 <div style="text-align: left;margin-left: 15px">
@@ -60,7 +61,8 @@
             </el-tab-pane>
             <el-tab-pane label="Test History" name="testHistory">
                 <el-table :data="testHistory.dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
-                          :row-style="{cursor:'pointer'}" @row-click="selectTestHistory">
+                          :row-style="{cursor:'pointer'}" @row-click="selectTestHistory" ref="test-history-table">
+                    <el-table-column type="selection" :width="testHistoryShowSelect?'20':'1'"/>
                     <el-table-column label="url" width="400">
                         <template slot-scope="scope">
                             <el-tag size="mini" v-if="scope.row.method">{{scope.row.method}}</el-tag>
@@ -78,14 +80,25 @@
                         <template slot="header">
                             <el-row>
                                 <el-col :span="24">
-                                    <el-button size="mini" type="warning" @click="testHistoryBatchOperate">Batch
-                                        Operate
-                                    </el-button>
+                                    <template v-if="!testHistoryShowSelect">
+                                        <el-button size="mini" type="warning" @click="testHistoryBatchOperate">
+                                            Batch Operate
+                                        </el-button>
+                                    </template>
+                                    <template v-else>
+                                        <el-button size="mini" type="danger" @click.stop="delTestHistory">
+                                            Batch Delete
+                                        </el-button>
+                                        <el-button size="mini" @click.stop="testHistoryShowSelect=false">
+                                            Cancel
+                                        </el-button>
+                                    </template>
                                 </el-col>
                             </el-row>
                         </template>
                         <template slot-scope="scope">
-                            <el-button size="mini" type="danger" @click.stop="delTestHistory(scope.row)">Delete</el-button>
+                            <el-button size="mini" type="danger" @click.stop="delTestHistory(scope.row)">Delete
+                            </el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -161,6 +174,7 @@
                     ids: [],
                     projectId: this.$store.getters.selectedProjectId,
                 },
+                testHistoryShowSelect: false
             }
         },
         computed: {
@@ -172,32 +186,47 @@
         },
         methods: {
             delTestHistory(row) {
-                this.delForm.ids = [row.id];
+                if (row.id) {
+                    this.delForm.ids = [row.id];
+                } else {
+                    let selection = this.$refs['test-history-table'].selection;
+                    if (!selection || selection.length === 0) {
+                        this.$message.error('please select first');
+                        return;
+                    }
+                    this.delForm.ids = [];
+                    selection.forEach(row => this.delForm.ids.push(row.id));
+                }
                 this.delConfirmDialog.show = true;
             },
             testHistoryFindPage() {
+                this.testHistoryShowSelect = false;
                 UTILS.findPage(this, this.testHistory, CONSTANT.REQUEST_URL.API_TEST_HISTORY_FIND_PAGE);
             },
             testHistoryBatchOperate() {
-
+                this.testHistoryShowSelect = true;
             },
             selectTestHistory(row) {
-                // show test data
-                this.testInfoDefaultCard = 'respInfo';
-                this.flushEnv();
-                this.api.apiUri = row.url;
-                // show request info
-                let requestInfo = JSON.parse(row.requestInfo);
-                let reqHeaderStr = '';
-                Object.keys(requestInfo.headers).forEach(key => reqHeaderStr = reqHeaderStr + key + ': ' + requestInfo.headers[key] + '\r\n');
-                document.getElementById('req-headers').innerText = reqHeaderStr;
-                document.getElementById('req-data').innerText = UTILS.formatJson(requestInfo.data);
-                // show response info
-                let responseInfo = JSON.parse(row.responseInfo);
-                let respHeaderStr = '';
-                Object.keys(responseInfo.headers).forEach(key => respHeaderStr = respHeaderStr + key + ': ' + responseInfo.headers[key] + '\r\n');
-                document.getElementById('resp-headers').innerText = respHeaderStr;
-                document.getElementById('resp-data').innerText = UTILS.formatJson(responseInfo.data);
+                if (this.testHistoryShowSelect) {
+                    this.$refs['test-history-table'].toggleRowSelection(row);
+                } else {
+                    // show test data
+                    this.testInfoDefaultCard = 'respInfo';
+                    this.flushEnv();
+                    this.api.apiUri = row.url;
+                    // show request info
+                    let requestInfo = JSON.parse(row.requestInfo);
+                    let reqHeaderStr = '';
+                    Object.keys(requestInfo.headers).forEach(key => reqHeaderStr = reqHeaderStr + key + ': ' + requestInfo.headers[key] + '\r\n');
+                    document.getElementById('req-headers').innerText = reqHeaderStr;
+                    document.getElementById('req-data').innerText = UTILS.formatJson(requestInfo.data);
+                    // show response info
+                    let responseInfo = JSON.parse(row.responseInfo);
+                    let respHeaderStr = '';
+                    Object.keys(responseInfo.headers).forEach(key => respHeaderStr = respHeaderStr + key + ': ' + responseInfo.headers[key] + '\r\n');
+                    document.getElementById('resp-headers').innerText = respHeaderStr;
+                    document.getElementById('resp-data').innerText = UTILS.formatJson(responseInfo.data);
+                }
             },
             dateFormat(time) {
                 return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
@@ -386,6 +415,9 @@
 
             .el-table td, .el-table th
                 padding 1px 0
+
+                div.cell
+                    padding 0 1px
 
                 .el-button
                     padding 5px 5px
