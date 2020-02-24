@@ -26,4 +26,6 @@ public interface ApiService {
 	void switchStatus(ApiDto apiDto, UserVo operator);
 
     List<ApiVo> findReferenceApi(ApiDto apiDto);
+
+    void moveGroup(ApiDto apiDto, UserVo operator);
 }

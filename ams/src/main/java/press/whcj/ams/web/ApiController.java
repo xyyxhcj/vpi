@@ -56,6 +56,13 @@ public class ApiController extends BaseController {
         return ok();
     }
 
+    @RequestMapping("moveGroup")
+    public Result<Object> moveGroup(@RequestBody ApiDto apiDto) {
+        FastUtils.checkParams(apiDto.getGroupId(), apiDto.getIds(), apiDto.getProjectId());
+        apiService.moveGroup(apiDto, UserUtils.getOperator());
+        return ok();
+    }
+
     @RequestMapping("findPage")
     public Result<MongoPage<ApiVo>> findPage(@RequestBody ApiDto apiDto) {
         return ok(apiService.findPage(apiDto));

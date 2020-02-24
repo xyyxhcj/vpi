@@ -110,7 +110,17 @@
                     <el-table-column type="selection" :width="showSelect?'20':'1'"/>
                     <el-table-column width="81">
                         <template slot-scope="scope">
-                            <el-tag size="mini" effect="plain" style="padding: 0 4px"
+                            <el-popover trigger="hover" placement="right-start" v-if="scope.row.group">
+                                <p style="font-size: 10px">Group: {{scope.row.group.name}}</p>
+                                <div slot="reference">
+                                    <el-tag size="mini" effect="plain" style="padding: 0 4px"
+                                            :type="scope.row.apiStatus===0?'success':
+                                    scope.row.apiStatus===2||scope.row.apiStatus===8?'danger':'warning'">
+                                        {{CONSTANT.API_STATUS[scope.row.apiStatus]}}
+                                    </el-tag>
+                                </div>
+                            </el-popover>
+                            <el-tag size="mini" effect="plain" style="padding: 0 4px" v-else
                                     :type="scope.row.apiStatus===0?'success':
                                     scope.row.apiStatus===2||scope.row.apiStatus===8?'danger':'warning'">
                                 {{CONSTANT.API_STATUS[scope.row.apiStatus]}}
@@ -122,7 +132,7 @@
                     <el-table-column label="createName" prop="createName" width="110"/>
                     <el-table-column label="updateName" prop="updateName" width="110"/>
                     <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
-                    <el-table-column v-if="hasAuth" width="310">
+                    <el-table-column v-if="hasAuth" width="420">
                         <template slot="header">
                             <el-row>
                                 <el-col :span="24">
@@ -134,7 +144,11 @@
                                     </template>
                                     <template v-else>
                                         <el-button size="mini" @click.stop="showSelect=false">Cancel</el-button>
-                                        <el-button size="mini" type="primary" @click.stop="switchStatus">Switch Status
+                                        <el-button size="mini" type="primary" @click.stop="switchStatus">
+                                            Switch Status
+                                        </el-button>
+                                        <el-button size="mini" type="primary" @click.stop="moveGroup">
+                                            Move Group
                                         </el-button>
                                         <el-button size="mini" type="danger" @click.stop="delApi">Batch Delete
                                         </el-button>
@@ -165,6 +179,7 @@
         <edit-api-group-dialog :dialog="editApiGroupDialog" :form="editApiGroupForm" @flush="findApiGroups"/>
         <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="delConfirmDialog.flush"/>
         <select-api-status-dialog :dialog="selectApiStatusDialog" @flush="findApiPage"/>
+        <select-api-group-dialog :dialog="selectApiGroupDialog" @flush="findApiPage"/>
     </div>
 </template>
 
@@ -175,10 +190,11 @@
     import PageTemplate from "../../components/pageTemplate/pageTemplate";
     import ConfirmDialog from "../../components/confirm/confirmDialog";
     import SelectApiStatusDialog from "../../components/selectApiStatus/selectApiStatusDialog";
+    import SelectApiGroupDialog from "../../components/selectApiGroup/selectApiGroupDialog";
 
     export default {
         name: 'index',
-        components: {SelectApiStatusDialog, ConfirmDialog, PageTemplate, EditApiGroupDialog},
+        components: {SelectApiGroupDialog, SelectApiStatusDialog, ConfirmDialog, PageTemplate, EditApiGroupDialog},
         data() {
             return {
                 CONSTANT,
@@ -218,6 +234,11 @@
                     projectId: '',
                     apiStatus: '',
                 },
+                selectApiGroupDialog: {
+                    show: false,
+                    ids: [],
+                    projectId: this.$store.getters.selectedProjectId,
+                }
             }
         },
         computed: {
@@ -403,6 +424,16 @@
                 this.selectApiStatusDialog.ids = [];
                 selection.forEach(row => this.selectApiStatusDialog.ids.push(row.id));
                 this.selectApiStatusDialog.show = true;
+            },
+            moveGroup() {
+                let selection = this.$refs['api-doc-table'].selection;
+                if (!selection || selection.length === 0) {
+                    this.$message.error('please select first');
+                    return;
+                }
+                this.selectApiGroupDialog.ids = [];
+                selection.forEach(row => this.selectApiGroupDialog.ids.push(row.id));
+                this.selectApiGroupDialog.show = true;
             },
             selectQueryStatus(apiStatus) {
                 this.query.apiStatus = apiStatus;

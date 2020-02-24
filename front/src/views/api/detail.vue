@@ -16,6 +16,7 @@
             <div style="font-size: 22px">{{api.apiUri}}</div>
             <div style="font-size: 16px">{{api.name}}</div>
             <div style="font-size: 12px;color: #999999">
+                <span class="api-edit-info">group: {{api.group?api.group.name:'none'}}</span>
                 <span class="api-edit-info">create: {{api.createName}}</span>
                 <span class="api-edit-info">update: {{api.updateName}}</span>
                 <span class="api-edit-info">updateTime: {{dateFormat(api.updateTime)}}</span>

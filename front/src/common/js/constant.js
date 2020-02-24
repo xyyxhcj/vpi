@@ -126,6 +126,7 @@ export const CONSTANT = {
         API_ADD: '/api/add',
         API_EDIT: '/api/edit',
         API_SWITCH_STATUS: '/api/switchStatus',
+        API_MOVE_GROUP: '/api/moveGroup',
         API_SAVE_MOCK: '/api/saveMock',
         API_REMOVE: '/api/remove',
         API_FIND_DETAIL: '/api/findDetail',
