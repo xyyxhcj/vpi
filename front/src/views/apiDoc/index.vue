@@ -42,7 +42,7 @@
                 </el-tree>
             </el-aside>
             <el-main>
-                <div style="width: 100%;background-color:#fff;text-align: left;padding:5px 10px">
+                <div style="width: auto;background-color:#fff;text-align: left;padding:5px 0 0 10px">
                     <el-row type="flex">
                         <el-col style="width: 155px">
                             <el-dropdown size="mini" @command="command">
@@ -96,7 +96,7 @@
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </el-col>
-                        <el-col style="width: 210px">
+                        <el-col style="width: 200px">
                             <el-input placeholder="search name or uri" v-model.trim="query.nameOrUri"
                                       @keyup.enter.native="findApiPage" size="mini" style="top:2px;width: 150px"/>
                         </el-col>
@@ -105,7 +105,7 @@
                         </el-col>
                     </el-row>
                 </div>
-                <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="860"
+                <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="855"
                           :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table">
                     <el-table-column type="selection" :width="showSelect?'20':'1'"/>
                     <el-table-column width="81">
@@ -122,7 +122,7 @@
                     <el-table-column label="createName" prop="createName" width="110"/>
                     <el-table-column label="updateName" prop="updateName" width="110"/>
                     <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
-                    <el-table-column v-if="hasAuth" width="240">
+                    <el-table-column v-if="hasAuth" width="310">
                         <template slot="header">
                             <el-row>
                                 <el-col :span="24">
@@ -133,9 +133,11 @@
                                         </el-button>
                                     </template>
                                     <template v-else>
+                                        <el-button size="mini" @click.stop="showSelect=false">Cancel</el-button>
                                         <el-button size="mini" type="primary" @click.stop="switchStatus">Switch Status
                                         </el-button>
-                                        <el-button size="mini" @click.stop="showSelect=false">Cancel</el-button>
+                                        <el-button size="mini" type="danger" @click.stop="delApi">Batch Delete
+                                        </el-button>
                                     </template>
                                 </el-col>
                             </el-row>
@@ -373,11 +375,22 @@
                 });
             },
             delApi(api) {
-                this.delForm.ids = [api.id];
-                this.delConfirmDialog.content = UTILS.formatStr('Are you sure delete api:  {name}?',
-                    {name: api.name});
+                if (api.id !== undefined) {
+                    this.delForm.ids = [api.id];
+                    this.delConfirmDialog.content = UTILS.formatStr('Are you sure delete api:  {name}?',
+                        {name: api.name});
+                } else {
+                    let selection = this.$refs['api-doc-table'].selection;
+                    if (!selection || selection.length === 0) {
+                        this.$message.error('please select first');
+                        return;
+                    }
+                    this.delForm.ids = [];
+                    selection.forEach(row => this.delForm.ids.push(row.id));
+                }
                 this.delConfirmDialog.url = CONSTANT.REQUEST_URL.API_REMOVE;
                 this.delConfirmDialog.flush = () => this.findApiPage();
+                this.delConfirmDialog.content = 'Are you sure delete api?';
                 this.delConfirmDialog.show = true;
             },
             switchStatus() {
@@ -416,6 +429,9 @@
 
     #api-doc-container
         border 1px solid #d9d9d9
+
+        .el-table__header-wrapper
+            height 40px
 
         div.cell
             padding 0 5px
