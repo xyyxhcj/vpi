@@ -56,10 +56,10 @@
                     </el-table-column>
                     <el-table-column label="name" prop="name" width="200"/>
                     <el-table-column label="apiUri" prop="apiUri" width="200"/>
-                    <el-table-column label="createName" prop="createName" width="150"/>
-                    <el-table-column label="updateName" prop="updateName" width="150"/>
+                    <el-table-column label="createName" prop="createName" width="110"/>
+                    <el-table-column label="updateName" prop="updateName" width="110"/>
                     <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
-                    <el-table-column v-if="hasAuth" width="200">
+                    <el-table-column v-if="hasAuth" width="240">
                         <template slot="header">
                             <el-row>
                                 <el-col :span="24">
@@ -78,6 +78,7 @@
                             </el-row>
                         </template>
                         <template slot-scope="scope">
+                            <el-button size="mini" @click.stop="testApi(scope.row)">Test</el-button>
                             <el-button size="mini" @click.stop="editApi(scope.row)">Edit</el-button>
                             <el-button size="mini" @click.stop="viewApiByTab(scope.row)">New Tab</el-button>
                             <el-dropdown @command="command" style="padding-left: 10px">
@@ -295,6 +296,15 @@
                 this.$router.push({
                     path: '/api/edit',
                     query: {id: api.id, copy: true}
+                });
+            },
+            testApi(api) {
+                this.$router.push({
+                    path: '/api/test',
+                    query: {
+                        id: api.id,
+                        selectedEnv: this.selectedEnv,
+                    }
                 });
             },
             delApi(api) {

@@ -352,7 +352,7 @@
         .test-info
             text-align left
             position relative
-            height 460px
+            height auto
 
             .headers
                 font-size 12px
