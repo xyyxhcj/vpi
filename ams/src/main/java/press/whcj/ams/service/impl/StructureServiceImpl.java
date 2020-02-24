@@ -52,7 +52,11 @@ public class StructureServiceImpl implements StructureService {
                 .and(ColumnName.TYPE).is(Constant.StructureType.USER_CREATE)
                 .and(ColumnName.IS_DEL).ne(Constant.Is.YES));
         query.with(page.buildPageRequest()).with(QSort.by(Sort.Direction.DESC, ColumnName.UPDATE_TIME));
-        page.setTotal(mongoTemplate.count(query, Structure.class));
+        long total = mongoTemplate.count(query, Structure.class);
+        page.setTotal(total);
+        if (total == 0L) {
+            return page;
+        }
         return page.setRecords(mongoTemplate.find(query, StructureVo.class, Constant.CollectionName.STRUCTURE));
     }
 

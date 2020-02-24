@@ -104,7 +104,11 @@ public class UserServiceImpl implements UserService {
         Query query = new Query(Criteria.where(ColumnName.IS_ADMIN).ne(Constant.Is.YES)
                 .and(ColumnName.IS_DEL).ne(Constant.Is.YES));
         query.with(page.buildPageRequest()).with(QSort.by(Sort.Direction.DESC, ColumnName.UPDATE_TIME));
-        page.setTotal(mongoTemplate.count(query, User.class));
+        long total = mongoTemplate.count(query, User.class);
+        page.setTotal(total);
+        if (total == 0L) {
+            return page;
+        }
         return page.setRecords(mongoTemplate.find(query, UserVo.class, Constant.CollectionName.USER));
     }
 

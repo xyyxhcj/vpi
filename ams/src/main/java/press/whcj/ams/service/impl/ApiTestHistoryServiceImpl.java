@@ -47,7 +47,11 @@ public class ApiTestHistoryServiceImpl implements ApiTestHistoryService {
         }
         Query query = new Query(criteria);
         query.with(page.buildPageRequest()).with(QSort.by(Sort.Direction.DESC, ColumnName.CREATE_TIME));
-        page.setTotal(mongoTemplate.count(query, ApiTestHistory.class));
+        long total = mongoTemplate.count(query, ApiTestHistory.class);
+        page.setTotal(total);
+        if (total == 0L) {
+            return page;
+        }
         return page.setRecords(mongoTemplate.find(query, ApiTestHistory.class));
     }
 
