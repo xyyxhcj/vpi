@@ -93,7 +93,6 @@
             },
             del() {
                 this.delConfirmDialog.show = true;
-
             },
             test() {
                 this.$router.push({

@@ -35,6 +35,12 @@ public class ApiTestHistoryController extends BaseController {
         return ok(id);
     }
 
+    @RequestMapping("delete")
+    public Result<Object> delete(@RequestBody ApiTestHistoryDto apiTestHistoryDto) {
+        apiTestHistoryService.delete(apiTestHistoryDto);
+        return ok();
+    }
+
     @RequestMapping("findPage")
     public Result<MongoPage<ApiTestHistory>> findPage(@RequestBody ApiTestHistoryDto apiTestHistoryDto) {
         return ok(apiTestHistoryService.findPage(apiTestHistoryDto));

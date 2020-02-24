@@ -133,6 +133,7 @@ export const CONSTANT = {
         API_FIND_REFERENCE_API: '/api/findReferenceApi',
 
         API_TEST_HISTORY_ADD: '/vpi/apiTestHistory/add',
+        API_TEST_HISTORY_DELETE: '/apiTestHistory/delete',
         API_TEST_HISTORY_FIND_PAGE: '/apiTestHistory/findPage',
     },
     CLOSE_LOADING_URL: [],

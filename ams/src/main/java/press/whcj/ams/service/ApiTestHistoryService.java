@@ -14,4 +14,6 @@ public interface ApiTestHistoryService {
     String save(ApiTestHistory apiTestHistory, UserVo operator);
 
     MongoPage<ApiTestHistory> findPage(ApiTestHistoryDto apiTestHistoryDto);
+
+    void delete(ApiTestHistoryDto apiTestHistoryDto);
 }

@@ -85,13 +85,14 @@
                             </el-row>
                         </template>
                         <template slot-scope="scope">
-                            <el-button size="mini" type="danger" @click="delTestHistory(scope.row)">Delete</el-button>
+                            <el-button size="mini" type="danger" @click.stop="delTestHistory(scope.row)">Delete</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
                 <page-template :query="testHistory.query" @flush="testHistoryFindPage"/>
             </el-tab-pane>
         </el-tabs>
+        <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="testHistoryFindPage"/>
     </div>
 </template>
 
@@ -102,10 +103,11 @@
     import DataStructure from "../../components/dataStructure/dataStructure";
     import LineText from "../../components/lineText/lineText";
     import PageTemplate from "../../components/pageTemplate/pageTemplate";
+    import ConfirmDialog from "../../components/confirm/confirmDialog";
 
     export default {
         name: 'test',
-        components: {PageTemplate, LineText, DataStructure, ApiHeaders},
+        components: {ConfirmDialog, PageTemplate, LineText, DataStructure, ApiHeaders},
         data() {
             return {
                 CONSTANT,
@@ -149,6 +151,16 @@
                     },
                     dataList: [],
                 },
+                delConfirmDialog: {
+                    show: false,
+                    title: 'Delete Confirm',
+                    content: 'Are you sure delete history ?',
+                    url: CONSTANT.REQUEST_URL.API_TEST_HISTORY_DELETE,
+                },
+                delForm: {
+                    ids: [],
+                    projectId: this.$store.getters.selectedProjectId,
+                },
             }
         },
         computed: {
@@ -160,7 +172,8 @@
         },
         methods: {
             delTestHistory(row) {
-
+                this.delForm.ids = [row.id];
+                this.delConfirmDialog.show = true;
             },
             testHistoryFindPage() {
                 UTILS.findPage(this, this.testHistory, CONSTANT.REQUEST_URL.API_TEST_HISTORY_FIND_PAGE);
@@ -192,7 +205,7 @@
             clickTab(tab) {
                 if ('testHistory' === tab.name) {
                     this.testHistory.query.apiId = this.api.id;
-                    UTILS.findPage(this, this.testHistory, CONSTANT.REQUEST_URL.API_TEST_HISTORY_FIND_PAGE);
+                    this.testHistoryFindPage();
                 }
             },
             flushEnv(env) {

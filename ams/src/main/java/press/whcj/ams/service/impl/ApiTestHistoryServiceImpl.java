@@ -15,8 +15,11 @@ import press.whcj.ams.entity.dto.ApiTestHistoryDto;
 import press.whcj.ams.entity.vo.UserVo;
 import press.whcj.ams.service.ApiTestHistoryService;
 import press.whcj.ams.util.FastUtils;
+import press.whcj.ams.util.PermUtils;
+import press.whcj.ams.util.UserUtils;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author xyyxhcj@qq.com
@@ -46,5 +49,14 @@ public class ApiTestHistoryServiceImpl implements ApiTestHistoryService {
         query.with(page.buildPageRequest()).with(QSort.by(Sort.Direction.DESC, ColumnName.CREATE_TIME));
         page.setTotal(mongoTemplate.count(query, ApiTestHistory.class));
         return page.setRecords(mongoTemplate.find(query, ApiTestHistory.class));
+    }
+
+    @Override
+    public void delete(ApiTestHistoryDto apiTestHistoryDto) {
+        List<String> ids = apiTestHistoryDto.getIds();
+        String projectId = apiTestHistoryDto.getProjectId();
+        FastUtils.checkParams(ids, projectId);
+        PermUtils.checkProjectWrite(mongoTemplate, projectId, UserUtils.getOperator());
+        mongoTemplate.remove(new Query(Criteria.where(ColumnName.ID).in(ids)), ApiTestHistory.class);
     }
 }
