@@ -128,6 +128,7 @@
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
     #api-container
+        height 100%
         border 1px solid #d9d9d9
 
         .el-header

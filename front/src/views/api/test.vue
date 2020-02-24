@@ -1,45 +1,47 @@
 <template>
     <div id="api-test-container" style="min-width: 1250px;line-height: 15px">
-        <el-row>
-            <el-col :span="24" style="text-align: left">
-                <el-select v-model.trim="api.apiRequestType" style="width: 8%" size="mini">
-                    <el-option :label="CONSTANT.REQUEST_TYPE[0]" :value="0"/>
-                    <el-option :label="CONSTANT.REQUEST_TYPE[1]" :value="1"/>
-                </el-select>
-                <el-input v-model="api.apiUri" size="mini" style="width: 91%">
-                    <template slot="prepend">{{selectedEnv?selectedEnv.frontUri:''}}</template>
-                </el-input>
-            </el-col>
-        </el-row>
-        <div style="text-align: left;margin: 5px;line-height: 30px;">{{api.name}}</div>
-        <el-tabs type="card" v-model="reqDefaultCard" style="line-height: 25px">
-            <el-tab-pane label="Request Header">
-                <api-headers :data-list="api.requestHeaders" ref="reqHeaders"
-                             :config="{onlyRead:false,test:true,refPre:'req'}"/>
-            </el-tab-pane>
-            <el-tab-pane label="Request Param" name="requestParam">
-                <div style="text-align: left;margin-left: 15px">
-                    <el-radio v-model.trim="api.requestParamType" :label="0" size="mini">
-                        {{CONSTANT.REQUEST_PARAM_TYPE[0]}}
-                    </el-radio>
-                    <el-radio v-model.trim="api.requestParamType" :label="1" size="mini">
-                        {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
-                    </el-radio>
-                </div>
-                <data-structure :show-list="reqShowDataList" :entity="api.requestParamVo"
-                                ref="reqDataStructure" :config="{test:true}"/>
-            </el-tab-pane>
-        </el-tabs>
-        <div style="text-align: left;margin: 10px">
-            <el-dropdown size="small" split-button type="success" @command="command"
-                         @click="()=>!sendDisable?send():''">
-                {{!sendDisable?'Send':'Wait...'}}
-                <el-dropdown-menu>
-                    <el-dropdown-item :command="newTab">New Tab</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
+        <div id="test-up">
+            <el-row>
+                <el-col :span="24" style="text-align: left">
+                    <el-select v-model.trim="api.apiRequestType" style="width: 8%" size="mini">
+                        <el-option :label="CONSTANT.REQUEST_TYPE[0]" :value="0"/>
+                        <el-option :label="CONSTANT.REQUEST_TYPE[1]" :value="1"/>
+                    </el-select>
+                    <el-input v-model="api.apiUri" size="mini" style="width: 91%">
+                        <template slot="prepend">{{selectedEnv?selectedEnv.frontUri:''}}</template>
+                    </el-input>
+                </el-col>
+            </el-row>
+            <div style="text-align: left;margin: 5px;line-height: 30px;">{{api.name}}</div>
+            <el-tabs type="card" v-model="reqDefaultCard" style="line-height: 25px">
+                <el-tab-pane label="Request Header">
+                    <api-headers :data-list="api.requestHeaders" ref="reqHeaders"
+                                 :config="{onlyRead:false,test:true,refPre:'req'}"/>
+                </el-tab-pane>
+                <el-tab-pane label="Request Param" name="requestParam">
+                    <div style="text-align: left;margin-left: 15px">
+                        <el-radio v-model.trim="api.requestParamType" :label="0" size="mini">
+                            {{CONSTANT.REQUEST_PARAM_TYPE[0]}}
+                        </el-radio>
+                        <el-radio v-model.trim="api.requestParamType" :label="1" size="mini">
+                            {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
+                        </el-radio>
+                    </div>
+                    <data-structure :show-list="reqShowDataList" :entity="api.requestParamVo"
+                                    ref="reqDataStructure" :config="{test:true}"/>
+                </el-tab-pane>
+            </el-tabs>
+            <div style="text-align: left;margin: 10px">
+                <el-dropdown size="small" split-button type="success" @command="command"
+                             @click="()=>!sendDisable?send():''">
+                    {{!sendDisable?'Send':'Wait...'}}
+                    <el-dropdown-menu>
+                        <el-dropdown-item :command="newTab">New Tab</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </div>
         </div>
-        <el-tabs type="card" class="test-info" @tab-click="clickTab" v-model="testInfoDefaultCard">
+        <el-tabs type="card" class="test-info" @tab-click="clickTab" v-model="testInfoDefaultCard" id="test-info">
             <el-tab-pane label="Response Info" name="respInfo">
                 <line-text style="color: #44B549" text="Headers"/>
                 <div id="resp-headers" ref="respHeaders" class="headers"></div>
@@ -383,6 +385,7 @@
 
 <style lang="stylus" rel="stylesheet/stylus">
     #api-test-container
+        height 100%
         .el-input-group__prepend
             padding 5px
             border 0
@@ -394,7 +397,6 @@
         .test-info
             text-align left
             position relative
-            height auto
 
             .headers
                 font-size 12px
