@@ -117,7 +117,7 @@ public class ProjectServiceImpl implements ProjectService {
         criteria = Criteria.where(ColumnName.USER_$ID).is(operatorObjectId)
                 .and(ColumnName.PROJECT_$IS_DEL).ne(Constant.Is.YES);
         if (findByGroup) {
-            criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(groupId);
+            criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(new ObjectId(groupId));
         } else {
             criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(null);
         }
