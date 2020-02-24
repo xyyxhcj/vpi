@@ -72,7 +72,7 @@ export const CONSTANT = {
     HOST_URL: {
         dev: 'http://120.132.18.250:11111',
         // dev: 'http://127.0.0.1:11111',
-        prod: 'http://120.132.18.250',
+        prod: 'http://120.132.18.250/vpi',
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
@@ -133,7 +133,7 @@ export const CONSTANT = {
         API_FIND_PAGE: '/api/findPage',
         API_FIND_REFERENCE_API: '/api/findReferenceApi',
 
-        API_TEST_HISTORY_ADD: '/vpi/apiTestHistory/add',
+        API_TEST_HISTORY_ADD: '/apiTestHistory/add',
         API_TEST_HISTORY_DELETE: '/apiTestHistory/delete',
         API_TEST_HISTORY_FIND_PAGE: '/apiTestHistory/findPage',
     },
