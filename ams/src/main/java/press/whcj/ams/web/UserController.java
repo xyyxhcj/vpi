@@ -55,8 +55,9 @@ public class UserController extends BaseController {
 
 	@RequestMapping("remove")
 	public Result<Object> remove(@RequestBody UserDto userDto) {
-		PermUtils.checkAdmin(UserUtils.getOperator());
-		userService.remove(userDto);
+		UserVo operator = UserUtils.getOperator();
+		PermUtils.checkAdmin(operator);
+		userService.remove(userDto, operator);
 		return ok();
 	}
 

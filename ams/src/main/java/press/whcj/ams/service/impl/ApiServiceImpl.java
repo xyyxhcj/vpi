@@ -161,8 +161,13 @@ public class ApiServiceImpl implements ApiService {
     public void remove(ApiDto apiDto) {
         List<String> ids = apiDto.getIds();
         FastUtils.checkParams(ids);
-        PermUtils.checkProjectWrite(mongoTemplate, apiDto.getProjectId(), UserUtils.getOperator());
-        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(ids)), Update.update(ColumnName.IS_DEL, Constant.Is.YES), Api.class);
+        UserVo operator = UserUtils.getOperator();
+        PermUtils.checkProjectWrite(mongoTemplate, apiDto.getProjectId(), operator);
+        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(ids)),
+                Update.update(ColumnName.IS_DEL, Constant.Is.YES)
+                        .set(ColumnName.UPDATE_TIME, LocalDateTime.now())
+                        .set(ColumnName.UPDATE, new User(operator.getId())),
+                Api.class);
     }
 
     @Override

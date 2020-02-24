@@ -108,7 +108,7 @@ public class ProjectController extends BaseController {
 		FastUtils.checkParams(projectId);
 		UserVo operator = UserUtils.getOperator();
 		PermUtils.checkProjectOwner(mongoTemplate, projectId, operator);
-		projectService.remove(projectId);
+		projectService.remove(projectId, operator);
 		return ok();
 	}
 }

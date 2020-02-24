@@ -33,6 +33,8 @@ public class Structure implements Serializable {
     @JsonBackReference("update")
     private User update;
 
+    private Byte isDel;
+
     public Structure() {
     }
 

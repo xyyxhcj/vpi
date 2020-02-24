@@ -33,6 +33,8 @@
                 this.$axios.post(this.dialog.url, this.form).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.$emit('flush');
+                    } else {
+                        this.$emit('error', resp.data);
                     }
                 });
             }

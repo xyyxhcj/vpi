@@ -18,4 +18,6 @@ public interface StructureService {
 	StructureVo findDetail(StructureDto structureDto);
 
 	StructureVo getStructureVoById(String structureId);
+
+	void remove(StructureDto structureDto);
 }

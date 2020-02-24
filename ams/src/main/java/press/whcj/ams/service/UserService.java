@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface UserService {
 	String save(UserDto userDto);
 
-	void remove(UserDto userDto);
+	void remove(UserDto userDto, UserVo operator);
 
 	UserVo findDetail(String id);
 

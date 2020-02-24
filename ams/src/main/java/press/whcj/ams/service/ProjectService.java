@@ -54,8 +54,9 @@ public interface ProjectService {
      * remove
      *
      * @param projectId projectId
+     * @param operator
      * @author xyyxhcj@qq.com
      * @date 2020/2/10 10:36
      **/
-    void remove(String projectId);
+    void remove(String projectId, UserVo operator);
 }

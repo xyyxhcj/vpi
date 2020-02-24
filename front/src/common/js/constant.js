@@ -114,6 +114,7 @@ export const CONSTANT = {
 
         STRUCTURE_ADD: '/structure/add',
         STRUCTURE_EDIT: '/structure/edit',
+        STRUCTURE_REMOVE: '/structure/remove',
         STRUCTURE_FIND_DETAIL: '/structure/findDetail',
         STRUCTURE_FIND_PAGE: '/structure/findPage',
 
@@ -139,6 +140,7 @@ export const CONSTANT = {
         SUCCESS: 200,
         USER_INVALID: 10004,
         LOGIN_NOT: 10005,
+        STRUCTURE_USED: 10008,
     },
     STATUS: {
         0: 'Enable', 1: 'Disable'

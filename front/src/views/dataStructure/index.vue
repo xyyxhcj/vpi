@@ -27,6 +27,7 @@
         <edit-data-structure-dialog :dialog="editDialog" :form="form" @flush="findPage" ref="editDataStructure"
                                     :data-list="form.dataList" :root-list="form.rootList"/>
         <show-reference-api-dialog :dialog="showReferenceApiDialog" ref="show-reference-api-dialog"/>
+        <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="findPage" @error="delFailed"/>
     </div>
 </template>
 
@@ -36,10 +37,11 @@
     import {CONSTANT} from "../../common/js/constant";
     import {UTILS} from "../../common/js/utils";
     import ShowReferenceApiDialog from "./showReferenceApiDialog";
+    import ConfirmDialog from "../../components/confirm/confirmDialog";
 
     export default {
         name: 'index',
-        components: {ShowReferenceApiDialog, PageTemplate, EditDataStructureDialog},
+        components: {ConfirmDialog, ShowReferenceApiDialog, PageTemplate, EditDataStructureDialog},
         data() {
             return {
                 selectedProjectUserType: this.$store.getters.selectedProjectUserType,
@@ -61,7 +63,14 @@
                 showReferenceApiDialog: {
                     show: false,
                     structureId: '',
-                }
+                },
+                delConfirmDialog: {
+                    show: false,
+                    title: 'Delete Confirm',
+                    content: '',
+                    url: '',
+                },
+                delForm: {id: '', row: undefined},
             };
         },
         computed: {
@@ -90,13 +99,13 @@
                     this.$refs['editDataStructure'].init();
                 });
             },
-            editDataStructure(data) {
+            editDataStructure(row) {
                 this.editDialog = {
                     show: true,
                     title: 'Edit',
                     url: CONSTANT.REQUEST_URL.STRUCTURE_EDIT
                 };
-                this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, data).then(resp => {
+                this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, row).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.form = resp.data.data;
                         this.$nextTick(() => {
@@ -105,13 +114,13 @@
                     }
                 });
             },
-            showDataStructure(data) {
+            showDataStructure(row) {
                 this.editDialog = {
                     show: true,
                     title: 'View',
                     onlyRead: true,
                 };
-                this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, data).then(resp => {
+                this.$axios.post(CONSTANT.REQUEST_URL.STRUCTURE_FIND_DETAIL, row).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.form = resp.data.data;
                         this.$nextTick(() => {
@@ -120,15 +129,30 @@
                     }
                 });
             },
-            showReference(data) {
-                this.showReferenceApiDialog.structureId = data.id;
+            showReference(row) {
+                this.showReferenceApiDialog.structureId = row.id;
                 this.showReferenceApiDialog.show = true;
                 this.$refs['show-reference-api-dialog'].findList();
             },
-            delDataStructure(data) {
-                console.log(data);
-                // cjTodo 2020/2/23
+            delDataStructure(row) {
+                // STRUCTURE_REMOVE
+                this.delForm.id = row.id;
+                this.delForm.row = row;
+                this.delConfirmDialog.content = UTILS.formatStr('Are you sure delete api group: {name}?',
+                    {name: row.name});
+                this.delConfirmDialog.url = CONSTANT.REQUEST_URL.STRUCTURE_REMOVE;
+                this.delConfirmDialog.show = true;
             },
+            delFailed(respData) {
+                if (respData.code === CONSTANT.RESULT_CODE.STRUCTURE_USED) {
+                    this.showReference(this.delForm.row);
+                }
+                this.$message({
+                    message: 'delete failed: ' + respData.message,
+                    type: 'error',
+                    customClass: 'error-msg',
+                });
+            }
         },
         created() {
             this.findPage();
@@ -136,7 +160,9 @@
     };
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus" scoped>
+<style lang="stylus" rel="stylesheet/stylus">
     #data-container
         border 1px solid #d9d9d9
+    .error-msg
+        z-index 3000!important
 </style>

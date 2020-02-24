@@ -55,6 +55,12 @@ public class StructureController extends BaseController {
 		return ok(structureDto.getId());
 	}
 
+	@RequestMapping("remove")
+	public Result<Object> remove(@RequestBody StructureDto structureDto) {
+		structureService.remove(structureDto);
+		return ok();
+	}
+
 	@RequestMapping("findDetail")
 	public Result<StructureVo> findDetail(@RequestBody StructureDto structureDto) {
 		return ok(structureService.findDetail(structureDto));

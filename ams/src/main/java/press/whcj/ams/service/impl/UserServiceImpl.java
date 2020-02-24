@@ -80,10 +80,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void remove(UserDto userDto) {
+    public void remove(UserDto userDto, UserVo operator) {
         List<String> ids = userDto.getIds();
         FastUtils.checkParams(ids);
-        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(ids)), Update.update(ColumnName.IS_DEL, Constant.Is.YES), User.class);
+        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(ids)),
+                Update.update(ColumnName.IS_DEL, Constant.Is.YES)
+                        .set(ColumnName.UPDATE_TIME, LocalDateTime.now())
+                        .set(ColumnName.UPDATE, new User(operator.getId())),
+                User.class);
     }
 
     @Override

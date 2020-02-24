@@ -19,6 +19,7 @@ import press.whcj.ams.service.ProjectService;
 import press.whcj.ams.util.FastUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -129,7 +130,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void remove(String projectId) {
-        mongoTemplate.updateFirst(new Query(Criteria.where(ColumnName.ID).is(projectId)), Update.update(ColumnName.IS_DEL, Constant.Is.YES), Project.class);
+    public void remove(String projectId, UserVo operator) {
+        mongoTemplate.updateFirst(new Query(Criteria.where(ColumnName.ID).is(projectId)),
+                Update.update(ColumnName.IS_DEL, Constant.Is.YES)
+                        .set(ColumnName.UPDATE_TIME, LocalDateTime.now())
+                        .set(ColumnName.UPDATE, new User(operator.getId())),
+                Project.class);
     }
 }
