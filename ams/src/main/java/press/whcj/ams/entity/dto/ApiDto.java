@@ -22,4 +22,5 @@ public class ApiDto extends ApiVo {
 	private MongoPage<ApiVo> page = new MongoPage<>();
 	private List<String> ids = new ArrayList<>();
 	private String structureId;
+	private String nameOrUri;
 }

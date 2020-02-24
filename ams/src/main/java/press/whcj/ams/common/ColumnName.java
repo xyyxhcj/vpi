@@ -36,4 +36,5 @@ public interface ColumnName {
     String REFERENCE_STRUCTURE_ID = "referenceStructureId";
     String REQUEST_PARAM_$ID = "requestParam.$id";
     String RESPONSE_PARAM_$ID = "responseParam.$id";
+    String API_URI = "apiUri";
 }

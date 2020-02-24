@@ -1,5 +1,6 @@
 package press.whcj.ams.service.impl;
 
+import org.bson.BsonRegularExpression;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -107,8 +108,17 @@ public class ApiServiceImpl implements ApiService {
         MongoPage<ApiVo> page = apiDto.getPage();
         Criteria criteria = Criteria.where(ColumnName.PROJECT_ID).is(apiDto.getProjectId())
                 .and(ColumnName.IS_DEL).ne(Constant.Is.YES);
+        // concat query condition
         if (!StringUtils.isEmpty(apiDto.getGroupId())) {
             criteria = criteria.and(ColumnName.GROUP_$ID).is(apiDto.getGroupId());
+        }
+        if (!StringUtils.isEmpty(apiDto.getNameOrUri())) {
+            BsonRegularExpression expression = new BsonRegularExpression("^.*" + apiDto.getNameOrUri() + ".*$", "i");
+            criteria = criteria.orOperator(Criteria.where(ColumnName.NAME).regex(expression),
+                    Criteria.where(ColumnName.API_URI).regex(expression));
+        }
+        if (apiDto.getApiStatus() != null) {
+            criteria = criteria.and(ColumnName.API_STATUS).is(apiDto.getApiStatus());
         }
         Query query = new Query(criteria);
         query.with(page.buildPageRequest()).with(QSort.by(Sort.Direction.DESC, ColumnName.UPDATE_TIME));

@@ -42,7 +42,70 @@
                 </el-tree>
             </el-aside>
             <el-main>
-                <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="895"
+                <div style="width: 100%;background-color:#fff;text-align: left;padding:5px 10px">
+                    <el-row type="flex">
+                        <el-col style="width: 155px">
+                            <el-dropdown size="mini" @command="command">
+                                <el-button size="mini"
+                                           :type="query.apiStatus===undefined?'primary':
+                                   (query.apiStatus===0?'success':
+                                        query.apiStatus===2||query.apiStatus===8?'danger':'warning')">
+                                    {{query.apiStatus===undefined?'filter status':CONSTANT.API_STATUS[query.apiStatus]}}
+                                    <i class="el-icon-arrow-down el-icon--right"/>
+                                </el-button>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item class="api-status-option" :command="()=>selectQueryStatus()">
+                                        All
+                                    </el-dropdown-item>
+                                    <el-dropdown-item class="api-status-option success"
+                                                      :command="()=>selectQueryStatus(0)">
+                                        {{CONSTANT.API_STATUS[0]}}
+                                    </el-dropdown-item>
+                                    <el-dropdown-item class="api-status-option warning"
+                                                      :command="()=>selectQueryStatus(7)">
+                                        {{CONSTANT.API_STATUS[7]}}
+                                    </el-dropdown-item>
+                                    <el-dropdown-item class="api-status-option warning"
+                                                      :command="()=>selectQueryStatus(6)">
+                                        {{CONSTANT.API_STATUS[6]}}
+                                    </el-dropdown-item>
+                                    <el-dropdown-item class="api-status-option warning"
+                                                      :command="()=>selectQueryStatus(1)">
+                                        {{CONSTANT.API_STATUS[1]}}
+                                    </el-dropdown-item>
+                                    <el-dropdown-item class="api-status-option warning"
+                                                      :command="()=>selectQueryStatus(5)">
+                                        {{CONSTANT.API_STATUS[5]}}
+                                    </el-dropdown-item>
+                                    <el-dropdown-item class="api-status-option warning"
+                                                      :command="()=>selectQueryStatus(4)">
+                                        {{CONSTANT.API_STATUS[4]}}
+                                    </el-dropdown-item>
+                                    <el-dropdown-item class="api-status-option warning"
+                                                      :command="()=>selectQueryStatus(3)">
+                                        {{CONSTANT.API_STATUS[3]}}
+                                    </el-dropdown-item>
+                                    <el-dropdown-item class="api-status-option warning"
+                                                      :command="()=>selectQueryStatus(8)">
+                                        {{CONSTANT.API_STATUS[8]}}
+                                    </el-dropdown-item>
+                                    <el-dropdown-item class="api-status-option error"
+                                                      :command="()=>selectQueryStatus(2)">
+                                        {{CONSTANT.API_STATUS[2]}}
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </el-col>
+                        <el-col style="width: 210px">
+                            <el-input placeholder="search name or uri" v-model.trim="query.nameOrUri"
+                                      @keyup.enter.native="findApiPage" size="mini" style="top:2px;width: 150px"/>
+                        </el-col>
+                        <el-col>
+                            <el-button icon="el-icon-search" @click="findApiPage" circle size="mini"/>
+                        </el-col>
+                    </el-row>
+                </div>
+                <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="860"
                           :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table">
                     <el-table-column type="selection" :width="showSelect?'20':'1'"/>
                     <el-table-column width="81">
@@ -128,6 +191,8 @@
                 editApiGroupForm: {},
                 dataList: [],
                 query: {
+                    apiStatus: undefined,
+                    nameOrUri: '',
                     page: {
                         current: 1,
                         size: CONSTANT.CONFIG.PAGE_SIZE_DEFAULT,
@@ -156,7 +221,7 @@
         computed: {
             hasAuth() {
                 return this.selectedProjectUserType !== CONSTANT.AUTH_ROLE.READ;
-            }
+            },
         },
         methods: {
             dateFormat(time) {
@@ -325,6 +390,10 @@
                 this.selectApiStatusDialog.ids = [];
                 selection.forEach(row => this.selectApiStatusDialog.ids.push(row.id));
                 this.selectApiStatusDialog.show = true;
+            },
+            selectQueryStatus(apiStatus) {
+                this.query.apiStatus = apiStatus;
+                this.findApiPage();
             }
         },
         created() {
@@ -335,6 +404,16 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+    .api-status-option
+        &.success
+            color #44B549
+
+        &.warning
+            color #E6A23C
+
+        &.error
+            color #F56C6C
+
     #api-doc-container
         border 1px solid #d9d9d9
 
