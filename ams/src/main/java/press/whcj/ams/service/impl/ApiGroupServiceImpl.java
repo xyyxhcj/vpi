@@ -1,5 +1,6 @@
 package press.whcj.ams.service.impl;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -76,9 +77,9 @@ public class ApiGroupServiceImpl implements ApiGroupService {
             return;
         }
         // concat sub & parent
-        mongoTemplate.findAndModify(new Query(Criteria.where(ColumnName.PARENT_ID).is(apiGroupId)),
+        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.PARENT_ID).is(apiGroupId)),
                 Update.update(ColumnName.PARENT_ID, apiGroupDto.getParentId()), ApiGroup.class);
-        mongoTemplate.findAndModify(new Query(Criteria.where(ColumnName.GROUP_$ID).is(apiGroupId)),
+        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.GROUP_$ID).is(new ObjectId(apiGroupId))),
                 Update.update(ColumnName.GROUP, new ApiGroup(apiGroupDto.getParentId())), Api.class);
         mongoTemplate.remove(apiGroupDto);
     }

@@ -27,7 +27,7 @@ public interface ColumnName {
     String STRUCTURE_ID = "structureId";
     String GROUP = "group";
     String GROUP_ID = "groupId";
-    String GROUP_$ID = "group.id";
+    String GROUP_$ID = "group.$id";
     String API_ID = "apiId";
     String API_SUCCESS_MOCK = "apiSuccessMock";
     String API_FAILURE_MOCK = "apiFailureMock";

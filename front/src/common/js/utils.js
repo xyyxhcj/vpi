@@ -286,7 +286,11 @@ export const UTILS = {
         $this.$axios.post(url, dataObj.query).then(resp => {
             if (this.checkResp(resp)) {
                 const data = resp.data.data;
-                dataObj.dataList = data.records;
+                if (!data.records) {
+                    dataObj.dataList = [];
+                } else {
+                    dataObj.dataList = data.records;
+                }
                 dataObj.query.page.total = data.total;
                 if (data.total !== 0 && (dataObj.query.page.current - 1) * dataObj.query.page.size > data.total) {
                     dataObj.query.page.current = 1;

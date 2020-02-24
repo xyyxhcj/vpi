@@ -8,8 +8,8 @@
                         group
                     </el-button>
                 </div>
-                <div class="select-all" @click="selectGroup({id:''})">all</div>
-                <el-tree :data="groups" :props="{label:'name',children:'childList'}"
+                <div class="select-all" @click="selectGroup">all</div>
+                <el-tree :data="groups" :props="{label:'name',children:'childList'}" :expand-on-click-node="false"
                          node-key="id" default-expand-all @node-click="selectGroup"
                          draggable @node-drop="moveNode" highlight-current>
                     <span class="api-group-node" slot-scope="{node,data}">
@@ -28,7 +28,7 @@
                             </template>
                         </span>
                         <el-dropdown @command="command" style="float:right;padding-right: 5px">
-                            <span class="el-dropdown-link">
+                            <span class="el-dropdown-link" @click.stop="()=>{}">
                                 <i class="el-icon-arrow-down el-icon-more"/>
                             </span>
                             <el-dropdown-menu slot="dropdown">
@@ -179,7 +179,7 @@
         <edit-api-group-dialog :dialog="editApiGroupDialog" :form="editApiGroupForm" @flush="findApiGroups"/>
         <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="delConfirmDialog.flush"/>
         <select-api-status-dialog :dialog="selectApiStatusDialog" @flush="findApiPage"/>
-        <select-api-group-dialog :dialog="selectApiGroupDialog" @flush="findApiPage"/>
+        <select-api-group-dialog :dialog="selectApiGroupDialog" @flush="findApiPage" ref="select-api-group-dialog"/>
     </div>
 </template>
 
@@ -209,6 +209,7 @@
                 editApiGroupForm: {},
                 dataList: [],
                 query: {
+                    groupIds: [],
                     apiStatus: undefined,
                     nameOrUri: '',
                     page: {
@@ -218,6 +219,7 @@
                     }
                 },
                 selectedGroupId: '',
+                selectedGroup: undefined,
                 delConfirmDialog: {
                     show: false,
                     title: 'Delete Confirm',
@@ -251,13 +253,18 @@
                 return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
             },
             selectGroup(apiGroup) {
-                if (apiGroup.id === '') {
+                if (!apiGroup) {
+                    // click all
                     let selectElement = document.getElementsByClassName('el-tree-node is-current is-focusable');
                     if (selectElement.length > 0) {
                         selectElement[0].classList.remove('is-current');
                     }
+                    this.selectedGroupId = '';
+                    this.selectedGroup = undefined;
+                } else {
+                    this.selectedGroupId = apiGroup.id;
+                    this.selectedGroup = apiGroup;
                 }
-                this.selectedGroupId = apiGroup.id;
                 this.findApiPage();
             },
             command(func) {
@@ -315,7 +322,18 @@
                 this.showSelect = false;
                 this.selectApiStatusDialog.apiStatus = '';
                 this.query.projectId = this.projectId;
-                this.query.groupId = this.selectedGroupId;
+                this.query.groupIds = [];
+                if (this.selectedGroup && this.selectedGroup.id) {
+                    // get all child group id
+                    let stack = Array(this.selectedGroup);
+                    while (stack.length > 0) {
+                        let pop = stack.pop();
+                        this.query.groupIds.push(pop.id);
+                        if (pop.childList && pop.childList.length > 0) {
+                            pop.childList.forEach(child => stack.push(child));
+                        }
+                    }
+                }
                 UTILS.findPage(this, this, CONSTANT.REQUEST_URL.API_FIND_PAGE);
             },
             addApi() {
@@ -434,6 +452,7 @@
                 this.selectApiGroupDialog.ids = [];
                 selection.forEach(row => this.selectApiGroupDialog.ids.push(row.id));
                 this.selectApiGroupDialog.show = true;
+                this.$refs['select-api-group-dialog'].findApiGroups();
             },
             selectQueryStatus(apiStatus) {
                 this.query.apiStatus = apiStatus;
@@ -460,6 +479,9 @@
 
     #api-doc-container
         border 1px solid #d9d9d9
+
+        .el-tree-node__content
+            height 30px
 
         .el-table__header-wrapper
             height 40px

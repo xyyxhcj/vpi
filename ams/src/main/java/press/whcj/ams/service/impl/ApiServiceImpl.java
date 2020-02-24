@@ -109,8 +109,9 @@ public class ApiServiceImpl implements ApiService {
         Criteria criteria = Criteria.where(ColumnName.PROJECT_ID).is(apiDto.getProjectId())
                 .and(ColumnName.IS_DEL).ne(Constant.Is.YES);
         // concat query condition
-        if (!StringUtils.isEmpty(apiDto.getGroupId())) {
-            criteria = criteria.and(ColumnName.GROUP_$ID).is(apiDto.getGroupId());
+        if (!apiDto.getGroupIds().isEmpty()) {
+            List<ObjectId> ids = apiDto.getGroupIds().stream().map(ObjectId::new).collect(Collectors.toList());
+            criteria = criteria.and(ColumnName.GROUP_$ID).in(ids);
         }
         if (!StringUtils.isEmpty(apiDto.getNameOrUri())) {
             BsonRegularExpression expression = new BsonRegularExpression("^.*" + apiDto.getNameOrUri() + ".*$", "i");
@@ -122,7 +123,11 @@ public class ApiServiceImpl implements ApiService {
         }
         Query query = new Query(criteria);
         query.with(page.buildPageRequest()).with(QSort.by(Sort.Direction.DESC, ColumnName.UPDATE_TIME));
-        page.setTotal(mongoTemplate.count(query, Api.class));
+        long total = mongoTemplate.count(query, Api.class);
+        page.setTotal(total);
+        if (total == 0L) {
+            return page;
+        }
         return page.setRecords(mongoTemplate.find(query, ApiVo.class, Constant.CollectionName.API));
     }
 

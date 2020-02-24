@@ -83,9 +83,6 @@
                 });
             }
         },
-        created() {
-            this.findApiGroups();
-        }
     };
 </script>
 
