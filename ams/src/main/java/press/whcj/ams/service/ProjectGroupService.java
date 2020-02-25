@@ -16,9 +16,11 @@ public interface ProjectGroupService {
 
 	List<ProjectGroupVo> findList(ProjectGroup projectGroupDto, UserVo operator);
 
-	List<ProjectGroupVo> findListByParent(ProjectGroup projectGroupDto, UserVo operator);
-
 	ProjectGroupVo findDetail(ProjectGroup projectGroup);
 
 	void delete(ProjectGroup projectGroup);
+
+	List<ProjectGroupVo> findListByParentForOwner(ProjectGroup projectGroupDto, UserVo operator);
+
+	List<ProjectGroupVo> findListByParentForOther(ProjectGroup projectGroupDto, UserVo operator);
 }

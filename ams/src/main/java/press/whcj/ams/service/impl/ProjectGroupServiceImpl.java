@@ -71,17 +71,6 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
     }
 
     @Override
-    public List<ProjectGroupVo> findListByParent(ProjectGroup projectGroupDto, UserVo operator) {
-        Criteria definition;
-        if (StringUtils.isEmpty(projectGroupDto.getParentId())) {
-            definition = Criteria.where(ColumnName.PARENT_ID).is(null);
-        } else {
-            definition = Criteria.where(ColumnName.PARENT_ID).is(projectGroupDto.getParentId());
-        }
-        return mongoTemplate.find(new Query(definition), ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
-    }
-
-    @Override
     public ProjectGroupVo findDetail(ProjectGroup projectGroup) {
         FastUtils.checkParams(projectGroup.getId());
         return mongoTemplate.findById(projectGroup.getId(), ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
@@ -101,5 +90,31 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
         mongoTemplate.findAndModify(new Query(Criteria.where(ColumnName.GROUP_ID).is(projectGroupId)),
                 Update.update(ColumnName.GROUP_ID, projectGroup.getParentId()), Project.class);
         mongoTemplate.remove(projectGroup);
+    }
+
+    @Override
+    public List<ProjectGroupVo> findListByParentForOwner(ProjectGroup projectGroupDto, UserVo operator) {
+        Criteria definition;
+        if (StringUtils.isEmpty(projectGroupDto.getParentId())) {
+            definition = Criteria.where(ColumnName.PARENT_ID).is(null);
+        } else {
+            definition = Criteria.where(ColumnName.PARENT_ID).is(projectGroupDto.getParentId());
+        }
+        return mongoTemplate.find(new Query(definition.and(ColumnName.CREATE_$ID).is(new ObjectId(operator.getId()))
+                        .and(ColumnName.IS_DEL).ne(Constant.Is.YES)),
+                ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
+    }
+
+    @Override
+    public List<ProjectGroupVo> findListByParentForOther(ProjectGroup projectGroupDto, UserVo operator) {
+        Criteria definition;
+        if (StringUtils.isEmpty(projectGroupDto.getParentId())) {
+            definition = Criteria.where(ColumnName.PARENT_ID).is(null);
+        } else {
+            definition = Criteria.where(ColumnName.PARENT_ID).is(projectGroupDto.getParentId());
+        }
+        return mongoTemplate.find(new Query(definition.and(ColumnName.CREATE_$ID).ne(new ObjectId(operator.getId()))
+                        .and(ColumnName.IS_DEL).ne(Constant.Is.YES)),
+                ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
     }
 }

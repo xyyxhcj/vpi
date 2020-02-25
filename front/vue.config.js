@@ -6,6 +6,7 @@ const HOST_URL = {
 const debug = process.env.NODE_ENV !== 'production';
 const profilesActive = debug ? 'dev' : 'prod';
 
+// https://github.com/vuejs/vue-cli/tree/dev/docs/zh/config
 module.exports = {
     publicPath: '/',
     outputDir: 'dist',

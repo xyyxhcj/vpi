@@ -101,7 +101,25 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> findListByGroup(ProjectDto projectDto, UserVo operator) {
+    public List<Project> findListByGroupForOther(ProjectDto projectDto, UserVo operator) {
+        ObjectId operatorObjectId = new ObjectId(operator.getId());
+        String groupId = projectDto.getGroupId();
+        boolean findByGroup = groupId != null;
+        Criteria criteria = Criteria.where(ColumnName.USER_$ID).is(operatorObjectId)
+                .and(ColumnName.PROJECT_$IS_DEL).ne(Constant.Is.YES);
+        if (findByGroup) {
+            criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(new ObjectId(groupId));
+        } else {
+            criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(null);
+        }
+        List<ProjectUser> projectUsers = mongoTemplate.find(new Query(criteria), ProjectUser.class);
+        return projectUsers.stream()
+                .map(projectUser -> projectUser.getProject().setUserType(projectUser.getUserType()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Project> findListByGroupForOwner(ProjectDto projectDto, UserVo operator) {
         ObjectId operatorObjectId = new ObjectId(operator.getId());
         String groupId = projectDto.getGroupId();
         boolean findByGroup = groupId != null;
@@ -114,18 +132,6 @@ public class ProjectServiceImpl implements ProjectService {
         }
         List<Project> projects = mongoTemplate.find(new Query(criteria), Project.class);
         projects.forEach(project -> project.setUserType(Constant.UserType.CREATOR));
-        criteria = Criteria.where(ColumnName.USER_$ID).is(operatorObjectId)
-                .and(ColumnName.PROJECT_$IS_DEL).ne(Constant.Is.YES);
-        if (findByGroup) {
-            criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(new ObjectId(groupId));
-        } else {
-            criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(null);
-        }
-        List<ProjectUser> projectUsers = mongoTemplate.find(new Query(criteria), ProjectUser.class);
-        List<Project> userProjects = projectUsers.stream().filter(item -> item.getProject() != null)
-                .map(projectUser -> projectUser.getProject().setUserType(projectUser.getUserType()))
-                .collect(Collectors.toList());
-        projects.addAll(userProjects);
         return projects;
     }
 

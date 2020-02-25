@@ -78,16 +78,31 @@ public class ProjectController extends BaseController {
 		return ok(projectService.findList(projectDto, UserUtils.getOperator()));
 	}
 
-	@RequestMapping("findListByGroup")
-	public Result<List<Object>> findListByGroup(@RequestBody ProjectDto projectDto) {
+	@RequestMapping("findListByGroupForOwner")
+	public Result<List<Object>> findListByGroupForOwner(@RequestBody ProjectDto projectDto) {
 		ProjectGroup projectGroupDto = new ProjectGroup();
 		if (StringUtils.isEmpty(projectDto.getGroupId())) {
 			projectDto.setGroupId(null);
 		}
 		projectGroupDto.setParentId(projectDto.getGroupId());
 		UserVo operator = UserUtils.getOperator();
-		List<ProjectGroupVo> listByParent = projectGroupService.findListByParent(projectGroupDto, operator);
-		List<Project> listByGroup = projectService.findListByGroup(projectDto, operator);
+		List<ProjectGroupVo> listByParent = projectGroupService.findListByParentForOwner(projectGroupDto, operator);
+		List<Project> listByGroup = projectService.findListByGroupForOwner(projectDto, operator);
+		List<Object> result = new LinkedList<>(listByParent);
+		result.addAll(listByGroup);
+		return ok(result);
+	}
+
+	@RequestMapping("findListByGroupForOther")
+	public Result<List<Object>> findListByGroupForOther(@RequestBody ProjectDto projectDto) {
+		ProjectGroup projectGroupDto = new ProjectGroup();
+		if (StringUtils.isEmpty(projectDto.getGroupId())) {
+			projectDto.setGroupId(null);
+		}
+		projectGroupDto.setParentId(projectDto.getGroupId());
+		UserVo operator = UserUtils.getOperator();
+		List<ProjectGroupVo> listByParent = projectGroupService.findListByParentForOther(projectGroupDto, operator);
+		List<Project> listByGroup = projectService.findListByGroupForOther(projectDto, operator);
 		List<Object> result = new LinkedList<>(listByParent);
 		result.addAll(listByGroup);
 		return ok(result);

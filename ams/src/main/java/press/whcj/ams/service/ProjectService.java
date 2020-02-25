@@ -40,7 +40,7 @@ public interface ProjectService {
     List<Project> findList(ProjectDto projectDto, UserVo operator);
 
     /**
-     * findListByGroup
+     * findListByGroupForOther
      *
      * @param projectDto projectDto
      * @param operator   operator
@@ -48,15 +48,17 @@ public interface ProjectService {
      * @author xyyxhcj@qq.com
      * @date 2020/1/3 8:51
      **/
-    List<Project> findListByGroup(ProjectDto projectDto, UserVo operator);
+    List<Project> findListByGroupForOther(ProjectDto projectDto, UserVo operator);
 
     /**
      * remove
      *
      * @param projectId projectId
-     * @param operator
+     * @param operator operator
      * @author xyyxhcj@qq.com
      * @date 2020/2/10 10:36
      **/
     void remove(String projectId, UserVo operator);
+
+    List<Project> findListByGroupForOwner(ProjectDto projectDto, UserVo operator);
 }

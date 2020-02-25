@@ -24,6 +24,7 @@ public class Project extends BaseEntity implements Serializable {
 	private Byte projectType;
 	private String projectVersion;
 	private String desc;
+	private Byte isDel;
 	/**
 	 * 0-creator 1-admin 2-readAndWrite 3-read
 	 **/

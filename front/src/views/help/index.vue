@@ -1,6 +1,6 @@
 <template>
     <el-collapse class="help">
-        <el-collapse-item title="Initialize/初始化" class="collapse-title">
+        <el-collapse-item title="Initialize/初始化">
             <div class="content">
                 you need install mongodb first, and set up config, default administrator account:
                 admin/xyyxhcj@qq.com<br/>
@@ -18,7 +18,7 @@
                 nohup java -jar ams.jar > vpiNohup.out 2>&1 &
             </div>
         </el-collapse-item>
-        <el-collapse-item title="Main config desc/主要配置项说明" class="collapse-title">
+        <el-collapse-item title="Main config desc/主要配置项说明">
             <div class="content">
                 <img src="../../../public/static/img/configDesc1.png" alt=""/><br/>
                 front/vue.config.js -> HOST_URL.prod: set jar access address<br/>
@@ -32,7 +32,7 @@
                 address,database,username,password: mongodb access config<br/>
             </div>
         </el-collapse-item>
-        <el-collapse-item title="Basic operation/基本操作" class="collapse-title">
+        <el-collapse-item title="Basic operation/基本操作">
             <div class="content">
                 <div class="title">add user&auth/添加用户及授权:</div>
                 <img src="../../../public/static/img/addUser&Auth.gif" alt=""/><br/>
@@ -54,7 +54,7 @@
                 <br/>
             </div>
         </el-collapse-item>
-        <el-collapse-item title="Api test/接口测试" class="collapse-title">
+        <el-collapse-item title="Api test/接口测试">
             <div class="content">
                 <div class="title">
                     if need use test,need install chrome plugin<br/>
@@ -65,7 +65,7 @@
                 </div>
             </div>
         </el-collapse-item>
-        <el-collapse-item title="Contact" class="collapse-title">
+        <el-collapse-item title="Contact">
             <div class="content">
                 Email: xyyxhcj@qq.com<br/>
                 Wechat:<br/>
@@ -85,7 +85,9 @@
     .help
         .el-collapse-item__header
             padding-left 10px
-
+            font-size 18px
+            font-weight 400
+            background-color #F2F6FC
             &.is-active
                 color #409EFF
 
