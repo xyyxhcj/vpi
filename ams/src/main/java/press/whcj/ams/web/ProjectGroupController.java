@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import press.whcj.ams.entity.ProjectGroup;
+import press.whcj.ams.entity.dto.ProjectDto;
 import press.whcj.ams.entity.vo.ProjectGroupVo;
 import press.whcj.ams.entity.vo.UserVo;
 import press.whcj.ams.service.ProjectGroupService;
@@ -55,6 +56,12 @@ public class ProjectGroupController extends BaseController {
 	@RequestMapping("delete")
 	public Result<Object> delete(@RequestBody ProjectGroup projectGroup) {
 		projectGroupService.delete(projectGroup);
+		return ok();
+	}
+
+	@RequestMapping("moveGroup")
+	public Result<Object> moveGroup(@RequestBody ProjectDto projectDto) {
+		projectGroupService.moveGroup(projectDto, UserUtils.getOperator());
 		return ok();
 	}
 }

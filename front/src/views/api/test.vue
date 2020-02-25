@@ -70,7 +70,7 @@
                             <el-popover trigger="hover" placement="left-start">
                                 <pre>{{ transformInfo(scope.row.requestInfo,'Request Header','Request Parameter') }}</pre>
                                 <pre>{{ transformInfo(scope.row.responseInfo,'Response Header','Response Parameter') }}</pre>
-                                <div slot="reference" class="name-wrapper">
+                                <div slot="reference">
                                     <el-tag size="mini" v-if="scope.row.method">{{scope.row.method}}</el-tag>
                                     {{scope.row.url}}
                                 </div>

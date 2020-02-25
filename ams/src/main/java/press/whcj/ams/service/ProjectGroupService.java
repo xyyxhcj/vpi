@@ -1,6 +1,7 @@
 package press.whcj.ams.service;
 
 import press.whcj.ams.entity.ProjectGroup;
+import press.whcj.ams.entity.dto.ProjectDto;
 import press.whcj.ams.entity.vo.ProjectGroupVo;
 import press.whcj.ams.entity.vo.UserVo;
 
@@ -23,4 +24,11 @@ public interface ProjectGroupService {
 	List<ProjectGroupVo> findListByParentForOwner(ProjectGroup projectGroupDto, UserVo operator);
 
 	List<ProjectGroupVo> findListByParentForOther(ProjectGroup projectGroupDto, UserVo operator);
+
+	/**
+	 * move project&group to other group
+	 * @param projectDto projectDto
+	 * @param operator operator
+	 */
+	void moveGroup(ProjectDto projectDto, UserVo operator);
 }

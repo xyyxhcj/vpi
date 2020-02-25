@@ -28,10 +28,12 @@
                 ownerTableConfig: {
                     reqUri: CONSTANT.REQUEST_URL.PROJECT_FIND_LIST_BY_GROUP_FOR_OWNER,
                     isOwner: true,
+                    refPre:'owner',
                 },
                 otherTableConfig: {
                     reqUri: CONSTANT.REQUEST_URL.PROJECT_FIND_LIST_BY_GROUP_FOR_OTHER,
                     isOwner: false,
+                    refPre:'other',
                 },
             };
         },

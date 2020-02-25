@@ -1,45 +1,55 @@
 <template>
-    <el-table :data="tableData" @row-click="clickRow"
-              :header-cell-style="{color:'#44B549','font-weight':'bold'}"
-              :row-style="{cursor:'pointer'}">
-        <el-table-column width="350">
-            <template slot="header">
-                name
-                <el-tag size="mini" style="margin:0 10px;cursor:pointer;" @click="return2Previous"
-                        v-if="selectedGroup!==undefined">
-                    return to previous
-                </el-tag>
-            </template>
-            <template slot-scope="scope">
-                <i class="el-icon-folder" v-if="scope.row.projectType===undefined" style="margin-right: 10px"/>
-                <span>{{scope.row.name}}</span>
-            </template>
-        </el-table-column>
-        <el-table-column label="projectVersion" prop="projectVersion" width="115"/>
-        <el-table-column label="projectType" width="98" :formatter="projectTypeFormat"/>
-        <el-table-column label="desc" prop="desc" width="200"/>
-        <el-table-column label="create" prop="createName" width="150" v-if="!config.isOwner"/>
-        <el-table-column label="updateTime" width="160" :formatter="(row)=>dateFormat(row.updateTime)"/>
-        <el-table-column min-width="330" v-if="config.isOwner">
-            <template slot="header">
-                <el-button size="mini" type="success" @click="addProjectGroup">Add ProjectGroup</el-button>
-                <el-button size="mini" type="success" @click="addProject">Add Project</el-button>
-                <el-button size="mini" type="warning" @click="batchOperate">Batch Operate</el-button>
-            </template>
-            <template slot-scope="scope" v-if="scope.row.createId===user.id">
-                <el-button size="mini" v-if="scope.row.projectType!==undefined" @click.native.stop="auth(scope.row)">
-                    Auth
-                </el-button>
-                <el-button size="mini" @click.native.stop="edit(scope.row)">Edit</el-button>
-                <el-button size="mini" type="danger" @click.native.stop="del(scope.row)">Delete</el-button>
-            </template>
-        </el-table-column>
+    <div class="group-project-table">
+        <el-table :data="tableData" @row-click="clickRow" :ref="config.refPre+'projectTable'"
+                  :header-cell-style="{color:'#44B549','font-weight':'bold'}"
+                  :row-style="{cursor:'pointer'}">
+            <el-table-column type="selection" width="25" v-if="showSelect"/>
+            <el-table-column width="350">
+                <template slot="header">
+                    name
+                    <el-tag size="mini" style="margin:0 10px;cursor:pointer;" @click="return2Previous"
+                            v-if="selectedGroup!==undefined">
+                        return to previous
+                    </el-tag>
+                </template>
+                <template slot-scope="scope">
+                    <i class="el-icon-folder" v-if="scope.row.projectType===undefined" style="margin-right: 10px"/>
+                    <span>{{scope.row.name}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="projectVersion" prop="projectVersion" width="115"/>
+            <el-table-column label="projectType" width="98" :formatter="projectTypeFormat"/>
+            <el-table-column label="desc" prop="desc" width="200"/>
+            <el-table-column label="create" prop="createName" width="150" v-if="!config.isOwner"/>
+            <el-table-column label="updateTime" width="160" :formatter="(row)=>dateFormat(row.updateTime)"/>
+            <el-table-column min-width="330" v-if="config.isOwner">
+                <template slot="header">
+                    <template v-if="!showSelect">
+                        <el-button size="mini" type="success" @click="addProjectGroup">Add ProjectGroup</el-button>
+                        <el-button size="mini" type="success" @click="addProject">Add Project</el-button>
+                        <el-button size="mini" type="warning" @click="batchOperate">Batch Operate</el-button>
+                    </template>
+                    <template v-else>
+                        <el-button size="mini" type="warning" @click.stop="moveGroup">Move Group</el-button>
+                        <el-button size="mini" @click.stop="showSelect=false">Cancel</el-button>
+                    </template>
+                </template>
+                <template slot-scope="scope" v-if="scope.row.createId===user.id">
+                    <el-button size="mini" v-if="scope.row.projectType!==undefined" @click.native.stop="auth(scope.row)">
+                        Auth
+                    </el-button>
+                    <el-button size="mini" @click.native.stop="edit(scope.row)">Edit</el-button>
+                    <el-button size="mini" type="danger" @click.native.stop="del(scope.row)">Delete</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
         <edit-auth-dialog :dialog="editAuthDialog" ref="auth-dialog"/>
         <edit-project-group-dialog :dialog="editProjectGroupDialog" :form="editProjectGroupForm"
                                    @flush="findList"/>
         <edit-project-dialog :dialog="editProjectDialog" :form="editProjectForm" @flush="findList"/>
         <confirm-dialog :dialog="delConfirmDialog" :form="delProjectForm" @flush="findList"/>
-    </el-table>
+        <select-project-group-dialog :dialog="selectProjectGroupDialog" @flush="findList" ref="select-project-group-dialog"/>
+    </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -49,16 +59,18 @@
     import EditAuthDialog from "./editAuthDialog";
     import EditProjectDialog from "./editProjectDialog";
     import EditProjectGroupDialog from "./editProjectGroupDialog";
+    import SelectProjectGroupDialog from "./selectProjectGroupDialog";
 
     export default {
         name: 'groupProjectTable',
-        components: {ConfirmDialog, EditAuthDialog, EditProjectDialog, EditProjectGroupDialog},
+        components: {SelectProjectGroupDialog, ConfirmDialog, EditAuthDialog, EditProjectDialog, EditProjectGroupDialog},
         props: {
             config: {
                 default() {
                     return {
                         reqUri: undefined,
                         isOwner: false,
+                        refPre: '',
                     };
                 }
             },
@@ -94,6 +106,12 @@
                     project: Object,
                 },
                 delProjectForm: {id: ''},
+                showSelect: false,
+                selectProjectGroupDialog: {
+                    show: false,
+                    projects: [],
+                    selectedGroups: [],
+                },
             };
         },
         methods: {
@@ -104,7 +122,9 @@
                 return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
             },
             clickRow(row) {
-                if (row.projectType === undefined) {
+                if (this.showSelect) {
+                    this.$refs[this.config.refPre + 'projectTable'].toggleRowSelection(row);
+                }else if (row.projectType === undefined) {
                     this.selectedGroup = row;
                     this.query.groupId = row.id;
                     this.findList();
@@ -128,6 +148,7 @@
                 this.findList();
             },
             findList() {
+                this.showSelect = false;
                 if (this.config.reqUri) {
                     this.$axios.post(this.config.reqUri, this.query).then(resp => {
                         if (UTILS.checkResp(resp)) {
@@ -195,8 +216,27 @@
                 });
             },
             batchOperate() {
-
+                this.showSelect = true;
             },
+            moveGroup() {
+                let selection = this.$refs[this.config.refPre + 'projectTable'].selection;
+                if (!selection || selection.length === 0) {
+                    this.$message.error('please select first');
+                    return;
+                }
+                this.selectProjectGroupDialog.projects = [];
+                this.selectProjectGroupDialog.selectedGroups = [];
+                selection.forEach(row => {
+                    if (row.projectType === undefined) {
+                        this.selectProjectGroupDialog.selectedGroups.push(row.id);
+                        this.selectProjectGroupDialog.projects.push({groupId: row.id});
+                    } else {
+                        this.selectProjectGroupDialog.projects.push({id: row.id})
+                    }
+                });
+                this.selectProjectGroupDialog.show = true;
+                this.$refs['select-project-group-dialog'].findProjectGroups();
+            }
         },
         created() {
             if (this.user) {
@@ -206,5 +246,11 @@
     };
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus" scoped>
+<style lang="stylus" rel="stylesheet/stylus">
+    .group-project-table
+        padding-left 15px
+
+        div.cell
+            padding 0 1px
+
 </style>

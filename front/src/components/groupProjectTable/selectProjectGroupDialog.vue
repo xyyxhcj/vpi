@@ -1,7 +1,7 @@
 <template>
-    <el-dialog id="selectApiStatusDialog" :append-to-body="true" title="Move Group" :visible.sync="dialog.show"
+    <el-dialog id="selectProjectGroupDialog" :append-to-body="true" title="Move Group" :visible.sync="dialog.show"
                :close-on-click-modal="false" width="665px">
-        <el-table :data="groups" row-key="id" border
+        <el-table :data="groups" row-key="id" border ref="select-project-group-dialog"
                   default-expand-all :tree-props="{children: 'childList'}"
                   highlight-current-row @current-change="selectRow"
                   :row-style="{cursor:'pointer'}">
@@ -11,7 +11,8 @@
         </el-table>
         <div slot="footer" style="text-align: left">
             <el-button @click="dialog.show = false" round>Cancel</el-button>
-            <el-button @click="submitForm" type="primary" round>Submit</el-button>
+            <el-button @click="submitForm" type="primary" round>Move</el-button>
+            <el-button @click="move2Top" type="warning" round>Move To Top</el-button>
         </div>
     </el-dialog>
 </template>
@@ -21,15 +22,15 @@
     import {UTILS} from "../../common/js/utils";
 
     export default {
-        name: 'selectApiGroupDialog',
+        name: 'selectProjectGroupDialog',
         props: {
             dialog: {
                 default() {
                     return {
                         show: false,
-                        ids: [],
                         groupId: undefined,
-                        projectId: '',
+                        projects: [],
+                        selectedGroups: [],
                     };
                 }
             }
@@ -38,27 +39,46 @@
             return {
                 CONSTANT,
                 groups: [],
+                groupDict: {},
             }
         },
         methods: {
             selectRow(row) {
-                this.dialog.groupId = row.id;
+                let checkStack = Array(row);
+                while (checkStack.length > 0) {
+                    let item = checkStack.shift();
+                    if (!item) {
+                        continue;
+                    }
+                    if (this.dialog.selectedGroups.indexOf(item.id) > -1) {
+                        this.dialog.groupId = undefined;
+                        this.$refs['select-project-group-dialog'].setCurrentRow();
+                        this.$message.error('not support the move to self/child');
+                        return;
+                    }
+                    if (item.parentId && item.parentId !== '') {
+                        checkStack.push(this.groupDict[item.parentId]);
+                    }
+                }
+                if (row) {
+                    this.dialog.groupId = row.id;
+                }
             },
-            findApiGroups() {
+            findProjectGroups() {
                 this.groups = [];
-                this.$axios.post(CONSTANT.REQUEST_URL.API_GROUP_FIND_LIST, {projectId: this.dialog.projectId}).then(resp => {
+                this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_GROUP_FIND_LIST, {}).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         let all = resp.data.data;
-                        let dict = {};
-                        all.forEach(item => dict[item.id] = item);
+                        this.groupDict = {};
+                        all.forEach(item => this.groupDict[item.id] = item);
                         for (let i = all.length - 1; i >= 0; i--) {
                             let item = all[i];
                             if (!item.parentId || item.parentId === '') {
                                 this.groups.splice(0, 0, item);
-                            } else if (dict[item.parentId].childList) {
-                                dict[item.parentId].childList.splice(0, 0, item);
+                            } else if (this.groupDict[item.parentId].childList) {
+                                this.groupDict[item.parentId].childList.splice(0, 0, item);
                             } else {
-                                let parent = dict[item.parentId];
+                                let parent = this.groupDict[item.parentId];
                                 parent.childList = [item];
                             }
                         }
@@ -73,7 +93,15 @@
                     this.$message.error('please select first');
                     return;
                 }
-                this.$axios.post(CONSTANT.REQUEST_URL.API_MOVE_GROUP, this.dialog).then(resp => {
+                this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_GROUP_MOVE_GROUP, this.dialog).then(resp => {
+                    UTILS.showResult(this, resp, () => {
+                        this.$emit('flush');
+                    });
+                });
+            },
+            move2Top() {
+                this.dialog.groupId = null;
+                this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_GROUP_MOVE_GROUP, this.dialog).then(resp => {
                     UTILS.showResult(this, resp, () => {
                         this.$emit('flush');
                     });

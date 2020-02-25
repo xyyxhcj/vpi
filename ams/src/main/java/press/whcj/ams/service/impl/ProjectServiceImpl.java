@@ -119,7 +119,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (findByGroup) {
             criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(new ObjectId(groupId));
         } else {
-            criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).is(null);
+            criteria = criteria.and(ColumnName.PROJECT_$GROUP_ID).in(null, "");
         }
         List<ProjectUser> projectUsers = mongoTemplate.find(new Query(criteria), ProjectUser.class);
         return projectUsers.stream()
@@ -137,7 +137,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (findByGroup) {
             criteria = criteria.and(ColumnName.GROUP_ID).is(groupId);
         } else {
-            criteria = criteria.and(ColumnName.GROUP_ID).is(null);
+            criteria = criteria.and(ColumnName.GROUP_ID).in(null, "");
         }
         List<Project> projects = mongoTemplate.find(new Query(criteria), Project.class);
         projects.forEach(project -> project.setUserType(Constant.UserType.CREATOR));

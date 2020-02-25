@@ -4,9 +4,11 @@ package press.whcj.ams.entity.dto;
 import lombok.Getter;
 import lombok.Setter;
 import press.whcj.ams.entity.MongoPage;
+import press.whcj.ams.entity.Project;
 import press.whcj.ams.entity.ProjectUser;
 import press.whcj.ams.entity.vo.ProjectVo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,4 +22,5 @@ public class ProjectDto extends ProjectVo {
 	private String userId;
 	private List<ProjectUser> projectUsers;
 	private MongoPage<ProjectVo> page = new MongoPage<>();
+	List<Project> projects = new ArrayList<>();
 }

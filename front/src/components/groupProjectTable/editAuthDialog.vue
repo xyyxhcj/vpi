@@ -30,7 +30,6 @@
                             <template slot="header">
                                 <el-button size="mini" type="success" @click="setProjectUser">set Project User
                                 </el-button>
-                                <el-button size="mini" type="warning" @click="batchOperate">Batch Operate</el-button>
                             </template>
                             <template slot-scope="scope">
                                 <el-button size="mini" type="danger" @click.native.stop="del(scope.row)">Delete
@@ -112,9 +111,6 @@
                         this.findProjectUser();
                     }
                 });
-            },
-            batchOperate() {
-
             },
             changeUserType(userType, row) {
                 this.$axios.post(CONSTANT.REQUEST_URL.PROJECT_EDIT_PROJECT_USER, {
