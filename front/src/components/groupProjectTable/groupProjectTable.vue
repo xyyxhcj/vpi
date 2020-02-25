@@ -35,12 +35,21 @@
                     </template>
                 </template>
                 <template slot-scope="scope" v-if="scope.row.createId===user.id">
-                    <el-button size="mini" v-if="scope.row.projectType!==undefined" @click.native.stop="auth(scope.row)">
+                    <el-button size="mini" v-if="scope.row.projectType!==undefined"
+                               @click.native.stop="auth(scope.row)">
                         Auth
                     </el-button>
                     <el-button size="mini" @click.native.stop="edit(scope.row)">Edit</el-button>
                     <el-button size="mini" type="danger" @click.native.stop="del(scope.row)">Delete</el-button>
                 </template>
+            </el-table-column>
+            <el-table-column v-if="!config.isOwner">
+                <template slot-scope="scope" v-if="parseInt(CONSTANT.AUTH_ROLE.ADMIN)===scope.row.userType">
+                    <el-button size="mini" @click.native.stop="auth(scope.row)">
+                        Auth
+                    </el-button>
+                </template>
+
             </el-table-column>
         </el-table>
         <edit-auth-dialog :dialog="editAuthDialog" ref="auth-dialog"/>
@@ -48,7 +57,8 @@
                                    @flush="findList"/>
         <edit-project-dialog :dialog="editProjectDialog" :form="editProjectForm" @flush="findList"/>
         <confirm-dialog :dialog="delConfirmDialog" :form="delProjectForm" @flush="findList"/>
-        <select-project-group-dialog :dialog="selectProjectGroupDialog" @flush="findList" ref="select-project-group-dialog"/>
+        <select-project-group-dialog :dialog="selectProjectGroupDialog" @flush="findList"
+                                     ref="select-project-group-dialog"/>
     </div>
 </template>
 
@@ -63,7 +73,13 @@
 
     export default {
         name: 'groupProjectTable',
-        components: {SelectProjectGroupDialog, ConfirmDialog, EditAuthDialog, EditProjectDialog, EditProjectGroupDialog},
+        components: {
+            SelectProjectGroupDialog,
+            ConfirmDialog,
+            EditAuthDialog,
+            EditProjectDialog,
+            EditProjectGroupDialog
+        },
         props: {
             config: {
                 default() {
@@ -77,6 +93,7 @@
         },
         data() {
             return {
+                CONSTANT,
                 user: this.$store.getters.user,
                 tableData: [],
                 selectedGroup: undefined,
@@ -124,7 +141,7 @@
             clickRow(row) {
                 if (this.showSelect) {
                     this.$refs[this.config.refPre + 'projectTable'].toggleRowSelection(row);
-                }else if (row.projectType === undefined) {
+                } else if (row.projectType === undefined) {
                     this.selectedGroup = row;
                     this.query.groupId = row.id;
                     this.findList();
