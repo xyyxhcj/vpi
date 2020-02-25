@@ -1,9 +1,9 @@
 <template>
     <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
-               :close-on-click-modal="false" center width="35%">
-        <el-form :model="form" ref="form" label-width="120px" :rules="form_rules">
+               :close-on-click-modal="false" center width="400px">
+        <el-form :model="form" ref="form" label-width="110px" :rules="form_rules" label-position="left">
             <el-form-item label="name" prop="name">
-                <el-input v-model.trim="form.name"/>
+                <el-input v-model.trim="form.name" style="width: 91%"/>
             </el-form-item>
             <el-form-item label="projectType" prop="projectType">
                 <el-select v-model.trim="form.projectType">
@@ -14,10 +14,10 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="projectVersion" prop="projectVersion">
-                <el-input v-model.trim="form.projectVersion"/>
+                <el-input v-model.trim="form.projectVersion" style="width: 91%"/>
             </el-form-item>
             <el-form-item label="desc" prop="desc">
-                <el-input v-model.trim="form.desc"/>
+                <el-input v-model.trim="form.desc" style="width: 91%"/>
             </el-form-item>
         </el-form>
         <div slot="footer">
@@ -28,8 +28,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {UTILS} from "../common/js/utils";
-    import {CONSTANT} from "../common/js/constant";
+    import {UTILS} from "../../common/js/utils";
+    import {CONSTANT} from "../../common/js/constant";
 
     export default {
         name: 'editProjectDialog',

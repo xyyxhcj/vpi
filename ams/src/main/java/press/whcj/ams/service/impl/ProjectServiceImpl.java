@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.common.Constant;
 import press.whcj.ams.entity.Project;
+import press.whcj.ams.entity.ProjectGroup;
 import press.whcj.ams.entity.ProjectUser;
 import press.whcj.ams.entity.User;
 import press.whcj.ams.entity.dto.ProjectDto;
@@ -39,6 +40,14 @@ public class ProjectServiceImpl implements ProjectService {
         String name = projectDto.getName();
         String operatorId = operator.getId();
         FastUtils.checkParams(name);
+        if (projectDto.getGroupId() != null) {
+            ProjectGroup existProjectGroup = mongoTemplate.findById(projectDto.getGroupId(), ProjectGroup.class);
+            FastUtils.checkNull(existProjectGroup);
+            if (!operator.getId().equals(Objects.requireNonNull(existProjectGroup).getCreateId())) {
+                // can't save to other people's group
+                throw new ServiceException(ResultCode.PERMISSION_DENIED);
+            }
+        }
         Project project;
         if (isUpdate) {
             project = mongoTemplate.findById(projectDto.getId(), Project.class);

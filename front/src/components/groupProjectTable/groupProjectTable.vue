@@ -2,7 +2,7 @@
     <el-table :data="tableData" @row-click="clickRow"
               :header-cell-style="{color:'#44B549','font-weight':'bold'}"
               :row-style="{cursor:'pointer'}">
-        <el-table-column min-width="200">
+        <el-table-column width="350">
             <template slot="header">
                 name
                 <el-tag size="mini" style="margin:0 10px;cursor:pointer;" @click="return2Previous"
@@ -17,7 +17,8 @@
         </el-table-column>
         <el-table-column label="projectVersion" prop="projectVersion" width="115"/>
         <el-table-column label="projectType" width="98" :formatter="projectTypeFormat"/>
-        <el-table-column label="desc" prop="desc" min-width="150"/>
+        <el-table-column label="desc" prop="desc" width="200"/>
+        <el-table-column label="create" prop="createName" width="150" v-if="!config.isOwner"/>
         <el-table-column label="updateTime" width="160" :formatter="(row)=>dateFormat(row.updateTime)"/>
         <el-table-column min-width="330" v-if="config.isOwner">
             <template slot="header">
@@ -45,9 +46,9 @@
     import {CONSTANT} from "../../common/js/constant";
     import {UTILS} from "../../common/js/utils";
     import ConfirmDialog from "../confirm/confirmDialog";
-    import EditAuthDialog from "../../views/editAuthDialog";
-    import EditProjectDialog from "../../views/editProjectDialog";
-    import EditProjectGroupDialog from "../../views/editProjectGroupDialog";
+    import EditAuthDialog from "./editAuthDialog";
+    import EditProjectDialog from "./editProjectDialog";
+    import EditProjectGroupDialog from "./editProjectGroupDialog";
 
     export default {
         name: 'groupProjectTable',

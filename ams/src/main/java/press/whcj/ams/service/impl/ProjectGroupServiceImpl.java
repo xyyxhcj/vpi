@@ -42,6 +42,7 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
             projectGroup = mongoTemplate.findById(projectGroupDto.getId(), ProjectGroup.class);
             FastUtils.checkNull(projectGroup);
             if (!operatorId.equals(Objects.requireNonNull(projectGroup).getCreateId())) {
+                // can't save to other people's group
                 throw new ServiceException(ResultCode.PERMISSION_DENIED);
             }
             projectGroup.setUpdate(null);
@@ -49,9 +50,15 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
             projectGroup = new ProjectGroup();
         }
         FastUtils.copyProperties(projectGroupDto, projectGroup);
-        if (projectGroupDto.getParentId() != null) {
+        String parentId = projectGroupDto.getParentId();
+        if (parentId != null) {
             // maybe = ''
-            projectGroup.setParentId(projectGroupDto.getParentId());
+            projectGroup.setParentId(parentId);
+            ProjectGroup existProjectGroup = mongoTemplate.findById(parentId, ProjectGroup.class);
+            FastUtils.checkNull(existProjectGroup);
+            if (!operator.getId().equals(Objects.requireNonNull(existProjectGroup).getCreateId())) {
+                throw new ServiceException(ResultCode.PERMISSION_DENIED);
+            }
         }
         synchronized (operatorId.intern()) {
             FastUtils.checkNameAndSave(projectGroupDto.getId(), isUpdate, name, projectGroup, mongoTemplate, Criteria.where(ColumnName.CREATE_$ID).is(new ObjectId(operatorId)));
@@ -85,9 +92,9 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
             return;
         }
         // concat sub & parent
-        mongoTemplate.findAndModify(new Query(Criteria.where(ColumnName.PARENT_ID).is(projectGroupId)),
+        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.PARENT_ID).is(projectGroupId)),
                 Update.update(ColumnName.PARENT_ID, projectGroup.getParentId()), ProjectGroup.class);
-        mongoTemplate.findAndModify(new Query(Criteria.where(ColumnName.GROUP_ID).is(projectGroupId)),
+        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.GROUP_ID).is(projectGroupId)),
                 Update.update(ColumnName.GROUP_ID, projectGroup.getParentId()), Project.class);
         mongoTemplate.remove(projectGroup);
     }

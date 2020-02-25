@@ -46,9 +46,9 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../common/js/constant";
-    import {UTILS} from "../common/js/utils";
-    import SelectUserDialog from "../components/selectUser/selectUserDialog";
+    import {CONSTANT} from "../../common/js/constant";
+    import {UTILS} from "../../common/js/utils";
+    import SelectUserDialog from "../selectUser/selectUserDialog";
 
     export default {
         name: 'editAuthDialog',

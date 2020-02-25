@@ -10,12 +10,12 @@ import Axios from './common/js/http';
 import {CONSTANT} from "./common/js/constant";
 
 Vue.config.productionTip = false;
-Vue.use(ElementUI);
+Vue.use(ElementUI, {locale: 'en'});
 Axios.defaults.withCredentials = true;
 Axios.defaults.baseURL = CONSTANT.BASE_URL;
 Vue.prototype.$axios = Axios;
 new Vue({
-  router,
-  store,
-  render: h => h(App),
+    router,
+    store,
+    render: h => h(App),
 }).$mount('#app');
