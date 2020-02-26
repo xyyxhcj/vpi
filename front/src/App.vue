@@ -44,13 +44,15 @@
                             <el-dropdown @command="userCommand">
                                 <span class="el-dropdown-link">
                                     {{user?user.loginName:''}}
-                                    <i class="el-icon-arrow-down el-icon--right"/>
+                                    <i class="el-icon-arrow-down el-icon--right" style="cursor:pointer"/>
                                 </span>
                                 <el-dropdown-menu>
                                     <el-dropdown-item :command="modify">modify</el-dropdown-item>
                                     <el-dropdown-item :command="loginOut">login out</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
+                            <i class="el-icon-help" style="margin-left:15px;color:#409EFF;cursor:pointer"
+                               @click="help"/>
                         </div>
                     </el-col>
                 </el-row>
@@ -101,6 +103,11 @@
             }
         },
         methods: {
+            help() {
+                if (this.$route.path !== '/help') {
+                    this.$router.push('/help');
+                }
+            },
             changeProject() {
                 this.$router.push('/');
             },
