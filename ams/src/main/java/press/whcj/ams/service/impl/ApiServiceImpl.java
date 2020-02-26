@@ -51,7 +51,6 @@ public class ApiServiceImpl implements ApiService {
         if (isUpdate) {
             api = mongoTemplate.findById(apiDto.getId(), Api.class);
             FastUtils.checkNull(api);
-            // cjTodo 2019/12/31 保存历史
             Objects.requireNonNull(api).setUpdate(null);
         } else {
             api = new Api();
