@@ -105,7 +105,7 @@
                         </el-col>
                     </el-row>
                 </div>
-                <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="855"
+                <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" :height="tableHeight"
                           :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table">
                     <el-table-column type="selection" :width="showSelect?'20':'1'"/>
                     <el-table-column width="81">
@@ -240,7 +240,8 @@
                     show: false,
                     ids: [],
                     projectId: this.$store.getters.selectedProjectId,
-                }
+                },
+                tableHeight: window.innerHeight - 149,
             }
         },
         computed: {
