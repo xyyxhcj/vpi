@@ -146,3 +146,9 @@ window.addEventListener("message", function (e) {
         });
     }
 }, false);
+window.onload = () => {
+    let vplPluginSign = document.getElementById('vpi-plugin-loaded');
+    if (vplPluginSign) {
+        vplPluginSign.innerHTML = 'loaded';
+    }
+};

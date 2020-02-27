@@ -114,6 +114,7 @@
             </el-tab-pane>
         </el-tabs>
         <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="testHistoryFindPage"/>
+        <span style="visibility: hidden" ref="vpi-plugin-loaded" id="vpi-plugin-loaded"></span>
     </div>
 </template>
 
@@ -323,6 +324,11 @@
                 return params;
             },
             send() {
+                let pluginLose = this.$refs['vpi-plugin-loaded'].innerHTML === '';
+                if (pluginLose) {
+                    this.$message.error('please install vpi plugin');
+                    return;
+                }
                 this.testInfoDefaultCard = 'respInfo';
                 let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
                 this.sendDisable = true;
