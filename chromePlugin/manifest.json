@@ -14,7 +14,7 @@
     "128": "vpi.png"
   },
   "permissions": [
-    "<all_urls>"
+    "*/api/test*"
   ],
   "background": {
   },
