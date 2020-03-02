@@ -3,7 +3,12 @@ export const CONSTANT = {
     MENUS: [
         {
             path: '/',
-            name: '',
+            redirect: '/index',
+            noMenu: true
+        },
+        {
+            path: '/index',
+            name: 'index',
             component: () => import('@/views/index'),
             noMenu: true
         },
