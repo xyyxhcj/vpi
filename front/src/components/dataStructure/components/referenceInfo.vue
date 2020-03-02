@@ -51,7 +51,8 @@
                 this.$emit('showDataStructure', this.index, this.info);
             },
             editDataStructure() {
-                this.$emit('editDataStructure', this.info.referenceStructureId);
+                let referenceStructureId = this.info.reference ? this.info.id : this.info.referenceStructureId;
+                this.$emit('editDataStructure', referenceStructureId);
             },
             disconnectDataStructure() {
                 this.$emit('disconnectDataStructure', this.info);
