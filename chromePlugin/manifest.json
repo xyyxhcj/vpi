@@ -14,7 +14,7 @@
     "128": "vpi.png"
   },
   "permissions": [
-    "*/api/test*"
+    "activeTab"
   ],
   "background": {
   },

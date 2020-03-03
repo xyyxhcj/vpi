@@ -114,7 +114,6 @@
             </el-tab-pane>
         </el-tabs>
         <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="testHistoryFindPage"/>
-        <span style="visibility: hidden" ref="vpi-plugin-loaded" id="vpi-plugin-loaded"></span>
     </div>
 </template>
 
@@ -324,8 +323,8 @@
                 return params;
             },
             send() {
-                let pluginLose = this.$refs['vpi-plugin-loaded'].innerHTML === '';
-                if (pluginLose) {
+                let vpiPluginSign = document.getElementById('vpi-plugin-loaded');
+                if (!vpiPluginSign || vpiPluginSign.innerHTML === '') {
                     this.$message.error('please install vpi plugin');
                     return;
                 }

@@ -65,6 +65,7 @@
         <edit-user-dialog :dialog="editUserDialog"/>
         <edit-password-dialog :dialog="editPwdDialog"/>
         <select-user-dialog :dialog="selectUserDialog" ref="selectUserDialog"/>
+        <span style="visibility: hidden" id="vpi-plugin-loaded"></span>
     </el-container>
 </template>
 
