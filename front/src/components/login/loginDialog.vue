@@ -69,7 +69,7 @@
                                     this.$store.dispatch('rememberInfo', {});
                                 }
                                 this.dialog.show = false;
-                                if (!this.$store.getters.selectedProjectId) {
+                                if (!this.$store.getters.selectedProjectId && 'index' !== this.$route.name) {
                                     this.$router.push('/', () => this.$router.go(0));
                                 } else {
                                     this.$router.go(0);
