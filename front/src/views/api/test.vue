@@ -19,7 +19,7 @@
                                  :config="{onlyRead:false,test:true,refPre:'req'}"/>
                 </el-tab-pane>
                 <el-tab-pane label="Request Param" name="requestParam">
-                    <div style="text-align: left;margin-left: 15px">
+                    <div style="text-align: left;margin-left: 15px" v-if="api.apiRequestType!==1">
                         <el-radio v-model.trim="api.requestParamType" :label="0" size="mini">
                             {{CONSTANT.REQUEST_PARAM_TYPE[0]}}
                         </el-radio>
@@ -68,8 +68,10 @@
                     <el-table-column label="url" width="400">
                         <template slot-scope="scope">
                             <el-popover trigger="hover" placement="left-start">
-                                <pre>{{ transformInfo(scope.row.requestInfo,'Request Header','Request Parameter') }}</pre>
-                                <pre>{{ transformInfo(scope.row.responseInfo,'Response Header','Response Parameter') }}</pre>
+                                <div style="max-height: 600px;max-width: 500px">
+                                    <pre>{{ transformInfo(scope.row.requestInfo,'Request Header','Request Parameter') }}</pre>
+                                    <pre>{{ transformInfo(scope.row.responseInfo,'Response Header','Response Parameter') }}</pre>
+                                </div>
                                 <div slot="reference">
                                     <el-tag size="mini" v-if="scope.row.method">{{scope.row.method}}</el-tag>
                                     {{scope.row.url}}
@@ -240,7 +242,8 @@
                 let infoObj = JSON.parse(info);
                 let headerStr = '';
                 Object.keys(infoObj.headers).forEach(key => headerStr = headerStr + key + ': ' + infoObj.headers[key] + '\r\n');
-                return '【' + headerTitle + '】 \r\n' + headerStr + '【' + paramTitle + '】 \r\n' + UTILS.formatJson(infoObj.data);
+                let data = (typeof infoObj.data === 'string' && !UTILS.isJSON(infoObj.data)) ? infoObj.data : UTILS.formatJson(infoObj.data);
+                return '【' + headerTitle + '】 \r\n' + headerStr + '【' + paramTitle + '】 \r\n' + data;
             },
             dateFormat(time) {
                 return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
@@ -328,6 +331,11 @@
                     this.$message.error('please install vpi plugin');
                     return;
                 }
+                // empty test info
+                document.getElementById('req-headers').innerText = '';
+                document.getElementById('req-data').innerText = '';
+                document.getElementById('resp-headers').innerText = '';
+                document.getElementById('resp-data').innerText = '';
                 this.testInfoDefaultCard = 'respInfo';
                 let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
                 this.sendDisable = true;
@@ -337,6 +345,8 @@
                     if (url.startsWith('/')) {
                         this.$message.error('url error：' + url);
                         return;
+                    } else if (!url.startsWith('http')) {
+                        url = 'http://' + url;
                     }
                     this.$refs['reqHeaders'].signSelected();
                     this.$refs['reqDataStructure'].signSelected();
@@ -346,15 +356,29 @@
                             headers[item.name] = item.value;
                         }
                     });
-                    let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
-                    headers[contentTypeName] = contentTypeValue;
                     let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
+                    if (this.api.apiRequestType !== 1) {
+                        // Ignore Get
+                        let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
+                        headers[contentTypeName] = contentTypeValue;
+                    }
                     let params = this.getParams();
+                    if (this.api.apiRequestType === 1) {
+                        // use Get
+                        let paramStr = '';
+                        Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
+                        if (url.indexOf('?') === -1) {
+                            url += '?' + paramStr;
+                        } else {
+                            url += '&' + paramStr;
+                        }
+                    }
                     let logHeaders = {};
                     logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
                     logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
                     window.postMessage({
                         url: url,
+                        requestParamType: this.api.requestParamType,
                         headers: headers,
                         method: method,
                         params: params,
@@ -363,7 +387,7 @@
                         apiId: this.api.id,
                     }, '*');
                 } finally {
-                    setTimeout(() => this.sendDisable = false, 1000);
+                    setTimeout(() => this.sendDisable = false, 500);
                 }
             },
             command(func) {
@@ -380,7 +404,8 @@
             },
             saveMock(isSuccess) {
                 let params = this.$refs['respData'].innerHTML;
-                let mock = JSON.stringify(JSON.parse(params.replace(/<br>/g, '')));
+                let cleanText = params.replace(/<br>/g, '');
+                let mock = UTILS.isJSON(cleanText) ? JSON.stringify(JSON.parse(cleanText)) : cleanText;
                 let reqData = {id: this.api.id};
                 if (isSuccess) {
                     reqData['apiSuccessMock'] = mock;
@@ -421,6 +446,7 @@
                 line-height 15px
 
             .data
+                margin-top 5px
                 left 0
                 top 0
                 right 0

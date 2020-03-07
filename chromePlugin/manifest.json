@@ -17,6 +17,9 @@
     "activeTab"
   ],
   "background": {
+    "scripts": [
+      "js/background.js"
+    ]
   },
   "content_scripts": [
     {
