@@ -62,7 +62,7 @@
 <script type="text/ecmascript-6">
     import {CONSTANT} from "../../common/js/constant";
     import {UTILS} from "../../common/js/utils";
-    import ApiHeaders from "./components/apiHeaders";
+    import ApiHeaders from "../../components/apiHeaders/apiHeaders";
     import LineText from "../../components/lineText/lineText";
     import DataStructure from "../../components/dataStructure/dataStructure";
     import SelectApiStatusDialog from "../../components/selectApiStatus/selectApiStatusDialog";

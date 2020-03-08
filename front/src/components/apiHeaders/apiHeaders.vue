@@ -3,16 +3,15 @@
         <el-table :data="dataList" style="width: 100%" border :ref="config.refPre+'headerTable'">
             <el-table-column type="index" width="40"/>
             <el-table-column type="selection" width="25" v-if="config.test"/>
-            <el-table-column label="name" width="280" ref="param-key-container">
+            <el-table-column label="name" width="220" ref="param-key-container">
                 <template slot-scope="scope">
                     <el-input v-model.trim="scope.row.name" @input="nameChange(scope.$index,scope.row)"
+                              :placeholder="scope.row.nameIsEmpty?'enter name':''"
                               size="mini" v-if="!config.onlyRead"/>
                     <template v-else>{{scope.row.name}}</template>
-                    <span v-if="scope.row.nameIsEmpty"
-                          style="font-size: 12px;color: #F56C6C">enter name</span>
                 </template>
             </el-table-column>
-            <el-table-column label="requireType" width="125">
+            <el-table-column label="requireType" width="100">
                 <template slot-scope="scope">
                     <el-select :value="scope.row.requireType+''" size="mini" v-if="!config.onlyRead"
                                @change="(selectedValue)=>scope.row.requireType=selectedValue">
@@ -46,7 +45,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../../common/js/constant";
+    import {CONSTANT} from "../../common/js/constant";
 
     export default {
         name: 'apiHeaders',
@@ -110,6 +109,9 @@
 
 <style lang="stylus" rel="stylesheet/stylus">
     .headers-common
+        input
+            &::-webkit-input-placeholder
+                color #F56C6C
         .el-table td, .el-table th
             padding 0 0 0 3px
 

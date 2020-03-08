@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
+    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" width="845px"
                :close-on-click-modal="false">
         <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
                  style="margin:10px 60px 10px 0;width:auto">
@@ -13,6 +13,7 @@
                 <el-input v-model.trim="form.frontUri"/>
             </el-form-item>
         </el-form>
+        <api-headers :data-list="form.envHeaders" ref="headers" :config="{onlyRead:false}"/>
         <div slot="footer">
             <el-button @click="dialog.show = false" round>Cancel</el-button>
             <el-button @click="submitForm" type="primary" round>Submit</el-button>
@@ -22,9 +23,11 @@
 
 <script type="text/ecmascript-6">
     import {UTILS} from "../../common/js/utils";
+    import ApiHeaders from "../../components/apiHeaders/apiHeaders";
 
     export default {
         name: 'editEnvConfigDialog',
+        components: {ApiHeaders},
         props: {
             dialog: {
                 type: Object,
@@ -48,18 +51,41 @@
             }
         },
         methods: {
-            submitForm() {
-                this.$refs['form'].validate((valid) => {
-                    if (valid) {
-                        this.$axios.post(this.dialog.url, this.form).then(resp => {
-                            UTILS.showResult(this, resp, function (obj) {
-                                obj.$emit('flush');
-                            });
-                        });
+            checkParam() {
+                let paramIsEmpty = false;
+                this.form.envHeaders.forEach(item => {
+                    if (item.name === '' && (item.desc !== '' || item.value !== '')) {
+                        paramIsEmpty = true;
+                        item.nameIsEmpty = true;
                     }
                 });
+                return paramIsEmpty;
+            },
+            submitForm() {
+                this.$refs['form'].validate((valid) => {
+                    let checkParam = this.checkParam();
+                    if (!valid || checkParam) {
+                        this.$message.error('params lose');
+                        return;
+                    }
+                    let headers = [];
+                    this.form.envHeaders.forEach(header => {
+                        if (header.name && header.name !== '') {
+                            headers.push(header);
+                        }
+                    });
+                    this.form.envHeader = JSON.stringify(headers);
+                    this.$axios.post(this.dialog.url, this.form).then(resp => {
+                        UTILS.showResult(this, resp, function (obj) {
+                            obj.$emit('flush');
+                        });
+                    });
+                });
+            },
+            init() {
+                this.$refs['headers'].init();
             }
-        }
+        },
     };
 </script>
 

@@ -101,7 +101,7 @@
     import {UTILS} from "../../common/js/utils";
     import {CONSTANT} from "../../common/js/constant";
     import DataStructure from "../../components/dataStructure/dataStructure";
-    import ApiHeaders from "./components/apiHeaders";
+    import ApiHeaders from "../../components/apiHeaders/apiHeaders";
     import EditDataStructureDialog from "../../components/dataStructure/editDataStructureDialog";
 
     export default {

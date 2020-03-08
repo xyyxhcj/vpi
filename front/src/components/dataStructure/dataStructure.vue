@@ -18,14 +18,13 @@
                         </span>
                     </span>
                     <el-input v-model.trim="scope.row.paramKey" @input="paramKeyChange(scope.$index,scope.row)"
+                              :placeholder="scope.row.paramKeyIsEmpty?'enter paramKey':''"
                               :style="{width:countKeyInputWidth(scope.row)}" size="mini"
                               :ref="config.refPre+'paramKey'+scope.$index"
                               @keyup.down.native="focusMoveDown(scope.$index,'paramKey')"
                               @keyup.up.native="focusMoveUp(scope.$index,'paramKey')"
                               v-if="!config.onlyRead&&!scope.row.reference"/>
                     <template v-else>{{scope.row.paramKey}}</template>
-                    <span v-if="scope.row.paramKeyIsEmpty"
-                          style="font-size: 12px;color: #F56C6C">enter paramKey</span>
                 </template>
             </el-table-column>
             <el-table-column label="paramType" width="110">
@@ -446,6 +445,10 @@
 
 <style lang="stylus" rel="stylesheet/stylus">
     .data-structure-common
+        input
+            &::-webkit-input-placeholder
+                color #F56C6C
+
         .el-table td, .el-table th
             padding 0 0 0 3px
 

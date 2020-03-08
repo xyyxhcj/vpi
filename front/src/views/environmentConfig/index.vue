@@ -31,7 +31,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <edit-env-config-dialog :dialog="editDialog" :form="form" @flush="findList"/>
+        <edit-env-config-dialog :dialog="editDialog" :form="form" @flush="findList" ref="edit-env-config-dialog"/>
         <confirm-dialog :dialog="delConfirmDialog" :form="delEnvConfForm" @flush="findList"/>
     </div>
 </template>
@@ -98,7 +98,15 @@
                     title: 'Edit',
                     url: CONSTANT.REQUEST_URL.API_ENV_EDIT
                 };
-                this.form = UTILS.copyProperty(row, ['id', 'projectId', 'name', 'desc', 'frontUri', 'envHeader', 'globalVariable', 'additionalVariable']);
+                this.form = UTILS.copyProperty(row, ['id', 'projectId', 'name', 'desc', 'frontUri', 'globalVariable', 'additionalVariable']);
+                if (row.envHeader && row.envHeader !== '') {
+                    this.form.envHeaders = JSON.parse(row.envHeader);
+                } else {
+                    this.form.envHeaders = [];
+                }
+                this.$nextTick(() => {
+                    this.$refs['edit-env-config-dialog'].init();
+                });
             },
             deleteEnvConfig(row) {
                 this.delEnvConfForm.id = row.id;
