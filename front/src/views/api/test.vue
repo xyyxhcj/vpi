@@ -184,7 +184,7 @@
                     ids: [],
                     projectId: this.$store.getters.selectedProjectId,
                 },
-                testHistoryShowSelect: false
+                testHistoryShowSelect: false,
             }
         },
         computed: {
@@ -256,6 +256,20 @@
             },
             flushEnv(env) {
                 this.selectedEnv = env;
+                for (let i = this.api.requestHeaders.length-1; i >=0; i--) {
+                    let header = this.api.requestHeaders[i];
+                    if (header.isEnvHeader) {
+                        this.api.requestHeaders.splice(i, 1);
+                    }
+                }
+                if (env.envHeader && env.envHeader !== '') {
+                    let envHeaders = JSON.parse(env.envHeader);
+                    envHeaders.forEach(header => {
+                        header.isEnvHeader = true;
+                        this.api.requestHeaders.unshift(header);
+                    });
+                    this.$refs['reqHeaders'].selectEnvHeader();
+                }
             },
             init() {
                 this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
@@ -268,6 +282,14 @@
                         }
                     }
                 });
+            },
+            mergeHeader() {
+                if (!this.selectedEnv || !this.selectedEnv.envHeader || this.selectedEnv.envHeader === '') {
+                    return this.api.requestHeaders;
+                }
+                let headers = JSON.parse(this.selectedEnv.envHeader);
+                this.api.requestHeaders.forEach(header => headers.push(header));
+                return headers;
             },
             getParams() {
                 let params = {};

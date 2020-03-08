@@ -121,6 +121,10 @@
                 this.form = {
                     projectId: this.projectId
                 };
+                this.form.envHeaders = [];
+                this.$nextTick(() => {
+                    this.$refs['edit-env-config-dialog'].init();
+                });
             },
         },
         created() {

@@ -299,6 +299,7 @@
                     // add root
                     this.addField();
                 }
+                this.$refs[this.config.refPre + 'table'].toggleRowSelection(row, true);
                 row.paramKeyIsEmpty = row.paramKey === '' && (row.paramDesc !== '' || row.value !== '');
             },
             countKeyInputWidth(row) {

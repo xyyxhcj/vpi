@@ -78,12 +78,21 @@
                     // add
                     let item = JSON.parse(this.itemTemplateStr);
                     this.dataList.push(item);
+                    this.$refs[this.config.refPre + 'headerTable'].toggleRowSelection(row, true);
                 }
                 row.nameIsEmpty = row.name === '' && (row.desc !== '' || row.value !== '');
             },
             del(index) {
                 if (this.dataList.length > 1) {
                     this.dataList.splice(index, 1);
+                } else {
+                    // clear data
+                    let row = this.dataList[index];
+                    row.name = '';
+                    row.value = '';
+                    row.desc = '';
+                    row.requireType = 0;
+                    row.nameIsEmpty = false;
                 }
             },
             init() {
@@ -96,6 +105,14 @@
             },
             selectAll() {
                 this.$refs[this.config.refPre + 'headerTable'].toggleAllSelection();
+            },
+            selectEnvHeader() {
+                let $ref = this.$refs[this.config.refPre + 'headerTable'];
+                this.dataList.forEach(header => {
+                    if (header.isEnvHeader) {
+                        $ref.toggleRowSelection(header, true);
+                    }
+                });
             },
             signSelected() {
                 let selectedList = this.$refs[this.config.refPre + 'headerTable'].selection;
