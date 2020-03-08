@@ -153,14 +153,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         });
         let jsonHeaders = JSON.stringify(headerDict);
         // save  method,url,requestTime
-        axios(logUrl, 0, 'POST', JSON.stringify({
+        axios(logUrl, 0, 'POST', {
             apiId: apiId,
             method: method,
             url: url,
             requestTime: new Date().getTime() - start,
             requestInfo: JSON.stringify({headers: headers, data: params}),
             responseInfo: JSON.stringify({headers: headerDict, data: resp}),
-        }), logHeaders);
+        }, logHeaders);
     }).catch(error => console.log(error));
     sendResponse();
 });
