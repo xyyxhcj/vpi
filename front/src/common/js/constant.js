@@ -92,6 +92,8 @@ export const CONSTANT = {
         LEFT_MENU_IS_COLLAPSE: 'leftMenuIsCollapse',
     },
     REQUEST_URL: {
+        CHROME_PLUGIN_DOWNLOAD : 'http://www.whcj.press/vpiChromePlugin.zip',
+
         LOGIN: '/user/login',
         LOGIN_OUT: '/user/loginOut',
         USER_ADD: '/user/add',

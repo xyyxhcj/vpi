@@ -37,6 +37,7 @@
                     {{!sendDisable?'Send':'Wait...'}}
                     <el-dropdown-menu>
                         <el-dropdown-item :command="newTab">New Tab</el-dropdown-item>
+                        <el-dropdown-item :command="downloadChromePlugin">Download Chrome Plugin</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
@@ -423,6 +424,11 @@
                     query: {id: this.api.id},
                 });
                 window.open(newTab.href, '_blank');
+            },
+            downloadChromePlugin() {
+                let a = document.createElement('a');
+                a.href = CONSTANT.REQUEST_URL.CHROME_PLUGIN_DOWNLOAD;
+                a.click();
             },
             saveMock(isSuccess) {
                 let params = this.$refs['respData'].innerHTML;
