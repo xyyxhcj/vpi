@@ -1,6 +1,6 @@
 <template>
     <div class="data-structure-common">
-        <el-table :data="showList" style="width: 1267px" :row-style="rowStyle" border :ref="config.refPre+'table'">
+        <el-table :data="showList" style="width: 100%" :row-style="rowStyle" border :ref="config.refPre+'table'">
             <el-table-column type="index" width="40"/>
             <el-table-column type="selection" :width="config.test?25:1"/>
             <el-table-column label="paramKey" width="280" ref="param-key-container">
