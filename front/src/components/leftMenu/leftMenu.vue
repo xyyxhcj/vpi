@@ -1,6 +1,6 @@
 <template>
-    <el-menu class="aside-common"
-             :collapse="isCollapse" show-timeout="100" hide-timeout="10"
+    <el-menu class="aside-common" :style="{'min-width':isCollapse?'34px':''}"
+             :collapse="isCollapse" show-timeout="10" hide-timeout="10"
              :default-active="$route.path">
         <div class="aside-collapse" ref="aside-collapse">
             <el-menu-item type="text" @click="isCollapse=!isCollapse"
@@ -60,7 +60,6 @@
         width 35px
 
     .aside-common
-        min-width 34px
         text-align left
         margin-left 1px
         background-color whitesmoke
