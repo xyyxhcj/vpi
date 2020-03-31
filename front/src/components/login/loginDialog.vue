@@ -15,6 +15,11 @@
             </el-checkbox-group>
             <el-button @click="resetForm">Reset</el-button>
             <el-button type="primary" @click="submitForm">Login</el-button>
+            <el-link type="info" class="jetbrains-logo" :underline="false"
+                     target="_blank" href="https://www.jetbrains.com/?from=vpi">
+                <span style="margin-right: -10px">Thanks for jetbrains's support!</span>
+                <img style="width: 70px;height: 70px;" src="../../../public/static/img/jetbrains.png" alt=""/>
+            </el-link>
         </span>
     </el-dialog>
 </template>
@@ -106,9 +111,18 @@
 <style lang="stylus" rel="stylesheet/stylus">
     .login-dialog
         .el-dialog__body
+            padding-top 8px
             padding-bottom 0
             margin-bottom 0
 
         .el-dialog__footer
             padding-top 0
+            padding-bottom 35px
+
+    .jetbrains-logo
+        float right
+        top -45px
+        right -20px
+        z-index 10
+        font-size 3px
 </style>
