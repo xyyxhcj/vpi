@@ -127,4 +127,5 @@
         right -20px
         pointer-events auto
         font-size 3px
+        opacity 0.6
 </style>
