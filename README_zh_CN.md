@@ -1,3 +1,4 @@
+使用  **sh/makeJar.sh**进行项目配置,启动!
 ## 配置文件:
 front/vue.config.js  
 front/src/common/js/constant.js  
