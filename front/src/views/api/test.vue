@@ -264,7 +264,7 @@
                         this.api.requestHeaders.splice(i, 1);
                     }
                 }
-                if (env.envHeader && env.envHeader !== '') {
+                if (env && env.envHeader && env.envHeader !== '') {
                     let envHeaders = JSON.parse(env.envHeader);
                     envHeaders.forEach(header => {
                         header.isEnvHeader = true;
