@@ -231,13 +231,15 @@
                     let reqHeaderStr = '';
                     Object.keys(requestInfo.headers).forEach(key => reqHeaderStr = reqHeaderStr + key + ': ' + requestInfo.headers[key] + '\r\n');
                     document.getElementById('req-headers').innerText = reqHeaderStr;
-                    document.getElementById('req-data').innerText = UTILS.formatJson(requestInfo.data);
+                    document.getElementById('req-data').innerText = UTILS.isJSON(requestInfo.data) ?
+                        UTILS.formatJson(requestInfo.data) : requestInfo.data;
                     // show response info
                     let responseInfo = JSON.parse(row.responseInfo);
                     let respHeaderStr = '';
                     Object.keys(responseInfo.headers).forEach(key => respHeaderStr = respHeaderStr + key + ': ' + responseInfo.headers[key] + '\r\n');
                     document.getElementById('resp-headers').innerText = respHeaderStr;
-                    document.getElementById('resp-data').innerText = UTILS.formatJson(responseInfo.data);
+                    document.getElementById('resp-data').innerText = UTILS.isJSON(responseInfo.data) ?
+                        UTILS.formatJson(responseInfo.data) : responseInfo.data;
                 }
             },
             transformInfo(info, headerTitle, paramTitle) {
