@@ -64,9 +64,10 @@
             </el-tab-pane>
             <el-tab-pane label="Test History" name="testHistory">
                 <el-table :data="testHistory.dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
-                          :row-style="{cursor:'pointer'}" @row-click="selectTestHistory" ref="test-history-table">
+                          :row-style="{cursor:'pointer'}" @row-click="selectTestHistory" ref="test-history-table"
+                          border>
                     <el-table-column type="selection" :width="testHistoryShowSelect?'20':'1'"/>
-                    <el-table-column label="url" width="400">
+                    <el-table-column label="url" width="400" show-overflow-tooltip>
                         <template slot-scope="scope">
                             <el-popover trigger="hover" placement="left-start">
                                 <div style="max-height: 600px;max-width: 500px">
@@ -244,7 +245,7 @@
                 let headerStr = '';
                 Object.keys(infoObj.headers).forEach(key => headerStr = headerStr + key + ': ' + infoObj.headers[key] + '\r\n');
                 let data = (typeof infoObj.data === 'string' && !UTILS.isJSON(infoObj.data)) ? infoObj.data : UTILS.formatJson(infoObj.data);
-                return '【' + headerTitle + '】 \r\n' + headerStr + '【' + paramTitle + '】 \r\n' + data;
+                return infoObj.url + '\r\n【' + headerTitle + '】 \r\n' + headerStr + '【' + paramTitle + '】 \r\n' + data;
             },
             dateFormat(time) {
                 return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
@@ -257,7 +258,7 @@
             },
             flushEnv(env) {
                 this.selectedEnv = env;
-                for (let i = this.api.requestHeaders.length-1; i >=0; i--) {
+                for (let i = this.api.requestHeaders.length - 1; i >= 0; i--) {
                     let header = this.api.requestHeaders[i];
                     if (header.isEnvHeader) {
                         this.api.requestHeaders.splice(i, 1);
