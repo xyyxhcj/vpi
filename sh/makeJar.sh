@@ -35,25 +35,32 @@ if  [ "$jarSaveDir" = "" ] ;then
     return
 fi
 
-# replace parameter
-sed -i "s/\$mongodbAddress/${mongodbAddress}/g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s/\$mongodbDatabase/${mongodbDatabase}/g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s/\$mongodbUsername/${mongodbUsername}/g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s/\$mongodbPassword/${mongodbPassword}/g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s/\$prodApiUrl/${prodApiUrl}/g" ${projectDir}front/src/common/js/constant.js
-sed -i "s/\$chromePluginDownloadUrl/${chromePluginDownloadUrl}/g" ${projectDir}front/src/common/js/constant.js
-sed -i "s/\$prodApiUrl/${prodApiUrl}/g" ${projectDir}front/vue.config.js
-
-# build
+# git pull
 cd ${projectDir} || exit
 git fetch --all
 git reset --hard develop
 git pull
+
+# replace parameter
+sed -i "s|\$mongodbAddress|${mongodbAddress}|g" ${projectDir}ams/src/main/resources/application-dev.yml
+sed -i "s|\$mongodbDatabase|${mongodbDatabase}|g" ${projectDir}ams/src/main/resources/application-dev.yml
+sed -i "s|\$mongodbUsername|${mongodbUsername}|g" ${projectDir}ams/src/main/resources/application-dev.yml
+sed -i "s|\$mongodbPassword|${mongodbPassword}|g" ${projectDir}ams/src/main/resources/application-dev.yml
+sed -i "s|\$prodApiUrl|${prodApiUrl}|g" ${projectDir}front/src/common/js/constant.js
+sed -i "s|\$chromePluginDownloadUrl|${chromePluginDownloadUrl}|g" ${projectDir}front/src/common/js/constant.js
+sed -i "s|\$prodApiUrl|${prodApiUrl}|g" ${projectDir}front/vue.config.js
+
+# build
 cd front || exit
 npm install
 npm run build
 cd ${projectDir}chromePlugin && zip -r vpiChromePlugin.zip ./*
 cd ${projectDir}ams && mvn clean package -DskipTests
+
+# close old
+appPid=$(netstat -ntlp | grep 11111 | awk '{print $7}' | head -1 | grep '[0-9]\+' -o)
+kill -9 "${appPid}"
+echo "killed ${appPid}"
 
 # move to nginx file & start
 cp ${projectDir}front/dist/index.html ${nginxHtmlDir}
