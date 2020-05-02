@@ -245,7 +245,7 @@
                 let headerStr = '';
                 Object.keys(infoObj.headers).forEach(key => headerStr = headerStr + key + ': ' + infoObj.headers[key] + '\r\n');
                 let data = (typeof infoObj.data === 'string' && !UTILS.isJSON(infoObj.data)) ? infoObj.data : UTILS.formatJson(infoObj.data);
-                return infoObj.url + '\r\n【' + headerTitle + '】 \r\n' + headerStr + '【' + paramTitle + '】 \r\n' + data;
+                return '【' + headerTitle + '】 \r\n' + headerStr + '【' + paramTitle + '】 \r\n' + data;
             },
             dateFormat(time) {
                 return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);

@@ -1,3 +1,4 @@
+Use  **sh/makeJar.sh**, set config to start!
 ## Config files:
 front/vue.config.js  
 front/src/common/js/constant.js    
