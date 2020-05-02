@@ -77,7 +77,7 @@ export const CONSTANT = {
     HOST_URL: {
         dev: 'http://120.132.18.250:11111',
         // dev: 'http://127.0.0.1:11111',
-        prod: 'http://120.132.18.250/vpi',
+        prod: '$prodApiUrl',
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
@@ -92,7 +92,7 @@ export const CONSTANT = {
         LEFT_MENU_IS_COLLAPSE: 'leftMenuIsCollapse',
     },
     REQUEST_URL: {
-        CHROME_PLUGIN_DOWNLOAD : 'http://www.whcj.press/vpiChromePlugin.zip',
+        CHROME_PLUGIN_DOWNLOAD : '$chromePluginDownloadUrl',
 
         LOGIN: '/user/login',
         LOGIN_OUT: '/user/loginOut',

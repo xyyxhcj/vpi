@@ -1,7 +1,7 @@
 const HOST_URL = {
     dev: 'http://120.132.18.250:11111',
     // dev: 'http://127.0.0.1:11111',
-    prod: 'http://120.132.18.250',
+    prod: '$prodApiUrl',
 };
 const debug = process.env.NODE_ENV !== 'production';
 const profilesActive = debug ? 'dev' : 'prod';
@@ -44,14 +44,6 @@ module.exports = {
         https: false,
         hotOnly: false,
         proxy: {
-            /*'/api/system': {
-                target: HOST_URL[profilesActive] + ':10008/system',
-                ws: true,
-                changOrigin: true,
-                pathRewrite: {
-                    '^/api/system': ''
-                }
-            },*/
             '/vpi/': {
                 target: HOST_URL[profilesActive],
                 ws: true,
