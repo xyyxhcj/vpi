@@ -397,11 +397,12 @@
                         // use Get
                         let paramStr = '';
                         Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
-                        if (url.indexOf('?') === -1) {
-                            url += '?' + paramStr;
-                        } else {
-                            url += '&' + paramStr;
+                        let index = url.indexOf('?');
+                        if (index !== -1) {
+                            url = url.substring(0, index);
                         }
+                        url += '?' + paramStr;
+                        params = paramStr;
                     }
                     let logHeaders = {};
                     logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;

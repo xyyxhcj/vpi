@@ -140,7 +140,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             reqHeaders: headers,
             reqData: typeof params === 'string' && !isJSON(params) ? params : formatJson(params),
             respHeaders: respHeaders,
-            respData: isJSON(resp) ? formatJson(resp) : resp
+            respData: typeof resp === 'string' && !isJSON(resp) ? resp : formatJson(resp)
         });
         // save history
         let split = respHeaders.split('\r\n');
