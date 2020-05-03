@@ -65,9 +65,9 @@
             <el-tab-pane label="Test History" name="testHistory">
                 <el-table :data="testHistory.dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
                           :row-style="{cursor:'pointer'}" @row-click="selectTestHistory" ref="test-history-table"
-                          border>
-                    <el-table-column type="selection" :width="testHistoryShowSelect?'20':'1'"/>
-                    <el-table-column label="url" width="400" show-overflow-tooltip>
+                          border stripe>
+                    <el-table-column type="selection" v-if="testHistoryShowSelect" width="20"/>
+                    <el-table-column label="url" width="400" show-overflow-tooltip class-name="th_content">
                         <template slot-scope="scope">
                             <el-popover trigger="hover" placement="left-start">
                                 <div style="max-height: 600px;max-width: 500px">
@@ -81,13 +81,14 @@
                             </el-popover>
                         </template>
                     </el-table-column>
-                    <el-table-column label="requestTime" width="200">
+                    <el-table-column label="requestTime" width="200" class-name="th_content">
                         <template slot-scope="scope">
                             {{scope.row.requestTime?scope.row.requestTime+'ms':''}}
                         </template>
                     </el-table-column>
-                    <el-table-column label="testName" prop="createName" width="150"/>
-                    <el-table-column label="testTime" width="200" :formatter="(row)=>dateFormat(row.createTime)"/>
+                    <el-table-column label="testName" prop="createName" width="150" class-name="th_content"/>
+                    <el-table-column label="testTime" width="200" :formatter="(row)=>dateFormat(row.createTime)"
+                                     class-name="th_content"/>
                     <el-table-column>
                         <template slot="header">
                             <el-row>
@@ -493,8 +494,12 @@
             .el-tabs__header
                 margin 0
 
+            .th_content
+                padding-left 7px
+
             .el-table td, .el-table th
-                padding 1px 0
+                padding-top 1px
+                padding-bottom 1px
 
                 div.cell
                     padding 0 1px
