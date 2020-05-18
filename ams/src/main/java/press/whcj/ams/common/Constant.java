@@ -12,7 +12,6 @@ public interface Constant {
 	 * profile
 	 */
 	interface ProfileActive {
-
 		String DEV = "dev";
 		String TEST = "test";
 		String PROD = "prod";
@@ -63,26 +62,6 @@ public interface Constant {
 	 */
 	interface SessionKey {
 		String USER_INFO = "user_info";
-	}
-
-	/**
-	 * url
-	 */
-	interface Url {
-	}
-
-	/**
-	 * redis lock key
-	 */
-	interface LockKey {
-	}
-
-	/**
-	 * concat sql
-	 */
-	interface ConcatSql {
-
-		String LIMIT_1 = "limit 1";
 	}
 
 	/**

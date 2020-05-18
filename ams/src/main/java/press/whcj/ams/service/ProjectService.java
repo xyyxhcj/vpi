@@ -23,7 +23,7 @@ public interface ProjectService {
     String save(ProjectDto projectDto, UserVo operator);
 
     /**
-     * assign
+     * assign permissions
      *
      * @param projectDto projectDto
      * @param operator   operator
@@ -54,11 +54,20 @@ public interface ProjectService {
      * remove
      *
      * @param projectId projectId
-     * @param operator operator
+     * @param operator  operator
      * @author xyyxhcj@qq.com
      * @date 2020/2/10 10:36
      **/
     void remove(String projectId, UserVo operator);
 
+    /**
+     * findListByGroupForOwner
+     *
+     * @param projectDto projectDto
+     * @param operator   operator
+     * @return java.util.List<press.whcj.ams.entity.Project>
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:33
+     **/
     List<Project> findListByGroupForOwner(ProjectDto projectDto, UserVo operator);
 }

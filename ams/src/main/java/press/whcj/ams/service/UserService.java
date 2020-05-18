@@ -12,15 +12,62 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 public interface UserService {
-	String save(UserDto userDto);
+    /**
+     * save
+     *
+     * @param userDto userDto
+     * @return java.lang.String
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:30
+     **/
+    String save(UserDto userDto);
 
-	void remove(UserDto userDto, UserVo operator);
+    /**
+     * remove user
+     *
+     * @param userDto  userDto
+     * @param operator operator
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:30
+     **/
+    void remove(UserDto userDto, UserVo operator);
 
-	UserVo findDetail(String id);
+    /**
+     * findDetail
+     *
+     * @param id id
+     * @return press.whcj.ams.entity.vo.UserVo
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:30
+     **/
+    UserVo findDetail(String id);
 
-	MongoPage<UserVo> findPage(UserDto userDto);
+    /**
+     * findPage
+     *
+     * @param userDto userDto
+     * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.vo.UserVo>
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:29
+     **/
+    MongoPage<UserVo> findPage(UserDto userDto);
 
-	void init();
+    /**
+     * add first admin
+     *
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:24
+     **/
+    void init();
 
-	UserVo login(UserDto userDto, HttpServletRequest request);
+    /**
+     * login
+     *
+     * @param userDto userDto
+     * @param request request
+     * @return press.whcj.ams.entity.vo.UserVo
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:25
+     **/
+    UserVo login(UserDto userDto, HttpServletRequest request);
 }
