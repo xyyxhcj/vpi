@@ -17,7 +17,7 @@
             <el-button type="primary" style="position: relative;z-index: 100" @click.stop="submitForm">Login</el-button>
             <el-link type="info" class="jetbrains-logo" :underline="false"
                      target="_blank" href="https://www.jetbrains.com/?from=vpi">
-                <span style="margin-right: -10px">Thanks for jetbrains's support!</span>
+                <!--<span style="margin-right: -10px">Thanks for jetbrains's support!</span>-->
                 <img style="width: 70px;height: 70px;" src="../../../public/static/img/jetbrains.png" alt=""/>
             </el-link>
         </span>
@@ -118,14 +118,15 @@
         .el-dialog__footer
             padding-top 0
             padding-bottom 35px
+            padding-left 70px
 
     .jetbrains-logo
         position relative
         z-index 1
         float right
-        top -45px
-        right -20px
+        top -20px
+        right -15px
         pointer-events auto
         font-size 3px
-        opacity 0.6
+        opacity 0.5
 </style>
