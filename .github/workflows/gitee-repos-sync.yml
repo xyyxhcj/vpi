@@ -25,8 +25,8 @@ jobs:
         key: ${{ runner.os }}-vpi-repos-cache
 
     - name: Mirror the Github organization repos to Gitee.
-      # 引用master分支的脚本支持
-      uses: action@master
+      # 引用分支的脚本支持
+      uses: actions@develop
       with:
         #  需要被同步的源端账户名，如github/phpdragon，表示Github的phpdragon账户。
         src: github/xyyxhcj
