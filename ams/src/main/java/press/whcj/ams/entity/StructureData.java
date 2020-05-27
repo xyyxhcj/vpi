@@ -38,4 +38,5 @@ public class StructureData implements Serializable {
 	 * if reference other structure
 	 **/
 	private String referenceStructureId;
+	private String projectId;
 }

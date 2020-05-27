@@ -1,15 +1,14 @@
 <template>
     <!--    export all api-->
     <el-container id="exportHtml">
-        <el-aside width="200px">
-            <el-input placeholder="search" v-model="queryParam"/>
+        <el-aside width="200px" class="export-aside">
+            <el-input placeholder="search" v-model="query.nameOrUri" @keyup.enter.native="filterApi"/>
             <div class="api-group-header">
                 Group
             </div>
-            <div class="select-all" @click="selectGroup">all</div>
+            <el-button size="small" class="select-all" @click="selectGroup">all</el-button>
             <el-tree :data="groups" :props="{label:'name',children:'childList'}" :expand-on-click-node="false"
-                     node-key="id" default-expand-all @node-click="selectGroup"
-                     draggable highlight-current>
+                     node-key="id" default-expand-all @node-click="selectGroup" draggable highlight-current>
                 <span class="api-group-node" slot-scope="{node,data}">
                     <span style="float:left;padding-left: 1px">
                         <template v-if="node.label.length>14-data.getLevel(data)*3">
@@ -28,43 +27,154 @@
                 </span>
             </el-tree>
         </el-aside>
-        <el-main>Main</el-main>
+        <el-main>
+            <el-table :data="filterDataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
+                      :height="tableHeight"
+                      :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table">
+                <el-table-column width="100">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="right-start" v-if="scope.row.group">
+                            <p style="font-size: 10px">Group: {{scope.row.group.name}}</p>
+                            <div slot="reference">
+                                <el-tag size="mini" effect="plain" style="padding: 0 4px"
+                                        :type="scope.row.apiStatus===0?'success':
+                                    scope.row.apiStatus===2||scope.row.apiStatus===8?'danger':'warning'">
+                                    {{CONSTANT.API_STATUS[scope.row.apiStatus]}}
+                                </el-tag>
+                            </div>
+                        </el-popover>
+                        <el-tag size="mini" effect="plain" style="padding: 0 4px" v-else
+                                :type="scope.row.apiStatus===0?'success':
+                                    scope.row.apiStatus===2||scope.row.apiStatus===8?'danger':'warning'">
+                            {{CONSTANT.API_STATUS[scope.row.apiStatus]}}
+                        </el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="name" prop="name" width="200"/>
+                <el-table-column label="apiUri" prop="apiUri" width="200"/>
+                <el-table-column label="createName" prop="createName" width="110"/>
+                <el-table-column label="updateName" prop="updateName" width="110"/>
+                <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
+            </el-table>
+        </el-main>
+        <el-dialog :append-to-body="true" :visible.sync="showDetail" top="2px" width="85%"
+                   custom-class="export-api-detail">
+            <el-row>
+                <el-col :span="12" style="text-align: left">
+                    <el-tag>{{CONSTANT.REQUEST_TYPE[selectedApi.apiRequestType]}}</el-tag>
+                    <el-button style="margin-left: 10px"
+                               :type="selectedApi.apiStatus===0?'success':selectedApi.apiStatus===2||selectedApi.apiStatus===8?'danger':'warning'"
+                               size="mini"
+                               circle plain
+                               icon="el-icon-s-help">
+                        {{CONSTANT.API_STATUS[selectedApi.apiStatus]}}
+                    </el-button>
+                </el-col>
+            </el-row>
+            <div style="text-align: left;margin: 5px;line-height: 30px">
+                <div style="font-size: 22px">{{selectedApi.apiUri}}</div>
+                <div style="font-size: 16px">{{selectedApi.name}}</div>
+                <div style="font-size: 12px;color: #999999">
+                    <span class="api-edit-info">group: {{selectedApi.group?selectedApi.group.name:'none'}}</span>
+                    <span class="api-edit-info">create: {{selectedApi.createName}}</span>
+                    <span class="api-edit-info">update: {{selectedApi.updateName}}</span>
+                    <span class="api-edit-info">updateTime: {{dateFormat(selectedApi.updateTime)}}</span>
+                </div>
+            </div>
+            <template v-if="selectedApi.requestHeaders.length>0">
+                <line-text text="Request Header"/>
+                <api-headers :data-list="selectedApi.requestHeaders" :config="{onlyRead:true,refPre:'req'}"/>
+            </template>
+            <template v-if="reqShowDataList.length>0">
+                <line-text text="Request Param"/>
+                <data-structure :show-list="reqShowDataList" :entity="selectedApi.requestParamVo"
+                                :config="{onlyRead:true}"/>
+            </template>
+            <template v-if="selectedApi.responseHeaders.length>0">
+                <line-text text="Response Header"/>
+                <api-headers :data-list="selectedApi.responseHeaders" :config="{onlyRead:true,refPre:'resp'}"/>
+            </template>
+            <template v-if="respShowDataList.length>0">
+                <line-text text="Response Param"/>
+                <data-structure :show-list="respShowDataList" :entity="selectedApi.responseParamVo"
+                                :config="{onlyRead:true}" v-if="selectedApi.responseParamType===0"/>
+                <template v-else>{{selectedApi.responseParamVo.remark}}</template>
+            </template>
+            <el-row>
+                <el-col :span="12" v-if="selectedApi.apiSuccessMock!==''">
+                    <line-text style="color: #44B549" text="Success Example"/>
+                    <pre class="json-content">
+                    {{UTILS.isJSON(selectedApi.apiFailureMock)?UTILS.formatJson(selectedApi.apiSuccessMock):selectedApi.apiSuccessMock}}
+                </pre>
+                </el-col>
+                <el-col :span="12" v-if="selectedApi.apiFailureMock!==''">
+                    <line-text style="color: #F56C6C" text="Failure Example"/>
+                    <pre class="json-content">
+                    {{UTILS.isJSON(selectedApi.apiFailureMock)?UTILS.formatJson(selectedApi.apiFailureMock):selectedApi.apiFailureMock}}
+                </pre>
+                </el-col>
+            </el-row>
+        </el-dialog>
     </el-container>
 </template>
 
 <script type="text/ecmascript-6">
     import {UTILS} from "../../common/js/utils";
     import {CONSTANT} from "../../common/js/constant";
+    import ApiHeaders from "../../components/apiHeaders/apiHeaders";
+    import LineText from "../../components/lineText/lineText";
+    import DataStructure from "../../components/dataStructure/dataStructure";
 
     export default {
         name: 'index',
+        components: {DataStructure, LineText, ApiHeaders},
         data() {
             return {
                 CONSTANT,
-                projectId: this.$store.getters.selectedProjectId,
-                projectName: this.$store.getters.selectedProjectName,
+                UTILS,
                 groups: [],
-                queryParam: '',
-                activeTab: 'api',
-
+                query: {
+                    projectId: this.$route.query.projectId,
+                    envId: this.$route.query.envId,
+                    groupIds: [],
+                    apiStatus: undefined,
+                    nameOrUri: '',
+                },
+                dataList: [],
+                filterDataList: [],
+                tableHeight: window.innerHeight - 98,
+                reqShowDataList: [],
+                respShowDataList: [],
+                showDetail: false,
+                selectedApi: {
+                    projectId: this.$store.getters.selectedProjectId,
+                    name: '',
+                    apiUri: '/',
+                    type: '',
+                    apiRequestType: 0,
+                    apiStatus: 0,
+                    requestParamType: 0,
+                    requestParamVo: {
+                        dataList: [],
+                    },
+                    responseParamType: 0,
+                    responseParamVo: {
+                        dataList: [],
+                    },
+                    requestHeaders: [],
+                    responseHeaders: [],
+                    apiSuccessMock: '',
+                    apiFailureMock: '',
+                },
             };
         },
         methods: {
-            exportHtml() {
-                let val = document.querySelector('textarea').value;
-                let blob = new Blob([val]);
-                this.href = URL.createObjectURL(blob);
-            },
-            command(func) {
-                if (func) {
-                    func();
-                }
-            },
             dateFormat(time) {
                 return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
             },
             selectGroup(apiGroup) {
-                if (!apiGroup) {
+                this.query.groupIds.length = 0;
+                if (!apiGroup || apiGroup instanceof MouseEvent) {
                     // click all
                     let selectElement = document.getElementsByClassName('el-tree-node is-current is-focusable');
                     if (selectElement.length > 0) {
@@ -75,12 +185,20 @@
                 } else {
                     this.selectedGroupId = apiGroup.id;
                     this.selectedGroup = apiGroup;
+                    let stack = [apiGroup];
+                    while (stack.length > 0) {
+                        let group = stack.shift();
+                        this.query.groupIds.push(group.id);
+                        if (group.childList && group.childList.length > 0) {
+                            group.childList.forEach(item => stack.push(item));
+                        }
+                    }
                 }
-                this.findApiPage();
+                this.filterApi();
             },
             findApiGroups() {
                 this.groups = [];
-                this.$axios.post(CONSTANT.REQUEST_URL.API_GROUP_FIND_LIST, {projectId: this.projectId}).then(resp => {
+                this.$axios.post(CONSTANT.REQUEST_URL.API_GROUP_FIND_LIST, this.query).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         let all = resp.data.data;
                         let dict = {};
@@ -101,35 +219,56 @@
                     }
                 });
             },
-            findApiPage() {
-                this.selectApiStatusDialog.apiStatus = '';
-                this.query.projectId = this.projectId;
-                this.query.groupIds = [];
-                if (this.selectedGroup && this.selectedGroup.id) {
-                    // get all child group id
-                    let stack = Array(this.selectedGroup);
-                    while (stack.length > 0) {
-                        let pop = stack.pop();
-                        this.query.groupIds.push(pop.id);
-                        if (pop.childList && pop.childList.length > 0) {
-                            pop.childList.forEach(child => stack.push(child));
-                        }
+            findAllApi() {
+                this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_ALL_DETAIL, this.query).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.filterDataList = this.dataList = resp.data.data;
                     }
+                });
+            },
+            filterApi() {
+                let filterList = this.dataList;
+                let search = this.query.nameOrUri;
+                if (search && search !== '') {
+                    search = search.toLowerCase();
+                    filterList = filterList.filter(data =>
+                        (data.name && data.name.toLowerCase().indexOf(search) !== -1)
+                        || (data.apiUri && data.apiUri.toLowerCase().indexOf(search) !== -1));
                 }
-                UTILS.findPage(this, this, CONSTANT.REQUEST_URL.API_FIND_PAGE);
+                if (this.query.groupIds.length > 0) {
+                    filterList = filterList.filter(data => this.query.groupIds.indexOf(data.group.id) !== -1);
+                }
+                this.filterDataList = filterList;
+            },
+            selectQueryStatus(apiStatus) {
+                this.query.apiStatus = apiStatus;
             },
             clickRow(row) {
+                if (row.requestParamVo && row.requestParamVo.dataList) {
+                    UTILS.fillShowList(row.requestParamVo.dataList, this.reqShowDataList, false, false);
+                }
+                if (row.responseParamVo && row.responseParamVo.dataList) {
+                    UTILS.fillShowList(row.responseParamVo.dataList, this.respShowDataList, false, false);
+                }
+                this.selectedApi = row;
+                this.showDetail = true;
             },
         },
         created() {
             this.findApiGroups();
-            //this.findApiPage();
+            this.findAllApi();
         },
     };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
     #exportHtml
+        .el-main
+            padding 0
+
+        .export-aside
+            border 1px solid #dcdcdc
+
         .api-group-header
             height 43px
             line-height 43px
@@ -139,7 +278,10 @@
             border-bottom 1px solid #dcdcdc
 
         .select-all
-            height 30px
-            line-height 30px
-            cursor pointer
+            width 100%
+</style>
+<style lang="stylus" rel="stylesheet/stylus">
+    .export-api-detail
+        margin-right 0
+
 </style>

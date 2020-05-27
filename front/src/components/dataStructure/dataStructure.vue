@@ -439,8 +439,6 @@
                 UTILS.fillShowList(this.entity.dataList, this.showList, this.entity.reference, false);
             }
         },
-        created() {
-        }
     };
 </script>
 

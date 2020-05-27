@@ -2,7 +2,7 @@
     <el-dialog :append-to-body="true" title="Reference Api" :visible.sync="dialog.show" width="980px">
         <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="700"
                   :row-style="{cursor:'pointer'}" @row-click="clickRow">
-            <el-table-column width="81">
+            <el-table-column width="85">
                 <template slot-scope="scope">
                     <el-tag size="mini" effect="plain" style="padding: 0 4px"
                             :type="scope.row.apiStatus===0?'success':

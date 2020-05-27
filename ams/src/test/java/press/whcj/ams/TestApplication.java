@@ -9,9 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.test.context.junit4.SpringRunner;
 import press.whcj.ams.common.ColumnName;
-import press.whcj.ams.entity.MongoPage;
-import press.whcj.ams.entity.ProjectGroup;
-import press.whcj.ams.entity.User;
+import press.whcj.ams.entity.*;
 import press.whcj.ams.entity.dto.UserDto;
 import press.whcj.ams.entity.vo.UserVo;
 import press.whcj.ams.util.FastUtils;
@@ -20,6 +18,8 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author xyyxhcj@qq.com
@@ -132,5 +132,30 @@ public class TestApplication {
 		UserDto copy = FastUtils.deepCopy(userSource, new UserDto());
 		System.out.println(userSource);
 		System.out.println(copy);
+	}
+
+	@Test
+	public void testUpdateStructureDataProjectId() {
+		List<StructureData> structureDataList = mongoTemplate.find(new Query(Criteria.where(ColumnName.PROJECT_ID).is(null)), StructureData.class);
+		Map<String, Structure> structureMap = mongoTemplate.findAll(Structure.class).stream().collect(Collectors.toMap(Structure::getId, v -> v));
+		structureDataList.forEach(data->{
+			data.setProjectId(structureMap.get(data.getStructureId()).getProjectId());
+			mongoTemplate.save(data);
+		});
+	}
+
+	@Test
+	public void testUpdateHeaderProjectId() {
+		List<ApiHeader> headerList = mongoTemplate.find(new Query(Criteria.where(ColumnName.PROJECT_ID).is(null)), ApiHeader.class);
+		Map<String, Api> apiMap = mongoTemplate.findAll(Api.class).stream().collect(Collectors.toMap(Api::getId, v -> v));
+		headerList.forEach(header->{
+			Api api = apiMap.get(header.getApiId());
+			if (api == null) {
+				return;
+			}
+			header.setProjectId(api.getProjectId());
+			mongoTemplate.save(header);
+		});
+
 	}
 }

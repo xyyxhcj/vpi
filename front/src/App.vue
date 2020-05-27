@@ -13,9 +13,11 @@
                                         <template v-if="index!==pathList.length-1">></template>
                                     </template>
                                 </span>
-                                <el-link v-if="$route.path.startsWith('/api/')" icon="el-icon-refresh-left"
-                                         @click="$router.push('/apiDoc')">Go Back
-                                </el-link>
+                                <span style="margin-right: 15px">
+                                    <el-link v-if="$route.path.startsWith('/api/')" icon="el-icon-refresh-left"
+                                             @click="$router.push('/apiDoc')">Go Back
+                                    </el-link>
+                                </span>
                             </div>
                         </div>
                     </el-col>
@@ -75,7 +77,6 @@
     import LoginDialog from "./components/login/loginDialog";
     import EditUserDialog from "./components/editUser/editUserDialog";
     import {CONSTANT} from "./common/js/constant";
-    import {UTILS} from "./common/js/utils";
     import EditPasswordDialog from "./components/editUser/editPasswordDialog";
     import SelectUserDialog from "./components/selectUser/selectUserDialog";
 
@@ -123,12 +124,9 @@
                 command();
             },
             loginOut() {
-                this.$axios.post(CONSTANT.REQUEST_URL.LOGIN_OUT).then(resp => {
-                    if (UTILS.checkResp(resp)) {
-                        this.$store.dispatch('loginOut');
-                        this.$router.go(0);
-                    }
-                });
+                this.$axios.post(CONSTANT.REQUEST_URL.LOGIN_OUT);
+                this.$store.dispatch('loginOut');
+                this.$router.go(0);
             },
             modify() {
                 this.editPwdDialog = {
@@ -140,7 +138,7 @@
             delUser() {
                 this.selectUserDialog.show = true;
                 this.$refs['selectUserDialog'].findPageForDelete();
-            }
+            },
         },
         computed: {
             loginDialog: {

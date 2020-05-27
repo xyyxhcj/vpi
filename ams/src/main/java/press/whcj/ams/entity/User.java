@@ -3,6 +3,7 @@ package press.whcj.ams.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Accessors(chain = true)
+@NoArgsConstructor
 public class User implements Serializable {
 	private static final long serialVersionUID = -2750695756940876706L;
 	private String id;
@@ -44,9 +46,6 @@ public class User implements Serializable {
 	private Byte userType;
 	@Transient
 	private String projectUserId;
-
-	public User() {
-	}
 
 	public User(String id) {
 		this.id = id;

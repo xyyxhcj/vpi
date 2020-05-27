@@ -2,6 +2,7 @@ package press.whcj.ams.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Accessors(chain = true)
+@NoArgsConstructor
 public class BaseEntity {
     private String id;
     @DBRef
@@ -26,9 +28,6 @@ public class BaseEntity {
     @JsonBackReference("update")
     private User update;
     private LocalDateTime updateTime;
-
-    public BaseEntity() {
-    }
 
     public BaseEntity(String id) {
         this.id = id;

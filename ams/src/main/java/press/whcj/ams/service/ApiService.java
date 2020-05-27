@@ -91,4 +91,14 @@ public interface ApiService {
      * @date 2020/5/18 19:34
      **/
     void moveGroup(ApiDto apiDto, UserVo operator);
+
+    /**
+     * findAllDetail
+     *
+     * @param apiDto apiDto
+     * @return java.util.List<press.whcj.ams.entity.vo.ApiVo>
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/22 9:11
+     **/
+    List<ApiVo> findAllDetail(ApiDto apiDto);
 }

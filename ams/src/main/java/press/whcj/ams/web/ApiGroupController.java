@@ -42,7 +42,7 @@ public class ApiGroupController extends BaseController {
         return ok(apiGroupDto.getId());
     }
 
-    @RequestMapping("findList")
+    @RequestMapping("vpi/findList")
     public Result<List<ApiGroupVo>> findList(@RequestBody ApiGroup apiGroupDto) {
         return ok(apiGroupService.findList(apiGroupDto));
     }

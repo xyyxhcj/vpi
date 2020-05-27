@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.querydsl.QSort;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -15,12 +16,15 @@ import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.common.Constant;
 import press.whcj.ams.entity.*;
 import press.whcj.ams.entity.dto.ApiDto;
+import press.whcj.ams.entity.dto.StructureDataDto;
 import press.whcj.ams.entity.dto.StructureDto;
 import press.whcj.ams.entity.vo.ApiVo;
+import press.whcj.ams.entity.vo.StructureVo;
 import press.whcj.ams.entity.vo.UserVo;
 import press.whcj.ams.service.ApiService;
 import press.whcj.ams.service.StructureService;
 import press.whcj.ams.util.FastUtils;
+import press.whcj.ams.util.JsonUtils;
 import press.whcj.ams.util.PermUtils;
 import press.whcj.ams.util.UserUtils;
 
@@ -218,6 +222,100 @@ public class ApiServiceImpl implements ApiService {
                 Update.update(ColumnName.GROUP, new ApiGroup(apiDto.getGroupId()))
                         .set(ColumnName.UPDATE, new User(operator.getId()))
                         .set(ColumnName.UPDATE_TIME, LocalDateTime.now()), Api.class);
+    }
+
+    @Override
+    public List<ApiVo> findAllDetail(ApiDto apiDto) {
+        String projectId = apiDto.getProjectId();
+        FastUtils.checkParams(projectId);
+        // get all api
+        Query query = new Query(Criteria.where(ColumnName.PROJECT_ID).is(projectId)
+                .and(ColumnName.IS_DEL).ne(Constant.Is.YES))
+                .with(QSort.by(Sort.Direction.DESC, ColumnName.UPDATE_TIME));
+        List<ApiVo> apiVoList = mongoTemplate.find(query, ApiVo.class, Constant.CollectionName.API);
+        if (apiVoList.isEmpty()) {
+            return apiVoList;
+        }
+        // get environment environment's header
+        ApiEnv env = getEnv(apiDto.getEnvId());
+        List<ApiHeader> envHeaders = getEnvHeaders(env);
+        boolean addEnvUri = env != null && !StringUtils.isEmpty(env.getFrontUri());
+        boolean addEnvHeader = !envHeaders.isEmpty();
+        // get all structure
+        query = new Query(Criteria.where(ColumnName.PROJECT_ID).is(projectId).and(ColumnName.IS_DEL).ne(Constant.Is.YES));
+        List<StructureVo> structureVoList = mongoTemplate.find(query, StructureVo.class, Constant.CollectionName.STRUCTURE);
+        // get all structureData
+        List<StructureDataDto> structureDataList = mongoTemplate.find(query, StructureDataDto.class, Constant.CollectionName.STRUCTURE_DATA);
+        // collect to dict
+        Map<String, List<StructureDataDto>> rootListDict = new LinkedHashMap<>();
+        Map<String, StructureVo> structureDict = structureVoList.stream().collect(Collectors.toMap(Structure::getId, v -> v));
+        Map<String, StructureDataDto> structureDataDict = structureDataList.stream().collect(Collectors.toMap(StructureData::getId, v -> v));
+        Map<String, List<ApiHeader>> headersDict = mongoTemplate.find(query, ApiHeader.class).stream().collect(Collectors.groupingBy(ApiHeader::getApiId));
+        for (StructureDataDto dataDto : structureDataList) {
+            if (StringUtils.isEmpty(dataDto.getParentId())) {
+                if (!StringUtils.isEmpty(dataDto.getReferenceStructureId())) {
+                    // if reference
+                    StructureVo structureVo = structureDict.get(dataDto.getReferenceStructureId());
+                    dataDto.setReferenceStructureName(structureVo.getName());
+                    dataDto.setSubList(structureVo.getDataList());
+                }
+                rootListDict.computeIfAbsent(dataDto.getStructureId(), k -> new LinkedList<>()).add(dataDto);
+            } else {
+                structureDataDict.get(dataDto.getParentId()).getSubList().add(dataDto);
+            }
+        }
+        structureVoList.forEach(structureVo -> {
+            List<StructureDataDto> rootList = rootListDict.get(structureVo.getId());
+            if (rootList != null) {
+                structureVo.getDataList().addAll(rootList);
+            }
+        });
+        apiVoList.forEach(apiVo -> {
+            if (apiVo.getRequestParam() != null) {
+                apiVo.setRequestParamVo(structureDict.get(apiVo.getRequestParam().getId()));
+            }
+            if (apiVo.getResponseParam() != null) {
+                apiVo.setResponseParamVo(structureDict.get(apiVo.getResponseParam().getId()));
+            }
+            apiVo.setRequestHeaders(new LinkedHashSet<>());
+            apiVo.setResponseHeaders(new LinkedHashSet<>());
+            List<ApiHeader> headers = headersDict.get(apiVo.getId());
+            if (headers != null) {
+                for (ApiHeader header : headers) {
+                    if (Constant.Is.YES.equals(header.getIsRequest())) {
+                        apiVo.getRequestHeaders().add(header);
+                    } else {
+                        apiVo.getResponseHeaders().add(header);
+                    }
+                }
+            }
+            if (addEnvUri) {
+                apiVo.setApiUri(env.getFrontUri() + apiVo.getApiUri());
+            }
+            if (addEnvHeader) {
+                apiVo.getRequestHeaders().addAll(envHeaders);
+            }
+        });
+        return apiVoList;
+    }
+
+    private List<ApiHeader> getEnvHeaders(@Nullable ApiEnv env) {
+        if (env == null) {
+            return Collections.emptyList();
+        }
+        List<ApiHeader> headers = JsonUtils.json2List(env.getEnvHeader(), ApiHeader.class);
+        if (headers == null) {
+            return Collections.emptyList();
+        }
+        return headers;
+    }
+
+    @Nullable
+    private ApiEnv getEnv(String envId) {
+        if (StringUtils.isEmpty(envId)) {
+            return null;
+        }
+        return mongoTemplate.findById(envId, ApiEnv.class);
     }
 
     private String saveApiParams(StructureDto paramDto, UserVo operator, String projectId) {

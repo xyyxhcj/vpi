@@ -59,8 +59,9 @@ cd ${projectDir}ams && mvn clean package -DskipTests
 
 # close old
 appPid=$(netstat -ntlp | grep 11111 | awk '{print $7}' | head -1 | grep '[0-9]\+' -o)
-kill -9 "${appPid}"
+kill -2 "${appPid}"
 echo "killed ${appPid}"
+sleep 15s
 
 # move to nginx file & start
 cp ${projectDir}front/dist/index.html ${nginxHtmlDir}
@@ -71,5 +72,5 @@ cp ${projectDir}front/dist/static ${nginxStaticDir} -r
 mv ${projectDir}chromePlugin/vpiChromePlugin.zip ${nginxStaticDir}
 mv ${projectDir}ams/target/ams.jar ${jarSaveDir}
 cd ${jarSaveDir} || exit
-nohup java -jar ${jarSaveDir}ams.jar --spring.profiles.active=dev > vpiNohup.out 2>&1 &
+nohup java -jar -XX:+HeapDumpOnOutOfMemoryError ${jarSaveDir}ams.jar --spring.profiles.active=dev > vpiNohup.out 2>&1 &
 tail -f ${jarSaveDir}vpiNohup.out

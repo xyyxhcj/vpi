@@ -73,6 +73,11 @@ public class ApiController extends BaseController {
         return ok(apiService.findDetail(apiDto));
     }
 
+    @RequestMapping("vpi/findAllDetail")
+    public Result<List<ApiVo>> findAllDetail(@RequestBody ApiDto apiDto) {
+        return ok(apiService.findAllDetail(apiDto));
+    }
+
     @RequestMapping("remove")
     public Result<Object> remove(@RequestBody ApiDto apiDto) {
         apiService.remove(apiDto);
