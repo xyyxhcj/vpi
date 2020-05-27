@@ -1,3 +1,4 @@
+const CompressionPlugin = require('compression-webpack-plugin');
 const HOST_URL = {
     dev: 'http://120.132.18.250:11111',
     // dev: 'http://127.0.0.1:11111',
@@ -20,8 +21,14 @@ module.exports = {
     configureWebpack: config => {
         if (debug) {
             config.devtool = 'cheap-module-eval-source-map'
-            // eslint-disable-next-line no-empty
         } else {
+            return {
+                plugins:[new CompressionPlugin({
+                    test: /\.js$|\.html$|\.css/,
+                    threshold: 10240,
+                    deleteOriginalAssets: false,
+                })]
+            }
         }
     },
     // https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
