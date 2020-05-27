@@ -59,9 +59,11 @@ cd ${projectDir}ams && mvn clean package -DskipTests
 
 # close old
 appPid=$(netstat -ntlp | grep 11111 | awk '{print $7}' | head -1 | grep '[0-9]\+' -o)
-kill -2 "${appPid}"
-echo "killed ${appPid}"
-sleep 15s
+if  [ "$appPid" != "" ] ;then
+    kill -2 "${appPid}"
+    echo "killed ${appPid}"
+    sleep 15s
+fi
 
 # move to nginx file & start
 cp ${projectDir}front/dist/index.html ${nginxHtmlDir}

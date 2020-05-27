@@ -17,7 +17,7 @@ spring:
   session:
     store-type: mongodb
   lifecycle:
-    timeout-per-shutdown-phase: 30s
+    timeout-per-shutdown-phase: 15s
   data:
     mongodb:
       option:
