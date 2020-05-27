@@ -9,6 +9,20 @@ const profilesActive = debug ? 'dev' : 'prod';
 
 // https://github.com/vuejs/vue-cli/tree/dev/docs/zh/config
 module.exports = {
+    pages: {
+        index: {
+            entry: 'src/main.js',
+            template: 'public/index.html',
+            filename: 'index.html',
+            title: 'vpi',
+        },
+        exportDoc: {
+            entry: 'src/pages/exportDoc.js',
+            template: 'public/exportDoc.html',
+            filename: 'exportDoc.html',
+            title: 'exportDoc',
+        },
+    },
     publicPath: '/',
     outputDir: 'dist',
     // js, css, img, fonts

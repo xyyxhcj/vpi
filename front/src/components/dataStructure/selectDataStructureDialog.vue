@@ -33,7 +33,7 @@
             return {
                 dataList: [],
                 query: {
-                    projectId: this.$store.getters.selectedProjectId,
+                    projectId: '',
                     page: {
                         current: 1,
                         size: CONSTANT.CONFIG.PAGE_SIZE_DEFAULT,
@@ -44,6 +44,7 @@
         },
         methods: {
             findPage() {
+                this.query.projectId = this.$store.getters.selectedProjectId;
                 UTILS.findPage(this, this, CONSTANT.REQUEST_URL.STRUCTURE_FIND_PAGE);
             },
             selectDataStructure(row) {

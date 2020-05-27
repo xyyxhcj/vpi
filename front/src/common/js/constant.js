@@ -19,12 +19,6 @@ export const CONSTANT = {
             noMenu: true
         },
         {
-            path: '/exportHtml',
-            name: 'exportHtml',
-            component: () => import('@/views/export/index'),
-            noMenu: true
-        },
-        {
             path: '/apiDoc',
             name: 'apiDoc',
             component: () => import('@/views/apiDoc/index'),
@@ -64,7 +58,13 @@ export const CONSTANT = {
                     component: () => import('@/views/api/test'),
                 },
             ],
-        }
+        },
+        {
+            path: '/exportDoc',
+            name: 'exportDoc',
+            beforeEnter: () => window.location = '/exportDoc.html',
+            noMenu: true
+        },
     ],
     CONFIG: {
         PAGE_SIZE_DEFAULT: 20,
