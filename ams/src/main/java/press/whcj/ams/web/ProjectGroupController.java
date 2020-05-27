@@ -1,5 +1,6 @@
 package press.whcj.ams.web;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,7 @@ public class ProjectGroupController extends BaseController {
 	@Resource
 	private ProjectGroupService projectGroupService;
 
-	@RequestMapping("add")
+	@PostMapping("add")
 	public Result<String> add(@RequestBody ProjectGroup projectGroup) {
 		UserVo operator = UserUtils.getOperator();
 		projectGroup.initCreate(operator);
@@ -34,7 +35,7 @@ public class ProjectGroupController extends BaseController {
 		return ok(id);
 	}
 
-	@RequestMapping("edit")
+	@PostMapping("edit")
 	public Result<String> edit(@RequestBody ProjectGroup projectGroup) {
 		FastUtils.checkParams(projectGroup.getId());
 		UserVo operator = UserUtils.getOperator();
@@ -43,23 +44,23 @@ public class ProjectGroupController extends BaseController {
 		return ok(projectGroup.getId());
 	}
 
-	@RequestMapping("findList")
+	@PostMapping("findList")
 	public Result<List<ProjectGroupVo>> findList(@RequestBody ProjectGroup projectGroup) {
 		return ok(projectGroupService.findList(projectGroup, UserUtils.getOperator()));
 	}
 
-	@RequestMapping("findDetail")
+	@PostMapping("findDetail")
 	public Result<ProjectGroupVo> findDetail(@RequestBody ProjectGroup projectGroup) {
 		return ok(projectGroupService.findDetail(projectGroup));
 	}
 
-	@RequestMapping("delete")
+	@PostMapping("delete")
 	public Result<Object> delete(@RequestBody ProjectGroup projectGroup) {
 		projectGroupService.delete(projectGroup);
 		return ok();
 	}
 
-	@RequestMapping("moveGroup")
+	@PostMapping("moveGroup")
 	public Result<Object> moveGroup(@RequestBody ProjectDto projectDto) {
 		projectGroupService.moveGroup(projectDto, UserUtils.getOperator());
 		return ok();

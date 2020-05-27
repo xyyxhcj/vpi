@@ -1,21 +1,23 @@
 package press.whcj.ams.web;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import press.whcj.ams.entity.Project;
-import press.whcj.ams.entity.ProjectGroup;
-import press.whcj.ams.entity.ProjectUser;
-import press.whcj.ams.entity.User;
+import press.whcj.ams.common.Constant;
+import press.whcj.ams.entity.*;
+import press.whcj.ams.entity.dto.ApiDto;
 import press.whcj.ams.entity.dto.ProjectDto;
 import press.whcj.ams.entity.dto.ProjectUserDto;
+import press.whcj.ams.entity.vo.ApiGroupVo;
+import press.whcj.ams.entity.vo.ApiVo;
 import press.whcj.ams.entity.vo.ProjectGroupVo;
 import press.whcj.ams.entity.vo.UserVo;
-import press.whcj.ams.service.ProjectGroupService;
-import press.whcj.ams.service.ProjectService;
-import press.whcj.ams.service.ProjectUserService;
+import press.whcj.ams.service.*;
 import press.whcj.ams.support.BaseController;
 import press.whcj.ams.support.Result;
 import press.whcj.ams.util.FastUtils;
@@ -23,6 +25,7 @@ import press.whcj.ams.util.PermUtils;
 import press.whcj.ams.util.UserUtils;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,9 +43,13 @@ public class ProjectController extends BaseController {
 	@Resource
 	private ProjectGroupService projectGroupService;
 	@Resource
+	private ApiGroupService apiGroupService;
+	@Resource
+	private ApiService apiService;
+	@Resource
 	private MongoTemplate mongoTemplate;
 
-	@RequestMapping("add")
+	@PostMapping("add")
 	public Result<String> add(@RequestBody ProjectDto projectDto) {
 		UserVo operator = UserUtils.getOperator();
 		projectDto.initCreate(operator);
@@ -50,7 +57,7 @@ public class ProjectController extends BaseController {
 		return ok(id);
 	}
 
-	@RequestMapping("edit")
+	@PostMapping("edit")
 	public Result<String> edit(@RequestBody ProjectDto projectDto) {
 		FastUtils.checkParams(projectDto.getId());
 		UserVo operator = UserUtils.getOperator();
@@ -59,7 +66,7 @@ public class ProjectController extends BaseController {
 		return ok(projectDto.getId());
 	}
 
-	@RequestMapping("assign")
+	@PostMapping("assign")
 	public Result<Object> assign(@RequestBody ProjectDto projectDto) {
 		FastUtils.checkParams(projectDto.getId());
 		UserVo operator = UserUtils.getOperator();
@@ -68,17 +75,17 @@ public class ProjectController extends BaseController {
 		return ok(true);
 	}
 
-	@RequestMapping("findProjectUser")
+	@PostMapping("findProjectUser")
 	public Result<List<User>> findProjectUser(@RequestBody ProjectUser projectUser) {
 		return ok(projectUserService.findProjectUser(projectUser));
 	}
 
-	@RequestMapping("findList")
+	@PostMapping("findList")
 	public Result<List<Project>> findList(@RequestBody ProjectDto projectDto) {
 		return ok(projectService.findList(projectDto, UserUtils.getOperator()));
 	}
 
-	@RequestMapping("findListByGroupForOwner")
+	@PostMapping("findListByGroupForOwner")
 	public Result<List<Object>> findListByGroupForOwner(@RequestBody ProjectDto projectDto) {
 		ProjectGroup projectGroupDto = new ProjectGroup();
 		if (StringUtils.isEmpty(projectDto.getGroupId())) {
@@ -93,7 +100,7 @@ public class ProjectController extends BaseController {
 		return ok(result);
 	}
 
-	@RequestMapping("findListByGroupForOther")
+	@PostMapping("findListByGroupForOther")
 	public Result<List<Object>> findListByGroupForOther(@RequestBody ProjectDto projectDto) {
 		ProjectGroup projectGroupDto = new ProjectGroup();
 		if (StringUtils.isEmpty(projectDto.getGroupId())) {
@@ -108,7 +115,7 @@ public class ProjectController extends BaseController {
 		return ok(result);
 	}
 
-	@RequestMapping("editProjectUser")
+	@PostMapping("editProjectUser")
 	public Result<Object> editProjectUser(@RequestBody ProjectUserDto projectUserDto) {
 		FastUtils.checkParams(projectUserDto.getProjectId());
 		UserVo operator = UserUtils.getOperator();
@@ -117,7 +124,7 @@ public class ProjectController extends BaseController {
 		return ok();
 	}
 
-	@RequestMapping("remove")
+	@PostMapping("remove")
 	public Result<Object> remove(@RequestBody ProjectDto projectDto) {
 		String projectId = projectDto.getId();
 		FastUtils.checkParams(projectId);
@@ -125,5 +132,22 @@ public class ProjectController extends BaseController {
 		PermUtils.checkProjectOwner(mongoTemplate, projectId, operator);
 		projectService.remove(projectId, operator);
 		return ok();
+	}
+
+	@PostMapping("exportHtml")
+	public void exportHtml(@RequestBody ProjectDto projectDto) throws IOException {
+		String projectId = projectDto.getId();
+		String envId = projectDto.getEnvId();
+		String projectName = projectDto.getName();
+		FastUtils.checkParams(projectId);
+		ApiGroup apiGroup = new ApiGroup();
+		apiGroup.setProjectId(projectId);
+		ApiDto apiDto = new ApiDto();
+		apiDto.setProjectId(projectId);
+		apiDto.setEnvId(envId);
+		List<ApiGroupVo> apiGroupList = apiGroupService.findList(apiGroup);
+		List<ApiVo> apiList = apiService.findAllDetail(apiDto);
+		Document doc = Jsoup.connect(String.format(Constant.SysConfig.EXPORT_URL, projectId, projectName, envId)).get();
+		System.out.println(doc);
 	}
 }

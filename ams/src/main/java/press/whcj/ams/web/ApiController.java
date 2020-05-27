@@ -1,5 +1,6 @@
 package press.whcj.ams.web;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,7 @@ public class ApiController extends BaseController {
     @Resource
     private ApiService apiService;
 
-    @RequestMapping("add")
+    @PostMapping("add")
     public Result<String> add(@RequestBody ApiDto apiDto) {
         UserVo operator = UserUtils.getOperator();
         apiDto.initCreate(operator);
@@ -34,13 +35,13 @@ public class ApiController extends BaseController {
         return ok(id);
     }
 
-    @RequestMapping("saveMock")
+    @PostMapping("saveMock")
     public Result<String> saveMock(@RequestBody ApiDto apiDto) {
         apiService.saveMock(apiDto);
         return ok();
     }
 
-    @RequestMapping("edit")
+    @PostMapping("edit")
     public Result<String> edit(@RequestBody ApiDto apiDto) {
         FastUtils.checkParams(apiDto.getId());
         UserVo operator = UserUtils.getOperator();
@@ -49,42 +50,42 @@ public class ApiController extends BaseController {
         return ok(apiDto.getId());
     }
 
-    @RequestMapping("switchStatus")
+    @PostMapping("switchStatus")
     public Result<Object> switchStatus(@RequestBody ApiDto apiDto) {
         FastUtils.checkParams(apiDto.getApiStatus(), apiDto.getIds(), apiDto.getProjectId());
         apiService.switchStatus(apiDto, UserUtils.getOperator());
         return ok();
     }
 
-    @RequestMapping("moveGroup")
+    @PostMapping("moveGroup")
     public Result<Object> moveGroup(@RequestBody ApiDto apiDto) {
         FastUtils.checkParams(apiDto.getGroupId(), apiDto.getIds(), apiDto.getProjectId());
         apiService.moveGroup(apiDto, UserUtils.getOperator());
         return ok();
     }
 
-    @RequestMapping("findPage")
+    @PostMapping("findPage")
     public Result<MongoPage<ApiVo>> findPage(@RequestBody ApiDto apiDto) {
         return ok(apiService.findPage(apiDto));
     }
 
-    @RequestMapping("findDetail")
+    @PostMapping("findDetail")
     public Result<ApiVo> findDetail(@RequestBody ApiDto apiDto) {
         return ok(apiService.findDetail(apiDto));
     }
 
-    @RequestMapping("vpi/findAllDetail")
+    @PostMapping("vpi/findAllDetail")
     public Result<List<ApiVo>> findAllDetail(@RequestBody ApiDto apiDto) {
         return ok(apiService.findAllDetail(apiDto));
     }
 
-    @RequestMapping("remove")
+    @PostMapping("remove")
     public Result<Object> remove(@RequestBody ApiDto apiDto) {
         apiService.remove(apiDto);
         return ok();
     }
 
-    @RequestMapping("findReferenceApi")
+    @PostMapping("findReferenceApi")
     public Result<List<ApiVo>> findReferenceApi(@RequestBody ApiDto apiDto) {
         return ok(apiService.findReferenceApi(apiDto));
     }

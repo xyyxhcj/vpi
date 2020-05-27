@@ -55,6 +55,7 @@ public interface Constant {
 		String SALT = "v2Ll6EmXPQIf";
 		String AUTH_HEADER = "auth";
 		int SESSION_TIME_OUT = 60 * 60 * 2;
+		String EXPORT_URL = "http://www.whcj.press/exportDoc.html?projectId=%s&projectName=%s&envId=%s";
 	}
 
 	/**

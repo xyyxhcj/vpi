@@ -60,10 +60,10 @@ public class ApiServiceImpl implements ApiService {
             api = new Api();
         }
         FastUtils.copyProperties(apiDto, api);
-        if (apiDto.getGroupId() != null) {
-            api.setGroup(new ApiGroup(apiDto.getGroupId()));
-        } else {
+        if (StringUtils.isEmpty(apiDto.getGroupId())) {
             api.setGroup(null);
+        } else {
+            api.setGroup(new ApiGroup(apiDto.getGroupId()));
         }
         // save request params
         String reqParamsId = apiDto.getRequestParamDto().getId();
@@ -290,7 +290,11 @@ public class ApiServiceImpl implements ApiService {
                 }
             }
             if (addEnvUri) {
-                apiVo.setApiUri(env.getFrontUri() + apiVo.getApiUri());
+                String apiUri = apiVo.getApiUri();
+                if (apiUri == null) {
+                    apiUri = "";
+                }
+                apiVo.setApiUri(env.getFrontUri() + apiUri);
             }
             if (addEnvHeader) {
                 apiVo.getRequestHeaders().addAll(envHeaders);

@@ -304,53 +304,60 @@
                 let stack = [];
                 this.api.requestParamVo.dataList.forEach(data => {
                     let paramKey = data.paramKey;
-                    if (data.selected && paramKey !== '') {
-                        let value;
-                        if (data.subList.length > 0) {
-                            if (data.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
-                                // array
-                                value = [{}];
-                            } else {
-                                // object
-                                value = {};
-                            }
-                            data.subList.forEach(item => stack.push({keys: [paramKey], value: item}));
-                        } else {
-                            value = data.value;
-                        }
-                        params[paramKey] = value;
+                    if (!data.selected || paramKey === '') {
+                        return;
                     }
-                });
-                while (stack.length > 0) {
-                    let {keys: keys, value: pop} = stack.pop();
-                    let paramKey = pop.paramKey;
-                    if (pop.selected && paramKey !== '') {
-                        let value;
-                        if (pop.subList.length > 0) {
-                            if (pop.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
-                                // array
-                                value = [{}];
-                            } else {
-                                // object
-                                value = {};
-                            }
-                            pop.subList.forEach(item => stack.push({
-                                keys: keys.splice(keys.length - 1, 0, paramKey),
-                                value: item
-                            }));
-                        } else {
-                            value = pop.value;
-                        }
-                        let position;
-                        keys.forEach(key => {
-                            position = params[key]
-                        });
-                        if (Array.isArray(position)) {
-                            position[0][paramKey] = value;
+                    let value;
+                    if (data.subList.length > 0) {
+                        if (data.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
+                            // array
+                            value = [{}];
                         } else {
                             // object
-                            position[paramKey] = value;
+                            value = {};
                         }
+                        data.subList.forEach(item => stack.push({keys: [paramKey], value: item}));
+                    } else if (data.value !== '' || data.paramType !== CONSTANT.PARAM_TYPE.ARRAY) {
+                        value = data.value;
+                    }
+                    params[paramKey] = value;
+                });
+                while (stack.length > 0) {
+                    let {keys: keys, value: pop} = stack.shift();
+                    let paramKey = pop.paramKey;
+                    if (!pop.selected || paramKey === '') {
+                        continue;
+                    }
+                    let value;
+                    if (pop.subList.length > 0) {
+                        if (pop.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
+                            // array
+                            value = [{}];
+                        } else {
+                            // object
+                            value = {};
+                        }
+                        // save key(each level)
+                        let keyList = keys.slice(0);
+                        keyList.push(paramKey);
+                        pop.subList.forEach(item => {
+                            stack.push({
+                                keys: keyList,
+                                value: item
+                            })
+                        });
+                    } else if (pop.value !== '' || pop.paramType !== CONSTANT.PARAM_TYPE.ARRAY) {
+                        value = pop.value;
+                    }
+                    let position = params;
+                    keys.forEach(key => {
+                        position = position[key]
+                    });
+                    if (Array.isArray(position)) {
+                        position[0][paramKey] = value;
+                    } else {
+                        // object
+                        position[paramKey] = value;
                     }
                 }
                 return params;

@@ -380,42 +380,47 @@ export const UTILS = {
             itemTemp.paramKey = key;
             itemTemp.paramDesc = itemTemp.value = obj[key];
             itemTemp.level = level;
-            if (constructor) {
-                if (itemTemp.value !== undefined && itemTemp.value !== null) {
-                    switch (itemTemp.value.constructor) {
-                        case String:
-                            itemTemp.paramType = CONSTANT.PARAM_TYPE.STRING;
-                            break;
-                        case Number:
-                            itemTemp.paramType = CONSTANT.PARAM_TYPE.NUMBER;
-                            break;
-                        case Object:
-                            itemTemp.paramType = CONSTANT.PARAM_TYPE.OBJECT;
-                            if (stack) {
-                                stack.push({
-                                    list: itemTemp.subList,
-                                    obj: itemTemp.value,
-                                    level: itemTemp.level
-                                });
-                                itemTemp.paramDesc = itemTemp.value = JSON.stringify(itemTemp.value);
-                            }
-                            break;
-                        case Array:
-                            itemTemp.paramType = CONSTANT.PARAM_TYPE.ARRAY;
-                            if (itemTemp.value.length > 0 && stack) {
-                                stack.push({
-                                    list: itemTemp.subList,
-                                    obj: itemTemp.value[0],
-                                    level: itemTemp.level
-                                });
-                                itemTemp.paramDesc = itemTemp.value = JSON.stringify(itemTemp.value);
-                            }
-                            break;
-                        case Date:
-                            itemTemp.paramType = CONSTANT.PARAM_TYPE.TIME;
-                            break;
-                        default:
-                    }
+            if (itemTemp.value !== undefined && itemTemp.value !== null) {
+                if (itemTemp.value.constructor === undefined) {
+                    return;
+                }
+                switch (itemTemp.value.constructor) {
+                    case String:
+                        itemTemp.paramType = CONSTANT.PARAM_TYPE.STRING;
+                        break;
+                    case Number:
+                        itemTemp.paramType = CONSTANT.PARAM_TYPE.NUMBER;
+                        break;
+                    case Object:
+                        itemTemp.paramType = CONSTANT.PARAM_TYPE.OBJECT;
+                        if (stack) {
+                            stack.push({
+                                list: itemTemp.subList,
+                                obj: itemTemp.value,
+                                level: itemTemp.level
+                            });
+                            itemTemp.paramDesc = itemTemp.value = JSON.stringify(itemTemp.value);
+                        }
+                        break;
+                    case Array:
+                        itemTemp.paramType = CONSTANT.PARAM_TYPE.ARRAY;
+                        if (itemTemp.value.length > 0 && stack) {
+                            stack.push({
+                                list: itemTemp.subList,
+                                obj: itemTemp.value[0],
+                                level: itemTemp.level
+                            });
+                            itemTemp.paramDesc = itemTemp.value = JSON.stringify(itemTemp.value);
+                        }
+                        itemTemp.value = itemTemp.value.toString();
+                        break;
+                    case Date:
+                        itemTemp.paramType = CONSTANT.PARAM_TYPE.TIME;
+                        itemTemp.value = itemTemp.value.toString();
+                        break;
+                    default:
+                        itemTemp.paramType = CONSTANT.PARAM_TYPE.STRING;
+                        itemTemp.value = itemTemp.value.toString();
                 }
             }
             list.push(itemTemp);

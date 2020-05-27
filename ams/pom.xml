@@ -22,6 +22,7 @@
 		<querydsl.version>4.2.2</querydsl.version>
 		<mongodb.version>4.0.3</mongodb.version>
 		<dozer.version>6.5.0</dozer.version>
+		<jsoup.version>1.13.1</jsoup.version>
 	</properties>
 
 	<dependencyManagement>
@@ -57,10 +58,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
-<!--		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-		</dependency>-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -79,6 +76,11 @@
 		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-data-mongodb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>${jsoup.version}</version>
 		</dependency>
 	</dependencies>
 
