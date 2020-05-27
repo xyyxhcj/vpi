@@ -1,16 +1,16 @@
 <template>
-    <!--    export all api-->
     <el-container id="exportHtml">
         <el-aside width="200px" class="export-aside">
+            <div style="margin-left: 7px;font-weight: bold;line-height: 30px">{{projectName}} off-line doc</div>
             <el-input placeholder="search" v-model="query.nameOrUri" @keyup.enter.native="filterApi"/>
             <div class="api-group-header">
                 Group
             </div>
-            <el-button size="small" class="select-all" @click="selectGroup">all</el-button>
+            <el-button class="select-all" @click="selectGroup">all</el-button>
             <el-tree :data="groups" :props="{label:'name',children:'childList'}" :expand-on-click-node="false"
                      node-key="id" default-expand-all @node-click="selectGroup" draggable highlight-current>
                 <span class="api-group-node" slot-scope="{node,data}">
-                    <span style="float:left;padding-left: 1px">
+                    <span style="float:left;padding-left: 1px;">
                         <template v-if="node.label.length>14-data.getLevel(data)*3">
                             <el-popover popper-class="api-doc-popover" placement="top-end" :close-delay="0"
                                         trigger="hover">
@@ -119,35 +119,43 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {UTILS} from "../../common/js/utils";
-    import {CONSTANT} from "../../common/js/constant";
-    import ApiHeaders from "../../components/apiHeaders/apiHeaders";
-    import LineText from "../../components/lineText/lineText";
-    import DataStructure from "../../components/dataStructure/dataStructure";
+    import {CONSTANT} from "../common/js/constant";
+    import {UTILS} from "../common/js/utils";
+    import DataStructure from "../components/dataStructure/dataStructure";
+    import LineText from "../components/lineText/lineText";
+    import ApiHeaders from "../components/apiHeaders/apiHeaders";
 
     export default {
-        name: 'index',
+        name: 'exportDoc',
         components: {DataStructure, LineText, ApiHeaders},
+        props: {
+            urlParams: {
+                default() {
+                    return UTILS.urlParse()
+                }
+            }
+        },
         data() {
             return {
                 CONSTANT,
                 UTILS,
+                projectName: this.urlParams.projectName,
                 groups: [],
                 query: {
-                    projectId: this.$route.query.projectId,
-                    envId: this.$route.query.envId,
+                    projectId: this.urlParams.projectId,
+                    envId: this.urlParams.envId,
                     groupIds: [],
                     apiStatus: undefined,
                     nameOrUri: '',
                 },
                 dataList: [],
                 filterDataList: [],
-                tableHeight: window.innerHeight - 98,
+                tableHeight: window.innerHeight,
                 reqShowDataList: [],
                 respShowDataList: [],
                 showDetail: false,
                 selectedApi: {
-                    projectId: this.$store.getters.selectedProjectId,
+                    projectId: this.urlParams.projectId,
                     name: '',
                     apiUri: '/',
                     type: '',
@@ -236,7 +244,7 @@
                         || (data.apiUri && data.apiUri.toLowerCase().indexOf(search) !== -1));
                 }
                 if (this.query.groupIds.length > 0) {
-                    filterList = filterList.filter(data => this.query.groupIds.indexOf(data.group.id) !== -1);
+                    filterList = filterList.filter(data => data.group && this.query.groupIds.indexOf(data.group.id) !== -1);
                 }
                 this.filterDataList = filterList;
             },
@@ -261,7 +269,7 @@
     };
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus" scoped>
+<style lang="stylus" rel="stylesheet/stylus">
     #exportHtml
         .el-main
             padding 0
@@ -273,15 +281,18 @@
             height 43px
             line-height 43px
             padding 0 10px
+            text-align center
             font-size 14px
             background #f3f3f3
             border-bottom 1px solid #dcdcdc
 
         .select-all
             width 100%
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
+        .el-tree-node__content
+            height 32px
+        .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content
+            background-color #eee
+
     .export-api-detail
         margin-right 0
-
 </style>
