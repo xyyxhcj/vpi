@@ -19,6 +19,12 @@ export const CONSTANT = {
             noMenu: true
         },
         {
+            path: '/exportHtml',
+            name: 'exportHtml',
+            component: () => import('@/views/export/index'),
+            noMenu: true
+        },
+        {
             path: '/apiDoc',
             name: 'apiDoc',
             component: () => import('@/views/apiDoc/index'),
@@ -131,7 +137,7 @@ export const CONSTANT = {
         API_GROUP_ADD: '/apiGroup/add',
         API_GROUP_EDIT: '/apiGroup/edit',
         API_GROUP_DELETE: '/apiGroup/delete',
-        API_GROUP_FIND_LIST: '/apiGroup/findList',
+        API_GROUP_FIND_LIST: '/apiGroup/vpi/findList',
 
         API_ADD: '/api/add',
         API_EDIT: '/api/edit',
@@ -140,6 +146,7 @@ export const CONSTANT = {
         API_SAVE_MOCK: '/api/saveMock',
         API_REMOVE: '/api/remove',
         API_FIND_DETAIL: '/api/findDetail',
+        API_FIND_ALL_DETAIL: '/api/vpi/findAllDetail',
         API_FIND_PAGE: '/api/findPage',
         API_FIND_REFERENCE_API: '/api/findReferenceApi',
 
