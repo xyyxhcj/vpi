@@ -1,6 +1,6 @@
 <template>
     <el-container id="exportHtml">
-        <el-aside width="200px" class="export-aside">
+        <el-aside width="210px" class="export-aside">
             <div style="margin-left: 7px;font-weight: bold;line-height: 30px">{{projectName}} off-line doc</div>
             <el-input placeholder="search" v-model="query.nameOrUri" @keyup.enter.native="filterApi"/>
             <div class="api-group-header">

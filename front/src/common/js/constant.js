@@ -62,7 +62,7 @@ export const CONSTANT = {
         {
             path: '/exportDoc',
             name: 'exportDoc',
-            beforeEnter: () => window.location = '/exportDoc.html',
+            redirect: '/exportDoc.html',
             noMenu: true
         },
     ],
