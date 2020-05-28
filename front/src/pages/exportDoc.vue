@@ -115,7 +115,7 @@
                 </el-col>
             </el-row>
         </el-dialog>
-        <div style="display: none" ref="apiGroupsHidden"></div>
+        <div style="display: none" ref="apiGroupsHidden" id="apiGroupsHidden"></div>
         <div style="display: none" ref="apisHidden"></div>
     </el-container>
 </template>
@@ -207,9 +207,14 @@
                 this.filterApi();
             },
             findApiGroups() {
+                let htmlElement = document.getElementById('apiGroupsHidden');
+                console.info(htmlElement);
+                // if (htmlElement.innerHTML !== '') {
+                //     this.groups = JSON.parse(apiGroupsHtml);
+                //     return;
+                // }
                 let $ref = this.$refs['apiGroupsHidden'];
                 console.info($ref);
-                console.log($ref);
                 let apiGroupsHtml = $ref.innerHTML;
                 if (apiGroupsHtml !== '') {
                     this.groups = JSON.parse(apiGroupsHtml);
@@ -241,7 +246,6 @@
             findAllApi() {
                 let $ref = this.$refs['apisHidden'];
                 console.info($ref);
-                console.log($ref);
                 let apisHtml = $ref.innerHTML;
                 console.log(apisHtml);
                 if (apisHtml !== '') {
@@ -283,10 +287,10 @@
                 this.showDetail = true;
             },
         },
-        mounted() {
-            this.findApiGroups();
-            this.findAllApi();
+        updated() {
             this.$nextTick(()=>{
+                this.findApiGroups();
+                this.findAllApi();
                 this.tableHeight = window.innerHeight;
             })
         },
