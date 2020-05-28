@@ -165,8 +165,8 @@ public class ProjectController extends BaseController {
 		Document doc = Jsoup.parse(driver.getPageSource());
 		driver.close();
 		Elements links = doc.select("link[href]");
-		String script = "<script type='text/javascript'>%s</script>";
-		String style = "<style type='text/css'>%s</style>";
+		String script = "<script type='text/javascript'><pre>%s</pre></script>";
+		String style = "<style type='text/css'><pre>%s</pre></style>";
 		for (Element link : links) {
 			String href = link.attr("href");
 			if (href.endsWith(".js")) {
@@ -195,7 +195,7 @@ public class ProjectController extends BaseController {
 		FileOutputStream output = null;
 		try {
 			input = new ByteArrayInputStream(docString.getBytes());
-			output = new FileOutputStream("/temp/testExport.html");
+			output = new FileOutputStream("/data/testExport.html");
 			IOUtils.copyLarge(input, output);
 		} finally {
 			IOUtils.closeQuietly(input, output);
