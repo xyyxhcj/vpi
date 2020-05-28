@@ -161,7 +161,7 @@ public class ProjectController extends BaseController {
 		options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
 		WebDriver driver = new ChromeDriver(options);
 		driver.get(Constant.SysConfig.FRONT_HOST + url);
-
+		Thread.sleep(5000);
 		Document doc = Jsoup.parse(driver.getPageSource());
 		driver.close();
 		Elements links = doc.select("link[href]");
@@ -198,7 +198,7 @@ public class ProjectController extends BaseController {
 			output = new FileOutputStream("/temp/testExport.html");
 			IOUtils.copyLarge(input, output);
 		} finally {
-			IOUtils.closeQuietly(input,output);
+			IOUtils.closeQuietly(input, output);
 		}
 
 		/*Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
