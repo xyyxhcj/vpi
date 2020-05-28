@@ -165,7 +165,7 @@ public class ProjectController extends BaseController {
 		Document doc = Jsoup.parse(driver.getPageSource());
 		driver.close();
 		Elements links = doc.select("link[href]");
-		String script = "<script type='text/ecmascript-6'>%s</script>";
+		String script = "<script type='text/javascript'>%s</script>";
 		String style = "<style type='text/css'>%s</style>";
 		for (Element link : links) {
 			String href = link.attr("href");
@@ -226,7 +226,7 @@ public class ProjectController extends BaseController {
 		}*/
 		/*Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
 		Elements links = doc.select("link[href]");
-		String script = "<script type='text/ecmascript-6'>%s</script>";
+		String script = "<script type='text/javascript'>%s</script>";
 		String style = "<style type='text/css'>%s</style>";
 		for (Element link : links) {
 			String href = link.attr("href");
