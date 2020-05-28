@@ -115,6 +115,8 @@
                 </el-col>
             </el-row>
         </el-dialog>
+        <div style="display: none" ref="apiGroupsHidden"></div>
+        <div style="display: none" ref="apisHidden"></div>
     </el-container>
 </template>
 
@@ -205,6 +207,12 @@
                 this.filterApi();
             },
             findApiGroups() {
+                let $ref = this.$refs['apiGroupsHidden'];
+                let apiGroupsHtml = $ref.innerHTML;
+                if (apiGroupsHtml !== '') {
+                    this.groups = JSON.parse(apiGroupsHtml);
+                    return;
+                }
                 this.groups = [];
                 this.$axios.post(CONSTANT.REQUEST_URL.API_GROUP_FIND_LIST, this.query).then(resp => {
                     if (UTILS.checkResp(resp)) {
@@ -224,13 +232,21 @@
                                 dict[item.parentId].childList = [item];
                             }
                         }
+                        $ref.innerHTML = JSON.stringify(this.groups);
                     }
                 });
             },
             findAllApi() {
+                let $ref = this.$refs['apisHidden'];
+                let apisHtml = $ref.innerHTML;
+                if (apisHtml !== '') {
+                    this.filterDataList = this.dataList = JSON.parse(apisHtml);
+                    return;
+                }
                 this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_ALL_DETAIL, this.query).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.filterDataList = this.dataList = resp.data.data;
+                        $ref.innerHTML = JSON.stringify(this.dataList);
                     }
                 });
             },

@@ -5,6 +5,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +27,6 @@ import press.whcj.ams.service.*;
 import press.whcj.ams.support.BaseController;
 import press.whcj.ams.support.Result;
 import press.whcj.ams.util.FastUtils;
-import press.whcj.ams.util.JsonUtils;
 import press.whcj.ams.util.PermUtils;
 import press.whcj.ams.util.UserUtils;
 
@@ -154,21 +156,50 @@ public class ProjectController extends BaseController {
 		List<ApiVo> apiList = apiService.findAllDetail(apiDto);
 		String url = String.format(Constant.Url.EXPORT_URL, projectId, projectName, envId);
 
-/*
 		ChromeOptions options=new ChromeOptions();
 		options.setHeadless(true);
 		options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
 		WebDriver driver = new ChromeDriver(options);
 		driver.get(Constant.SysConfig.FRONT_HOST + url);
 
-		List<WebElement> elements = driver.findElements(By.cssSelector("link[href]"));
-		for (WebElement element : elements) {
-			String href = element.getAttribute("href");
+		Document doc = Jsoup.parse(driver.getPageSource());
+		driver.close();
+		Elements links = doc.select("link[href]");
+		String script = "<script type='text/ecmascript-6'>%s</script>";
+		String style = "<style type='text/css'>%s</style>";
+		for (Element link : links) {
+			String href = link.attr("href");
+			if (href.endsWith(".js")) {
+				Document jsHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + href).ignoreContentType(true).get();
+				String format = String.format(script, jsHtml.selectFirst("body").html());
+				link.parent().append(format);
+			} else if (href.endsWith(".css")) {
+				Document cssHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + href).ignoreContentType(true).get();
+				String format = String.format(style, cssHtml.selectFirst("body").html());
+				link.parent().append(format);
+			}
+			link.remove();
 		}
-
-		System.out.println(driver.getPageSource());
-		driver.close();*/
-
+		links = doc.select("script[src]");
+		for (Element link : links) {
+			String src = link.attr("src");
+			Document jsHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + src).ignoreContentType(true).get();
+			String format = String.format(script, jsHtml.selectFirst("body").html());
+			link.parent().append(format);
+			link.remove();
+		}
+		String docString = doc.toString();
+		//docString = docString.replaceAll("\\$allApiData", JsonUtils.object2JsonIgNull(apiList));
+		//docString = docString.replaceAll("\\$allApiGroupData", JsonUtils.object2JsonIgNull(apiGroupList));
+		ByteArrayInputStream input = null;
+		FileOutputStream output = null;
+		try {
+			input = new ByteArrayInputStream(docString.getBytes());
+			output = new FileOutputStream("/temp/testExport.html");
+			IOUtils.copyLarge(input, output);
+		} finally {
+			IOUtils.closeQuietly(input,output);
+		}
 
 		/*Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
 		Elements links = doc.select("link[href]");
@@ -193,7 +224,7 @@ public class ProjectController extends BaseController {
 		} finally {
 			IOUtils.closeQuietly(input,output);
 		}*/
-		Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
+		/*Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
 		Elements links = doc.select("link[href]");
 		String script = "<script type='text/ecmascript-6'>%s</script>";
 		String style = "<style type='text/css'>%s</style>";
@@ -229,6 +260,6 @@ public class ProjectController extends BaseController {
 			IOUtils.copyLarge(input, output);
 		} finally {
 			IOUtils.closeQuietly(input,output);
-		}
+		}*/
 	}
 }
