@@ -287,7 +287,7 @@
                 this.showDetail = true;
             },
         },
-        updated() {
+        mounted() {
             this.$nextTick(()=>{
                 this.findApiGroups();
                 this.findAllApi();
