@@ -152,7 +152,7 @@
                 },
                 dataList: [],
                 filterDataList: [],
-                tableHeight: window.innerHeight,
+                tableHeight: 0,
                 reqShowDataList: [],
                 respShowDataList: [],
                 showDetail: false,
@@ -239,6 +239,7 @@
             findAllApi() {
                 let $ref = this.$refs['apisHidden'];
                 let apisHtml = $ref.innerHTML;
+                console.log(apisHtml);
                 if (apisHtml !== '') {
                     this.filterDataList = this.dataList = JSON.parse(apisHtml);
                     return;
@@ -278,9 +279,12 @@
                 this.showDetail = true;
             },
         },
-        created() {
+        mounted() {
             this.findApiGroups();
             this.findAllApi();
+            this.$nextTick(()=>{
+                this.tableHeight = window.innerHeight;
+            })
         },
     };
 </script>
