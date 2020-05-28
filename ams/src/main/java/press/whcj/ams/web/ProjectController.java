@@ -170,10 +170,13 @@ public class ProjectController extends BaseController {
         FileOutputStream output = null;
         try {
             input = new ByteArrayInputStream(doc.toString().getBytes());
+            File file = new File("/data/exportVpiHtml/");
+            file.delete();
+            file.mkdirs();
             output = new FileOutputStream("/data/exportVpiHtml/testExport.html");
             IOUtils.copyLarge(input, output);
             Runtime.getRuntime().exec("cp -r /opt/uploadFile/assets /data/exportVpiHtml/");
-            ZipUtil.pack(new File("/data/exportVpiHtml"),new File("/data/exportVpiHtml.zip"));
+            ZipUtil.pack(new File("/data/exportVpiHtml"), new File("/data/exportVpiHtml.zip"));
         } finally {
             IOUtils.closeQuietly(input, output);
         }
