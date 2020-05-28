@@ -15,47 +15,48 @@ export const CONSTANT = {
         {
             path: '/help',
             name: 'help',
-            component: () => import('@/views/help/index'),
+            component: resolve => require(['@/views/help/index.vue'], resolve),
+            // component: () => import('@/views/help/index'),
             noMenu: true
         },
         {
             path: '/apiDoc',
             name: 'apiDoc',
-            component: () => import('@/views/apiDoc/index'),
+            component: resolve => require(['@/views/apiDoc/index.vue'], resolve),
             meta: {title: 'API Doc', icon: 'el-icon-grape'}
         },
         {
             path: '/environmentConfig',
             name: 'environmentConfig',
-            component: () => import('@/views/environmentConfig/index'),
+            component: resolve => require(['@/views/environmentConfig/index.vue'], resolve),
             meta: {title: 'Environment Config', icon: 'el-icon-moon'}
         },
         {
             path: '/dataStructure',
             name: 'dataStructure',
-            component: () => import('@/views/dataStructure/index'),
+            component: resolve => require(['@/views/dataStructure/index.vue'], resolve),
             meta: {title: 'Data Structure', icon: 'el-icon-coin'}
         },
         {
             path: '/api',
             name: 'api',
-            component: () => import('@/views/api/index'),
+            component: resolve => require(['@/views/api/index.vue'], resolve),
             notMenu: true,
             children: [
                 {
                     path: '/api/edit',
                     name: 'api/edit',
-                    component: () => import('@/views/api/edit'),
+                    component: resolve => require(['@/views/api/edit.vue'], resolve),
                 },
                 {
                     path: '/api/detail',
                     name: 'api/detail',
-                    component: () => import('@/views/api/detail'),
+                    component: resolve => require(['@/views/api/detail.vue'], resolve),
                 },
                 {
                     path: '/api/test',
                     name: 'api/test',
-                    component: () => import('@/views/api/test'),
+                    component: resolve => require(['@/views/api/test.vue'], resolve),
                 },
             ],
         },

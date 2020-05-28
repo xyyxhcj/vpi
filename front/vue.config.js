@@ -14,13 +14,11 @@ module.exports = {
             entry: 'src/main.js',
             template: 'public/index.html',
             filename: 'index.html',
-            title: 'vpi',
         },
         exportDoc: {
             entry: 'src/pages/exportDoc.js',
             template: 'public/exportDoc.html',
             filename: 'exportDoc.html',
-            title: 'exportDoc',
         },
     },
     publicPath: '/',
@@ -32,6 +30,9 @@ module.exports = {
     runtimeCompiler: true,
     transpileDependencies: [],
     productionSourceMap: debug,
+    css: {
+        sourceMap: debug,
+    },
     configureWebpack: config => {
         if (debug) {
             config.devtool = 'cheap-module-eval-source-map'

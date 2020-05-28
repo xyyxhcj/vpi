@@ -206,25 +206,33 @@
             },
             findApiGroups() {
                 this.groups = [];
-                let all = JSON.parse('$allApiGroupData');
-                let dict = {};
-                all.forEach(item => dict[item.id] = item);
-                for (let i = all.length - 1; i >= 0; i--) {
-                    let item = all[i];
-                    item.getLevel =
-                        (item) => (item.parentId && item.parentId !== '') ?
-                            dict[item.parentId].getLevel(dict[item.parentId]) + 1 : 0;
-                    if (!item.parentId || item.parentId === '') {
-                        this.groups.splice(0, 0, item);
-                    } else if (dict[item.parentId].childList) {
-                        dict[item.parentId].childList.splice(0, 0, item);
-                    } else {
-                        dict[item.parentId].childList = [item];
+                this.$axios.post(CONSTANT.REQUEST_URL.API_GROUP_FIND_LIST, this.query).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        let all = resp.data.data;
+                        let dict = {};
+                        all.forEach(item => dict[item.id] = item);
+                        for (let i = all.length - 1; i >= 0; i--) {
+                            let item = all[i];
+                            item.getLevel =
+                                (item) => (item.parentId && item.parentId !== '') ?
+                                    dict[item.parentId].getLevel(dict[item.parentId]) + 1 : 0;
+                            if (!item.parentId || item.parentId === '') {
+                                this.groups.splice(0, 0, item);
+                            } else if (dict[item.parentId].childList) {
+                                dict[item.parentId].childList.splice(0, 0, item);
+                            } else {
+                                dict[item.parentId].childList = [item];
+                            }
+                        }
                     }
-                }
+                });
             },
             findAllApi() {
-                this.filterDataList = this.dataList = JSON.parse('$allApiData');
+                this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_ALL_DETAIL, this.query).then(resp => {
+                    if (UTILS.checkResp(resp)) {
+                        this.filterDataList = this.dataList = resp.data.data;
+                    }
+                });
             },
             filterApi() {
                 let filterList = this.dataList;
@@ -260,7 +268,6 @@
         },
     };
 </script>
-
 <style lang="stylus" rel="stylesheet/stylus">
     #exportHtml
         .el-main

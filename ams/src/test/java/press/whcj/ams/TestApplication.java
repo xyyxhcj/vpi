@@ -10,9 +10,12 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.test.context.junit4.SpringRunner;
 import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.entity.*;
+import press.whcj.ams.entity.dto.ProjectDto;
 import press.whcj.ams.entity.dto.UserDto;
 import press.whcj.ams.entity.vo.UserVo;
 import press.whcj.ams.util.FastUtils;
+import press.whcj.ams.util.JsonUtils;
+import press.whcj.ams.web.ProjectController;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -30,6 +33,8 @@ import java.util.stream.Collectors;
 public class TestApplication {
 	@Resource
 	private MongoTemplate mongoTemplate;
+	@Resource
+	private ProjectController projectController;
 
 	@Test
 	public void testMongodb01() {
@@ -157,5 +162,12 @@ public class TestApplication {
 			mongoTemplate.save(header);
 		});
 
+	}
+
+	@Test
+	public void testExportHtml() throws Exception {
+		// {"id":"5de9bf91ecae1f3a0d7bf7cc&","name":"Demo","envId":"5e3777c4bc1dfd3b727fa94e"}
+		ProjectDto projectDto = JsonUtils.json2Pojo("{\"id\":\"5de9bf91ecae1f3a0d7bf7cc&\",\"name\":\"Demo\",\"envId\":\"5e3777c4bc1dfd3b727fa94e\"}", ProjectDto.class);
+		projectController.exportHtml(projectDto);
 	}
 }

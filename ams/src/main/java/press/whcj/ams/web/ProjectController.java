@@ -1,7 +1,8 @@
 package press.whcj.ams.web;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,6 @@ import press.whcj.ams.util.PermUtils;
 import press.whcj.ams.util.UserUtils;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -135,7 +135,7 @@ public class ProjectController extends BaseController {
 	}
 
 	@PostMapping("exportHtml")
-	public void exportHtml(@RequestBody ProjectDto projectDto) throws IOException {
+	public void exportHtml(@RequestBody ProjectDto projectDto) throws Exception {
 		String projectId = projectDto.getId();
 		String envId = projectDto.getEnvId();
 		String projectName = projectDto.getName();
@@ -147,7 +147,54 @@ public class ProjectController extends BaseController {
 		apiDto.setEnvId(envId);
 		List<ApiGroupVo> apiGroupList = apiGroupService.findList(apiGroup);
 		List<ApiVo> apiList = apiService.findAllDetail(apiDto);
-		Document doc = Jsoup.connect(String.format(Constant.SysConfig.EXPORT_URL, projectId, projectName, envId)).get();
-		System.out.println(doc);
+		String url = String.format(Constant.Url.EXPORT_URL, projectId, projectName, envId);
+
+
+		ChromeOptions options=new ChromeOptions();
+		options.setHeadless(true);
+		WebDriver driver = new ChromeDriver(options);
+		driver.get(url);
+		Thread.sleep(5000);
+		System.out.println(driver.getPageSource());
+		System.out.println(driver.getTitle());
+		System.out.println(driver);
+		driver.close();
+		/*Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
+		Elements links = doc.select("link[href]");
+		String script = "<script type='text/ecmascript-6'>%s</script>";
+		String style = "<style type='text/css'>%s</style>";
+		for (Element link : links) {
+			String href = link.attr("href");
+			if (href.endsWith(".js")) {
+				Document jsHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + href).ignoreContentType(true).get();
+				String format = String.format(script, jsHtml.selectFirst("body").html());
+				link.parent().append(format);
+			} else if (href.endsWith(".css")) {
+				Document cssHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + href).ignoreContentType(true).get();
+				String format = String.format(style, cssHtml.selectFirst("body").html());
+				link.parent().append(format);
+			}
+			link.remove();
+		}
+		links = doc.select("script[src]");
+		for (Element link : links) {
+			String src = link.attr("src");
+			Document jsHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + src).ignoreContentType(true).get();
+			String format = String.format(script, jsHtml.selectFirst("body").html());
+			link.parent().append(format);
+			link.remove();
+		}
+		String docString = doc.toString();
+		docString = docString.replaceAll("\\$allApiData", JsonUtils.object2JsonIgNull(apiList));
+		docString = docString.replaceAll("\\$allApiGroupData", JsonUtils.object2JsonIgNull(apiGroupList));
+		ByteArrayInputStream input = null;
+		FileOutputStream output = null;
+		try {
+			input = new ByteArrayInputStream(docString.getBytes());
+			output = new FileOutputStream("D:\\tmp\\1.html");
+			IOUtils.copyLarge(input, output);
+		} finally {
+			IOUtils.closeQuietly(input,output);
+		}*/
 	}
 }
