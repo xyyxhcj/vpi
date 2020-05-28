@@ -29,7 +29,8 @@ module.exports = {
     lintOnSave: false,
     runtimeCompiler: true,
     transpileDependencies: [],
-    productionSourceMap: debug,
+    productionSourceMap: true,
+    // productionSourceMap: debug,
     css: {
         sourceMap: debug,
     },
