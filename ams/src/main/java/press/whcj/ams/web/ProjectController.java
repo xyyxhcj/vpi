@@ -1,6 +1,7 @@
 package press.whcj.ams.web;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,8 +20,6 @@ import press.whcj.ams.entity.*;
 import press.whcj.ams.entity.dto.ApiDto;
 import press.whcj.ams.entity.dto.ProjectDto;
 import press.whcj.ams.entity.dto.ProjectUserDto;
-import press.whcj.ams.entity.vo.ApiGroupVo;
-import press.whcj.ams.entity.vo.ApiVo;
 import press.whcj.ams.entity.vo.ProjectGroupVo;
 import press.whcj.ams.entity.vo.UserVo;
 import press.whcj.ams.service.*;
@@ -43,163 +42,163 @@ import java.util.List;
 @RestController
 @RequestMapping("project")
 public class ProjectController extends BaseController {
-	@Resource
-	private ProjectService projectService;
-	@Resource
-	private ProjectUserService projectUserService;
-	@Resource
-	private ProjectGroupService projectGroupService;
-	@Resource
-	private ApiGroupService apiGroupService;
-	@Resource
-	private ApiService apiService;
-	@Resource
-	private MongoTemplate mongoTemplate;
+    @Resource
+    private ProjectService projectService;
+    @Resource
+    private ProjectUserService projectUserService;
+    @Resource
+    private ProjectGroupService projectGroupService;
+    @Resource
+    private ApiGroupService apiGroupService;
+    @Resource
+    private ApiService apiService;
+    @Resource
+    private MongoTemplate mongoTemplate;
 
-	@PostMapping("add")
-	public Result<String> add(@RequestBody ProjectDto projectDto) {
-		UserVo operator = UserUtils.getOperator();
-		projectDto.initCreate(operator);
-		String id = projectService.save(projectDto, operator);
-		return ok(id);
-	}
+    @PostMapping("add")
+    public Result<String> add(@RequestBody ProjectDto projectDto) {
+        UserVo operator = UserUtils.getOperator();
+        projectDto.initCreate(operator);
+        String id = projectService.save(projectDto, operator);
+        return ok(id);
+    }
 
-	@PostMapping("edit")
-	public Result<String> edit(@RequestBody ProjectDto projectDto) {
-		FastUtils.checkParams(projectDto.getId());
-		UserVo operator = UserUtils.getOperator();
-		projectDto.initUpdate(operator);
-		projectService.save(projectDto, operator);
-		return ok(projectDto.getId());
-	}
+    @PostMapping("edit")
+    public Result<String> edit(@RequestBody ProjectDto projectDto) {
+        FastUtils.checkParams(projectDto.getId());
+        UserVo operator = UserUtils.getOperator();
+        projectDto.initUpdate(operator);
+        projectService.save(projectDto, operator);
+        return ok(projectDto.getId());
+    }
 
-	@PostMapping("assign")
-	public Result<Object> assign(@RequestBody ProjectDto projectDto) {
-		FastUtils.checkParams(projectDto.getId());
-		UserVo operator = UserUtils.getOperator();
-		PermUtils.checkProjectAdmin(mongoTemplate, projectDto.getId(), operator);
-		projectService.assign(projectDto, operator);
-		return ok(true);
-	}
+    @PostMapping("assign")
+    public Result<Object> assign(@RequestBody ProjectDto projectDto) {
+        FastUtils.checkParams(projectDto.getId());
+        UserVo operator = UserUtils.getOperator();
+        PermUtils.checkProjectAdmin(mongoTemplate, projectDto.getId(), operator);
+        projectService.assign(projectDto, operator);
+        return ok(true);
+    }
 
-	@PostMapping("findProjectUser")
-	public Result<List<User>> findProjectUser(@RequestBody ProjectUser projectUser) {
-		return ok(projectUserService.findProjectUser(projectUser));
-	}
+    @PostMapping("findProjectUser")
+    public Result<List<User>> findProjectUser(@RequestBody ProjectUser projectUser) {
+        return ok(projectUserService.findProjectUser(projectUser));
+    }
 
-	@PostMapping("findList")
-	public Result<List<Project>> findList(@RequestBody ProjectDto projectDto) {
-		return ok(projectService.findList(projectDto, UserUtils.getOperator()));
-	}
+    @PostMapping("findList")
+    public Result<List<Project>> findList(@RequestBody ProjectDto projectDto) {
+        return ok(projectService.findList(projectDto, UserUtils.getOperator()));
+    }
 
-	@PostMapping("findListByGroupForOwner")
-	public Result<List<Object>> findListByGroupForOwner(@RequestBody ProjectDto projectDto) {
-		ProjectGroup projectGroupDto = new ProjectGroup();
-		if (StringUtils.isEmpty(projectDto.getGroupId())) {
-			projectDto.setGroupId(null);
-		}
-		projectGroupDto.setParentId(projectDto.getGroupId());
-		UserVo operator = UserUtils.getOperator();
-		List<ProjectGroupVo> listByParent = projectGroupService.findListByParentForOwner(projectGroupDto, operator);
-		List<Project> listByGroup = projectService.findListByGroupForOwner(projectDto, operator);
-		List<Object> result = new LinkedList<>(listByParent);
-		result.addAll(listByGroup);
-		return ok(result);
-	}
+    @PostMapping("findListByGroupForOwner")
+    public Result<List<Object>> findListByGroupForOwner(@RequestBody ProjectDto projectDto) {
+        ProjectGroup projectGroupDto = new ProjectGroup();
+        if (StringUtils.isEmpty(projectDto.getGroupId())) {
+            projectDto.setGroupId(null);
+        }
+        projectGroupDto.setParentId(projectDto.getGroupId());
+        UserVo operator = UserUtils.getOperator();
+        List<ProjectGroupVo> listByParent = projectGroupService.findListByParentForOwner(projectGroupDto, operator);
+        List<Project> listByGroup = projectService.findListByGroupForOwner(projectDto, operator);
+        List<Object> result = new LinkedList<>(listByParent);
+        result.addAll(listByGroup);
+        return ok(result);
+    }
 
-	@PostMapping("findListByGroupForOther")
-	public Result<List<Object>> findListByGroupForOther(@RequestBody ProjectDto projectDto) {
-		ProjectGroup projectGroupDto = new ProjectGroup();
-		if (StringUtils.isEmpty(projectDto.getGroupId())) {
-			projectDto.setGroupId(null);
-		}
-		projectGroupDto.setParentId(projectDto.getGroupId());
-		UserVo operator = UserUtils.getOperator();
-		List<ProjectGroupVo> listByParent = projectGroupService.findListByParentForOther(projectGroupDto, operator);
-		List<Project> listByGroup = projectService.findListByGroupForOther(projectDto, operator);
-		List<Object> result = new LinkedList<>(listByParent);
-		result.addAll(listByGroup);
-		return ok(result);
-	}
+    @PostMapping("findListByGroupForOther")
+    public Result<List<Object>> findListByGroupForOther(@RequestBody ProjectDto projectDto) {
+        ProjectGroup projectGroupDto = new ProjectGroup();
+        if (StringUtils.isEmpty(projectDto.getGroupId())) {
+            projectDto.setGroupId(null);
+        }
+        projectGroupDto.setParentId(projectDto.getGroupId());
+        UserVo operator = UserUtils.getOperator();
+        List<ProjectGroupVo> listByParent = projectGroupService.findListByParentForOther(projectGroupDto, operator);
+        List<Project> listByGroup = projectService.findListByGroupForOther(projectDto, operator);
+        List<Object> result = new LinkedList<>(listByParent);
+        result.addAll(listByGroup);
+        return ok(result);
+    }
 
-	@PostMapping("editProjectUser")
-	public Result<Object> editProjectUser(@RequestBody ProjectUserDto projectUserDto) {
-		FastUtils.checkParams(projectUserDto.getProjectId());
-		UserVo operator = UserUtils.getOperator();
-		PermUtils.checkProjectAdmin(mongoTemplate, projectUserDto.getProjectId(), operator);
-		projectUserService.edit(projectUserDto);
-		return ok();
-	}
+    @PostMapping("editProjectUser")
+    public Result<Object> editProjectUser(@RequestBody ProjectUserDto projectUserDto) {
+        FastUtils.checkParams(projectUserDto.getProjectId());
+        UserVo operator = UserUtils.getOperator();
+        PermUtils.checkProjectAdmin(mongoTemplate, projectUserDto.getProjectId(), operator);
+        projectUserService.edit(projectUserDto);
+        return ok();
+    }
 
-	@PostMapping("remove")
-	public Result<Object> remove(@RequestBody ProjectDto projectDto) {
-		String projectId = projectDto.getId();
-		FastUtils.checkParams(projectId);
-		UserVo operator = UserUtils.getOperator();
-		PermUtils.checkProjectOwner(mongoTemplate, projectId, operator);
-		projectService.remove(projectId, operator);
-		return ok();
-	}
+    @PostMapping("remove")
+    public Result<Object> remove(@RequestBody ProjectDto projectDto) {
+        String projectId = projectDto.getId();
+        FastUtils.checkParams(projectId);
+        UserVo operator = UserUtils.getOperator();
+        PermUtils.checkProjectOwner(mongoTemplate, projectId, operator);
+        projectService.remove(projectId, operator);
+        return ok();
+    }
 
-	@PostMapping("exportHtml")
-	public void exportHtml(@RequestBody ProjectDto projectDto) throws Exception {
-		String projectId = projectDto.getId();
-		String envId = projectDto.getEnvId();
-		String projectName = projectDto.getName();
-		FastUtils.checkParams(projectId);
-		ApiGroup apiGroup = new ApiGroup();
-		apiGroup.setProjectId(projectId);
-		ApiDto apiDto = new ApiDto();
-		apiDto.setProjectId(projectId);
-		apiDto.setEnvId(envId);
-		List<ApiGroupVo> apiGroupList = apiGroupService.findList(apiGroup);
-		List<ApiVo> apiList = apiService.findAllDetail(apiDto);
-		String url = String.format(Constant.Url.EXPORT_URL, projectId, projectName, envId);
+    @PostMapping("exportHtml")
+    public void exportHtml(@RequestBody ProjectDto projectDto) throws Exception {
+        String projectId = projectDto.getId();
+        String envId = projectDto.getEnvId();
+        String projectName = projectDto.getName();
+        FastUtils.checkParams(projectId);
+        ApiGroup apiGroup = new ApiGroup();
+        apiGroup.setProjectId(projectId);
+        ApiDto apiDto = new ApiDto();
+        apiDto.setProjectId(projectId);
+        apiDto.setEnvId(envId);
+        //List<ApiGroupVo> apiGroupList = apiGroupService.findList(apiGroup);
+        //List<ApiVo> apiList = apiService.findAllDetail(apiDto);
+        String url = String.format(Constant.Url.EXPORT_URL, projectId, projectName, envId);
 
-		ChromeOptions options=new ChromeOptions();
-		options.setHeadless(true);
-		options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
-		WebDriver driver = new ChromeDriver(options);
-		driver.get(Constant.SysConfig.FRONT_HOST + url);
-		Thread.sleep(5000);
-		Document doc = Jsoup.parse(driver.getPageSource());
-		driver.close();
-		Elements links = doc.select("link[href]");
-		String script = "<script type='text/javascript'><pre>%s</pre></script>";
-		String style = "<style type='text/css'><pre>%s</pre></style>";
-		for (Element link : links) {
-			String href = link.attr("href");
-			if (href.endsWith(".js")) {
-				Document jsHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + href).ignoreContentType(true).get();
-				String format = String.format(script, jsHtml.selectFirst("body").html());
-				link.parent().append(format);
-			} else if (href.endsWith(".css")) {
-				Document cssHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + href).ignoreContentType(true).get();
-				String format = String.format(style, cssHtml.selectFirst("body").html());
-				link.parent().append(format);
-			}
-			link.remove();
-		}
-		links = doc.select("script[src]");
-		for (Element link : links) {
-			String src = link.attr("src");
-			Document jsHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + src).ignoreContentType(true).get();
-			String format = String.format(script, jsHtml.selectFirst("body").html());
-			link.parent().append(format);
-			link.remove();
-		}
-		String docString = doc.toString();
-		//docString = docString.replaceAll("\\$allApiData", JsonUtils.object2JsonIgNull(apiList));
-		//docString = docString.replaceAll("\\$allApiGroupData", JsonUtils.object2JsonIgNull(apiGroupList));
-		ByteArrayInputStream input = null;
-		FileOutputStream output = null;
-		try {
-			input = new ByteArrayInputStream(docString.getBytes());
-			output = new FileOutputStream("/data/testExport.html");
-			IOUtils.copyLarge(input, output);
-		} finally {
-			IOUtils.closeQuietly(input, output);
-		}
+        ChromeOptions options = new ChromeOptions();
+        options.setHeadless(true);
+        options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
+        WebDriver driver = new ChromeDriver(options);
+        driver.get(Constant.SysConfig.FRONT_HOST + url);
+        Thread.sleep(5000);
+        Document doc = Jsoup.parse(driver.getPageSource());
+        driver.close();
+        Elements links = doc.select("link[href]");
+        String script = "<script type='text/javascript'>%s</script>";
+        String style = "<style type='text/css'>%s</style>";
+        for (Element link : links) {
+            String href = link.attr("href");
+            if (href.endsWith(".js")) {
+                Document jsHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + href).ignoreContentType(true).get();
+                String format = String.format(script, StringEscapeUtils.unescapeXml(jsHtml.selectFirst("body").html()));
+                link.parent().append(format);
+            } else if (href.endsWith(".css")) {
+                Document cssHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + href).ignoreContentType(true).get();
+                String format = String.format(style, cssHtml.selectFirst("body").html());
+                link.parent().append(format);
+            }
+            link.remove();
+        }
+        links = doc.select("script[src]");
+        for (Element link : links) {
+            String src = link.attr("src");
+            Document jsHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + src).ignoreContentType(true).get();
+            String format = String.format(script, StringEscapeUtils.unescapeXml(jsHtml.selectFirst("body").html()));
+            link.parent().append(format);
+            link.remove();
+        }
+        String docString = doc.toString();
+        //docString = docString.replaceAll("\\$allApiData", JsonUtils.object2JsonIgNull(apiList));
+        //docString = docString.replaceAll("\\$allApiGroupData", JsonUtils.object2JsonIgNull(apiGroupList));
+        ByteArrayInputStream input = null;
+        FileOutputStream output = null;
+        try {
+            input = new ByteArrayInputStream(docString.getBytes());
+            output = new FileOutputStream("/data/testExport.html");
+            IOUtils.copyLarge(input, output);
+        } finally {
+            IOUtils.closeQuietly(input, output);
+        }
 
 		/*Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
 		Elements links = doc.select("link[href]");
@@ -261,5 +260,5 @@ public class ProjectController extends BaseController {
 		} finally {
 			IOUtils.closeQuietly(input,output);
 		}*/
-	}
+    }
 }
