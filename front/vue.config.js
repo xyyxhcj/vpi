@@ -1,3 +1,4 @@
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const HOST_URL = {
     dev: 'http://120.132.18.250:11111',
@@ -29,25 +30,40 @@ module.exports = {
     lintOnSave: false,
     runtimeCompiler: true,
     transpileDependencies: [],
-    productionSourceMap: true,
-    // productionSourceMap: debug,
+    productionSourceMap: debug,
     css: {
+        extract: true,
         sourceMap: debug,
     },
-    configureWebpack: config => {
-        if (debug) {
-            config.devtool = 'cheap-module-eval-source-map'
-        } else {
-            return {
-                plugins:[new CompressionPlugin({
-                    test: /\.js$|\.html$|\.css/,
-                    threshold: 10240,
-                    deleteOriginalAssets: false,
-                })]
-            }
-        }
-    },
-    // https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
+    // devtool: 'cheap-module-eval-source-map',
+    configureWebpack: debug ? {} :
+        {
+            optimization: {
+                minimizer: [
+                    new UglifyJsPlugin({
+                        test: /\.js($|\?)/i,
+                        parallel: true,
+                        uglifyOptions: {
+                            output: {
+                                comments: false,
+                                beautify: false,
+                            },
+                            compress: {
+                                warnings: false,
+                                drop_console: true,
+                                drop_debugger: false,
+                                pure_funcs: ['console.log']
+                            }
+                        }
+                    })
+                ]
+            },
+            plugins: [new CompressionPlugin({
+                test: /\.js$|\.html$|\.css/,
+                threshold: 10240,
+                deleteOriginalAssets: false,
+            })]
+        },
     // eslint-disable-next-line no-unused-vars
     chainWebpack: config => {
         if (debug) {
@@ -62,10 +78,10 @@ module.exports = {
     pwa: {},
     devServer: {
         open: true,
-        // host: debug ? 'localhost' : '0.0.0.0',
         port: debug ? 8081 : 80,
         https: false,
         hotOnly: false,
+        progress: true,
         proxy: {
             '/vpi/': {
                 target: HOST_URL[profilesActive],

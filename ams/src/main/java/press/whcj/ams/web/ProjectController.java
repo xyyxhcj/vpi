@@ -170,7 +170,7 @@ public class ProjectController extends BaseController {
 		driver.close();*/
 
 
-		Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
+		/*Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
 		Elements links = doc.select("link[href]");
 		for (Element link : links) {
 			String href = link.attr("href");
@@ -192,8 +192,7 @@ public class ProjectController extends BaseController {
 			IOUtils.copyLarge(input, output);
 		} finally {
 			IOUtils.closeQuietly(input,output);
-		}
-/*
+		}*/
 		Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
 		Elements links = doc.select("link[href]");
 		String script = "<script type='text/ecmascript-6'>%s</script>";
@@ -231,6 +230,5 @@ public class ProjectController extends BaseController {
 		} finally {
 			IOUtils.closeQuietly(input,output);
 		}
-*/
 	}
 }

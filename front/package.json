@@ -19,6 +19,7 @@
     "serialize-javascript": "^2.1.2",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
+    "uglifyjs-webpack-plugin": "^2.2.0",
     "vue": "^2.6.10"
   },
   "devDependencies": {
