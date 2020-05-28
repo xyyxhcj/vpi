@@ -44,12 +44,13 @@ module.exports = {
                         test: /\.js($|\?)/i,
                         parallel: true,
                         uglifyOptions: {
+                            warnings: false,
+                            sourceMap: false,
                             output: {
                                 comments: false,
                                 beautify: false,
                             },
                             compress: {
-                                warnings: false,
                                 drop_console: true,
                                 drop_debugger: false,
                                 pure_funcs: ['console.log']

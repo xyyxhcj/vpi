@@ -166,8 +166,8 @@ public class TestApplication {
 
 	@Test
 	public void testExportHtml() throws Exception {
-		// {"id":"5de9bf91ecae1f3a0d7bf7cc&","name":"Demo","envId":"5e3777c4bc1dfd3b727fa94e"}
-		ProjectDto projectDto = JsonUtils.json2Pojo("{\"id\":\"5de9bf91ecae1f3a0d7bf7cc&\",\"name\":\"Demo\",\"envId\":\"5e3777c4bc1dfd3b727fa94e\"}", ProjectDto.class);
+		// {"id":"5de9bf91ecae1f3a0d7bf7cc","name":"Demo","envId":"5e3777c4bc1dfd3b727fa94e"}
+		ProjectDto projectDto = JsonUtils.json2Pojo("{\"id\":\"5de9bf91ecae1f3a0d7bf7cc\",\"name\":\"Demo\",\"envId\":\"5e3777c4bc1dfd3b727fa94e\"}", ProjectDto.class);
 		projectController.exportHtml(projectDto);
 	}
 }
