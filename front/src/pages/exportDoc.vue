@@ -208,6 +208,7 @@
             },
             findApiGroups() {
                 let $ref = this.$refs['apiGroupsHidden'];
+                console.info($ref);
                 console.log($ref);
                 let apiGroupsHtml = $ref.innerHTML;
                 if (apiGroupsHtml !== '') {
@@ -239,6 +240,7 @@
             },
             findAllApi() {
                 let $ref = this.$refs['apisHidden'];
+                console.info($ref);
                 console.log($ref);
                 let apisHtml = $ref.innerHTML;
                 console.log(apisHtml);
