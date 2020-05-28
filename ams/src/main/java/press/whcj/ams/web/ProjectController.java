@@ -154,7 +154,7 @@ public class ProjectController extends BaseController {
 		options.setHeadless(true);
 		options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
 		WebDriver driver = new ChromeDriver(options);
-		driver.get(url);
+		driver.get(Constant.SysConfig.FRONT_HOST + url);
 		Thread.sleep(5000);
 		System.out.println(driver.getPageSource());
 		System.out.println(driver.getTitle());
