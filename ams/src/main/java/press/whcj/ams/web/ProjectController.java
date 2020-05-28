@@ -152,6 +152,7 @@ public class ProjectController extends BaseController {
 
 		ChromeOptions options=new ChromeOptions();
 		options.setHeadless(true);
+		options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
 		WebDriver driver = new ChromeDriver(options);
 		driver.get(url);
 		Thread.sleep(5000);
