@@ -206,41 +206,43 @@
                 }
                 this.filterApi();
             },
+            groupList2Tree(groupList) {
+                let dict = {};
+                groupList.forEach(item => dict[item.id] = item);
+                for (let i = groupList.length - 1; i >= 0; i--) {
+                    let item = groupList[i];
+                    item.getLevel =
+                        (item) => (item.parentId && item.parentId !== '') ?
+                            dict[item.parentId].getLevel(dict[item.parentId]) + 1 : 0;
+                    if (!item.parentId || item.parentId === '') {
+                        this.groups.splice(0, 0, item);
+                    } else if (dict[item.parentId].childList) {
+                        dict[item.parentId].childList.splice(0, 0, item);
+                    } else {
+                        dict[item.parentId].childList = [item];
+                    }
+                }
+            },
             findApiGroups() {
                 let $element = document.getElementById('apiGroupsHidden');
-                console.info($element);
                 let apiGroupsHtml = $element.innerHTML;
                 if (apiGroupsHtml !== '') {
-                    this.groups = JSON.parse(apiGroupsHtml);
+                    let groupList = JSON.parse(apiGroupsHtml);
+                    this.groupList2Tree(groupList);
                     return;
                 }
                 this.groups = [];
                 this.$axios.post(CONSTANT.REQUEST_URL.API_GROUP_FIND_LIST, this.query).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         let all = resp.data.data;
-                        let dict = {};
-                        all.forEach(item => dict[item.id] = item);
-                        for (let i = all.length - 1; i >= 0; i--) {
-                            let item = all[i];
-                            item.getLevel =
-                                (item) => (item.parentId && item.parentId !== '') ?
-                                    dict[item.parentId].getLevel(dict[item.parentId]) + 1 : 0;
-                            if (!item.parentId || item.parentId === '') {
-                                this.groups.splice(0, 0, item);
-                            } else if (dict[item.parentId].childList) {
-                                dict[item.parentId].childList.splice(0, 0, item);
-                            } else {
-                                dict[item.parentId].childList = [item];
-                            }
-                        }
-                        $element.innerHTML = JSON.stringify(this.groups);
+                        $element.innerHTML = JSON.stringify(all);
+                        this.groupList2Tree(all);
                     }
                 });
             },
             findAllApi() {
                 let $element = document.getElementById('apisHidden');
                 let apisHtml = $element.innerHTML;
-                console.log(apisHtml);
                 if (apisHtml !== '') {
                     this.filterDataList = this.dataList = JSON.parse(apisHtml);
                     return;
@@ -314,7 +316,14 @@
 
         .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content
             background-color #eee
-
+    .api-edit-info
+        margin-right 30px
+    .json-content
+        margin 10px
+        padding 10px 0
+        border-radius 4px
+        text-align left
+        background #e5e9f2
     .export-api-detail
         margin-right 0
 </style>
