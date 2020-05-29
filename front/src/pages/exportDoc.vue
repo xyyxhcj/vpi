@@ -29,7 +29,7 @@
         </el-aside>
         <el-main>
             <el-table :data="filterDataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
-                      :height="tableHeight"
+                      :height="tableHeight" border
                       :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table">
                 <el-table-column width="100">
                     <template slot-scope="scope">
@@ -51,9 +51,9 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="name" prop="name" width="200"/>
-                <el-table-column label="apiUri" prop="apiUri" width="200"/>
-                <el-table-column label="createName" prop="createName" width="110"/>
-                <el-table-column label="updateName" prop="updateName" width="110"/>
+                <el-table-column label="apiUri" prop="apiUri" width="250" show-overflow-tooltip/>
+                <el-table-column label="createName" prop="createName" width="115"/>
+                <el-table-column label="updateName" prop="updateName" width="115"/>
                 <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
             </el-table>
         </el-main>
@@ -115,8 +115,8 @@
                 </el-col>
             </el-row>
         </el-dialog>
-        <div style="display: none" ref="apiGroupsHidden" id="apiGroupsHidden"></div>
-        <div style="display: none" ref="apisHidden"></div>
+        <div style="display: none" id="apiGroupsHidden"></div>
+        <div style="display: none" id="apisHidden"></div>
     </el-container>
 </template>
 
@@ -207,15 +207,9 @@
                 this.filterApi();
             },
             findApiGroups() {
-                let htmlElement = document.getElementById('apiGroupsHidden');
-                console.info(htmlElement);
-                // if (htmlElement.innerHTML !== '') {
-                //     this.groups = JSON.parse(apiGroupsHtml);
-                //     return;
-                // }
-                let $ref = this.$refs['apiGroupsHidden'];
-                console.info($ref);
-                let apiGroupsHtml = $ref.innerHTML;
+                let $element = document.getElementById('apiGroupsHidden');
+                console.info($element);
+                let apiGroupsHtml = $element.innerHTML;
                 if (apiGroupsHtml !== '') {
                     this.groups = JSON.parse(apiGroupsHtml);
                     return;
@@ -239,14 +233,13 @@
                                 dict[item.parentId].childList = [item];
                             }
                         }
-                        $ref.innerHTML = JSON.stringify(this.groups);
+                        $element.innerHTML = JSON.stringify(this.groups);
                     }
                 });
             },
             findAllApi() {
-                let $ref = this.$refs['apisHidden'];
-                console.info($ref);
-                let apisHtml = $ref.innerHTML;
+                let $element = document.getElementById('apisHidden');
+                let apisHtml = $element.innerHTML;
                 console.log(apisHtml);
                 if (apisHtml !== '') {
                     this.filterDataList = this.dataList = JSON.parse(apisHtml);
@@ -255,7 +248,7 @@
                 this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_ALL_DETAIL, this.query).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.filterDataList = this.dataList = resp.data.data;
-                        $ref.innerHTML = JSON.stringify(this.dataList);
+                        $element.innerHTML = JSON.stringify(this.dataList);
                     }
                 });
             },
@@ -288,10 +281,10 @@
             },
         },
         mounted() {
-            this.$nextTick(()=>{
-                this.findApiGroups();
-                this.findAllApi();
-                this.tableHeight = window.innerHeight;
+            this.findApiGroups();
+            this.findAllApi();
+            this.$nextTick(() => {
+                this.tableHeight = window.innerHeight - 20;
             })
         },
     };
