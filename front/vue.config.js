@@ -32,7 +32,7 @@ module.exports = {
     transpileDependencies: [],
     productionSourceMap: debug,
     css: {
-        extract: false,
+        extract: true,
         sourceMap: debug,
     },
     // devtool: 'cheap-module-eval-source-map',
@@ -68,7 +68,7 @@ module.exports = {
     // eslint-disable-next-line no-unused-vars
     chainWebpack: config => {
         config.optimization.splitChunks({
-                // cacheGroups: {}
+                cacheGroups: {}
             });
         config.plugins.delete('prefetch-index');
         config.plugins.delete('preload-index');
