@@ -69,8 +69,7 @@ fi
 cp ${projectDir}front/dist/index.html ${nginxHtmlDir}
 rm -rf ${nginxStaticDir}assets
 rm -rf ${nginxStaticDir}static
-cp ${projectDir}front/dist/assets ${nginxStaticDir} -r
-cp ${projectDir}front/dist/static ${nginxStaticDir} -r
+cp ${projectDir}front/dist/* ${nginxStaticDir} -r
 mv ${projectDir}chromePlugin/vpiChromePlugin.zip ${nginxStaticDir}
 mv ${projectDir}ams/target/ams.jar ${jarSaveDir}
 cd ${jarSaveDir} || exit
