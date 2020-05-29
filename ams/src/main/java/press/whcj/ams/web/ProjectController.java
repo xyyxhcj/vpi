@@ -1,13 +1,11 @@
 package press.whcj.ams.web;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -157,10 +155,10 @@ public class ProjectController extends BaseController {
         driver.get(Constant.SysConfig.FRONT_HOST + url);
         Thread.sleep(5000);
         List<WebElement> elements = driver.findElements(By.className("el-table__row"));
-        elements.get(0).click();
-        Thread.sleep(1000);
-        File screenshot = driver.getScreenshotAs(OutputType.FILE);
-        FileUtils.copyFile(screenshot, new File("/data/screen.png"));
+        //elements.get(0).click();
+        //Thread.sleep(1000);
+        //File screenshot = driver.getScreenshotAs(OutputType.FILE);
+        //FileUtils.copyFile(screenshot, new File("/data/screen.png"));
         Document doc = Jsoup.parse(driver.getPageSource());
         driver.close();
         Elements links = doc.select("link[href]");
@@ -176,11 +174,12 @@ public class ProjectController extends BaseController {
         FileOutputStream output = null;
         try {
             input = new ByteArrayInputStream(doc.toString().getBytes());
+            Runtime.getRuntime().exec("rm -rf /data/exportVpiHtml");
             File file = new File("/data/exportVpiHtml/");
-            file.delete();
             file.mkdirs();
             output = new FileOutputStream("/data/exportVpiHtml/testExport.html");
             IOUtils.copyLarge(input, output);
+
             Runtime.getRuntime().exec("cp -r /opt/uploadFile/assets /data/exportVpiHtml/");
             ZipUtil.pack(new File("/data/exportVpiHtml"), new File("/data/exportVpiHtml.zip"));
         } finally {
