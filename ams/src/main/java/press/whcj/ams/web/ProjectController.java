@@ -5,7 +5,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -155,6 +157,10 @@ public class ProjectController extends BaseController {
         WebDriver driver = new ChromeDriver(options);
         driver.get(Constant.SysConfig.FRONT_HOST + url);
         Thread.sleep(5000);
+        List<WebElement> elements = driver.findElements(By.className("el-table_1_column_1"));
+        elements.get(0).click();
+        Thread.sleep(1000);
+
         Document doc = Jsoup.parse(driver.getPageSource());
         driver.close();
         Elements links = doc.select("link[href]");
