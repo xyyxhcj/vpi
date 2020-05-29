@@ -1,12 +1,13 @@
 package press.whcj.ams.web;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -26,7 +27,9 @@ import press.whcj.ams.entity.dto.ProjectDto;
 import press.whcj.ams.entity.dto.ProjectUserDto;
 import press.whcj.ams.entity.vo.ProjectGroupVo;
 import press.whcj.ams.entity.vo.UserVo;
-import press.whcj.ams.service.*;
+import press.whcj.ams.service.ProjectGroupService;
+import press.whcj.ams.service.ProjectService;
+import press.whcj.ams.service.ProjectUserService;
 import press.whcj.ams.support.BaseController;
 import press.whcj.ams.support.Result;
 import press.whcj.ams.util.FastUtils;
@@ -53,10 +56,6 @@ public class ProjectController extends BaseController {
     private ProjectUserService projectUserService;
     @Resource
     private ProjectGroupService projectGroupService;
-    @Resource
-    private ApiGroupService apiGroupService;
-    @Resource
-    private ApiService apiService;
     @Resource
     private MongoTemplate mongoTemplate;
 
@@ -154,13 +153,14 @@ public class ProjectController extends BaseController {
         ChromeOptions options = new ChromeOptions();
         options.setHeadless(true);
         options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
-        WebDriver driver = new ChromeDriver(options);
+        ChromeDriver driver = new ChromeDriver(options);
         driver.get(Constant.SysConfig.FRONT_HOST + url);
         Thread.sleep(5000);
-        List<WebElement> elements = driver.findElements(By.className("el-table_1_column_1"));
+        List<WebElement> elements = driver.findElements(By.className("el-table__row"));
         elements.get(0).click();
         Thread.sleep(1000);
-
+        File screenshot = driver.getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(screenshot, new File("/data/screen.png"));
         Document doc = Jsoup.parse(driver.getPageSource());
         driver.close();
         Elements links = doc.select("link[href]");
