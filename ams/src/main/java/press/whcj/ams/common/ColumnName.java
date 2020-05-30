@@ -37,4 +37,5 @@ public interface ColumnName {
     String REQUEST_PARAM_$ID = "requestParam.$id";
     String RESPONSE_PARAM_$ID = "responseParam.$id";
     String API_URI = "apiUri";
+    String REMARK = "remark";
 }

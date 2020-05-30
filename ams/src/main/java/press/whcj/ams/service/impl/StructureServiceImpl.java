@@ -1,5 +1,6 @@
 package press.whcj.ams.service.impl;
 
+import org.bson.BsonRegularExpression;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -48,9 +49,16 @@ public class StructureServiceImpl implements StructureService {
     public MongoPage<StructureVo> findPage(StructureDto structureDto) {
         FastUtils.checkParams(structureDto.getProjectId());
         MongoPage<StructureVo> page = structureDto.getPage();
-        Query query = new Query(Criteria.where(ColumnName.PROJECT_ID).is(structureDto.getProjectId())
+        Criteria criteria = Criteria.where(ColumnName.PROJECT_ID).is(structureDto.getProjectId())
                 .and(ColumnName.TYPE).is(Constant.StructureType.USER_CREATE)
-                .and(ColumnName.IS_DEL).ne(Constant.Is.YES));
+                .and(ColumnName.IS_DEL).ne(Constant.Is.YES);
+        String nameOrRemark = structureDto.getNameOrRemark();
+        if (!StringUtils.isEmpty(nameOrRemark)) {
+            BsonRegularExpression expression = new BsonRegularExpression("^.*" + nameOrRemark + ".*$", "i");
+            criteria = criteria.orOperator(Criteria.where(ColumnName.NAME).regex(expression),
+                    Criteria.where(ColumnName.REMARK).regex(expression));
+        }
+        Query query = new Query(criteria);
         query.with(page.buildPageRequest()).with(QSort.by(Sort.Direction.DESC, ColumnName.UPDATE_TIME));
         long total = mongoTemplate.count(query, Structure.class);
         page.setTotal(total);

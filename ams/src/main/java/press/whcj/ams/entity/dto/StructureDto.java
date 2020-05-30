@@ -18,4 +18,5 @@ public class StructureDto extends StructureVo {
 	private MongoPage<StructureVo> page = new MongoPage<>();
 	private boolean isCheckName = true;
 	private boolean isReference;
+	private String nameOrRemark;
 }

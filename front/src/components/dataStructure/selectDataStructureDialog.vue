@@ -1,6 +1,8 @@
 <template>
     <el-dialog :append-to-body="true" :visible.sync="dialog.show" :title="dialog.title"
                :close-on-click-modal="false" center width="50%">
+        <el-input placeholder="search name or remark" v-model.trim="query.nameOrRemark"
+                  @keyup.enter.native="findPage" size="mini" style="width: 160px"/>
         <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
                   highlight-current-row @current-change="selectDataStructure" :row-style="{cursor:'pointer'}">
             <el-table-column label="name" prop="name"/>
@@ -34,6 +36,7 @@
                 dataList: [],
                 query: {
                     projectId: '',
+                    nameOrRemark: '',
                     page: {
                         current: 1,
                         size: CONSTANT.CONFIG.PAGE_SIZE_DEFAULT,
