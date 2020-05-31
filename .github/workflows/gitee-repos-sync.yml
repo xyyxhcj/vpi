@@ -1,49 +1,73 @@
-# This is a basic workflow to help you get started with Actions
-
+on: push
 name: Gitee repos sync
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
-on:
-  #push:
-  #  branches: [ master ]
-  #pull_request:
-  #  branches: [ master ]
-  schedule:
-    # 每天北京时间9点跑
-    - cron:  '0 1 * * *'
-
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - name: vpi sync
-      # 引用发行版的主要版本
-      uses: actions/cache@v1
-      with:
-        path: /home/runner/work/vpi/vpi-cache
-        key: ${{ runner.os }}-vpi-repos-cache
-
+  run:
     - name: Mirror the Github organization repos to Gitee.
-      # 引用分支的脚本支持
-      uses: actions@develop
+      uses: xyyxhcj/vpi@master
       with:
-        #  需要被同步的源端账户名，如github/phpdragon，表示Github的phpdragon账户。
         src: github/xyyxhcj
-        # 需要同步到的目的端账户名，如gitee/phpdragon，表示Gitee的phpdragon账户。
         dst: gitee/JianYuFeng
-        # 用于目的端上传代码的SSH key，用于上传代码
-        dst_key: ${{ secrets.gitee_sync }}
-        # 创建仓库的API tokens， 用于自动创建不存在的仓库
-        dst_token: ${{ secrets.gitee_sync }}
-        account_type: user
-        # 指定目录cache
-        cache_path: /github/workspace/phpdragon-cache
-        # 白名单，仅同步白名单中的repos，如“repo1,repo2,repo3”
-        white_list: "develop,default,master,v1.0-release,v1.01"
-        # 仅同步静态列表，不会再动态获取需同步列表（黑白名单机制依旧生效）
-        static_list: "develop,default,master,v1.0-release,v1.01"
-        # 强制更新
-        force_update: true
-        # clone方式，使用http、ssh方式进行clone
-        clone_style: "ssh"
+        dst_key: ${{ secrets.GITEE_KEY }}
+        dst_token: ${{ secrets.GITEE_SYNC }}
+        white_list: "vpi"
+#jobs:
+#  run:
+#    name: Run
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout source codes
+#        uses: actions/checkout@v1
+#      - name: Mirror Github to Gitee
+#        uses: ./.
+#        with:
+#          src: github/xyyxhcj
+#          dst: gitee/JianYuFeng
+#          dst_key: ${{ secrets.GITEE_SYNC }}
+#          dst_token: ${{ secrets.GITEE_SYNC }}
+#          account_type: org
+
+## Controls when the action will run. Triggers the workflow on push or pull request
+## events but only for the master branch
+#on:
+#  #push:
+#  #  branches: [ master ]
+#  #pull_request:
+#  #  branches: [ master ]
+#  schedule:
+#    # 每天北京时间9点跑
+#    - cron:  '0 1 * * *'
+#
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - name: vpi sync
+#      # 引用发行版的主要版本
+#      uses: actions/cache@v1
+#      with:
+#        path: /home/runner/work/vpi/vpi-cache
+#        key: ${{ runner.os }}-vpi-repos-cache
+#
+#    - name: Mirror the Github organization repos to Gitee.
+#      # 引用分支的脚本支持
+#      uses: actions@develop
+#      with:
+#        #  需要被同步的源端账户名，如github/phpdragon，表示Github的phpdragon账户。
+#        src: github/xyyxhcj
+#        # 需要同步到的目的端账户名，如gitee/phpdragon，表示Gitee的phpdragon账户。
+#        dst: gitee/JianYuFeng
+#        # 用于目的端上传代码的SSH key，用于上传代码
+#        dst_key: ${{ secrets.gitee_sync }}
+#        # 创建仓库的API tokens， 用于自动创建不存在的仓库
+#        dst_token: ${{ secrets.gitee_sync }}
+#        account_type: user
+#        # 指定目录cache
+#        cache_path: /github/workspace/phpdragon-cache
+#        # 白名单，仅同步白名单中的repos，如“repo1,repo2,repo3”
+#        white_list: "develop,default,master,v1.0-release,v1.01"
+#        # 仅同步静态列表，不会再动态获取需同步列表（黑白名单机制依旧生效）
+#        static_list: "develop,default,master,v1.0-release,v1.01"
+#        # 强制更新
+#        force_update: true
+#        # clone方式，使用http、ssh方式进行clone
+#        clone_style: "ssh"

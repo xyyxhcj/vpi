@@ -155,10 +155,6 @@ public class ProjectController extends BaseController {
         driver.get(Constant.SysConfig.FRONT_HOST + url);
         Thread.sleep(5000);
         List<WebElement> elements = driver.findElements(By.className("el-table__row"));
-        //elements.get(0).click();
-        //Thread.sleep(1000);
-        //File screenshot = driver.getScreenshotAs(OutputType.FILE);
-        //FileUtils.copyFile(screenshot, new File("/data/screen.png"));
         Document doc = Jsoup.parse(driver.getPageSource());
         driver.close();
         Elements links = doc.select("link[href]");
@@ -185,66 +181,5 @@ public class ProjectController extends BaseController {
         } finally {
             IOUtils.closeQuietly(input, output);
         }
-
-		/*Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
-		Elements links = doc.select("link[href]");
-		for (Element link : links) {
-			String href = link.attr("href");
-			link.attr("href", Constant.SysConfig.FRONT_HOST + href);
-		}
-		links = doc.select("script[src]");
-		for (Element link : links) {
-			String src = link.attr("src");
-			link.attr("src", Constant.SysConfig.FRONT_HOST + src);
-		}
-		String docString = doc.toString();
-		docString = docString.replaceAll("\\$allApiData", JsonUtils.object2JsonIgNull(apiList));
-		docString = docString.replaceAll("\\$allApiGroupData", JsonUtils.object2JsonIgNull(apiGroupList));
-		ByteArrayInputStream input = null;
-		FileOutputStream output = null;
-		try {
-			input = new ByteArrayInputStream(docString.getBytes());
-			output = new FileOutputStream("D:\\tmp\\1.html");
-			IOUtils.copyLarge(input, output);
-		} finally {
-			IOUtils.closeQuietly(input,output);
-		}*/
-		/*Document doc = Jsoup.connect(Constant.SysConfig.FRONT_HOST + url).get();
-		Elements links = doc.select("link[href]");
-		String script = "<script type='text/javascript'>%s</script>";
-		String style = "<style type='text/css'>%s</style>";
-		for (Element link : links) {
-			String href = link.attr("href");
-			if (href.endsWith(".js")) {
-				Document jsHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + href).ignoreContentType(true).get();
-				String format = String.format(script, jsHtml.selectFirst("body").html());
-				link.parent().append(format);
-			} else if (href.endsWith(".css")) {
-				Document cssHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + href).ignoreContentType(true).get();
-				String format = String.format(style, cssHtml.selectFirst("body").html());
-				link.parent().append(format);
-			}
-			link.remove();
-		}
-		links = doc.select("script[src]");
-		for (Element link : links) {
-			String src = link.attr("src");
-			Document jsHtml = Jsoup.connect(Constant.SysConfig.FRONT_HOST + src).ignoreContentType(true).get();
-			String format = String.format(script, jsHtml.selectFirst("body").html());
-			link.parent().append(format);
-			link.remove();
-		}
-		String docString = doc.toString();
-		docString = docString.replaceAll("\\$allApiData", JsonUtils.object2JsonIgNull(apiList));
-		docString = docString.replaceAll("\\$allApiGroupData", JsonUtils.object2JsonIgNull(apiGroupList));
-		ByteArrayInputStream input = null;
-		FileOutputStream output = null;
-		try {
-			input = new ByteArrayInputStream(docString.getBytes());
-			output = new FileOutputStream("D:\\tmp\\1.html");
-			IOUtils.copyLarge(input, output);
-		} finally {
-			IOUtils.closeQuietly(input,output);
-		}*/
     }
 }
