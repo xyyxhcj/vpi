@@ -10,6 +10,7 @@ jobs:
         dst_key: ${{ secrets.GITEE_KEY }}
         dst_token: ${{ secrets.GITEE_SYNC }}
         white_list: "vpi"
+
 #jobs:
 #  run:
 #    name: Run
