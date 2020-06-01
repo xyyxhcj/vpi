@@ -4,15 +4,18 @@ on:
     - cron:  '0 1 * * *'
 name: Gitee repos sync
 jobs:
-  run:
-    - name: Mirror the Github organization repos to Gitee.
-      uses: xyyxhcj/vpi@master
-      with:
-        src: github/xyyxhcj
-        dst: gitee/JianYuFeng
-        dst_key: ${{ secrets.GITEE_KEY }}
-        dst_token: ${{ secrets.GITEE_SYNC }}
-        white_list: "vpi"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror the Github organization repos to Gitee.
+        uses: xyyxhcj/vpi@master
+        with:
+          src: github/xyyxhcj
+          dst: gitee/JianYuFeng
+          dst_key: ${{ secrets.GITEE_KEY }}
+          dst_token: ${{ secrets.GITEE_SYNC }}
+          white_list: "vpi"
+
 
 #jobs:
 #  run:
