@@ -24,4 +24,5 @@ public class ApiDto extends ApiVo {
 	private String structureId;
 	private String nameOrUri;
 	private List<String> groupIds = new ArrayList<>();
+	private String envId;
 }

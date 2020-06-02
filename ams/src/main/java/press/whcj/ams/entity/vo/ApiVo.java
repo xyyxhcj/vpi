@@ -5,7 +5,7 @@ import lombok.Setter;
 import press.whcj.ams.entity.Api;
 import press.whcj.ams.entity.ApiHeader;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author xyyxhcj@qq.com
@@ -17,6 +17,6 @@ public class ApiVo extends Api {
 	private static final long serialVersionUID = 7302871133312701808L;
 	private StructureVo requestParamVo;
 	private StructureVo responseParamVo;
-	private List<ApiHeader> requestHeaders;
-	private List<ApiHeader> responseHeaders;
+	private Collection<ApiHeader> requestHeaders;
+	private Collection<ApiHeader> responseHeaders;
 }

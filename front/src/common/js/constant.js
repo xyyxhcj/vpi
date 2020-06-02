@@ -15,50 +15,57 @@ export const CONSTANT = {
         {
             path: '/help',
             name: 'help',
-            component: () => import('@/views/help/index'),
+            component: resolve => require(['@/views/help/index.vue'], resolve),
+            // component: () => import('@/views/help/index'),
             noMenu: true
         },
         {
             path: '/apiDoc',
             name: 'apiDoc',
-            component: () => import('@/views/apiDoc/index'),
+            component: resolve => require(['@/views/apiDoc/index.vue'], resolve),
             meta: {title: 'API Doc', icon: 'el-icon-grape'}
         },
         {
             path: '/environmentConfig',
             name: 'environmentConfig',
-            component: () => import('@/views/environmentConfig/index'),
+            component: resolve => require(['@/views/environmentConfig/index.vue'], resolve),
             meta: {title: 'Environment Config', icon: 'el-icon-moon'}
         },
         {
             path: '/dataStructure',
             name: 'dataStructure',
-            component: () => import('@/views/dataStructure/index'),
+            component: resolve => require(['@/views/dataStructure/index.vue'], resolve),
             meta: {title: 'Data Structure', icon: 'el-icon-coin'}
         },
         {
             path: '/api',
             name: 'api',
-            component: () => import('@/views/api/index'),
+            component: resolve => require(['@/views/api/index.vue'], resolve),
             notMenu: true,
             children: [
                 {
                     path: '/api/edit',
                     name: 'api/edit',
-                    component: () => import('@/views/api/edit'),
+                    component: resolve => require(['@/views/api/edit.vue'], resolve),
                 },
                 {
                     path: '/api/detail',
                     name: 'api/detail',
-                    component: () => import('@/views/api/detail'),
+                    component: resolve => require(['@/views/api/detail.vue'], resolve),
                 },
                 {
                     path: '/api/test',
                     name: 'api/test',
-                    component: () => import('@/views/api/test'),
+                    component: resolve => require(['@/views/api/test.vue'], resolve),
                 },
             ],
-        }
+        },
+        {
+            path: '/exportDoc',
+            name: 'exportDoc',
+            beforeEnter: () => window.location = '/exportDoc.html' + window.location.search,
+            noMenu: true
+        },
     ],
     CONFIG: {
         PAGE_SIZE_DEFAULT: 20,
@@ -77,7 +84,7 @@ export const CONSTANT = {
     HOST_URL: {
         dev: 'http://120.132.18.250:11111',
         // dev: 'http://127.0.0.1:11111',
-        prod: 'http://120.132.18.250/vpi',
+        prod: '$prodApiUrl',
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
@@ -92,6 +99,8 @@ export const CONSTANT = {
         LEFT_MENU_IS_COLLAPSE: 'leftMenuIsCollapse',
     },
     REQUEST_URL: {
+        CHROME_PLUGIN_DOWNLOAD : '$chromePluginDownloadUrl',
+
         LOGIN: '/user/login',
         LOGIN_OUT: '/user/loginOut',
         USER_ADD: '/user/add',
@@ -129,7 +138,7 @@ export const CONSTANT = {
         API_GROUP_ADD: '/apiGroup/add',
         API_GROUP_EDIT: '/apiGroup/edit',
         API_GROUP_DELETE: '/apiGroup/delete',
-        API_GROUP_FIND_LIST: '/apiGroup/findList',
+        API_GROUP_FIND_LIST: '/apiGroup/vpi/findList',
 
         API_ADD: '/api/add',
         API_EDIT: '/api/edit',
@@ -138,6 +147,7 @@ export const CONSTANT = {
         API_SAVE_MOCK: '/api/saveMock',
         API_REMOVE: '/api/remove',
         API_FIND_DETAIL: '/api/findDetail',
+        API_FIND_ALL_DETAIL: '/api/vpi/findAllDetail',
         API_FIND_PAGE: '/api/findPage',
         API_FIND_REFERENCE_API: '/api/findReferenceApi',
 

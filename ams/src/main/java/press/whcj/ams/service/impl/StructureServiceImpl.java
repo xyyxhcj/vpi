@@ -1,5 +1,6 @@
 package press.whcj.ams.service.impl;
 
+import org.bson.BsonRegularExpression;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -48,9 +49,16 @@ public class StructureServiceImpl implements StructureService {
     public MongoPage<StructureVo> findPage(StructureDto structureDto) {
         FastUtils.checkParams(structureDto.getProjectId());
         MongoPage<StructureVo> page = structureDto.getPage();
-        Query query = new Query(Criteria.where(ColumnName.PROJECT_ID).is(structureDto.getProjectId())
+        Criteria criteria = Criteria.where(ColumnName.PROJECT_ID).is(structureDto.getProjectId())
                 .and(ColumnName.TYPE).is(Constant.StructureType.USER_CREATE)
-                .and(ColumnName.IS_DEL).ne(Constant.Is.YES));
+                .and(ColumnName.IS_DEL).ne(Constant.Is.YES);
+        String nameOrRemark = structureDto.getNameOrRemark();
+        if (!StringUtils.isEmpty(nameOrRemark)) {
+            BsonRegularExpression expression = new BsonRegularExpression("^.*" + nameOrRemark + ".*$", "i");
+            criteria = criteria.orOperator(Criteria.where(ColumnName.NAME).regex(expression),
+                    Criteria.where(ColumnName.REMARK).regex(expression));
+        }
+        Query query = new Query(criteria);
         query.with(page.buildPageRequest()).with(QSort.by(Sort.Direction.DESC, ColumnName.UPDATE_TIME));
         long total = mongoTemplate.count(query, Structure.class);
         page.setTotal(total);
@@ -95,11 +103,12 @@ public class StructureServiceImpl implements StructureService {
 
     private void saveStructureData(StructureDto structureDto, String structureId) {
         mongoTemplate.remove(new Query(Criteria.where(ColumnName.STRUCTURE_ID).is(structureId)), StructureData.class);
+        String projectId = structureDto.getProjectId();
         if (!structureDto.getDataList().isEmpty()) {
             List<StructureData> structureDataList = new LinkedList<>();
             List<StructureDataDto> subDataList = new LinkedList<>();
             for (StructureDataDto structureDataDto : structureDto.getDataList()) {
-                getStructureData(structureId, subDataList, structureDataList, structureDataDto);
+                getStructureData(structureId, projectId, subDataList, structureDataList, structureDataDto);
             }
             mongoTemplate.insertAll(structureDataList);
             while (!subDataList.isEmpty()) {
@@ -107,7 +116,7 @@ public class StructureServiceImpl implements StructureService {
                 subDataList.clear();
                 List<StructureData> insertSubs = new LinkedList<>();
                 for (StructureDataDto dataDto : tempSubs) {
-                    StructureData insertSub = getStructureData(structureId, subDataList, insertSubs, dataDto);
+                    StructureData insertSub = getStructureData(structureId, projectId, subDataList, insertSubs, dataDto);
                     insertSub.setParentId(dataDto.getParent().getId());
                 }
                 mongoTemplate.insertAll(insertSubs);
@@ -115,14 +124,14 @@ public class StructureServiceImpl implements StructureService {
         }
     }
 
-    private StructureData getStructureData(String structureId, List<StructureDataDto> dtoList, List<StructureData> insertStructureDataList, StructureDataDto dataDto) {
+    private StructureData getStructureData(String structureId, String projectId, List<StructureDataDto> dtoList, List<StructureData> insertStructureDataList, StructureDataDto dataDto) {
         StructureData insertSub = new StructureData();
         insertStructureDataList.add(insertSub);
         FastUtils.copyProperties(dataDto, insertSub);
         if (StringUtils.isEmpty(dataDto.getReferenceStructureId())) {
             collectSubs(dtoList, insertSub, dataDto);
         }
-        return insertSub.setStructureId(structureId);
+        return insertSub.setStructureId(structureId).setProjectId(projectId);
     }
 
     @Override
@@ -141,18 +150,16 @@ public class StructureServiceImpl implements StructureService {
         Objects.requireNonNull(detail).setDataList(rootList);
         Map<String, StructureDataDto> allDataDict = allDataList.stream().collect(Collectors.toMap(StructureData::getId, v -> v));
         for (StructureDataDto dataDto : allDataList) {
-            List<StructureDataDto> tempData = new LinkedList<>();
-            tempData.add(dataDto);
-            if (!StringUtils.isEmpty(dataDto.getReferenceStructureId())) {
-                StructureVo structureVo = getStructureVoById(dataDto.getReferenceStructureId());
-                dataDto.setReferenceStructureName(structureVo.getName());
-                dataDto.setSubList(structureVo.getDataList());
-            }
             if (StringUtils.isEmpty(dataDto.getParentId())) {
-                rootList.addAll(tempData);
+                if (!StringUtils.isEmpty(dataDto.getReferenceStructureId())) {
+                    StructureVo structureVo = getStructureVoById(dataDto.getReferenceStructureId());
+                    dataDto.setReferenceStructureName(structureVo.getName());
+                    dataDto.setSubList(structureVo.getDataList());
+                }
+                rootList.add(dataDto);
             } else {
                 // put sub list
-                allDataDict.get(dataDto.getParentId()).getSubList().addAll(tempData);
+                allDataDict.get(dataDto.getParentId()).getSubList().add(dataDto);
             }
         }
         return detail;
@@ -183,7 +190,7 @@ public class StructureServiceImpl implements StructureService {
     /**
      * collect sub list
      *
-     * @param subDataList subDataList
+     * @param subDataList if has sub, collect to subDataList
      * @param parent      parent
      * @param parentDto   parentDto
      * @author xyyxhcj@qq.com

@@ -9,8 +9,12 @@
             <el-table-column>
                 <template slot="header" v-if="hasAuth">
                     <el-row>
-                        <el-col :span="24">
+                        <el-col :span="3">
                             <el-button size="mini" type="success" @click="addDataStructure">Add</el-button>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-input placeholder="search name or remark" v-model.trim="query.nameOrRemark"
+                                      @keyup.enter.native="findPage" size="mini" style="width: 160px"/>
                         </el-col>
                     </el-row>
                 </template>
@@ -54,6 +58,7 @@
                 },
                 form: {},
                 query: {
+                    nameOrRemark: '',
                     page: {
                         current: 1,
                         size: CONSTANT.CONFIG.PAGE_SIZE_DEFAULT,

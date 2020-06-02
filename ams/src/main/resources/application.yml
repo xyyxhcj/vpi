@@ -1,5 +1,6 @@
 server:
   port: 11111
+  shutdown: graceful
 spring:
   profiles:
     active: dev
@@ -9,11 +10,27 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     timezone: GMT+8
     serialization:
-#       dont use timestamps
+      # dont use timestamps
       write-dates-as-timestamps: true
     deserialization:
       adjust-dates-to-context-time-zone: true
   session:
     store-type: mongodb
+  lifecycle:
+    timeout-per-shutdown-phase: 15s
+  data:
+    mongodb:
+      option:
+        maxWaitTime: 30
+        maxConnectionIdleTime: 0
+        maxConnectionLifeTime: 0
+        sslEnabled: false
+        sslInvalidHostNameAllowed: false
+        connectTimeout: 10000
+        heartbeatFrequency: 10000
+        minHeartbeatFrequency: 500
+        serverSelectionTimeout: 30000
+        localThreshold: 15
 logging:
   config: classpath:logback.xml
+  register-shutdown-hook: true

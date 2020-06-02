@@ -11,13 +11,53 @@ import press.whcj.ams.entity.vo.UserVo;
  */
 
 public interface StructureService {
-	MongoPage<StructureVo> findPage(StructureDto structureDto);
+    /**
+     * findPage
+     *
+     * @param structureDto structureDto
+     * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.vo.StructureVo>
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:31
+     **/
+    MongoPage<StructureVo> findPage(StructureDto structureDto);
 
-	String save(StructureDto structureDto, UserVo operator);
+    /**
+     * save
+     *
+     * @param structureDto structureDto
+     * @param operator     operator
+     * @return java.lang.String
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:31
+     **/
+    String save(StructureDto structureDto, UserVo operator);
 
-	StructureVo findDetail(StructureDto structureDto);
+    /**
+     * findDetail
+     *
+     * @param structureDto structureDto
+     * @return press.whcj.ams.entity.vo.StructureVo
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:31
+     **/
+    StructureVo findDetail(StructureDto structureDto);
 
-	StructureVo getStructureVoById(String structureId);
+    /**
+     * getStructureVoById
+     *
+     * @param structureId structureId
+     * @return press.whcj.ams.entity.vo.StructureVo
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:31
+     **/
+    StructureVo getStructureVoById(String structureId);
 
-	void remove(StructureDto structureDto);
+    /**
+     * remove
+     *
+     * @param structureDto structureDto
+     * @author xyyxhcj@qq.com
+     * @date 2020/5/18 19:31
+     **/
+    void remove(StructureDto structureDto);
 }

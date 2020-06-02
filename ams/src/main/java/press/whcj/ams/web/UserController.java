@@ -1,5 +1,6 @@
 package press.whcj.ams.web;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,8 +29,7 @@ public class UserController extends BaseController {
 	@Resource
 	private UserService userService;
 
-
-	@RequestMapping("add")
+	@PostMapping("add")
 	public Result<String> add(@RequestBody UserDto userDto) {
 		UserVo operator = UserUtils.getOperator();
 		PermUtils.checkAdmin(operator);
@@ -42,7 +42,7 @@ public class UserController extends BaseController {
 		return ok(id);
 	}
 
-	@RequestMapping("edit")
+	@PostMapping("edit")
 	public Result<String> edit(@RequestBody UserDto userDto) {
 		UserVo operator = UserUtils.getOperator();
 		PermUtils.checkAdmin(operator);
@@ -53,7 +53,7 @@ public class UserController extends BaseController {
 	}
 
 
-	@RequestMapping("remove")
+	@PostMapping("remove")
 	public Result<Object> remove(@RequestBody UserDto userDto) {
 		UserVo operator = UserUtils.getOperator();
 		PermUtils.checkAdmin(operator);
@@ -61,30 +61,30 @@ public class UserController extends BaseController {
 		return ok();
 	}
 
-	@RequestMapping("findDetail")
+	@PostMapping("findDetail")
 	public Result<UserVo> findDetail(@RequestBody UserDto userDto) {
 		FastUtils.checkParams(userDto.getId());
 		return ok(userService.findDetail(userDto.getId()));
 	}
 
 
-	@RequestMapping("findPage")
+	@PostMapping("findPage")
 	public Result<MongoPage<UserVo>> findPage(@RequestBody UserDto userDto) {
 		return ok(userService.findPage(userDto));
 	}
 
-	@RequestMapping("login")
+	@PostMapping("login")
 	public Result<UserVo> login(@RequestBody UserDto userDto, HttpServletRequest request) {
 		return ok(userService.login(userDto, request));
 	}
 
-	@RequestMapping("loginOut")
+	@PostMapping("loginOut")
 	public Result<Object> loginOut() {
 		getRequest().getSession().invalidate();
 		return ok();
 	}
 
-	@RequestMapping("update")
+	@PostMapping("update")
 	public Result<String> update(@RequestBody UserDto userDto) {
 		if (userDto.getPassword() != null) {
 			FastUtils.checkParams(userDto.getOldPwd());

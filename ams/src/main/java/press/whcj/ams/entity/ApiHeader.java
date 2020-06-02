@@ -1,6 +1,7 @@
 package press.whcj.ams.entity;
 
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@EqualsAndHashCode(of = {"name"})
 public class ApiHeader implements Serializable {
     private String id;
 
@@ -31,4 +33,6 @@ public class ApiHeader implements Serializable {
     private Byte isRequest;
 
     private static final long serialVersionUID = 1L;
+
+    private String projectId;
 }

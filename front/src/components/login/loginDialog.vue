@@ -13,8 +13,13 @@
             <el-checkbox-group v-model="checkList" style="line-height: 30px">
                 <el-checkbox label="Remember Me" @change="user.isRememberMe=!user.isRememberMe"/>
             </el-checkbox-group>
-            <el-button @click="resetForm">Reset</el-button>
-            <el-button type="primary" @click="submitForm">Login</el-button>
+            <el-button @click="resetForm" style="position: relative;z-index: 100">Reset</el-button>
+            <el-button type="primary" style="position: relative;z-index: 100" @click.stop="submitForm">Login</el-button>
+            <el-link type="info" class="jetbrains-logo" :underline="false"
+                     target="_blank" href="https://www.jetbrains.com/?from=vpi">
+                <!--<span style="margin-right: -10px">Thanks for jetbrains's support!</span>-->
+                <img style="width: 70px;height: 70px;" src="../../../public/static/img/jetbrains.png" alt=""/>
+            </el-link>
         </span>
     </el-dialog>
 </template>
@@ -106,9 +111,22 @@
 <style lang="stylus" rel="stylesheet/stylus">
     .login-dialog
         .el-dialog__body
+            padding-top 8px
             padding-bottom 0
             margin-bottom 0
 
         .el-dialog__footer
             padding-top 0
+            padding-bottom 35px
+            padding-left 70px
+
+    .jetbrains-logo
+        position relative
+        z-index 1
+        float right
+        top -20px
+        right -15px
+        pointer-events auto
+        font-size 3px
+        opacity 0.5
 </style>

@@ -23,4 +23,5 @@ public class ProjectDto extends ProjectVo {
 	private List<ProjectUser> projectUsers;
 	private MongoPage<ProjectVo> page = new MongoPage<>();
 	List<Project> projects = new ArrayList<>();
+	private String envId;
 }

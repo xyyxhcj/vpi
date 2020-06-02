@@ -1,5 +1,6 @@
 package press.whcj.ams.web;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class ApiEnvController extends BaseController {
     @Resource
     private ApiEnvService apiEnvService;
 
-    @RequestMapping("add")
+    @PostMapping("add")
     public Result<String> add(@RequestBody ApiEnv apiEnvDto) {
         UserVo operator = UserUtils.getOperator();
         apiEnvDto.initCreate(operator);
@@ -32,7 +33,7 @@ public class ApiEnvController extends BaseController {
         return ok(id);
     }
 
-    @RequestMapping("edit")
+    @PostMapping("edit")
     public Result<String> edit(@RequestBody ApiEnv apiEnvDto) {
         FastUtils.checkParams(apiEnvDto.getId());
         UserVo operator = UserUtils.getOperator();
@@ -41,13 +42,13 @@ public class ApiEnvController extends BaseController {
         return ok(apiEnvDto.getId());
     }
 
-    @RequestMapping("delete")
+    @PostMapping("delete")
     public Result<String> delete(@RequestBody ApiEnv apiEnvDto) {
         apiEnvService.delete(apiEnvDto, UserUtils.getOperator());
         return ok();
     }
 
-    @RequestMapping("findList")
+    @PostMapping("findList")
     public Result<List<ApiEnv>> findList(@RequestBody ApiEnv apiEnvDto) {
         return ok(apiEnvService.findList(apiEnvDto));
     }

@@ -12,7 +12,6 @@ public interface Constant {
 	 * profile
 	 */
 	interface ProfileActive {
-
 		String DEV = "dev";
 		String TEST = "test";
 		String PROD = "prod";
@@ -56,6 +55,11 @@ public interface Constant {
 		String SALT = "v2Ll6EmXPQIf";
 		String AUTH_HEADER = "auth";
 		int SESSION_TIME_OUT = 60 * 60 * 2;
+		String FRONT_HOST = "http://www.whcj.press";
+	}
+
+	interface Url {
+		String EXPORT_URL = "/exportDoc.html?projectId=%s&projectName=%s&envId=%s";
 	}
 
 	/**
@@ -63,26 +67,6 @@ public interface Constant {
 	 */
 	interface SessionKey {
 		String USER_INFO = "user_info";
-	}
-
-	/**
-	 * url
-	 */
-	interface Url {
-	}
-
-	/**
-	 * redis lock key
-	 */
-	interface LockKey {
-	}
-
-	/**
-	 * concat sql
-	 */
-	interface ConcatSql {
-
-		String LIMIT_1 = "limit 1";
 	}
 
 	/**

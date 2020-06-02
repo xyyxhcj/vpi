@@ -14,24 +14,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class MongoPoolProperties {
 	private String[] address;
 	private String database;
-	private String authenticationDatabase;
-	private String gridFsDatabase;
 	private String username;
 	private char[] password;
-	private int minConnectionsPerHost;
-	private int maxConnectionsPerHost;
-	private int threadsAllowedToBlockForConnectionMultiplier;
 	private int serverSelectionTimeout;
 	private int maxWaitTime;
 	private int maxConnectionIdleTime;
 	private int maxConnectionLifeTime;
 	private int connectTimeout;
-	private int socketTimeout;
 	private Boolean sslEnabled;
 	private Boolean sslInvalidHostNameAllowed;
 	private int heartbeatFrequency;
 	private int minHeartbeatFrequency;
-	private int heartbeatConnectTimeout;
-	private int heartbeatSocketTimeout;
 	private int localThreshold;
 }

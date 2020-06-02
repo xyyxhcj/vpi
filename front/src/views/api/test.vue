@@ -37,6 +37,7 @@
                     {{!sendDisable?'Send':'Wait...'}}
                     <el-dropdown-menu>
                         <el-dropdown-item :command="newTab">New Tab</el-dropdown-item>
+                        <el-dropdown-item :command="downloadChromePlugin">Download Chrome Plugin</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
@@ -63,9 +64,10 @@
             </el-tab-pane>
             <el-tab-pane label="Test History" name="testHistory">
                 <el-table :data="testHistory.dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
-                          :row-style="{cursor:'pointer'}" @row-click="selectTestHistory" ref="test-history-table">
-                    <el-table-column type="selection" :width="testHistoryShowSelect?'20':'1'"/>
-                    <el-table-column label="url" width="400">
+                          :row-style="{cursor:'pointer'}" @row-click="selectTestHistory" ref="test-history-table"
+                          border stripe>
+                    <el-table-column type="selection" v-if="testHistoryShowSelect" width="20"/>
+                    <el-table-column label="url" width="400" show-overflow-tooltip class-name="th_content">
                         <template slot-scope="scope">
                             <el-popover trigger="hover" placement="left-start">
                                 <div style="max-height: 600px;max-width: 500px">
@@ -79,13 +81,14 @@
                             </el-popover>
                         </template>
                     </el-table-column>
-                    <el-table-column label="requestTime" width="200">
+                    <el-table-column label="requestTime" width="200" class-name="th_content">
                         <template slot-scope="scope">
                             {{scope.row.requestTime?scope.row.requestTime+'ms':''}}
                         </template>
                     </el-table-column>
-                    <el-table-column label="testName" prop="createName" width="150"/>
-                    <el-table-column label="testTime" width="200" :formatter="(row)=>dateFormat(row.createTime)"/>
+                    <el-table-column label="testName" prop="createName" width="150" class-name="th_content"/>
+                    <el-table-column label="testTime" width="200" :formatter="(row)=>dateFormat(row.createTime)"
+                                     class-name="th_content"/>
                     <el-table-column>
                         <template slot="header">
                             <el-row>
@@ -229,13 +232,18 @@
                     let reqHeaderStr = '';
                     Object.keys(requestInfo.headers).forEach(key => reqHeaderStr = reqHeaderStr + key + ': ' + requestInfo.headers[key] + '\r\n');
                     document.getElementById('req-headers').innerText = reqHeaderStr;
-                    document.getElementById('req-data').innerText = UTILS.formatJson(requestInfo.data);
+
+                    document.getElementById('req-data').innerText =
+                        (typeof requestInfo.data === 'string' && !UTILS.isJSON(requestInfo.data)) ?
+                            requestInfo.data : UTILS.formatJson(requestInfo.data);
                     // show response info
                     let responseInfo = JSON.parse(row.responseInfo);
                     let respHeaderStr = '';
                     Object.keys(responseInfo.headers).forEach(key => respHeaderStr = respHeaderStr + key + ': ' + responseInfo.headers[key] + '\r\n');
                     document.getElementById('resp-headers').innerText = respHeaderStr;
-                    document.getElementById('resp-data').innerText = UTILS.formatJson(responseInfo.data);
+                    document.getElementById('resp-data').innerText =
+                        (typeof responseInfo.data === 'string' && !UTILS.isJSON(responseInfo.data)) ?
+                            responseInfo.data : UTILS.formatJson(responseInfo.data);
                 }
             },
             transformInfo(info, headerTitle, paramTitle) {
@@ -256,13 +264,13 @@
             },
             flushEnv(env) {
                 this.selectedEnv = env;
-                for (let i = this.api.requestHeaders.length-1; i >=0; i--) {
+                for (let i = this.api.requestHeaders.length - 1; i >= 0; i--) {
                     let header = this.api.requestHeaders[i];
                     if (header.isEnvHeader) {
                         this.api.requestHeaders.splice(i, 1);
                     }
                 }
-                if (env.envHeader && env.envHeader !== '') {
+                if (env && env.envHeader && env.envHeader !== '') {
                     let envHeaders = JSON.parse(env.envHeader);
                     envHeaders.forEach(header => {
                         header.isEnvHeader = true;
@@ -296,53 +304,60 @@
                 let stack = [];
                 this.api.requestParamVo.dataList.forEach(data => {
                     let paramKey = data.paramKey;
-                    if (data.selected && paramKey !== '') {
-                        let value;
-                        if (data.subList.length > 0) {
-                            if (data.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
-                                // array
-                                value = [{}];
-                            } else {
-                                // object
-                                value = {};
-                            }
-                            data.subList.forEach(item => stack.push({keys: [paramKey], value: item}));
-                        } else {
-                            value = data.value;
-                        }
-                        params[paramKey] = value;
+                    if (!data.selected || paramKey === '') {
+                        return;
                     }
-                });
-                while (stack.length > 0) {
-                    let {keys: keys, value: pop} = stack.pop();
-                    let paramKey = pop.paramKey;
-                    if (pop.selected && paramKey !== '') {
-                        let value;
-                        if (pop.subList.length > 0) {
-                            if (pop.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
-                                // array
-                                value = [{}];
-                            } else {
-                                // object
-                                value = {};
-                            }
-                            pop.subList.forEach(item => stack.push({
-                                keys: keys.splice(keys.length - 1, 0, paramKey),
-                                value: item
-                            }));
-                        } else {
-                            value = pop.value;
-                        }
-                        let position;
-                        keys.forEach(key => {
-                            position = params[key]
-                        });
-                        if (Array.isArray(position)) {
-                            position[0][paramKey] = value;
+                    let value;
+                    if (data.subList.length > 0) {
+                        if (data.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
+                            // array
+                            value = [{}];
                         } else {
                             // object
-                            position[paramKey] = value;
+                            value = {};
                         }
+                        data.subList.forEach(item => stack.push({keys: [paramKey], value: item}));
+                    } else if (data.value !== '' || data.paramType !== CONSTANT.PARAM_TYPE.ARRAY) {
+                        value = data.value;
+                    }
+                    params[paramKey] = value;
+                });
+                while (stack.length > 0) {
+                    let {keys: keys, value: pop} = stack.shift();
+                    let paramKey = pop.paramKey;
+                    if (!pop.selected || paramKey === '') {
+                        continue;
+                    }
+                    let value;
+                    if (pop.subList.length > 0) {
+                        if (pop.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
+                            // array
+                            value = [{}];
+                        } else {
+                            // object
+                            value = {};
+                        }
+                        // save key(each level)
+                        let keyList = keys.slice(0);
+                        keyList.push(paramKey);
+                        pop.subList.forEach(item => {
+                            stack.push({
+                                keys: keyList,
+                                value: item
+                            })
+                        });
+                    } else if (pop.value !== '' || pop.paramType !== CONSTANT.PARAM_TYPE.ARRAY) {
+                        value = pop.value;
+                    }
+                    let position = params;
+                    keys.forEach(key => {
+                        position = position[key]
+                    });
+                    if (Array.isArray(position)) {
+                        position[0][paramKey] = value;
+                    } else {
+                        // object
+                        position[paramKey] = value;
                     }
                 }
                 return params;
@@ -389,11 +404,12 @@
                         // use Get
                         let paramStr = '';
                         Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
-                        if (url.indexOf('?') === -1) {
-                            url += '?' + paramStr;
-                        } else {
-                            url += '&' + paramStr;
+                        let index = url.indexOf('?');
+                        if (index !== -1) {
+                            url = url.substring(0, index);
                         }
+                        url += '?' + paramStr;
+                        params = paramStr;
                     }
                     let logHeaders = {};
                     logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
@@ -423,6 +439,11 @@
                     query: {id: this.api.id},
                 });
                 window.open(newTab.href, '_blank');
+            },
+            downloadChromePlugin() {
+                let a = document.createElement('a');
+                a.href = CONSTANT.REQUEST_URL.CHROME_PLUGIN_DOWNLOAD;
+                a.click();
             },
             saveMock(isSuccess) {
                 let params = this.$refs['respData'].innerHTML;
@@ -481,8 +502,12 @@
             .el-tabs__header
                 margin 0
 
+            .th_content
+                padding-left 7px
+
             .el-table td, .el-table th
-                padding 1px 0
+                padding-top 1px
+                padding-bottom 1px
 
                 div.cell
                     padding 0 1px

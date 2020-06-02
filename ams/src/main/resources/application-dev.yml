@@ -4,27 +4,10 @@ spring:
   data:
     mongodb:
       option:
-        address: ['120.132.18.250:27017']
-        database: github-ams
-        username: whcj
-        password: LYyVKh7spO7hzDLv
-        minConnectionsPerHost: 0
-        maxConnectionsPerHost: 100
-        threadsAllowedToBlockForConnectionMultiplier: 5
-        serverSelectionTimeout: 30000
-        maxWaitTime: 30
-        maxConnectionIdleTime: 0
-        maxConnectionLifeTime: 0
-        connectTimeout: 10000
-        socketTimeout: 0
-        sslEnabled: false
-        sslInvalidHostNameAllowed: false
-        heartbeatFrequency: 10000
-        minHeartbeatFrequency: 500
-        heartbeatConnectTimeout: 20000
-        heartbeatSocketTimeout: 20000
-        localThreshold: 15
-
+        address: ['$mongodbAddress']
+        database: $mongodbDatabase
+        username: $mongodbUsername
+        password: $mongodbPassword
 system:
   properties:
     profileActive: dev

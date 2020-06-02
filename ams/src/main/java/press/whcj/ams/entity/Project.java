@@ -2,6 +2,7 @@ package press.whcj.ams.entity;
 
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Transient;
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
+@NoArgsConstructor
 public class Project extends BaseEntity implements Serializable {
 	private String name;
 	private String groupId;
@@ -32,9 +34,6 @@ public class Project extends BaseEntity implements Serializable {
 	private Byte userType;
 
 	private static final long serialVersionUID = 1L;
-
-	public Project() {
-	}
 
 	public Project(String id) {
 		super(id);

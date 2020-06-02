@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
+ * api environment
  * @author xyyxhcj@qq.com
  * @since 2019/12/31
  */
@@ -21,7 +22,7 @@ public class ApiEnv extends BaseEntity implements Serializable {
     private String frontUri;
 
     /**
-     * headerList：[{"key":"var1","value":"val1","explain":"..."},...]
+     * headerList：[{"name":"auth","value":"asd","desc":"Token","requireType":0,"nameIsEmpty":false},...]
      */
     private String envHeader;
     private String globalVariable;

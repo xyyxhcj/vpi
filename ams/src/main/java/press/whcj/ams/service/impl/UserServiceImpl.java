@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.querydsl.QSort;
-import org.springframework.session.data.mongo.MongoOperationsSessionRepository;
+import org.springframework.session.data.mongo.MongoIndexedSessionRepository;
 import org.springframework.session.data.mongo.MongoSession;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Resource
     private MongoTemplate mongoTemplate;
     @Resource
-    private MongoOperationsSessionRepository sessionRepository;
+    private MongoIndexedSessionRepository sessionRepository;
 
     @Override
     public String save(UserDto userDto) {

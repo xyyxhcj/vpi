@@ -1,5 +1,6 @@
 package press.whcj.ams.web;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ public class ApiGroupController extends BaseController {
     @Resource
     private ApiGroupService apiGroupService;
 
-    @RequestMapping("add")
+    @PostMapping("add")
     public Result<String> add(@RequestBody ApiGroup apiGroupDto) {
         UserVo operator = UserUtils.getOperator();
         apiGroupDto.initCreate(operator);
@@ -33,7 +34,7 @@ public class ApiGroupController extends BaseController {
         return ok(id);
     }
 
-    @RequestMapping("edit")
+    @PostMapping("edit")
     public Result<String> edit(@RequestBody ApiGroup apiGroupDto) {
         FastUtils.checkParams(apiGroupDto.getId());
         UserVo operator = UserUtils.getOperator();
@@ -42,12 +43,12 @@ public class ApiGroupController extends BaseController {
         return ok(apiGroupDto.getId());
     }
 
-    @RequestMapping("findList")
+    @PostMapping("vpi/findList")
     public Result<List<ApiGroupVo>> findList(@RequestBody ApiGroup apiGroupDto) {
         return ok(apiGroupService.findList(apiGroupDto));
     }
 
-    @RequestMapping("delete")
+    @PostMapping("delete")
     public Result<Object> delete(@RequestBody ApiGroup apiGroupDto) {
 		apiGroupService.delete(apiGroupDto);
         return ok();

@@ -6,13 +6,14 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import press.whcj.ams.config.JacksonConfig;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +49,7 @@ public class JsonUtils {
 	 * @param data data
 	 * @return json
 	 */
-	public static String object2Json(@NotNull final Object data) {
+	public static String object2Json(@NonNull final Object data) {
 		return object2Str(MAPPER, data, "write to json string error:");
 	}
 
@@ -58,7 +59,7 @@ public class JsonUtils {
 	 * @param data data
 	 * @return json
 	 */
-	public static String object2JsonIgNull(@NotNull final Object data) {
+	public static String object2JsonIgNull(@NonNull final Object data) {
 		return object2Str(NON_NULL_MAPPER, data, "write to json string error:");
 	}
 
@@ -69,7 +70,7 @@ public class JsonUtils {
 	 * @param data   data
 	 * @return json
 	 */
-	public static String object2Str(@NotNull final ObjectMapper mapper, @NotNull final Object data) {
+	public static String object2Str(@NonNull final ObjectMapper mapper, @NonNull final Object data) {
 		return object2Str(mapper, data, "write to string error:");
 	}
 
@@ -81,7 +82,7 @@ public class JsonUtils {
 	 * @param msg    exceptionMsg
 	 * @return str
 	 */
-	private static String object2Str(@NotNull final ObjectMapper mapper, @NotNull final Object data, final String msg) {
+	private static String object2Str(@NonNull final ObjectMapper mapper, @NonNull final Object data, final String msg) {
 		String jsonString = null;
 		try {
 			jsonString = mapper.writeValueAsString(data);
@@ -99,7 +100,7 @@ public class JsonUtils {
 	 * @param msg      exceptionMsg
 	 * @return str
 	 */
-	public static <T> T str2Pojo(@NotNull final ObjectMapper mapper, final String jsonData, final Class<T> beanType, final String msg) {
+	public static <T> T str2Pojo(@NonNull final ObjectMapper mapper, final String jsonData, final Class<T> beanType, final String msg) {
 		if (StringUtils.isEmpty(jsonData)) {
 			return null;
 		}
@@ -132,7 +133,8 @@ public class JsonUtils {
 	 * @param <T>      List
 	 * @return List
 	 */
-	public static <T> T json2List(final String jsonData, final Class beanType) {
+	@Nullable
+	public static <T> T json2List(final String jsonData, final Class<?> beanType) {
 		return json2JavaType(jsonData, buildCollectionType(List.class, beanType));
 	}
 
@@ -146,7 +148,8 @@ public class JsonUtils {
 	 * @param <T>      T
 	 * @return return
 	 */
-	public static <T> T json2JavaType(final String jsonData, final JavaType javaType) {
+	@Nullable
+	public static <T> T json2JavaType(@Nullable final String jsonData, final JavaType javaType) {
 		if (StringUtils.isEmpty(jsonData)) {
 			return null;
 		}
@@ -190,6 +193,7 @@ public class JsonUtils {
 	/**
 	 * buildCollectionType
 	 */
+	@SuppressWarnings("rawtypes")
 	public static JavaType buildCollectionType(final Class<? extends Collection> collectionClass, final Class<?> elementClass) {
 		return MAPPER.getTypeFactory().constructCollectionType(collectionClass, elementClass);
 	}
@@ -197,6 +201,7 @@ public class JsonUtils {
 	/**
 	 * buildMapType
 	 */
+	@SuppressWarnings("rawtypes")
 	public static JavaType buildMapType(final Class<? extends Map> mapClass, final Class<?> keyClass, final Class<?> valueClass) {
 		return MAPPER.getTypeFactory().constructMapType(mapClass, keyClass, valueClass);
 	}

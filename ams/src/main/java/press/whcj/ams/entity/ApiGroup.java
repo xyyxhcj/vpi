@@ -1,6 +1,7 @@
 package press.whcj.ams.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -14,6 +15,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
+@NoArgsConstructor
 public class ApiGroup extends BaseEntity implements Serializable {
     private String name;
     private String projectId;
@@ -21,9 +23,6 @@ public class ApiGroup extends BaseEntity implements Serializable {
     private Byte sort;
 
     private static final long serialVersionUID = 1L;
-
-    public ApiGroup() {
-    }
 
     public ApiGroup(String id) {
         super(id);

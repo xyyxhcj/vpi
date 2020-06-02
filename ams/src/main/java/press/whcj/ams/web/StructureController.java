@@ -1,5 +1,6 @@
 package press.whcj.ams.web;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,12 +29,12 @@ public class StructureController extends BaseController {
 	@Resource
 	private StructureService structureService;
 
-	@RequestMapping("findPage")
+	@PostMapping("findPage")
 	public Result<MongoPage<StructureVo>> findPage(@RequestBody StructureDto structureDto) {
 		return ok(structureService.findPage(structureDto));
 	}
 
-	@RequestMapping("add")
+	@PostMapping("add")
 	public Result<String> add(@RequestBody StructureDto structureDto) {
 		UserVo operator = UserUtils.getOperator();
 		LocalDateTime now = LocalDateTime.now();
@@ -45,7 +46,7 @@ public class StructureController extends BaseController {
 		return ok(id);
 	}
 
-	@RequestMapping("edit")
+	@PostMapping("edit")
 	public Result<String> edit(@RequestBody StructureDto structureDto) {
 		FastUtils.checkParams(structureDto.getId());
 		UserVo operator = UserUtils.getOperator();
@@ -55,13 +56,13 @@ public class StructureController extends BaseController {
 		return ok(structureDto.getId());
 	}
 
-	@RequestMapping("remove")
+	@PostMapping("remove")
 	public Result<Object> remove(@RequestBody StructureDto structureDto) {
 		structureService.remove(structureDto);
 		return ok();
 	}
 
-	@RequestMapping("findDetail")
+	@PostMapping("findDetail")
 	public Result<StructureVo> findDetail(@RequestBody StructureDto structureDto) {
 		return ok(structureService.findDetail(structureDto));
 	}

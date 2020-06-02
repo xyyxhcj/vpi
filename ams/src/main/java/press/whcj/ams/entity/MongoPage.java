@@ -23,6 +23,6 @@ public class MongoPage<T> {
     private List<T> records = Collections.emptyList();
 
     public QPageRequest buildPageRequest() {
-        return new QPageRequest(current - 1, size);
+        return QPageRequest.of(current - 1, size);
     }
 }

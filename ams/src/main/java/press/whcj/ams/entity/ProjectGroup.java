@@ -1,6 +1,7 @@
 package press.whcj.ams.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -13,13 +14,11 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
+@NoArgsConstructor
 public class ProjectGroup extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private String parentId;
-
-	public ProjectGroup() {
-	}
 
 	public ProjectGroup(String id) {
 		super(id);
