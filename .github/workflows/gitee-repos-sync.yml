@@ -1,20 +1,26 @@
+name: Gitee repos sync
 on:
   schedule:
-    # 每天1点跑
-    - cron:  '0 1 * * *'
-name: Gitee repos sync
+  # 每天1点跑
+        - cron:  '0 1 * * *'
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Mirror the Github organization repos to Gitee.
-        uses: xyyxhcj/vpi@master
+        uses: wearerequired/git-mirror-action@master
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.GITEE_KEY }}
         with:
-          src: github/xyyxhcj
-          dst: gitee/JianYuFeng
-          dst_key: ${{ secrets.GITEE_KEY }}
-          dst_token: ${{ secrets.GITEE_SYNC }}
-          white_list: "vpi"
+          source-repo: "git@github.com:xyyxhcj/vpi.git"
+          destination-repo: "git@gitee.com:JianYuFeng/vpi.git"
+
+#
+#          src: github/xyyxhcj
+#          dst: gitee/JianYuFeng
+#          dst_key: ${{ secrets.GITEE_KEY }}
+#          dst_token: ${{ secrets.GITEE_SYNC }}
+#          white_list: "vpi"
 
 
 #jobs:
