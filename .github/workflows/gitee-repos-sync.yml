@@ -1,8 +1,5 @@
 name: Gitee repos sync
-on:
-  schedule:
-  # 每天1点跑
-        - cron:  '0 1 * * *'
+on: [ push, delete, create ]
 jobs:
   build:
     runs-on: ubuntu-latest
