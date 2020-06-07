@@ -4,10 +4,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Mirror the Github organization repos to Gitee.
-        uses: wearerequired/git-mirror-action@master
+      - name: sync2Gitee
+        uses: xyyxhcj/git-mirror-action@master
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.GITEE_KEY }}
+          SSH_PRIVATE_KEY: ${{secrets.GITEE_KEY}}
         with:
           source-repo: "git@github.com:xyyxhcj/vpi.git"
           destination-repo: "git@gitee.com:JianYuFeng/vpi.git"
