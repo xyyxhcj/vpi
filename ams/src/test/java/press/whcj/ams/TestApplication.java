@@ -1,6 +1,5 @@
 package press.whcj.ams;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,22 +8,16 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.zeroturnaround.zip.ZTFileUtil;
-import org.zeroturnaround.zip.ZipUtil;
 import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.entity.*;
-import press.whcj.ams.entity.dto.ProjectDto;
 import press.whcj.ams.entity.dto.UserDto;
 import press.whcj.ams.entity.vo.UserVo;
 import press.whcj.ams.util.FastUtils;
-import press.whcj.ams.util.JsonUtils;
 import press.whcj.ams.web.ProjectController;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -171,22 +164,15 @@ public class TestApplication {
 	}
 
 	@Test
-	public void testExportHtml() throws Exception {
-		// {"id":"5de9bf91ecae1f3a0d7bf7cc","name":"Demo","envId":"5e3777c4bc1dfd3b727fa94e"}
-		ProjectDto projectDto = JsonUtils.json2Pojo("{\"id\":\"5de9bf91ecae1f3a0d7bf7cc\",\"name\":\"Demo\",\"envId\":\"5e3777c4bc1dfd3b727fa94e\"}", ProjectDto.class);
-		projectController.exportHtml(projectDto);
-	}
-
-	@Test
 	public void testUrlDecode() throws Exception {
-		System.out.println(StringEscapeUtils.unescapeXml("&lt; &gt; &amp; "));
+		//System.out.println(StringEscapeUtils.unescapeXml("&lt; &gt; &amp; "));
 	}
 
 	@Test
 	public void testZip() throws IOException {
-		Collection<File> files = ZTFileUtil.listFiles(new File("D:\\tmp\\uploadFile"));
-		System.out.println(files);
-		ZipUtil.packEntries(files.toArray(new File[0]), new File("D:\\tmp\\2.zip"));
+		//Collection<File> files = ZTFileUtil.listFiles(new File("D:\\tmp\\uploadFile"));
+		//System.out.println(files);
+		//ZipUtil.packEntries(files.toArray(new File[0]), new File("D:\\tmp\\2.zip"));
 		//ZipUtil.pack(new File("D:\\tmp\\uploadFile"), new File("D:\\tmp\\1.zip"));
 	}
 }
