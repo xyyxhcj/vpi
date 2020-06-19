@@ -1,22 +1,11 @@
 package press.whcj.ams.web;
 
-import org.apache.commons.io.IOUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.zeroturnaround.zip.ZipUtil;
-import press.whcj.ams.common.Constant;
 import press.whcj.ams.entity.Project;
 import press.whcj.ams.entity.ProjectGroup;
 import press.whcj.ams.entity.ProjectUser;
@@ -35,9 +24,6 @@ import press.whcj.ams.util.PermUtils;
 import press.whcj.ams.util.UserUtils;
 
 import javax.annotation.Resource;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -140,46 +126,5 @@ public class ProjectController extends BaseController {
         PermUtils.checkProjectOwner(mongoTemplate, projectId, operator);
         projectService.remove(projectId, operator);
         return ok();
-    }
-
-    @PostMapping("exportHtml")
-    public void exportHtml(@RequestBody ProjectDto projectDto) throws Exception {
-        String projectId = projectDto.getId();
-        FastUtils.checkParams(projectId);
-        String url = String.format(Constant.Url.EXPORT_URL, projectId, projectDto.getName(), projectDto.getEnvId());
-
-        ChromeOptions options = new ChromeOptions();
-        options.setHeadless(true);
-        options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
-        ChromeDriver driver = new ChromeDriver(options);
-        driver.get(Constant.SysConfig.FRONT_HOST + url);
-        Thread.sleep(5000);
-        List<WebElement> elements = driver.findElements(By.className("el-table__row"));
-        Document doc = Jsoup.parse(driver.getPageSource());
-        driver.close();
-        Elements links = doc.select("link[href]");
-        String pre = Constant.Character.POINT;
-        for (Element link : links) {
-            link.attr("href", pre + link.attr("href"));
-        }
-        links = doc.select("script[src]");
-        for (Element link : links) {
-            link.attr("src", pre + link.attr("src"));
-        }
-        ByteArrayInputStream input = null;
-        FileOutputStream output = null;
-        try {
-            input = new ByteArrayInputStream(doc.toString().getBytes());
-            Runtime.getRuntime().exec("rm -rf /data/exportVpiHtml");
-            File file = new File("/data/exportVpiHtml/");
-            file.mkdirs();
-            output = new FileOutputStream("/data/exportVpiHtml/testExport.html");
-            IOUtils.copyLarge(input, output);
-
-            Runtime.getRuntime().exec("cp -r /opt/uploadFile/assets /data/exportVpiHtml/");
-            ZipUtil.pack(new File("/data/exportVpiHtml"), new File("/data/exportVpiHtml.zip"));
-        } finally {
-            IOUtils.closeQuietly(input, output);
-        }
     }
 }
