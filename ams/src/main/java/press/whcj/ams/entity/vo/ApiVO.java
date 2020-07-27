@@ -1,11 +1,12 @@
 package press.whcj.ams.entity.vo;
 
+import java.util.Collection;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import press.whcj.ams.entity.Api;
 import press.whcj.ams.entity.ApiHeader;
-
-import java.util.Collection;
 
 /**
  * @author xyyxhcj@qq.com
@@ -13,10 +14,11 @@ import java.util.Collection;
  */
 @Getter
 @Setter
-public class ApiVo extends Api {
+@ToString(callSuper = true)
+public class ApiVO extends Api {
 	private static final long serialVersionUID = 7302871133312701808L;
-	private StructureVo requestParamVo;
-	private StructureVo responseParamVo;
+	private StructureVO requestParamVo;
+	private StructureVO responseParamVo;
 	private Collection<ApiHeader> requestHeaders;
 	private Collection<ApiHeader> responseHeaders;
 }

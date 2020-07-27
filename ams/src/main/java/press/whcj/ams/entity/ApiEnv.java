@@ -1,11 +1,12 @@
 package press.whcj.ams.entity;
 
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-
-import java.io.Serializable;
 
 /**
  * api environment
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
+@ToString(callSuper = true)
 public class ApiEnv extends BaseEntity implements Serializable {
     private String name;
     private String projectId;

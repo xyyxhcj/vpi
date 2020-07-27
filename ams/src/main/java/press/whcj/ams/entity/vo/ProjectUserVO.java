@@ -3,6 +3,7 @@ package press.whcj.ams.entity.vo;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import press.whcj.ams.entity.ProjectUser;
 
 /**
@@ -11,7 +12,8 @@ import press.whcj.ams.entity.ProjectUser;
  */
 @Getter
 @Setter
-public class ProjectUserVo extends ProjectUser {
+@ToString(callSuper = true)
+public class ProjectUserVO extends ProjectUser {
 	private static final long serialVersionUID = 54773277303819897L;
 	private String userName;
 }

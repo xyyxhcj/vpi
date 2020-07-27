@@ -1,10 +1,10 @@
 package press.whcj.ams.service;
 
-import press.whcj.ams.entity.MongoPage;
-import press.whcj.ams.entity.dto.UserDto;
-import press.whcj.ams.entity.vo.UserVo;
-
 import javax.servlet.http.HttpServletRequest;
+
+import press.whcj.ams.entity.MongoPage;
+import press.whcj.ams.entity.dto.UserDTO;
+import press.whcj.ams.entity.vo.UserVO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -15,22 +15,22 @@ public interface UserService {
     /**
      * save
      *
-     * @param userDto userDto
+     * @param userDTO userDTO
      * @return java.lang.String
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:30
      **/
-    String save(UserDto userDto);
+    String save(UserDTO userDTO);
 
     /**
      * remove user
      *
-     * @param userDto  userDto
+     * @param userDTO  userDTO
      * @param operator operator
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:30
      **/
-    void remove(UserDto userDto, UserVo operator);
+    void remove(UserDTO userDTO, UserVO operator);
 
     /**
      * findDetail
@@ -40,17 +40,17 @@ public interface UserService {
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:30
      **/
-    UserVo findDetail(String id);
+    UserVO findDetail(String id);
 
     /**
      * findPage
      *
-     * @param userDto userDto
+     * @param userDTO userDTO
      * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.vo.UserVo>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:29
      **/
-    MongoPage<UserVo> findPage(UserDto userDto);
+    MongoPage<UserVO> findPage(UserDTO userDTO);
 
     /**
      * add first admin
@@ -63,11 +63,11 @@ public interface UserService {
     /**
      * login
      *
-     * @param userDto userDto
+     * @param userDTO userDTO
      * @param request request
      * @return press.whcj.ams.entity.vo.UserVo
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:25
      **/
-    UserVo login(UserDto userDto, HttpServletRequest request);
+    UserVO login(UserDTO userDTO, HttpServletRequest request);
 }

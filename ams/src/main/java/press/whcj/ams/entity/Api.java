@@ -1,13 +1,16 @@
 package press.whcj.ams.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import java.io.Serializable;
+
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 /**
  * @author xyyxhcj@qq.com
@@ -16,6 +19,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
+@ToString(callSuper = true)
 public class Api extends BaseEntity implements Serializable {
     private String name;
     @DBRef

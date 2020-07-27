@@ -1,20 +1,22 @@
 package press.whcj.ams.web;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import press.whcj.ams.entity.ApiGroup;
-import press.whcj.ams.entity.vo.ApiGroupVo;
-import press.whcj.ams.entity.vo.UserVo;
+import press.whcj.ams.entity.vo.ApiGroupVO;
+import press.whcj.ams.entity.vo.UserVO;
 import press.whcj.ams.service.ApiGroupService;
 import press.whcj.ams.support.BaseController;
 import press.whcj.ams.support.Result;
 import press.whcj.ams.util.FastUtils;
 import press.whcj.ams.util.UserUtils;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author xyyxhcj@qq.com
@@ -27,30 +29,30 @@ public class ApiGroupController extends BaseController {
     private ApiGroupService apiGroupService;
 
     @PostMapping("add")
-    public Result<String> add(@RequestBody ApiGroup apiGroupDto) {
-        UserVo operator = UserUtils.getOperator();
-        apiGroupDto.initCreate(operator);
-        String id = apiGroupService.save(apiGroupDto, operator);
+    public Result<String> add(@RequestBody ApiGroup apiGroupDTO) {
+        UserVO operator = UserUtils.getOperator();
+        apiGroupDTO.initCreate(operator);
+        String id = apiGroupService.save(apiGroupDTO, operator);
         return ok(id);
     }
 
     @PostMapping("edit")
-    public Result<String> edit(@RequestBody ApiGroup apiGroupDto) {
-        FastUtils.checkParams(apiGroupDto.getId());
-        UserVo operator = UserUtils.getOperator();
-        apiGroupDto.initUpdate(operator);
-        apiGroupService.save(apiGroupDto, operator);
-        return ok(apiGroupDto.getId());
+    public Result<String> edit(@RequestBody ApiGroup apiGroupDTO) {
+        FastUtils.checkParams(apiGroupDTO.getId());
+        UserVO operator = UserUtils.getOperator();
+        apiGroupDTO.initUpdate(operator);
+        apiGroupService.save(apiGroupDTO, operator);
+        return ok(apiGroupDTO.getId());
     }
 
     @PostMapping("vpi/findList")
-    public Result<List<ApiGroupVo>> findList(@RequestBody ApiGroup apiGroupDto) {
-        return ok(apiGroupService.findList(apiGroupDto));
+    public Result<List<ApiGroupVO>> findList(@RequestBody ApiGroup apiGroupDTO) {
+        return ok(apiGroupService.findList(apiGroupDTO));
     }
 
     @PostMapping("delete")
-    public Result<Object> delete(@RequestBody ApiGroup apiGroupDto) {
-		apiGroupService.delete(apiGroupDto);
+    public Result<Object> delete(@RequestBody ApiGroup apiGroupDTO) {
+		apiGroupService.delete(apiGroupDTO);
         return ok();
     }
 }

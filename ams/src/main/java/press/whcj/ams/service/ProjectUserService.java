@@ -1,11 +1,11 @@
 package press.whcj.ams.service;
 
 
+import java.util.List;
+
 import press.whcj.ams.entity.ProjectUser;
 import press.whcj.ams.entity.User;
-import press.whcj.ams.entity.dto.ProjectUserDto;
-
-import java.util.List;
+import press.whcj.ams.entity.dto.ProjectUserDTO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -16,9 +16,9 @@ public interface ProjectUserService {
 	/**
 	 * edit
 	 *
-	 * @param projectUserDto projectUserDto
+	 * @param projectUserDTO projectUserDTO
 	 */
-	void edit(ProjectUserDto projectUserDto);
+	void edit(ProjectUserDTO projectUserDTO);
 
 	/**
 	 * findProjectUser

@@ -12,9 +12,9 @@ import press.whcj.ams.entity.User;
  */
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @Accessors(chain = true)
-public class UserVo extends User {
+public class UserVO extends User {
 	private static final long serialVersionUID = 9212691497037754668L;
 	private String auth;
 }

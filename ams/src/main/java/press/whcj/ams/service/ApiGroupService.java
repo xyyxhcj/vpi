@@ -1,11 +1,11 @@
 package press.whcj.ams.service;
 
 
-import press.whcj.ams.entity.ApiGroup;
-import press.whcj.ams.entity.vo.ApiGroupVo;
-import press.whcj.ams.entity.vo.UserVo;
-
 import java.util.List;
+
+import press.whcj.ams.entity.ApiGroup;
+import press.whcj.ams.entity.vo.ApiGroupVO;
+import press.whcj.ams.entity.vo.UserVO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -16,30 +16,30 @@ public interface ApiGroupService {
     /**
      * findList
      *
-     * @param apiGroupDto apiGroupDto
+     * @param apiGroupDTO apiGroupDTO
      * @return java.util.List<press.whcj.ams.entity.vo.ApiGroupVo>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    List<ApiGroupVo> findList(ApiGroup apiGroupDto);
+    List<ApiGroupVO> findList(ApiGroup apiGroupDTO);
 
     /**
      * save
      *
-     * @param apiGroupDto apiGroupDto
+     * @param apiGroupDTO apiGroupDTO
      * @param operator    operator
      * @return java.lang.String
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    String save(ApiGroup apiGroupDto, UserVo operator);
+    String save(ApiGroup apiGroupDTO, UserVO operator);
 
     /**
      * delete
      *
-     * @param apiGroupDto apiGroupDto
+     * @param apiGroupDTO apiGroupDTO
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    void delete(ApiGroup apiGroupDto);
+    void delete(ApiGroup apiGroupDTO);
 }

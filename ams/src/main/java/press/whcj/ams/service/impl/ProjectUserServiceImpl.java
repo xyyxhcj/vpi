@@ -1,22 +1,24 @@
 package press.whcj.ams.service.impl;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
 import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.common.Constant;
 import press.whcj.ams.entity.ProjectUser;
 import press.whcj.ams.entity.User;
-import press.whcj.ams.entity.dto.ProjectUserDto;
+import press.whcj.ams.entity.dto.ProjectUserDTO;
 import press.whcj.ams.service.ProjectUserService;
 import press.whcj.ams.util.FastUtils;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author xyyxhcj@qq.com
@@ -28,14 +30,14 @@ public class ProjectUserServiceImpl implements ProjectUserService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public void edit(ProjectUserDto projectUserDto) {
-        FastUtils.checkParams(projectUserDto.getId());
-        if (Constant.Is.YES.equals(projectUserDto.getIsDel())) {
-            mongoTemplate.remove(new Query(Criteria.where(ColumnName.ID).is(projectUserDto.getId())), ProjectUser.class);
+    public void edit(ProjectUserDTO projectUserDTO) {
+        FastUtils.checkParams(projectUserDTO.getId());
+        if (Constant.Is.YES.equals(projectUserDTO.getIsDel())) {
+            mongoTemplate.remove(new Query(Criteria.where(ColumnName.ID).is(projectUserDTO.getId())), ProjectUser.class);
         } else {
-            ProjectUser projectUser = mongoTemplate.findById(projectUserDto.getId(), ProjectUser.class);
+            ProjectUser projectUser = mongoTemplate.findById(projectUserDTO.getId(), ProjectUser.class);
             FastUtils.checkNull(projectUser);
-            mongoTemplate.save(Objects.requireNonNull(FastUtils.copyProperties(projectUserDto, projectUser)));
+            mongoTemplate.save(Objects.requireNonNull(FastUtils.copyProperties(projectUserDTO, projectUser)));
         }
     }
 

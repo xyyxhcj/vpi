@@ -1,11 +1,11 @@
 package press.whcj.ams.service;
 
-import press.whcj.ams.entity.MongoPage;
-import press.whcj.ams.entity.dto.ApiDto;
-import press.whcj.ams.entity.vo.ApiVo;
-import press.whcj.ams.entity.vo.UserVo;
-
 import java.util.List;
+
+import press.whcj.ams.entity.MongoPage;
+import press.whcj.ams.entity.dto.ApiDTO;
+import press.whcj.ams.entity.vo.ApiVO;
+import press.whcj.ams.entity.vo.UserVO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -16,89 +16,89 @@ public interface ApiService {
     /**
      * save
      *
-     * @param apiDto   apiDto
+     * @param apiDTO   apiDTO
      * @param operator operator
      * @return java.lang.String
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    String save(ApiDto apiDto, UserVo operator);
+    String save(ApiDTO apiDTO, UserVO operator);
 
     /**
      * findPage
      *
-     * @param apiDto apiDto
+     * @param apiDTO apiDTO
      * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.vo.ApiVo>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    MongoPage<ApiVo> findPage(ApiDto apiDto);
+    MongoPage<ApiVO> findPage(ApiDTO apiDTO);
 
     /**
      * findDetail
      *
-     * @param apiDto apiDto
+     * @param apiDTO apiDTO
      * @return press.whcj.ams.entity.vo.ApiVo
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    ApiVo findDetail(ApiDto apiDto);
+    ApiVO findDetail(ApiDTO apiDTO);
 
     /**
      * saveMock
      *
-     * @param apiDto apiDto
+     * @param apiDTO apiDTO
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    void saveMock(ApiDto apiDto);
+    void saveMock(ApiDTO apiDTO);
 
     /**
      * remove
      *
-     * @param apiDto apiDto
+     * @param apiDTO apiDTO
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    void remove(ApiDto apiDto);
+    void remove(ApiDTO apiDTO);
 
     /**
      * switchStatus
      *
-     * @param apiDto   apiDto
+     * @param apiDTO   apiDTO
      * @param operator operator
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    void switchStatus(ApiDto apiDto, UserVo operator);
+    void switchStatus(ApiDTO apiDTO, UserVO operator);
 
     /**
      * findReferenceApi
      *
-     * @param apiDto apiDto
+     * @param apiDTO apiDTO
      * @return java.util.List<press.whcj.ams.entity.vo.ApiVo>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    List<ApiVo> findReferenceApi(ApiDto apiDto);
+    List<ApiVO> findReferenceApi(ApiDTO apiDTO);
 
     /**
      * moveGroup
      *
-     * @param apiDto   apiDto
+     * @param apiDTO   apiDTO
      * @param operator operator
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    void moveGroup(ApiDto apiDto, UserVo operator);
+    void moveGroup(ApiDTO apiDTO, UserVO operator);
 
     /**
      * findAllDetail
      *
-     * @param apiDto apiDto
+     * @param apiDTO apiDTO
      * @return java.util.List<press.whcj.ams.entity.vo.ApiVo>
      * @author xyyxhcj@qq.com
      * @date 2020/5/22 9:11
      **/
-    List<ApiVo> findAllDetail(ApiDto apiDto);
+    List<ApiVO> findAllDetail(ApiDTO apiDTO);
 }

@@ -1,5 +1,11 @@
 package press.whcj.ams.service.impl;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.annotation.Resource;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -7,22 +13,18 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
 import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.common.Constant;
 import press.whcj.ams.entity.Project;
 import press.whcj.ams.entity.ProjectGroup;
-import press.whcj.ams.entity.dto.ProjectDto;
-import press.whcj.ams.entity.vo.ProjectGroupVo;
-import press.whcj.ams.entity.vo.UserVo;
+import press.whcj.ams.entity.dto.ProjectDTO;
+import press.whcj.ams.entity.vo.ProjectGroupVO;
+import press.whcj.ams.entity.vo.UserVO;
 import press.whcj.ams.exception.ResultCode;
 import press.whcj.ams.exception.ServiceException;
 import press.whcj.ams.service.ProjectGroupService;
 import press.whcj.ams.util.FastUtils;
-
-import javax.annotation.Resource;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author xyyxhcj@qq.com
@@ -34,14 +36,14 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public String save(ProjectGroup projectGroupDto, UserVo operator) {
-        boolean isUpdate = projectGroupDto.getId() != null;
-        String name = projectGroupDto.getName();
+    public String save(ProjectGroup projectGroupDTO, UserVO operator) {
+        boolean isUpdate = projectGroupDTO.getId() != null;
+        String name = projectGroupDTO.getName();
         String operatorId = operator.getId();
         FastUtils.checkParams(name);
         ProjectGroup projectGroup;
         if (isUpdate) {
-            projectGroup = mongoTemplate.findById(projectGroupDto.getId(), ProjectGroup.class);
+            projectGroup = mongoTemplate.findById(projectGroupDTO.getId(), ProjectGroup.class);
             FastUtils.checkNull(projectGroup);
             if (!operatorId.equals(Objects.requireNonNull(projectGroup).getCreateId())) {
                 // can't save to other people's group
@@ -51,8 +53,8 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
         } else {
             projectGroup = new ProjectGroup();
         }
-        FastUtils.copyProperties(projectGroupDto, projectGroup);
-        String parentId = projectGroupDto.getParentId();
+        FastUtils.copyProperties(projectGroupDTO, projectGroup);
+        String parentId = projectGroupDTO.getParentId();
         if (parentId != null) {
             // maybe = ''
             projectGroup.setParentId(parentId);
@@ -63,27 +65,27 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
             }
         }
         synchronized (operatorId.intern()) {
-            FastUtils.checkNameAndSave(projectGroupDto.getId(), isUpdate, name, projectGroup, mongoTemplate, Criteria.where(ColumnName.CREATE_$ID).is(new ObjectId(operatorId)));
+            FastUtils.checkNameAndSave(projectGroupDTO.getId(), isUpdate, name, projectGroup, mongoTemplate, Criteria.where(ColumnName.CREATE_$ID).is(new ObjectId(operatorId)));
         }
         return projectGroup.getId();
     }
 
     @Override
-    public List<ProjectGroupVo> findList(ProjectGroup projectGroupDto, UserVo operator) {
+    public List<ProjectGroupVO> findList(ProjectGroup projectGroupDTO, UserVO operator) {
         Criteria definition;
-        if (StringUtils.isEmpty(projectGroupDto.getParentId())) {
+        if (StringUtils.isEmpty(projectGroupDTO.getParentId())) {
             definition = new Criteria();
         } else {
-            definition = Criteria.where(ColumnName.PARENT_ID).is(projectGroupDto.getParentId());
+            definition = Criteria.where(ColumnName.PARENT_ID).is(projectGroupDTO.getParentId());
         }
         return mongoTemplate.find(new Query(definition.and(ColumnName.CREATE_$ID).is(new ObjectId(operator.getId()))),
-                ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
+                ProjectGroupVO.class, Constant.CollectionName.PROJECT_GROUP);
     }
 
     @Override
-    public ProjectGroupVo findDetail(ProjectGroup projectGroup) {
+    public ProjectGroupVO findDetail(ProjectGroup projectGroup) {
         FastUtils.checkParams(projectGroup.getId());
-        return mongoTemplate.findById(projectGroup.getId(), ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
+        return mongoTemplate.findById(projectGroup.getId(), ProjectGroupVO.class, Constant.CollectionName.PROJECT_GROUP);
     }
 
     @Override
@@ -103,35 +105,35 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
     }
 
     @Override
-    public List<ProjectGroupVo> findListByParentForOwner(ProjectGroup projectGroupDto, UserVo operator) {
+    public List<ProjectGroupVO> findListByParentForOwner(ProjectGroup projectGroupDTO, UserVO operator) {
         Criteria definition;
-        if (StringUtils.isEmpty(projectGroupDto.getParentId())) {
+        if (StringUtils.isEmpty(projectGroupDTO.getParentId())) {
             definition = Criteria.where(ColumnName.PARENT_ID).in(null, "");
         } else {
-            definition = Criteria.where(ColumnName.PARENT_ID).is(projectGroupDto.getParentId());
+            definition = Criteria.where(ColumnName.PARENT_ID).is(projectGroupDTO.getParentId());
         }
         return mongoTemplate.find(new Query(definition.and(ColumnName.CREATE_$ID).is(new ObjectId(operator.getId()))
                         .and(ColumnName.IS_DEL).ne(Constant.Is.YES)),
-                ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
+                ProjectGroupVO.class, Constant.CollectionName.PROJECT_GROUP);
     }
 
     @Override
-    public List<ProjectGroupVo> findListByParentForOther(ProjectGroup projectGroupDto, UserVo operator) {
+    public List<ProjectGroupVO> findListByParentForOther(ProjectGroup projectGroupDTO, UserVO operator) {
         Criteria definition;
-        if (StringUtils.isEmpty(projectGroupDto.getParentId())) {
+        if (StringUtils.isEmpty(projectGroupDTO.getParentId())) {
             definition = Criteria.where(ColumnName.PARENT_ID).in(null, "");
         } else {
-            definition = Criteria.where(ColumnName.PARENT_ID).is(projectGroupDto.getParentId());
+            definition = Criteria.where(ColumnName.PARENT_ID).is(projectGroupDTO.getParentId());
         }
         return mongoTemplate.find(new Query(definition.and(ColumnName.CREATE_$ID).ne(new ObjectId(operator.getId()))
                         .and(ColumnName.IS_DEL).ne(Constant.Is.YES)),
-                ProjectGroupVo.class, Constant.CollectionName.PROJECT_GROUP);
+                ProjectGroupVO.class, Constant.CollectionName.PROJECT_GROUP);
     }
 
     @Override
-    public void moveGroup(ProjectDto projectDto, UserVo operator) {
-        String targetGroupId = projectDto.getGroupId();
-        FastUtils.checkParams(projectDto.getProjects());
+    public void moveGroup(ProjectDTO projectDTO, UserVO operator) {
+        String targetGroupId = projectDTO.getGroupId();
+        FastUtils.checkParams(projectDTO.getProjects());
         if (targetGroupId != null) {
             ProjectGroup targetGroup = mongoTemplate.findById(targetGroupId, ProjectGroup.class);
             FastUtils.checkNull(targetGroup);
@@ -142,7 +144,7 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
         }
         List<ObjectId> needMoveProjects = new LinkedList<>();
         List<ObjectId> needMoveGroups = new LinkedList<>();
-        projectDto.getProjects().forEach(project -> {
+        projectDTO.getProjects().forEach(project -> {
             if (!StringUtils.isEmpty(project.getId())) {
                 needMoveProjects.add(new ObjectId(project.getId()));
             } else if (!StringUtils.isEmpty(project.getGroupId())) {

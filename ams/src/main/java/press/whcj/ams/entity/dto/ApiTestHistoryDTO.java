@@ -1,13 +1,14 @@
 package press.whcj.ams.entity.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import press.whcj.ams.entity.ApiTestHistory;
-import press.whcj.ams.entity.MongoPage;
-import press.whcj.ams.entity.vo.ApiTestHistoryVo;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import press.whcj.ams.entity.ApiTestHistory;
+import press.whcj.ams.entity.MongoPage;
+import press.whcj.ams.entity.vo.ApiTestHistoryVO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -15,7 +16,8 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class ApiTestHistoryDto extends ApiTestHistoryVo {
+@ToString(callSuper = true)
+public class ApiTestHistoryDTO extends ApiTestHistoryVO {
     private static final long serialVersionUID = 319496661689506649L;
     private MongoPage<ApiTestHistory> page = new MongoPage<>();
     private String operateId;

@@ -1,12 +1,13 @@
 package press.whcj.ams.entity.vo;
 
-import lombok.Getter;
-import lombok.Setter;
-import press.whcj.ams.entity.StructureData;
-import press.whcj.ams.entity.dto.StructureDataDto;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import press.whcj.ams.entity.StructureData;
+import press.whcj.ams.entity.dto.StructureDataDTO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -14,8 +15,9 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class StructureDataVo extends StructureData {
+@ToString(callSuper = true)
+public class StructureDataVO extends StructureData {
 	private static final long serialVersionUID = -8242864518498538638L;
-	private List<StructureDataDto> subList = new LinkedList<>();
+	private List<StructureDataDTO> subList = new LinkedList<>();
 	private String referenceStructureName;
 }

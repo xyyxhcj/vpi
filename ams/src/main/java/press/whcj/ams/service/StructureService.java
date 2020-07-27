@@ -1,9 +1,9 @@
 package press.whcj.ams.service;
 
 import press.whcj.ams.entity.MongoPage;
-import press.whcj.ams.entity.dto.StructureDto;
-import press.whcj.ams.entity.vo.StructureVo;
-import press.whcj.ams.entity.vo.UserVo;
+import press.whcj.ams.entity.dto.StructureDTO;
+import press.whcj.ams.entity.vo.StructureVO;
+import press.whcj.ams.entity.vo.UserVO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -14,33 +14,33 @@ public interface StructureService {
     /**
      * findPage
      *
-     * @param structureDto structureDto
+     * @param structureDTO structureDTO
      * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.vo.StructureVo>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:31
      **/
-    MongoPage<StructureVo> findPage(StructureDto structureDto);
+    MongoPage<StructureVO> findPage(StructureDTO structureDTO);
 
     /**
      * save
      *
-     * @param structureDto structureDto
+     * @param structureDTO structureDTO
      * @param operator     operator
      * @return java.lang.String
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:31
      **/
-    String save(StructureDto structureDto, UserVo operator);
+    String save(StructureDTO structureDTO, UserVO operator);
 
     /**
      * findDetail
      *
-     * @param structureDto structureDto
+     * @param structureDTO structureDTO
      * @return press.whcj.ams.entity.vo.StructureVo
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:31
      **/
-    StructureVo findDetail(StructureDto structureDto);
+    StructureVO findDetail(StructureDTO structureDTO);
 
     /**
      * getStructureVoById
@@ -50,14 +50,14 @@ public interface StructureService {
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:31
      **/
-    StructureVo getStructureVoById(String structureId);
+    StructureVO getStructureVoById(String structureId);
 
     /**
      * remove
      *
-     * @param structureDto structureDto
+     * @param structureDTO structureDTO
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:31
      **/
-    void remove(StructureDto structureDto);
+    void remove(StructureDTO structureDTO);
 }

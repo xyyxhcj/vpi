@@ -1,13 +1,15 @@
 package press.whcj.ams.entity;
 
 
+import java.io.Serializable;
+
+import org.springframework.data.annotation.Transient;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.Transient;
-
-import java.io.Serializable;
 
 /**
  * @author xyyxhcj@qq.com
@@ -17,6 +19,7 @@ import java.io.Serializable;
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
+@ToString(callSuper = true)
 public class Project extends BaseEntity implements Serializable {
 	private String name;
 	private String groupId;

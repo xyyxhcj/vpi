@@ -1,12 +1,13 @@
 package press.whcj.ams.entity.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import press.whcj.ams.entity.MongoPage;
-import press.whcj.ams.entity.vo.ApiVo;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import press.whcj.ams.entity.MongoPage;
+import press.whcj.ams.entity.vo.ApiVO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -14,12 +15,13 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class ApiDto extends ApiVo {
+@ToString(callSuper = true)
+public class ApiDTO extends ApiVO {
 	private static final long serialVersionUID = -2107807918182928550L;
 	private String groupId;
-	private StructureDto requestParamDto;
-	private StructureDto responseParamDto;
-	private MongoPage<ApiVo> page = new MongoPage<>();
+	private StructureDTO requestParamDTO;
+	private StructureDTO responseParamDTO;
+	private MongoPage<ApiVO> page = new MongoPage<>();
 	private List<String> ids = new ArrayList<>();
 	private String structureId;
 	private String nameOrUri;
