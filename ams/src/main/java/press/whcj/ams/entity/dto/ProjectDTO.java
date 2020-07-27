@@ -1,15 +1,16 @@
 package press.whcj.ams.entity.dto;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import press.whcj.ams.entity.MongoPage;
 import press.whcj.ams.entity.Project;
 import press.whcj.ams.entity.ProjectUser;
-import press.whcj.ams.entity.vo.ProjectVo;
-
-import java.util.ArrayList;
-import java.util.List;
+import press.whcj.ams.entity.vo.ProjectVO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -17,11 +18,12 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class ProjectDto extends ProjectVo {
+@ToString(callSuper = true)
+public class ProjectDTO extends ProjectVO {
 	private static final long serialVersionUID = -2799089198826287508L;
 	private String userId;
 	private List<ProjectUser> projectUsers;
-	private MongoPage<ProjectVo> page = new MongoPage<>();
-	List<Project> projects = new ArrayList<>();
+	private MongoPage<ProjectVO> page = new MongoPage<>();
+	private List<Project> projects = new ArrayList<>();
 	private String envId;
 }
