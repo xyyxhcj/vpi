@@ -1,5 +1,11 @@
 package press.whcj.ams.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
 import org.bson.BsonRegularExpression;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -8,18 +14,19 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.querydsl.QSort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
 import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.common.Constant;
 import press.whcj.ams.entity.MongoPage;
 import press.whcj.ams.entity.Structure;
 import press.whcj.ams.entity.StructureData;
 import press.whcj.ams.entity.User;
-import press.whcj.ams.entity.dto.ApiDto;
-import press.whcj.ams.entity.dto.StructureDataDto;
-import press.whcj.ams.entity.dto.StructureDto;
-import press.whcj.ams.entity.vo.ApiVo;
-import press.whcj.ams.entity.vo.StructureVo;
-import press.whcj.ams.entity.vo.UserVo;
+import press.whcj.ams.entity.dto.ApiDTO;
+import press.whcj.ams.entity.dto.StructureDTO;
+import press.whcj.ams.entity.dto.StructureDataDTO;
+import press.whcj.ams.entity.vo.ApiVO;
+import press.whcj.ams.entity.vo.StructureVO;
+import press.whcj.ams.entity.vo.UserVO;
 import press.whcj.ams.exception.ResultCode;
 import press.whcj.ams.exception.ServiceException;
 import press.whcj.ams.service.ApiService;
@@ -27,11 +34,6 @@ import press.whcj.ams.service.StructureService;
 import press.whcj.ams.util.FastUtils;
 import press.whcj.ams.util.PermUtils;
 import press.whcj.ams.util.UserUtils;
-
-import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author xyyxhcj@qq.com
@@ -46,13 +48,13 @@ public class StructureServiceImpl implements StructureService {
     private ApiService apiService;
 
     @Override
-    public MongoPage<StructureVo> findPage(StructureDto structureDto) {
-        FastUtils.checkParams(structureDto.getProjectId());
-        MongoPage<StructureVo> page = structureDto.getPage();
-        Criteria criteria = Criteria.where(ColumnName.PROJECT_ID).is(structureDto.getProjectId())
+    public MongoPage<StructureVO> findPage(StructureDTO structureDTO) {
+        FastUtils.checkParams(structureDTO.getProjectId());
+        MongoPage<StructureVO> page = structureDTO.getPage();
+        Criteria criteria = Criteria.where(ColumnName.PROJECT_ID).is(structureDTO.getProjectId())
                 .and(ColumnName.TYPE).is(Constant.StructureType.USER_CREATE)
                 .and(ColumnName.IS_DEL).ne(Constant.Is.YES);
-        String nameOrRemark = structureDto.getNameOrRemark();
+        String nameOrRemark = structureDTO.getNameOrRemark();
         if (!StringUtils.isEmpty(nameOrRemark)) {
             BsonRegularExpression expression = new BsonRegularExpression("^.*" + nameOrRemark + ".*$", "i");
             criteria = criteria.orOperator(Criteria.where(ColumnName.NAME).regex(expression),
@@ -65,118 +67,118 @@ public class StructureServiceImpl implements StructureService {
         if (total == 0L) {
             return page;
         }
-        return page.setRecords(mongoTemplate.find(query, StructureVo.class, Constant.CollectionName.STRUCTURE));
+        return page.setRecords(mongoTemplate.find(query, StructureVO.class, Constant.CollectionName.STRUCTURE));
     }
 
     @Override
-    public String save(StructureDto structureDto, UserVo operator) {
-        boolean isUpdate = !StringUtils.isEmpty(structureDto.getId());
-        String name = structureDto.getName();
-        String projectId = structureDto.getProjectId();
+    public String save(StructureDTO structureDTO, UserVO operator) {
+        boolean isUpdate = !StringUtils.isEmpty(structureDTO.getId());
+        String name = structureDTO.getName();
+        String projectId = structureDTO.getProjectId();
         FastUtils.checkParams(name, projectId);
         PermUtils.checkProjectWrite(mongoTemplate, projectId, operator);
-        Structure structure = buildStructure(structureDto, isUpdate);
-        if (structureDto.isCheckName()) {
+        Structure structure = buildStructure(structureDTO, isUpdate);
+        if (structureDTO.isCheckName()) {
             synchronized (projectId.intern()) {
-                FastUtils.checkNameAndSave(structureDto.getId(), isUpdate, name, structure, mongoTemplate, Criteria.where(ColumnName.PROJECT_ID).is(projectId).and(ColumnName.TYPE).is(Constant.StructureType.USER_CREATE));
+                FastUtils.checkNameAndSave(structureDTO.getId(), isUpdate, name, structure, mongoTemplate, Criteria.where(ColumnName.PROJECT_ID).is(projectId).and(ColumnName.TYPE).is(Constant.StructureType.USER_CREATE));
             }
         } else {
             mongoTemplate.save(structure);
         }
         String structureId = structure.getId();
-        saveStructureData(structureDto, structureId);
+        saveStructureData(structureDTO, structureId);
         return structureId;
     }
 
-    private Structure buildStructure(StructureDto structureDto, boolean isUpdate) {
+    private Structure buildStructure(StructureDTO structureDTO, boolean isUpdate) {
         Structure structure;
         if (isUpdate) {
-            structure = mongoTemplate.findById(structureDto.getId(), Structure.class);
+            structure = mongoTemplate.findById(structureDTO.getId(), Structure.class);
             FastUtils.checkNull(structure);
             Objects.requireNonNull(structure).setUpdate(null);
         } else {
             structure = new Structure();
         }
-        FastUtils.copyProperties(structureDto, structure);
+        FastUtils.copyProperties(structureDTO, structure);
         return structure;
     }
 
-    private void saveStructureData(StructureDto structureDto, String structureId) {
+    private void saveStructureData(StructureDTO structureDTO, String structureId) {
         mongoTemplate.remove(new Query(Criteria.where(ColumnName.STRUCTURE_ID).is(structureId)), StructureData.class);
-        String projectId = structureDto.getProjectId();
-        if (!structureDto.getDataList().isEmpty()) {
+        String projectId = structureDTO.getProjectId();
+        if (!structureDTO.getDataList().isEmpty()) {
             List<StructureData> structureDataList = new LinkedList<>();
-            List<StructureDataDto> subDataList = new LinkedList<>();
-            for (StructureDataDto structureDataDto : structureDto.getDataList()) {
-                getStructureData(structureId, projectId, subDataList, structureDataList, structureDataDto);
+            List<StructureDataDTO> subDataList = new LinkedList<>();
+            for (StructureDataDTO structureDataDTO : structureDTO.getDataList()) {
+                getStructureData(structureId, projectId, subDataList, structureDataList, structureDataDTO);
             }
             mongoTemplate.insertAll(structureDataList);
             while (!subDataList.isEmpty()) {
-                ArrayList<StructureDataDto> tempSubs = new ArrayList<>(subDataList);
+                ArrayList<StructureDataDTO> tempSubs = new ArrayList<>(subDataList);
                 subDataList.clear();
                 List<StructureData> insertSubs = new LinkedList<>();
-                for (StructureDataDto dataDto : tempSubs) {
-                    StructureData insertSub = getStructureData(structureId, projectId, subDataList, insertSubs, dataDto);
-                    insertSub.setParentId(dataDto.getParent().getId());
+                for (StructureDataDTO dataDTO : tempSubs) {
+                    StructureData insertSub = getStructureData(structureId, projectId, subDataList, insertSubs, dataDTO);
+                    insertSub.setParentId(dataDTO.getParent().getId());
                 }
                 mongoTemplate.insertAll(insertSubs);
             }
         }
     }
 
-    private StructureData getStructureData(String structureId, String projectId, List<StructureDataDto> dtoList, List<StructureData> insertStructureDataList, StructureDataDto dataDto) {
+    private StructureData getStructureData(String structureId, String projectId, List<StructureDataDTO> dtoList, List<StructureData> insertStructureDataList, StructureDataDTO dataDTO) {
         StructureData insertSub = new StructureData();
         insertStructureDataList.add(insertSub);
-        FastUtils.copyProperties(dataDto, insertSub);
-        if (StringUtils.isEmpty(dataDto.getReferenceStructureId())) {
-            collectSubs(dtoList, insertSub, dataDto);
+        FastUtils.copyProperties(dataDTO, insertSub);
+        if (StringUtils.isEmpty(dataDTO.getReferenceStructureId())) {
+            collectSubs(dtoList, insertSub, dataDTO);
         }
         return insertSub.setStructureId(structureId).setProjectId(projectId);
     }
 
     @Override
-    public StructureVo findDetail(StructureDto structureDto) {
-        String structureId = structureDto.getId();
+    public StructureVO findDetail(StructureDTO structureDTO) {
+        String structureId = structureDTO.getId();
         FastUtils.checkParams(structureId);
         return getStructureVoById(structureId);
     }
 
     @Override
-    public StructureVo getStructureVoById(String structureId) {
-        StructureVo detail = mongoTemplate.findById(structureId, StructureVo.class, Constant.CollectionName.STRUCTURE);
+    public StructureVO getStructureVoById(String structureId) {
+        StructureVO detail = mongoTemplate.findById(structureId, StructureVO.class, Constant.CollectionName.STRUCTURE);
         FastUtils.checkNull(detail);
-        List<StructureDataDto> allDataList = mongoTemplate.find(new Query(Criteria.where(ColumnName.STRUCTURE_ID).is(structureId)), StructureDataDto.class, Constant.CollectionName.STRUCTURE_DATA);
-        List<StructureDataDto> rootList = new LinkedList<>();
+        List<StructureDataDTO> allDataList = mongoTemplate.find(new Query(Criteria.where(ColumnName.STRUCTURE_ID).is(structureId)), StructureDataDTO.class, Constant.CollectionName.STRUCTURE_DATA);
+        List<StructureDataDTO> rootList = new LinkedList<>();
         Objects.requireNonNull(detail).setDataList(rootList);
-        Map<String, StructureDataDto> allDataDict = allDataList.stream().collect(Collectors.toMap(StructureData::getId, v -> v));
-        for (StructureDataDto dataDto : allDataList) {
-            if (StringUtils.isEmpty(dataDto.getParentId())) {
-                if (!StringUtils.isEmpty(dataDto.getReferenceStructureId())) {
-                    StructureVo structureVo = getStructureVoById(dataDto.getReferenceStructureId());
-                    dataDto.setReferenceStructureName(structureVo.getName());
-                    dataDto.setSubList(structureVo.getDataList());
+        Map<String, StructureDataDTO> allDataDict = allDataList.stream().collect(Collectors.toMap(StructureData::getId, v -> v));
+        for (StructureDataDTO dataDTO : allDataList) {
+            if (StringUtils.isEmpty(dataDTO.getParentId())) {
+                if (!StringUtils.isEmpty(dataDTO.getReferenceStructureId())) {
+                    StructureVO structureVo = getStructureVoById(dataDTO.getReferenceStructureId());
+                    dataDTO.setReferenceStructureName(structureVo.getName());
+                    dataDTO.setSubList(structureVo.getDataList());
                 }
-                rootList.add(dataDto);
+                rootList.add(dataDTO);
             } else {
                 // put sub list
-                allDataDict.get(dataDto.getParentId()).getSubList().add(dataDto);
+                allDataDict.get(dataDTO.getParentId()).getSubList().add(dataDTO);
             }
         }
         return detail;
     }
 
     @Override
-    public void remove(StructureDto structureDto) {
-        String structureId = structureDto.getId();
+    public void remove(StructureDTO structureDTO) {
+        String structureId = structureDTO.getId();
         FastUtils.checkParams(structureId);
         Structure existStructure = mongoTemplate.findById(structureId, Structure.class);
         FastUtils.checkNull(existStructure);
-        UserVo operator = UserUtils.getOperator();
+        UserVO operator = UserUtils.getOperator();
         PermUtils.checkProjectWrite(mongoTemplate, Objects.requireNonNull(existStructure).getProjectId(), operator);
         // check can remove?
-        ApiDto apiDto = new ApiDto();
-        apiDto.setStructureId(structureId);
-        List<ApiVo> referenceApis = apiService.findReferenceApi(apiDto);
+        ApiDTO apiDTO = new ApiDTO();
+        apiDTO.setStructureId(structureId);
+        List<ApiVO> referenceApis = apiService.findReferenceApi(apiDTO);
         if (!referenceApis.isEmpty()) {
             throw new ServiceException(ResultCode.STRUCTURE_USED);
         }
@@ -192,13 +194,13 @@ public class StructureServiceImpl implements StructureService {
      *
      * @param subDataList if has sub, collect to subDataList
      * @param parent      parent
-     * @param parentDto   parentDto
+     * @param parentDTO   parentDTO
      * @author xyyxhcj@qq.com
      * @date 2019/12/19 11:34
      **/
-    private void collectSubs(final List<StructureDataDto> subDataList, final StructureData parent, final StructureDataDto parentDto) {
-        if (!parentDto.getSubList().isEmpty()) {
-            for (StructureDataDto sub : parentDto.getSubList()) {
+    private void collectSubs(final List<StructureDataDTO> subDataList, final StructureData parent, final StructureDataDTO parentDTO) {
+        if (!parentDTO.getSubList().isEmpty()) {
+            for (StructureDataDTO sub : parentDTO.getSubList()) {
                 sub.setParent(parent);
                 subDataList.add(sub);
             }

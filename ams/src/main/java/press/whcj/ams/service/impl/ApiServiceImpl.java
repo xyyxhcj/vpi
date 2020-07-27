@@ -1,5 +1,11 @@
 package press.whcj.ams.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
 import org.bson.BsonRegularExpression;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
@@ -12,26 +18,22 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
 import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.common.Constant;
 import press.whcj.ams.entity.*;
-import press.whcj.ams.entity.dto.ApiDto;
-import press.whcj.ams.entity.dto.StructureDataDto;
-import press.whcj.ams.entity.dto.StructureDto;
-import press.whcj.ams.entity.vo.ApiVo;
-import press.whcj.ams.entity.vo.StructureVo;
-import press.whcj.ams.entity.vo.UserVo;
+import press.whcj.ams.entity.dto.ApiDTO;
+import press.whcj.ams.entity.dto.StructureDTO;
+import press.whcj.ams.entity.dto.StructureDataDTO;
+import press.whcj.ams.entity.vo.ApiVO;
+import press.whcj.ams.entity.vo.StructureVO;
+import press.whcj.ams.entity.vo.UserVO;
 import press.whcj.ams.service.ApiService;
 import press.whcj.ams.service.StructureService;
 import press.whcj.ams.util.FastUtils;
 import press.whcj.ams.util.JsonUtils;
 import press.whcj.ams.util.PermUtils;
 import press.whcj.ams.util.UserUtils;
-
-import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author xyyxhcj@qq.com
@@ -45,42 +47,42 @@ public class ApiServiceImpl implements ApiService {
     private StructureService structureService;
 
     @Override
-    public String save(ApiDto apiDto, UserVo operator) {
-        boolean isUpdate = apiDto.getId() != null;
-        String name = apiDto.getName();
-        String projectId = apiDto.getProjectId();
+    public String save(ApiDTO apiDTO, UserVO operator) {
+        boolean isUpdate = apiDTO.getId() != null;
+        String name = apiDTO.getName();
+        String projectId = apiDTO.getProjectId();
         FastUtils.checkParams(name, projectId);
         PermUtils.checkProjectWrite(mongoTemplate, projectId, operator);
         Api api;
         if (isUpdate) {
-            api = mongoTemplate.findById(apiDto.getId(), Api.class);
+            api = mongoTemplate.findById(apiDTO.getId(), Api.class);
             FastUtils.checkNull(api);
             Objects.requireNonNull(api).setUpdate(null);
         } else {
             api = new Api();
         }
-        FastUtils.copyProperties(apiDto, api);
-        if (StringUtils.isEmpty(apiDto.getGroupId())) {
+        FastUtils.copyProperties(apiDTO, api);
+        if (StringUtils.isEmpty(apiDTO.getGroupId())) {
             api.setGroup(null);
         } else {
-            api.setGroup(new ApiGroup(apiDto.getGroupId()));
+            api.setGroup(new ApiGroup(apiDTO.getGroupId()));
         }
         // save request params
-        String reqParamsId = apiDto.getRequestParamDto().getId();
-        if (apiDto.getRequestParamDto().isReference()) {
+        String reqParamsId = apiDTO.getRequestParamDTO().getId();
+        if (apiDTO.getRequestParamDTO().isReference()) {
             api.setReqParamIsReference(true);
         }
         if (!api.isReqParamIsReference()) {
-            reqParamsId = saveApiParams(apiDto.getRequestParamDto(), operator, projectId);
+            reqParamsId = saveApiParams(apiDTO.getRequestParamDTO(), operator, projectId);
         }
         api.setRequestParam(new Structure(reqParamsId));
         // save response params
-        String respParamsId = apiDto.getResponseParamDto().getId();
-        if (apiDto.getResponseParamDto().isReference()) {
+        String respParamsId = apiDTO.getResponseParamDTO().getId();
+        if (apiDTO.getResponseParamDTO().isReference()) {
             api.setRespParamIsReference(true);
         }
         if (!api.isRespParamIsReference()) {
-            respParamsId = saveApiParams(apiDto.getResponseParamDto(), operator, projectId);
+            respParamsId = saveApiParams(apiDTO.getResponseParamDTO(), operator, projectId);
         }
         api.setResponseParam(new Structure(respParamsId));
         mongoTemplate.save(api);
@@ -88,41 +90,41 @@ public class ApiServiceImpl implements ApiService {
         if (isUpdate) {
             mongoTemplate.remove(new Query(Criteria.where(ColumnName.API_ID).is(apiId)), ApiHeader.class);
         }
-        if (!CollectionUtils.isEmpty(apiDto.getRequestHeaders())) {
-            for (ApiHeader header : apiDto.getRequestHeaders()) {
+        if (!CollectionUtils.isEmpty(apiDTO.getRequestHeaders())) {
+            for (ApiHeader header : apiDTO.getRequestHeaders()) {
                 header.setApiId(apiId);
                 header.setIsRequest(Constant.Is.YES);
             }
-            mongoTemplate.insertAll(apiDto.getRequestHeaders());
+            mongoTemplate.insertAll(apiDTO.getRequestHeaders());
         }
-        if (!CollectionUtils.isEmpty(apiDto.getResponseHeaders())) {
-            for (ApiHeader header : apiDto.getResponseHeaders()) {
+        if (!CollectionUtils.isEmpty(apiDTO.getResponseHeaders())) {
+            for (ApiHeader header : apiDTO.getResponseHeaders()) {
                 header.setApiId(apiId);
                 header.setIsRequest(Constant.Is.NO);
             }
-            mongoTemplate.insertAll(apiDto.getResponseHeaders());
+            mongoTemplate.insertAll(apiDTO.getResponseHeaders());
         }
         return apiId;
     }
 
     @Override
-    public MongoPage<ApiVo> findPage(ApiDto apiDto) {
-        FastUtils.checkParams(apiDto.getProjectId());
-        MongoPage<ApiVo> page = apiDto.getPage();
-        Criteria criteria = Criteria.where(ColumnName.PROJECT_ID).is(apiDto.getProjectId())
+    public MongoPage<ApiVO> findPage(ApiDTO apiDTO) {
+        FastUtils.checkParams(apiDTO.getProjectId());
+        MongoPage<ApiVO> page = apiDTO.getPage();
+        Criteria criteria = Criteria.where(ColumnName.PROJECT_ID).is(apiDTO.getProjectId())
                 .and(ColumnName.IS_DEL).ne(Constant.Is.YES);
         // concat query condition
-        if (!apiDto.getGroupIds().isEmpty()) {
-            List<ObjectId> ids = apiDto.getGroupIds().stream().map(ObjectId::new).collect(Collectors.toList());
+        if (!apiDTO.getGroupIds().isEmpty()) {
+            List<ObjectId> ids = apiDTO.getGroupIds().stream().map(ObjectId::new).collect(Collectors.toList());
             criteria = criteria.and(ColumnName.GROUP_$ID).in(ids);
         }
-        if (!StringUtils.isEmpty(apiDto.getNameOrUri())) {
-            BsonRegularExpression expression = new BsonRegularExpression("^.*" + apiDto.getNameOrUri() + ".*$", "i");
+        if (!StringUtils.isEmpty(apiDTO.getNameOrUri())) {
+            BsonRegularExpression expression = new BsonRegularExpression("^.*" + apiDTO.getNameOrUri() + ".*$", "i");
             criteria = criteria.orOperator(Criteria.where(ColumnName.NAME).regex(expression),
                     Criteria.where(ColumnName.API_URI).regex(expression));
         }
-        if (apiDto.getApiStatus() != null) {
-            criteria = criteria.and(ColumnName.API_STATUS).is(apiDto.getApiStatus());
+        if (apiDTO.getApiStatus() != null) {
+            criteria = criteria.and(ColumnName.API_STATUS).is(apiDTO.getApiStatus());
         }
         Query query = new Query(criteria);
         query.with(page.buildPageRequest()).with(QSort.by(Sort.Direction.DESC, ColumnName.UPDATE_TIME));
@@ -131,14 +133,14 @@ public class ApiServiceImpl implements ApiService {
         if (total == 0L) {
             return page;
         }
-        return page.setRecords(mongoTemplate.find(query, ApiVo.class, Constant.CollectionName.API));
+        return page.setRecords(mongoTemplate.find(query, ApiVO.class, Constant.CollectionName.API));
     }
 
     @Override
-    public ApiVo findDetail(ApiDto apiDto) {
-        String apiId = apiDto.getId();
+    public ApiVO findDetail(ApiDTO apiDTO) {
+        String apiId = apiDTO.getId();
         FastUtils.checkParams(apiId);
-        ApiVo detail = mongoTemplate.findById(apiId, ApiVo.class, Constant.CollectionName.API);
+        ApiVO detail = mongoTemplate.findById(apiId, ApiVO.class, Constant.CollectionName.API);
         FastUtils.checkNull(detail);
         if (Objects.requireNonNull(detail).getRequestParam() != null) {
             detail.setRequestParamVo(structureService.getStructureVoById(detail.getRequestParam().getId()));
@@ -160,27 +162,27 @@ public class ApiServiceImpl implements ApiService {
     }
 
     @Override
-    public void saveMock(ApiDto apiDto) {
-        FastUtils.checkParams(apiDto.getId());
+    public void saveMock(ApiDTO apiDTO) {
+        FastUtils.checkParams(apiDTO.getId());
         String updateColumn;
         String mock;
-        if (!StringUtils.isEmpty(apiDto.getApiSuccessMock())) {
-            mock = apiDto.getApiSuccessMock();
+        if (!StringUtils.isEmpty(apiDTO.getApiSuccessMock())) {
+            mock = apiDTO.getApiSuccessMock();
             updateColumn = ColumnName.API_SUCCESS_MOCK;
         } else {
-            FastUtils.checkParams(apiDto.getApiFailureMock());
-            mock = apiDto.getApiFailureMock();
+            FastUtils.checkParams(apiDTO.getApiFailureMock());
+            mock = apiDTO.getApiFailureMock();
             updateColumn = ColumnName.API_FAILURE_MOCK;
         }
-        mongoTemplate.updateFirst(new Query(Criteria.where(ColumnName.ID).is(apiDto.getId())), Update.update(updateColumn, mock), Api.class);
+        mongoTemplate.updateFirst(new Query(Criteria.where(ColumnName.ID).is(apiDTO.getId())), Update.update(updateColumn, mock), Api.class);
     }
 
     @Override
-    public void remove(ApiDto apiDto) {
-        List<String> ids = apiDto.getIds();
+    public void remove(ApiDTO apiDTO) {
+        List<String> ids = apiDTO.getIds();
         FastUtils.checkParams(ids);
-        UserVo operator = UserUtils.getOperator();
-        PermUtils.checkProjectWrite(mongoTemplate, apiDto.getProjectId(), operator);
+        UserVO operator = UserUtils.getOperator();
+        PermUtils.checkProjectWrite(mongoTemplate, apiDTO.getProjectId(), operator);
         mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(ids)),
                 Update.update(ColumnName.IS_DEL, Constant.Is.YES)
                         .set(ColumnName.UPDATE_TIME, LocalDateTime.now())
@@ -189,17 +191,17 @@ public class ApiServiceImpl implements ApiService {
     }
 
     @Override
-    public void switchStatus(ApiDto apiDto, UserVo operator) {
-        PermUtils.checkProjectWrite(mongoTemplate, apiDto.getProjectId(), UserUtils.getOperator());
-        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(apiDto.getIds())),
-                Update.update(ColumnName.API_STATUS, apiDto.getApiStatus())
+    public void switchStatus(ApiDTO apiDTO, UserVO operator) {
+        PermUtils.checkProjectWrite(mongoTemplate, apiDTO.getProjectId(), UserUtils.getOperator());
+        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(apiDTO.getIds())),
+                Update.update(ColumnName.API_STATUS, apiDTO.getApiStatus())
                         .set(ColumnName.UPDATE, new User(operator.getId()))
                         .set(ColumnName.UPDATE_TIME, LocalDateTime.now()), Api.class);
     }
 
     @Override
-    public List<ApiVo> findReferenceApi(ApiDto apiDto) {
-        String structureId = apiDto.getStructureId();
+    public List<ApiVO> findReferenceApi(ApiDTO apiDTO) {
+        String structureId = apiDTO.getStructureId();
         FastUtils.checkParams(structureId);
         // find used structureIds
         List<StructureData> structureDataList = mongoTemplate.find(new Query(
@@ -212,65 +214,65 @@ public class ApiServiceImpl implements ApiService {
                 new Query(Criteria.where(ColumnName.IS_DEL).ne(Constant.Is.YES)
                         .orOperator(Criteria.where(ColumnName.REQUEST_PARAM_$ID).in(ids),
                                 Criteria.where(ColumnName.RESPONSE_PARAM_$ID).in(ids))),
-                ApiVo.class, Constant.CollectionName.API);
+                ApiVO.class, Constant.CollectionName.API);
     }
 
     @Override
-    public void moveGroup(ApiDto apiDto, UserVo operator) {
-        PermUtils.checkProjectWrite(mongoTemplate, apiDto.getProjectId(), operator);
-        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(apiDto.getIds())),
-                Update.update(ColumnName.GROUP, new ApiGroup(apiDto.getGroupId()))
+    public void moveGroup(ApiDTO apiDTO, UserVO operator) {
+        PermUtils.checkProjectWrite(mongoTemplate, apiDTO.getProjectId(), operator);
+        mongoTemplate.updateMulti(new Query(Criteria.where(ColumnName.ID).in(apiDTO.getIds())),
+                Update.update(ColumnName.GROUP, new ApiGroup(apiDTO.getGroupId()))
                         .set(ColumnName.UPDATE, new User(operator.getId()))
                         .set(ColumnName.UPDATE_TIME, LocalDateTime.now()), Api.class);
     }
 
     @Override
-    public List<ApiVo> findAllDetail(ApiDto apiDto) {
-        String projectId = apiDto.getProjectId();
+    public List<ApiVO> findAllDetail(ApiDTO apiDTO) {
+        String projectId = apiDTO.getProjectId();
         FastUtils.checkParams(projectId);
         // get all api
         Query query = new Query(Criteria.where(ColumnName.PROJECT_ID).is(projectId)
                 .and(ColumnName.IS_DEL).ne(Constant.Is.YES))
                 .with(QSort.by(Sort.Direction.DESC, ColumnName.UPDATE_TIME));
-        List<ApiVo> apiVoList = mongoTemplate.find(query, ApiVo.class, Constant.CollectionName.API);
-        if (apiVoList.isEmpty()) {
-            return apiVoList;
+        List<ApiVO> apiVOList = mongoTemplate.find(query, ApiVO.class, Constant.CollectionName.API);
+        if (apiVOList.isEmpty()) {
+            return apiVOList;
         }
         // get environment environment's header
-        ApiEnv env = getEnv(apiDto.getEnvId());
+        ApiEnv env = getEnv(apiDTO.getEnvId());
         List<ApiHeader> envHeaders = getEnvHeaders(env);
         boolean addEnvUri = env != null && !StringUtils.isEmpty(env.getFrontUri());
         boolean addEnvHeader = !envHeaders.isEmpty();
         // get all structure
         query = new Query(Criteria.where(ColumnName.PROJECT_ID).is(projectId).and(ColumnName.IS_DEL).ne(Constant.Is.YES));
-        List<StructureVo> structureVoList = mongoTemplate.find(query, StructureVo.class, Constant.CollectionName.STRUCTURE);
+        List<StructureVO> structureVOList = mongoTemplate.find(query, StructureVO.class, Constant.CollectionName.STRUCTURE);
         // get all structureData
-        List<StructureDataDto> structureDataList = mongoTemplate.find(query, StructureDataDto.class, Constant.CollectionName.STRUCTURE_DATA);
+        List<StructureDataDTO> structureDataList = mongoTemplate.find(query, StructureDataDTO.class, Constant.CollectionName.STRUCTURE_DATA);
         // collect to dict
-        Map<String, List<StructureDataDto>> rootListDict = new LinkedHashMap<>();
-        Map<String, StructureVo> structureDict = structureVoList.stream().collect(Collectors.toMap(Structure::getId, v -> v));
-        Map<String, StructureDataDto> structureDataDict = structureDataList.stream().collect(Collectors.toMap(StructureData::getId, v -> v));
+        Map<String, List<StructureDataDTO>> rootListDict = new LinkedHashMap<>();
+        Map<String, StructureVO> structureDict = structureVOList.stream().collect(Collectors.toMap(Structure::getId, v -> v));
+        Map<String, StructureDataDTO> structureDataDict = structureDataList.stream().collect(Collectors.toMap(StructureData::getId, v -> v));
         Map<String, List<ApiHeader>> headersDict = mongoTemplate.find(query, ApiHeader.class).stream().collect(Collectors.groupingBy(ApiHeader::getApiId));
-        for (StructureDataDto dataDto : structureDataList) {
-            if (StringUtils.isEmpty(dataDto.getParentId())) {
-                if (!StringUtils.isEmpty(dataDto.getReferenceStructureId())) {
+        for (StructureDataDTO dataDTO : structureDataList) {
+            if (StringUtils.isEmpty(dataDTO.getParentId())) {
+                if (!StringUtils.isEmpty(dataDTO.getReferenceStructureId())) {
                     // if reference
-                    StructureVo structureVo = structureDict.get(dataDto.getReferenceStructureId());
-                    dataDto.setReferenceStructureName(structureVo.getName());
-                    dataDto.setSubList(structureVo.getDataList());
+                    StructureVO structureVo = structureDict.get(dataDTO.getReferenceStructureId());
+                    dataDTO.setReferenceStructureName(structureVo.getName());
+                    dataDTO.setSubList(structureVo.getDataList());
                 }
-                rootListDict.computeIfAbsent(dataDto.getStructureId(), k -> new LinkedList<>()).add(dataDto);
+                rootListDict.computeIfAbsent(dataDTO.getStructureId(), k -> new LinkedList<>()).add(dataDTO);
             } else {
-                structureDataDict.get(dataDto.getParentId()).getSubList().add(dataDto);
+                structureDataDict.get(dataDTO.getParentId()).getSubList().add(dataDTO);
             }
         }
-        structureVoList.forEach(structureVo -> {
-            List<StructureDataDto> rootList = rootListDict.get(structureVo.getId());
+        structureVOList.forEach(structureVo -> {
+            List<StructureDataDTO> rootList = rootListDict.get(structureVo.getId());
             if (rootList != null) {
                 structureVo.getDataList().addAll(rootList);
             }
         });
-        apiVoList.forEach(apiVo -> {
+        apiVOList.forEach(apiVo -> {
             if (apiVo.getRequestParam() != null) {
                 apiVo.setRequestParamVo(structureDict.get(apiVo.getRequestParam().getId()));
             }
@@ -300,7 +302,7 @@ public class ApiServiceImpl implements ApiService {
                 apiVo.getRequestHeaders().addAll(envHeaders);
             }
         });
-        return apiVoList;
+        return apiVOList;
     }
 
     private List<ApiHeader> getEnvHeaders(@Nullable ApiEnv env) {
@@ -322,23 +324,23 @@ public class ApiServiceImpl implements ApiService {
         return mongoTemplate.findById(envId, ApiEnv.class);
     }
 
-    private String saveApiParams(StructureDto paramDto, UserVo operator, String projectId) {
-        if (StringUtils.isEmpty(paramDto.getId())) {
-            paramDto.setType(Constant.StructureType.API_CREATE);
+    private String saveApiParams(StructureDTO paramDTO, UserVO operator, String projectId) {
+        if (StringUtils.isEmpty(paramDTO.getId())) {
+            paramDTO.setType(Constant.StructureType.API_CREATE);
         }
-        paramDto.setProjectId(projectId);
-        paramDto.setCheckName(false);
-        paramDto.setName(UUID.randomUUID().toString());
+        paramDTO.setProjectId(projectId);
+        paramDTO.setCheckName(false);
+        paramDTO.setName(UUID.randomUUID().toString());
         LocalDateTime now = LocalDateTime.now();
         User update = new User(operator.getId());
-        if (StringUtils.isEmpty(paramDto.getId())) {
-            paramDto.setCreate(update);
-            paramDto.setCreateTime(now);
-            paramDto.setUpdateTime(now);
+        if (StringUtils.isEmpty(paramDTO.getId())) {
+            paramDTO.setCreate(update);
+            paramDTO.setCreateTime(now);
+            paramDTO.setUpdateTime(now);
         } else {
-            paramDto.setUpdate(update);
-            paramDto.setUpdateTime(now);
+            paramDTO.setUpdate(update);
+            paramDTO.setUpdateTime(now);
         }
-        return structureService.save(paramDto, operator);
+        return structureService.save(paramDTO, operator);
     }
 }

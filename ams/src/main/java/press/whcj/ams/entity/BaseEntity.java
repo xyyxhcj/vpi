@@ -1,14 +1,16 @@
 package press.whcj.ams.entity;
 
+import java.time.LocalDateTime;
+
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import press.whcj.ams.entity.vo.UserVo;
-
-import java.time.LocalDateTime;
+import press.whcj.ams.entity.vo.UserVO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -50,15 +52,28 @@ public class BaseEntity {
     }
 
 
-    public void initCreate(UserVo operator) {
+    public void initCreate(UserVO operator) {
         LocalDateTime now = LocalDateTime.now();
         setCreate(new User(operator.getId()));
         setCreateTime(now);
         setUpdateTime(now);
     }
 
-    public void initUpdate(UserVo operator) {
+    public void initUpdate(UserVO operator) {
         setUpdate(new User(operator.getId()));
         setUpdateTime(LocalDateTime.now());
+    }
+
+    @Override
+    public String toString() {
+        return "BaseEntity{" +
+                "id='" + id + '\'' +
+                ", createId=" + getCreateId() +
+                ", createName=" + getCreateName() +
+                ", createTime=" + createTime +
+                ", updateId=" + getUpdateId() +
+                ", updateName=" + getUpdateName() +
+                ", updateTime=" + updateTime +
+                '}';
     }
 }

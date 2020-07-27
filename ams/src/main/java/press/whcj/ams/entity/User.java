@@ -1,17 +1,18 @@
 package press.whcj.ams.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.Accessors;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * @author xyyxhcj@qq.com
@@ -19,7 +20,6 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@ToString
 @Accessors(chain = true)
 @NoArgsConstructor
 public class User implements Serializable {
@@ -65,5 +65,28 @@ public class User implements Serializable {
 
 	public String getUpdateName() {
 		return update == null ? null : update.getUserName();
+	}
+
+	@Override
+	public String toString() {
+		return "User{" +
+				"id='" + id + '\'' +
+				", userName='" + userName + '\'' +
+				", loginName='" + loginName + '\'' +
+				", password='" + password + '\'' +
+				", isAdmin=" + isAdmin +
+				", phone='" + phone + '\'' +
+				", email='" + email + '\'' +
+				", avatarUrl='" + avatarUrl + '\'' +
+				", remark='" + remark + '\'' +
+				", createTime=" + createTime +
+				", updateTime=" + updateTime +
+				", createId=" + getCreateId() +
+				", createName=" + getCreateName() +
+				", updateId=" + getUpdateId() +
+				", updateName=" + getUpdateName() +
+				", userType=" + userType +
+				", projectUserId='" + projectUserId + '\'' +
+				'}';
 	}
 }

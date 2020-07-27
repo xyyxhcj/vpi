@@ -1,11 +1,12 @@
 package press.whcj.ams.entity;
 
 
+import java.io.Serializable;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
+import lombok.ToString;
 
 /**
  * @author xyyxhcj@qq.com
@@ -14,6 +15,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"name"})
+@ToString
 public class ApiHeader implements Serializable {
     private String id;
 

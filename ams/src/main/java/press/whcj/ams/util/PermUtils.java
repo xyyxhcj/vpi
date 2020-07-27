@@ -4,11 +4,12 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+
 import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.common.Constant;
 import press.whcj.ams.entity.Project;
 import press.whcj.ams.entity.ProjectUser;
-import press.whcj.ams.entity.vo.UserVo;
+import press.whcj.ams.entity.vo.UserVO;
 import press.whcj.ams.exception.ResultCode;
 import press.whcj.ams.exception.ServiceException;
 
@@ -18,20 +19,20 @@ import press.whcj.ams.exception.ServiceException;
  */
 
 public class PermUtils {
-	public static void checkAdmin(UserVo operator) {
+	public static void checkAdmin(UserVO operator) {
 		if (!Constant.Is.YES.equals(operator.getIsAdmin())) {
 			throw new ServiceException(ResultCode.PERMISSION_DENIED);
 		}
 	}
 
-	public static void checkProjectOwner(MongoTemplate mongoTemplate, String projectId, UserVo operator) {
+	public static void checkProjectOwner(MongoTemplate mongoTemplate, String projectId, UserVO operator) {
 		boolean isOwner = isOwner(mongoTemplate, projectId, operator);
 		if (!isOwner) {
 			throw new ServiceException(ResultCode.PERMISSION_DENIED);
 		}
 	}
 
-	public static void checkProjectAdmin(MongoTemplate mongoTemplate, String projectId, UserVo operator) {
+	public static void checkProjectAdmin(MongoTemplate mongoTemplate, String projectId, UserVO operator) {
 		boolean isOwner = isOwner(mongoTemplate, projectId, operator);
 		if (!isOwner) {
 			ProjectUser projectUser = mongoTemplate.findOne(
@@ -43,12 +44,12 @@ public class PermUtils {
 		}
 	}
 
-	private static boolean isOwner(MongoTemplate mongoTemplate, String projectId, UserVo operator) {
+	private static boolean isOwner(MongoTemplate mongoTemplate, String projectId, UserVO operator) {
 		Project project = mongoTemplate.findById(projectId, Project.class);
 		return project != null && operator.getId().equals(project.getCreateId());
 	}
 
-	public static void checkProjectWrite(MongoTemplate mongoTemplate, String projectId, UserVo operator) {
+	public static void checkProjectWrite(MongoTemplate mongoTemplate, String projectId, UserVO operator) {
 		boolean isOwner = isOwner(mongoTemplate, projectId, operator);
 		if (!isOwner) {
 			ProjectUser projectUser = mongoTemplate.findOne(

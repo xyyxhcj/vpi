@@ -1,12 +1,14 @@
 package press.whcj.ams.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -38,4 +40,25 @@ public class ApiHistory implements Serializable {
     private LocalDateTime createTime;
 
     private static final long serialVersionUID = 1L;
+
+    public String getCreateId() {
+        return create == null ? null : create.getId();
+    }
+
+    public String getCreateName() {
+        return create == null ? null : create.getUserName();
+    }
+
+    @Override
+    public String toString() {
+        return "ApiHistory{" +
+                "id='" + id + '\'' +
+                ", apiId='" + apiId + '\'' +
+                ", historyJson='" + historyJson + '\'' +
+                ", desc='" + desc + '\'' +
+                ", createId=" + getCreateId() +
+                ", createName=" + getCreateName() +
+                ", createTime=" + createTime +
+                '}';
+    }
 }

@@ -1,19 +1,25 @@
 package press.whcj.ams.web;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import press.whcj.ams.entity.Project;
 import press.whcj.ams.entity.ProjectGroup;
 import press.whcj.ams.entity.ProjectUser;
 import press.whcj.ams.entity.User;
-import press.whcj.ams.entity.dto.ProjectDto;
-import press.whcj.ams.entity.dto.ProjectUserDto;
-import press.whcj.ams.entity.vo.ProjectGroupVo;
-import press.whcj.ams.entity.vo.UserVo;
+import press.whcj.ams.entity.dto.ProjectDTO;
+import press.whcj.ams.entity.dto.ProjectUserDTO;
+import press.whcj.ams.entity.vo.ProjectGroupVO;
+import press.whcj.ams.entity.vo.UserVO;
 import press.whcj.ams.service.ProjectGroupService;
 import press.whcj.ams.service.ProjectService;
 import press.whcj.ams.service.ProjectUserService;
@@ -22,10 +28,6 @@ import press.whcj.ams.support.Result;
 import press.whcj.ams.util.FastUtils;
 import press.whcj.ams.util.PermUtils;
 import press.whcj.ams.util.UserUtils;
-
-import javax.annotation.Resource;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author xyyxhcj@qq.com
@@ -44,28 +46,28 @@ public class ProjectController extends BaseController {
     private MongoTemplate mongoTemplate;
 
     @PostMapping("add")
-    public Result<String> add(@RequestBody ProjectDto projectDto) {
-        UserVo operator = UserUtils.getOperator();
-        projectDto.initCreate(operator);
-        String id = projectService.save(projectDto, operator);
+    public Result<String> add(@RequestBody ProjectDTO projectDTO) {
+        UserVO operator = UserUtils.getOperator();
+        projectDTO.initCreate(operator);
+        String id = projectService.save(projectDTO, operator);
         return ok(id);
     }
 
     @PostMapping("edit")
-    public Result<String> edit(@RequestBody ProjectDto projectDto) {
-        FastUtils.checkParams(projectDto.getId());
-        UserVo operator = UserUtils.getOperator();
-        projectDto.initUpdate(operator);
-        projectService.save(projectDto, operator);
-        return ok(projectDto.getId());
+    public Result<String> edit(@RequestBody ProjectDTO projectDTO) {
+        FastUtils.checkParams(projectDTO.getId());
+        UserVO operator = UserUtils.getOperator();
+        projectDTO.initUpdate(operator);
+        projectService.save(projectDTO, operator);
+        return ok(projectDTO.getId());
     }
 
     @PostMapping("assign")
-    public Result<Object> assign(@RequestBody ProjectDto projectDto) {
-        FastUtils.checkParams(projectDto.getId());
-        UserVo operator = UserUtils.getOperator();
-        PermUtils.checkProjectAdmin(mongoTemplate, projectDto.getId(), operator);
-        projectService.assign(projectDto, operator);
+    public Result<Object> assign(@RequestBody ProjectDTO projectDTO) {
+        FastUtils.checkParams(projectDTO.getId());
+        UserVO operator = UserUtils.getOperator();
+        PermUtils.checkProjectAdmin(mongoTemplate, projectDTO.getId(), operator);
+        projectService.assign(projectDTO, operator);
         return ok(true);
     }
 
@@ -75,54 +77,54 @@ public class ProjectController extends BaseController {
     }
 
     @PostMapping("findList")
-    public Result<List<Project>> findList(@RequestBody ProjectDto projectDto) {
-        return ok(projectService.findList(projectDto, UserUtils.getOperator()));
+    public Result<List<Project>> findList(@RequestBody ProjectDTO projectDTO) {
+        return ok(projectService.findList(projectDTO, UserUtils.getOperator()));
     }
 
     @PostMapping("findListByGroupForOwner")
-    public Result<List<Object>> findListByGroupForOwner(@RequestBody ProjectDto projectDto) {
-        ProjectGroup projectGroupDto = new ProjectGroup();
-        if (StringUtils.isEmpty(projectDto.getGroupId())) {
-            projectDto.setGroupId(null);
+    public Result<List<Object>> findListByGroupForOwner(@RequestBody ProjectDTO projectDTO) {
+        ProjectGroup projectGroupDTO = new ProjectGroup();
+        if (StringUtils.isEmpty(projectDTO.getGroupId())) {
+            projectDTO.setGroupId(null);
         }
-        projectGroupDto.setParentId(projectDto.getGroupId());
-        UserVo operator = UserUtils.getOperator();
-        List<ProjectGroupVo> listByParent = projectGroupService.findListByParentForOwner(projectGroupDto, operator);
-        List<Project> listByGroup = projectService.findListByGroupForOwner(projectDto, operator);
+        projectGroupDTO.setParentId(projectDTO.getGroupId());
+        UserVO operator = UserUtils.getOperator();
+        List<ProjectGroupVO> listByParent = projectGroupService.findListByParentForOwner(projectGroupDTO, operator);
+        List<Project> listByGroup = projectService.findListByGroupForOwner(projectDTO, operator);
         List<Object> result = new LinkedList<>(listByParent);
         result.addAll(listByGroup);
         return ok(result);
     }
 
     @PostMapping("findListByGroupForOther")
-    public Result<List<Object>> findListByGroupForOther(@RequestBody ProjectDto projectDto) {
-        ProjectGroup projectGroupDto = new ProjectGroup();
-        if (StringUtils.isEmpty(projectDto.getGroupId())) {
-            projectDto.setGroupId(null);
+    public Result<List<Object>> findListByGroupForOther(@RequestBody ProjectDTO projectDTO) {
+        ProjectGroup projectGroupDTO = new ProjectGroup();
+        if (StringUtils.isEmpty(projectDTO.getGroupId())) {
+            projectDTO.setGroupId(null);
         }
-        projectGroupDto.setParentId(projectDto.getGroupId());
-        UserVo operator = UserUtils.getOperator();
-        List<ProjectGroupVo> listByParent = projectGroupService.findListByParentForOther(projectGroupDto, operator);
-        List<Project> listByGroup = projectService.findListByGroupForOther(projectDto, operator);
+        projectGroupDTO.setParentId(projectDTO.getGroupId());
+        UserVO operator = UserUtils.getOperator();
+        List<ProjectGroupVO> listByParent = projectGroupService.findListByParentForOther(projectGroupDTO, operator);
+        List<Project> listByGroup = projectService.findListByGroupForOther(projectDTO, operator);
         List<Object> result = new LinkedList<>(listByParent);
         result.addAll(listByGroup);
         return ok(result);
     }
 
     @PostMapping("editProjectUser")
-    public Result<Object> editProjectUser(@RequestBody ProjectUserDto projectUserDto) {
-        FastUtils.checkParams(projectUserDto.getProjectId());
-        UserVo operator = UserUtils.getOperator();
-        PermUtils.checkProjectAdmin(mongoTemplate, projectUserDto.getProjectId(), operator);
-        projectUserService.edit(projectUserDto);
+    public Result<Object> editProjectUser(@RequestBody ProjectUserDTO projectUserDTO) {
+        FastUtils.checkParams(projectUserDTO.getProjectId());
+        UserVO operator = UserUtils.getOperator();
+        PermUtils.checkProjectAdmin(mongoTemplate, projectUserDTO.getProjectId(), operator);
+        projectUserService.edit(projectUserDTO);
         return ok();
     }
 
     @PostMapping("remove")
-    public Result<Object> remove(@RequestBody ProjectDto projectDto) {
-        String projectId = projectDto.getId();
+    public Result<Object> remove(@RequestBody ProjectDTO projectDTO) {
+        String projectId = projectDTO.getId();
         FastUtils.checkParams(projectId);
-        UserVo operator = UserUtils.getOperator();
+        UserVO operator = UserUtils.getOperator();
         PermUtils.checkProjectOwner(mongoTemplate, projectId, operator);
         projectService.remove(projectId, operator);
         return ok();

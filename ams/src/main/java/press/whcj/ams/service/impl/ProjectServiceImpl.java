@@ -1,29 +1,31 @@
 package press.whcj.ams.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+
 import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.common.Constant;
 import press.whcj.ams.entity.Project;
 import press.whcj.ams.entity.ProjectGroup;
 import press.whcj.ams.entity.ProjectUser;
 import press.whcj.ams.entity.User;
-import press.whcj.ams.entity.dto.ProjectDto;
-import press.whcj.ams.entity.vo.UserVo;
+import press.whcj.ams.entity.dto.ProjectDTO;
+import press.whcj.ams.entity.vo.UserVO;
 import press.whcj.ams.exception.ResultCode;
 import press.whcj.ams.exception.ServiceException;
 import press.whcj.ams.service.ProjectService;
 import press.whcj.ams.util.FastUtils;
-
-import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author xyyxhcj@qq.com
@@ -35,13 +37,13 @@ public class ProjectServiceImpl implements ProjectService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public String save(ProjectDto projectDto, UserVo operator) {
-        boolean isUpdate = projectDto.getId() != null;
-        String name = projectDto.getName();
+    public String save(ProjectDTO projectDTO, UserVO operator) {
+        boolean isUpdate = projectDTO.getId() != null;
+        String name = projectDTO.getName();
         String operatorId = operator.getId();
         FastUtils.checkParams(name);
-        if (projectDto.getGroupId() != null) {
-            ProjectGroup existProjectGroup = mongoTemplate.findById(projectDto.getGroupId(), ProjectGroup.class);
+        if (projectDTO.getGroupId() != null) {
+            ProjectGroup existProjectGroup = mongoTemplate.findById(projectDTO.getGroupId(), ProjectGroup.class);
             FastUtils.checkNull(existProjectGroup);
             if (!operator.getId().equals(Objects.requireNonNull(existProjectGroup).getCreateId())) {
                 // can't save to other people's group
@@ -50,7 +52,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         Project project;
         if (isUpdate) {
-            project = mongoTemplate.findById(projectDto.getId(), Project.class);
+            project = mongoTemplate.findById(projectDTO.getId(), Project.class);
             FastUtils.checkNull(project);
             if (!operatorId.equals(Objects.requireNonNull(project).getCreateId())) {
                 throw new ServiceException(ResultCode.PERMISSION_DENIED);
@@ -59,24 +61,24 @@ public class ProjectServiceImpl implements ProjectService {
         } else {
             project = new Project();
         }
-        FastUtils.copyProperties(projectDto, project);
+        FastUtils.copyProperties(projectDTO, project);
         synchronized (operatorId.intern()) {
-            FastUtils.checkNameAndSave(projectDto.getId(), isUpdate, name, project, mongoTemplate, Criteria.where(ColumnName.CREATE_$ID).is(new ObjectId(operatorId)));
+            FastUtils.checkNameAndSave(projectDTO.getId(), isUpdate, name, project, mongoTemplate, Criteria.where(ColumnName.CREATE_$ID).is(new ObjectId(operatorId)));
         }
         return project.getId();
     }
 
     @Override
-    public void assign(ProjectDto projectDto, UserVo operator) {
-        if (projectDto.getProjectUsers() == null) {
+    public void assign(ProjectDTO projectDTO, UserVO operator) {
+        if (projectDTO.getProjectUsers() == null) {
             return;
         }
-        String projectId = projectDto.getId();
+        String projectId = projectDTO.getId();
         FastUtils.checkParams(projectId);
         Project project = new Project(projectId);
         ObjectId projectObjectId = new ObjectId(projectId);
-        if (projectDto.getProjectUsers().size() > 0) {
-            for (ProjectUser projectUser : projectDto.getProjectUsers()) {
+        if (projectDTO.getProjectUsers().size() > 0) {
+            for (ProjectUser projectUser : projectDTO.getProjectUsers()) {
                 FastUtils.checkParams(projectUser.getUserId(), projectUser.getUserType());
                 if (operator.getId().equals(projectUser.getUserId())) {
                     throw new ServiceException(ResultCode.PARAMS_ERROR);
@@ -86,14 +88,14 @@ public class ProjectServiceImpl implements ProjectService {
                 projectUser.setId(null);
             }
             mongoTemplate.remove(new Query(Criteria.where(ColumnName.PROJECT_$ID).is(projectObjectId)), ProjectUser.class);
-            mongoTemplate.insertAll(projectDto.getProjectUsers());
+            mongoTemplate.insertAll(projectDTO.getProjectUsers());
         } else {
             mongoTemplate.remove(new Query(Criteria.where(ColumnName.PROJECT_$ID).is(projectObjectId)), ProjectUser.class);
         }
     }
 
     @Override
-    public List<Project> findList(ProjectDto projectDto, UserVo operator) {
+    public List<Project> findList(ProjectDTO projectDTO, UserVO operator) {
         ObjectId operatorObjectId = new ObjectId(operator.getId());
         List<Project> projects = mongoTemplate.find(new Query(
                 Criteria.where(ColumnName.CREATE_$ID).is(operatorObjectId)
@@ -110,9 +112,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> findListByGroupForOther(ProjectDto projectDto, UserVo operator) {
+    public List<Project> findListByGroupForOther(ProjectDTO projectDTO, UserVO operator) {
         ObjectId operatorObjectId = new ObjectId(operator.getId());
-        String groupId = projectDto.getGroupId();
+        String groupId = projectDTO.getGroupId();
         boolean findByGroup = groupId != null;
         Criteria criteria = Criteria.where(ColumnName.USER_$ID).is(operatorObjectId)
                 .and(ColumnName.PROJECT_$IS_DEL).ne(Constant.Is.YES);
@@ -128,9 +130,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> findListByGroupForOwner(ProjectDto projectDto, UserVo operator) {
+    public List<Project> findListByGroupForOwner(ProjectDTO projectDTO, UserVO operator) {
         ObjectId operatorObjectId = new ObjectId(operator.getId());
-        String groupId = projectDto.getGroupId();
+        String groupId = projectDTO.getGroupId();
         boolean findByGroup = groupId != null;
         Criteria criteria = Criteria.where(ColumnName.CREATE_$ID).is(operatorObjectId)
                 .and(ColumnName.IS_DEL).ne(Constant.Is.YES);
@@ -145,7 +147,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void remove(String projectId, UserVo operator) {
+    public void remove(String projectId, UserVO operator) {
         mongoTemplate.updateFirst(new Query(Criteria.where(ColumnName.ID).is(projectId)),
                 Update.update(ColumnName.IS_DEL, Constant.Is.YES)
                         .set(ColumnName.UPDATE_TIME, LocalDateTime.now())

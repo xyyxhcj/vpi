@@ -3,7 +3,8 @@ package press.whcj.ams.entity.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import press.whcj.ams.entity.vo.ApiGroupVo;
+import lombok.ToString;
+import press.whcj.ams.entity.vo.ApiGroupVO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -11,6 +12,7 @@ import press.whcj.ams.entity.vo.ApiGroupVo;
  */
 @Getter
 @Setter
-public class ApiGroupDto extends ApiGroupVo {
+@ToString(callSuper = true)
+public class ApiGroupDTO extends ApiGroupVO {
 	private static final long serialVersionUID = 2401080577696943901L;
 }

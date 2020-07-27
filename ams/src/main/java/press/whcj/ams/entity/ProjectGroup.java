@@ -1,11 +1,12 @@
 package press.whcj.ams.entity;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-
-import java.io.Serializable;
 
 /**
  * @author xyyxhcj@qq.com
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
+@ToString(callSuper = true)
 public class ProjectGroup extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name;

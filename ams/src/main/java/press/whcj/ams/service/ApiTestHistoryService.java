@@ -2,8 +2,8 @@ package press.whcj.ams.service;
 
 import press.whcj.ams.entity.ApiTestHistory;
 import press.whcj.ams.entity.MongoPage;
-import press.whcj.ams.entity.dto.ApiTestHistoryDto;
-import press.whcj.ams.entity.vo.UserVo;
+import press.whcj.ams.entity.dto.ApiTestHistoryDTO;
+import press.whcj.ams.entity.vo.UserVO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -20,24 +20,24 @@ public interface ApiTestHistoryService {
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:33
      **/
-    String save(ApiTestHistory apiTestHistory, UserVo operator);
+    String save(ApiTestHistory apiTestHistory, UserVO operator);
 
     /**
      * findPage
      *
-     * @param apiTestHistoryDto apiTestHistoryDto
+     * @param apiTestHistoryDTO apiTestHistoryDTO
      * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.ApiTestHistory>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:33
      **/
-    MongoPage<ApiTestHistory> findPage(ApiTestHistoryDto apiTestHistoryDto);
+    MongoPage<ApiTestHistory> findPage(ApiTestHistoryDTO apiTestHistoryDTO);
 
     /**
      * delete
      *
-     * @param apiTestHistoryDto apiTestHistoryDto
+     * @param apiTestHistoryDTO apiTestHistoryDTO
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
-    void delete(ApiTestHistoryDto apiTestHistoryDto);
+    void delete(ApiTestHistoryDTO apiTestHistoryDTO);
 }

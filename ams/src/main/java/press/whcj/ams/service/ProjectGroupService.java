@@ -1,11 +1,11 @@
 package press.whcj.ams.service;
 
-import press.whcj.ams.entity.ProjectGroup;
-import press.whcj.ams.entity.dto.ProjectDto;
-import press.whcj.ams.entity.vo.ProjectGroupVo;
-import press.whcj.ams.entity.vo.UserVo;
-
 import java.util.List;
+
+import press.whcj.ams.entity.ProjectGroup;
+import press.whcj.ams.entity.dto.ProjectDTO;
+import press.whcj.ams.entity.vo.ProjectGroupVO;
+import press.whcj.ams.entity.vo.UserVO;
 
 /**
  * @author xyyxhcj@qq.com
@@ -16,24 +16,24 @@ public interface ProjectGroupService {
     /**
      * save
      *
-     * @param projectGroupDto projectGroupDto
+     * @param projectGroupDTO projectGroupDTO
      * @param operator        operator
      * @return java.lang.String
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:33
      **/
-    String save(ProjectGroup projectGroupDto, UserVo operator);
+    String save(ProjectGroup projectGroupDTO, UserVO operator);
 
     /**
      * findList
      *
-     * @param projectGroupDto projectGroupDto
+     * @param projectGroupDTO projectGroupDTO
      * @param operator        operator
      * @return java.util.List<press.whcj.ams.entity.vo.ProjectGroupVo>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:33
      **/
-    List<ProjectGroupVo> findList(ProjectGroup projectGroupDto, UserVo operator);
+    List<ProjectGroupVO> findList(ProjectGroup projectGroupDTO, UserVO operator);
 
     /**
      * findDetail
@@ -43,7 +43,7 @@ public interface ProjectGroupService {
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:33
      **/
-    ProjectGroupVo findDetail(ProjectGroup projectGroup);
+    ProjectGroupVO findDetail(ProjectGroup projectGroup);
 
     /**
      * delete
@@ -57,30 +57,30 @@ public interface ProjectGroupService {
     /**
      * findListByParentForOwner
      *
-     * @param projectGroupDto projectGroupDto
+     * @param projectGroupDTO projectGroupDTO
      * @param operator        operator
      * @return java.util.List<press.whcj.ams.entity.vo.ProjectGroupVo>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:33
      **/
-    List<ProjectGroupVo> findListByParentForOwner(ProjectGroup projectGroupDto, UserVo operator);
+    List<ProjectGroupVO> findListByParentForOwner(ProjectGroup projectGroupDTO, UserVO operator);
 
     /**
      * findListByParentForOther
      *
-     * @param projectGroupDto projectGroupDto
+     * @param projectGroupDTO projectGroupDTO
      * @param operator        operator
      * @return java.util.List<press.whcj.ams.entity.vo.ProjectGroupVo>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:33
      **/
-    List<ProjectGroupVo> findListByParentForOther(ProjectGroup projectGroupDto, UserVo operator);
+    List<ProjectGroupVO> findListByParentForOther(ProjectGroup projectGroupDTO, UserVO operator);
 
     /**
      * move project&group to other group
      *
-     * @param projectDto projectDto
+     * @param projectDTO projectDTO
      * @param operator   operator
      */
-    void moveGroup(ProjectDto projectDto, UserVo operator);
+    void moveGroup(ProjectDTO projectDTO, UserVO operator);
 }

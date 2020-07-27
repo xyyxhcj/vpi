@@ -2,6 +2,7 @@ package press.whcj.ams.entity.vo;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import press.whcj.ams.entity.Project;
 
 /**
@@ -10,6 +11,7 @@ import press.whcj.ams.entity.Project;
  */
 @Getter
 @Setter
-public class ProjectVo extends Project {
+@ToString(callSuper = true)
+public class ProjectVO extends Project {
 	private static final long serialVersionUID = 3518547285557888400L;
 }

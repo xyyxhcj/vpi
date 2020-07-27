@@ -1,5 +1,14 @@
 package press.whcj.ams;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,20 +17,13 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import press.whcj.ams.common.ColumnName;
 import press.whcj.ams.entity.*;
-import press.whcj.ams.entity.dto.UserDto;
-import press.whcj.ams.entity.vo.UserVo;
+import press.whcj.ams.entity.dto.UserDTO;
+import press.whcj.ams.entity.vo.UserVO;
 import press.whcj.ams.util.FastUtils;
 import press.whcj.ams.web.ProjectController;
-
-import javax.annotation.Resource;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author xyyxhcj@qq.com
@@ -123,17 +125,17 @@ public class TestApplication {
 	}
 	@Test
 	public void testFastUtils01() {
-		UserDto userSource = new UserDto();
+		UserDTO userSource = new UserDTO();
 		userSource.setUserName("梁萧");
-		MongoPage<UserVo> page = new MongoPage<>();
+		MongoPage<UserVO> page = new MongoPage<>();
 		page.setSize(30);
 		userSource.setPage(page);
-		UserDto userDest = new UserDto();
+		UserDTO userDest = new UserDTO();
 		userDest.setPhone("test");
 		FastUtils.copyProperties(userSource, userDest);
 		System.out.println(userSource.getPage());
 		System.out.println(userDest.getPage());
-		UserDto copy = FastUtils.deepCopy(userSource, new UserDto());
+		UserDTO copy = FastUtils.deepCopy(userSource, new UserDTO());
 		System.out.println(userSource);
 		System.out.println(copy);
 	}

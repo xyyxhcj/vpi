@@ -1,12 +1,14 @@
 package press.whcj.ams.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -55,5 +57,21 @@ public class ApiTestHistory implements Serializable {
 
     public String getCreateName() {
         return create == null ? null : create.getUserName();
+    }
+
+    @Override
+    public String toString() {
+        return "ApiTestHistory{" +
+                "id='" + id + '\'' +
+                ", apiId='" + apiId + '\'' +
+                ", url='" + url + '\'' +
+                ", method='" + method + '\'' +
+                ", requestTime=" + requestTime +
+                ", requestInfo='" + requestInfo + '\'' +
+                ", responseInfo='" + responseInfo + '\'' +
+                ", createId=" + getCreateId() +
+                ", createName=" + getCreateName() +
+                ", createTime=" + createTime +
+                '}';
     }
 }

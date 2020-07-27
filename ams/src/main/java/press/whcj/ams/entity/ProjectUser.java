@@ -1,11 +1,13 @@
 package press.whcj.ams.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
-import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author xyyxhcj@qq.com
@@ -13,6 +15,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class ProjectUser implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id;
