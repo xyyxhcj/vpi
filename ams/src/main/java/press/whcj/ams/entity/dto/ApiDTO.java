@@ -19,8 +19,8 @@ import press.whcj.ams.entity.vo.ApiVO;
 public class ApiDTO extends ApiVO {
 	private static final long serialVersionUID = -2107807918182928550L;
 	private String groupId;
-	private StructureDTO requestParamDTO;
-	private StructureDTO responseParamDTO;
+	private StructureDTO requestParamDTO = new StructureDTO();
+	private StructureDTO responseParamDTO = new StructureDTO();
 	private MongoPage<ApiVO> page = new MongoPage<>();
 	private List<String> ids = new ArrayList<>();
 	private String structureId;
