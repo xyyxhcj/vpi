@@ -54,7 +54,7 @@
                         {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
                     </el-radio>
                 </div>
-                <data-structure :show-list="reqShowDataList" :entity="form.requestParamDto"
+                <data-structure :show-list="reqShowDataList" :entity="form.requestParamDTO"
                                 ref="reqDataStructure" :config="{refPre:'editApiReq',useReference: true}"
                                 @editDataStructure="editDataStructure"/>
             </el-tab-pane>
@@ -73,11 +73,11 @@
                         {{CONSTANT.RESPONSE_PARAM_TYPE[1]}}
                     </el-radio>
                 </div>
-                <data-structure :show-list="respShowDataList" :entity="form.responseParamDto"
+                <data-structure :show-list="respShowDataList" :entity="form.responseParamDTO"
                                 ref="respDataStructure" v-if="form.responseParamType===0"
                                 :config="{refPre:'editApiResp',useReference: true}"
                                 @editDataStructure="editDataStructure"/>
-                <el-input type="textarea" placeholder="remark" v-model="form.responseParamDto.remark" v-else/>
+                <el-input type="textarea" placeholder="remark" v-model="form.responseParamDTO.remark" v-else/>
             </el-tab-pane>
         </el-tabs>
         <el-row style="line-height: 25px">
@@ -98,13 +98,13 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {UTILS} from "../../common/js/utils";
-    import {CONSTANT} from "../../common/js/constant";
-    import DataStructure from "../../components/dataStructure/dataStructure";
-    import ApiHeaders from "../../components/apiHeaders/apiHeaders";
-    import EditDataStructureDialog from "../../components/dataStructure/editDataStructureDialog";
+import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "../../common/js/constant";
+import DataStructure from "../../components/dataStructure/dataStructure";
+import ApiHeaders from "../../components/apiHeaders/apiHeaders";
+import EditDataStructureDialog from "../../components/dataStructure/editDataStructureDialog";
 
-    export default {
+export default {
         name: 'edit',
         components: {EditDataStructureDialog, ApiHeaders, DataStructure},
         data() {
@@ -119,13 +119,13 @@
                     apiRequestType: 0,
                     apiStatus: 0,
                     requestParamType: 0,
-                    requestParamDto: {
+                    requestParamDTO: {
                         reference: false,
                         referenceStructureName: '',
                         dataList: [],
                     },
                     responseParamType: 0,
-                    responseParamDto: {
+                    responseParamDTO: {
                         reference: false,
                         referenceStructureName: '',
                         dataList: [],
@@ -158,16 +158,16 @@
                     this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
                         if (UTILS.checkResp(resp)) {
                             this.form = resp.data.data;
-                            this.form.requestParamDto = this.form.requestParamVo;
-                            this.form.responseParamDto = this.form.responseParamVo;
-                            this.form.requestParamDto.reference = !!this.form.reqParamIsReference;
-                            this.form.responseParamDto.reference = !!this.form.respParamIsReference;
-                            this.form.requestParamDto.referenceStructureName = this.form.requestParamDto.name;
-                            this.form.responseParamDto.referenceStructureName = this.form.responseParamDto.name;
-                            UTILS.fillShowList(this.form.requestParamDto.dataList, this.reqShowDataList,
-                                this.form.requestParamDto.reference, !this.form.reqParamIsReference);
-                            UTILS.fillShowList(this.form.responseParamDto.dataList, this.respShowDataList,
-                                this.form.responseParamDto.reference, !this.form.respParamIsReference);
+                            this.form.requestParamDTO = this.form.requestParamVO;
+                            this.form.responseParamDTO = this.form.responseParamVO;
+                            this.form.requestParamDTO.reference = !!this.form.reqParamIsReference;
+                            this.form.responseParamDTO.reference = !!this.form.respParamIsReference;
+                            this.form.requestParamDTO.referenceStructureName = this.form.requestParamDTO.name;
+                            this.form.responseParamDTO.referenceStructureName = this.form.responseParamDTO.name;
+                            UTILS.fillShowList(this.form.requestParamDTO.dataList, this.reqShowDataList,
+                                this.form.requestParamDTO.reference, !this.form.reqParamIsReference);
+                            UTILS.fillShowList(this.form.responseParamDTO.dataList, this.respShowDataList,
+                                this.form.responseParamDTO.reference, !this.form.respParamIsReference);
                             this.$nextTick(() => {
                                 if (this.form.requestHeaders.length === 0) {
                                     this.$refs['reqHeaders'].init();
@@ -181,7 +181,7 @@
                                 this.form.id = null;
                                 if (!this.form.reqParamIsReference) {
                                     // if no all reference
-                                    this.form.requestParamDto.id = null;
+                                    this.form.requestParamDTO.id = null;
                                     this.reqShowDataList.forEach(item => {
                                         if (item.parent &&
                                             (item.parent.reference ||
@@ -196,7 +196,7 @@
                                 }
                                 if (!this.form.respParamIsReference) {
                                     // if no all reference
-                                    this.form.responseParamDto.id = null;
+                                    this.form.responseParamDTO.id = null;
                                     this.respShowDataList.forEach(item => {
                                         if (item.parent &&
                                             (item.parent.reference ||
@@ -265,17 +265,17 @@
                         this.$message.error('params lose');
                         return;
                     }
-                    this.form.reqParamIsReference = this.form.requestParamDto.reference;
-                    this.form.respParamIsReference = this.form.responseParamDto.reference;
+                    this.form.reqParamIsReference = this.form.requestParamDTO.reference;
+                    this.form.respParamIsReference = this.form.responseParamDTO.reference;
                     let replacerParent = function (key, value) {
                         return key === 'parent' ? null : value;
                     };
-                    let copyRootList = JSON.parse(JSON.stringify(this.form.requestParamDto.dataList, replacerParent));
+                    let copyRootList = JSON.parse(JSON.stringify(this.form.requestParamDTO.dataList, replacerParent));
                     UTILS.filterEmptyParams(copyRootList);
-                    this.form.requestParamDto.dataList = copyRootList;
-                    copyRootList = JSON.parse(JSON.stringify(this.form.responseParamDto.dataList, replacerParent));
+                    this.form.requestParamDTO.dataList = copyRootList;
+                    copyRootList = JSON.parse(JSON.stringify(this.form.responseParamDTO.dataList, replacerParent));
                     UTILS.filterEmptyParams(copyRootList);
-                    this.form.responseParamDto.dataList = copyRootList;
+                    this.form.responseParamDTO.dataList = copyRootList;
                     this.filterEmptyHeader(this.form.requestHeaders);
                     this.filterEmptyHeader(this.form.responseHeaders);
                     let url;

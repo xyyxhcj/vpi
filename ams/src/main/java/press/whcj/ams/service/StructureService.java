@@ -15,7 +15,7 @@ public interface StructureService {
      * findPage
      *
      * @param structureDTO structureDTO
-     * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.vo.StructureVo>
+     * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.vo.StructureVO>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:31
      **/
@@ -36,21 +36,21 @@ public interface StructureService {
      * findDetail
      *
      * @param structureDTO structureDTO
-     * @return press.whcj.ams.entity.vo.StructureVo
+     * @return press.whcj.ams.entity.vo.StructureVO
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:31
      **/
     StructureVO findDetail(StructureDTO structureDTO);
 
     /**
-     * getStructureVoById
+     * getStructureVOById
      *
      * @param structureId structureId
-     * @return press.whcj.ams.entity.vo.StructureVo
+     * @return press.whcj.ams.entity.vo.StructureVO
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:31
      **/
-    StructureVO getStructureVoById(String structureId);
+    StructureVO getStructureVOById(String structureId);
 
     /**
      * remove

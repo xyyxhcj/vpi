@@ -140,11 +140,11 @@ public class StructureServiceImpl implements StructureService {
     public StructureVO findDetail(StructureDTO structureDTO) {
         String structureId = structureDTO.getId();
         FastUtils.checkParams(structureId);
-        return getStructureVoById(structureId);
+        return getStructureVOById(structureId);
     }
 
     @Override
-    public StructureVO getStructureVoById(String structureId) {
+    public StructureVO getStructureVOById(String structureId) {
         StructureVO detail = mongoTemplate.findById(structureId, StructureVO.class, Constant.CollectionName.STRUCTURE);
         FastUtils.checkNull(detail);
         List<StructureDataDTO> allDataList = mongoTemplate.find(new Query(Criteria.where(ColumnName.STRUCTURE_ID).is(structureId)), StructureDataDTO.class, Constant.CollectionName.STRUCTURE_DATA);
@@ -154,9 +154,9 @@ public class StructureServiceImpl implements StructureService {
         for (StructureDataDTO dataDTO : allDataList) {
             if (StringUtils.isEmpty(dataDTO.getParentId())) {
                 if (!StringUtils.isEmpty(dataDTO.getReferenceStructureId())) {
-                    StructureVO structureVo = getStructureVoById(dataDTO.getReferenceStructureId());
-                    dataDTO.setReferenceStructureName(structureVo.getName());
-                    dataDTO.setSubList(structureVo.getDataList());
+                    StructureVO structureVO = getStructureVOById(dataDTO.getReferenceStructureId());
+                    dataDTO.setReferenceStructureName(structureVO.getName());
+                    dataDTO.setSubList(structureVO.getDataList());
                 }
                 rootList.add(dataDTO);
             } else {

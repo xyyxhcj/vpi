@@ -27,7 +27,7 @@
                             {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
                         </el-radio>
                     </div>
-                    <data-structure :show-list="reqShowDataList" :entity="api.requestParamVo"
+                    <data-structure :show-list="reqShowDataList" :entity="api.requestParamVO"
                                     ref="reqDataStructure" :config="{test:true}"/>
                 </el-tab-pane>
             </el-tabs>
@@ -123,15 +123,15 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
-    import ApiHeaders from "../../components/apiHeaders/apiHeaders";
-    import DataStructure from "../../components/dataStructure/dataStructure";
-    import LineText from "../../components/lineText/lineText";
-    import PageTemplate from "../../components/pageTemplate/pageTemplate";
-    import ConfirmDialog from "../../components/confirm/confirmDialog";
+import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
+import ApiHeaders from "../../components/apiHeaders/apiHeaders";
+import DataStructure from "../../components/dataStructure/dataStructure";
+import LineText from "../../components/lineText/lineText";
+import PageTemplate from "../../components/pageTemplate/pageTemplate";
+import ConfirmDialog from "../../components/confirm/confirmDialog";
 
-    export default {
+export default {
         name: 'test',
         components: {ConfirmDialog, PageTemplate, LineText, DataStructure, ApiHeaders},
         data() {
@@ -147,11 +147,11 @@
                     apiRequestType: 0,
                     apiStatus: 0,
                     requestParamType: 0,
-                    requestParamVo: {
+                    requestParamVO: {
                         dataList: [],
                     },
                     responseParamType: 0,
-                    responseParamVo: {
+                    responseParamVO: {
                         dataList: [],
                     },
                     requestHeaders: [],
@@ -283,8 +283,8 @@
                 this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.api = resp.data.data;
-                        if (this.api.requestParamVo) {
-                            UTILS.fillShowList(this.api.requestParamVo.dataList, this.reqShowDataList);
+                        if (this.api.requestParamVO) {
+                            UTILS.fillShowList(this.api.requestParamVO.dataList, this.reqShowDataList);
                             this.$refs['reqDataStructure'].init();
                             this.$refs['reqHeaders'].selectAll();
                         }
@@ -302,7 +302,7 @@
             getParams() {
                 let params = {};
                 let stack = [];
-                this.api.requestParamVo.dataList.forEach(data => {
+                this.api.requestParamVO.dataList.forEach(data => {
                     let paramKey = data.paramKey;
                     if (!data.selected || paramKey === '') {
                         return;

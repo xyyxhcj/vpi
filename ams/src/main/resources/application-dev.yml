@@ -4,10 +4,11 @@ spring:
   data:
     mongodb:
       option:
-        address: [ '$mongodbAddress' ]
-        database: $mongodbDatabase
-        username: $mongodbUsername
-        password: $mongodbPassword
+        address: [ '120.132.18.250:27017' ]
+        database: github-ams
+        username: whcj
+        password: LYyVKh7spO7hzDLv
+
 system:
   properties:
     profileActive: dev

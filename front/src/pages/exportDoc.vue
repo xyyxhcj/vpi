@@ -87,7 +87,7 @@
             </template>
             <template v-if="reqShowDataList.length>0">
                 <line-text text="Request Param"/>
-                <data-structure :show-list="reqShowDataList" :entity="selectedApi.requestParamVo"
+                <data-structure :show-list="reqShowDataList" :entity="selectedApi.requestParamVO"
                                 :config="{onlyRead:true}"/>
             </template>
             <template v-if="selectedApi.responseHeaders.length>0">
@@ -96,9 +96,9 @@
             </template>
             <template v-if="respShowDataList.length>0">
                 <line-text text="Response Param"/>
-                <data-structure :show-list="respShowDataList" :entity="selectedApi.responseParamVo"
+                <data-structure :show-list="respShowDataList" :entity="selectedApi.responseParamVO"
                                 :config="{onlyRead:true}" v-if="selectedApi.responseParamType===0"/>
-                <template v-else>{{selectedApi.responseParamVo.remark}}</template>
+                <template v-else>{{selectedApi.responseParamVO.remark}}</template>
             </template>
             <el-row>
                 <el-col :span="12" v-if="selectedApi.apiSuccessMock!==''">
@@ -121,13 +121,13 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../common/js/constant";
-    import {UTILS} from "../common/js/utils";
-    import DataStructure from "../components/dataStructure/dataStructure";
-    import LineText from "../components/lineText/lineText";
-    import ApiHeaders from "../components/apiHeaders/apiHeaders";
+import {CONSTANT} from "../common/js/constant";
+import {UTILS} from "../common/js/utils";
+import DataStructure from "../components/dataStructure/dataStructure";
+import LineText from "../components/lineText/lineText";
+import ApiHeaders from "../components/apiHeaders/apiHeaders";
 
-    export default {
+export default {
         name: 'exportDoc',
         components: {DataStructure, LineText, ApiHeaders},
         props: {
@@ -164,11 +164,11 @@
                     apiRequestType: 0,
                     apiStatus: 0,
                     requestParamType: 0,
-                    requestParamVo: {
+                    requestParamVO: {
                         dataList: [],
                     },
                     responseParamType: 0,
-                    responseParamVo: {
+                    responseParamVO: {
                         dataList: [],
                     },
                     requestHeaders: [],
@@ -272,11 +272,11 @@
                 this.query.apiStatus = apiStatus;
             },
             clickRow(row) {
-                if (row.requestParamVo && row.requestParamVo.dataList) {
-                    UTILS.fillShowList(row.requestParamVo.dataList, this.reqShowDataList, false, false);
+                if (row.requestParamVO && row.requestParamVO.dataList) {
+                    UTILS.fillShowList(row.requestParamVO.dataList, this.reqShowDataList, false, false);
                 }
-                if (row.responseParamVo && row.responseParamVo.dataList) {
-                    UTILS.fillShowList(row.responseParamVo.dataList, this.respShowDataList, false, false);
+                if (row.responseParamVO && row.responseParamVO.dataList) {
+                    UTILS.fillShowList(row.responseParamVO.dataList, this.respShowDataList, false, false);
                 }
                 this.selectedApi = row;
                 this.showDetail = true;

@@ -94,10 +94,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserVO findDetail(String id) {
-        UserVO userVo = mongoTemplate.findById(id, UserVO.class, Constant.CollectionName.USER);
-        FastUtils.checkNull(userVo);
-        Objects.requireNonNull(userVo).setPassword(null);
-        return userVo;
+        UserVO userVO = mongoTemplate.findById(id, UserVO.class, Constant.CollectionName.USER);
+        FastUtils.checkNull(userVO);
+        Objects.requireNonNull(userVO).setPassword(null);
+        return userVO;
     }
 
     @Override

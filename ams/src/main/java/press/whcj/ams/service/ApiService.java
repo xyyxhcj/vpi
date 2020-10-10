@@ -28,7 +28,7 @@ public interface ApiService {
      * findPage
      *
      * @param apiDTO apiDTO
-     * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.vo.ApiVo>
+     * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.vo.ApiVO>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
@@ -38,7 +38,7 @@ public interface ApiService {
      * findDetail
      *
      * @param apiDTO apiDTO
-     * @return press.whcj.ams.entity.vo.ApiVo
+     * @return press.whcj.ams.entity.vo.ApiVO
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
@@ -76,7 +76,7 @@ public interface ApiService {
      * findReferenceApi
      *
      * @param apiDTO apiDTO
-     * @return java.util.List<press.whcj.ams.entity.vo.ApiVo>
+     * @return java.util.List<press.whcj.ams.entity.vo.ApiVO>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/
@@ -96,7 +96,7 @@ public interface ApiService {
      * findAllDetail
      *
      * @param apiDTO apiDTO
-     * @return java.util.List<press.whcj.ams.entity.vo.ApiVo>
+     * @return java.util.List<press.whcj.ams.entity.vo.ApiVO>
      * @author xyyxhcj@qq.com
      * @date 2020/5/22 9:11
      **/
