@@ -1,7 +1,5 @@
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const SkeletonPlugin = require('page-skeleton-webpack-plugin');
-const path = require('path');
 const HOST_URL = {
     dev: 'http://120.132.18.250:11111',
     // dev: 'http://127.0.0.1:11111',
@@ -61,16 +59,12 @@ module.exports = {
                     })
                 ]
             },
-            plugins: [new CompressionPlugin({
-                test: /\.js$|\.html$|\.css/,
-                threshold: 10240,
-                deleteOriginalAssets: false,
-            }),
-                new SkeletonPlugin({
-                    pathname: path.resolve(__dirname, 'shell'), // 用来存储 shell 文件的地址
-                    staticDir: path.resolve(__dirname, './dist'), // 最好和 `output.path` 相同
-                    routes: ['/'], // 将需要生成骨架屏的路由添加到数组中
-                })
+            plugins: [
+                new CompressionPlugin({
+                    test: /\.js$|\.html$|\.css/,
+                    threshold: 10240,
+                    deleteOriginalAssets: false,
+                }),
             ]
         },
     // eslint-disable-next-line no-unused-vars
