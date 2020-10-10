@@ -29,7 +29,7 @@ public interface ProjectGroupService {
      *
      * @param projectGroupDTO projectGroupDTO
      * @param operator        operator
-     * @return java.util.List<press.whcj.ams.entity.vo.ProjectGroupVo>
+     * @return java.util.List<press.whcj.ams.entity.vo.ProjectGroupVO>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:33
      **/
@@ -39,7 +39,7 @@ public interface ProjectGroupService {
      * findDetail
      *
      * @param projectGroup projectGroup
-     * @return press.whcj.ams.entity.vo.ProjectGroupVo
+     * @return press.whcj.ams.entity.vo.ProjectGroupVO
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:33
      **/
@@ -59,7 +59,7 @@ public interface ProjectGroupService {
      *
      * @param projectGroupDTO projectGroupDTO
      * @param operator        operator
-     * @return java.util.List<press.whcj.ams.entity.vo.ProjectGroupVo>
+     * @return java.util.List<press.whcj.ams.entity.vo.ProjectGroupVO>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:33
      **/
@@ -70,7 +70,7 @@ public interface ProjectGroupService {
      *
      * @param projectGroupDTO projectGroupDTO
      * @param operator        operator
-     * @return java.util.List<press.whcj.ams.entity.vo.ProjectGroupVo>
+     * @return java.util.List<press.whcj.ams.entity.vo.ProjectGroupVO>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:33
      **/

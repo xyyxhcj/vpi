@@ -28,7 +28,7 @@
         </template>
         <template v-if="reqShowDataList.length>0">
             <line-text text="Request Param"/>
-            <data-structure :show-list="reqShowDataList" :entity="api.requestParamVo"
+            <data-structure :show-list="reqShowDataList" :entity="api.requestParamVO"
                             :config="{onlyRead:true}"/>
         </template>
         <template v-if="api.responseHeaders.length>0">
@@ -37,9 +37,9 @@
         </template>
         <template v-if="respShowDataList.length>0">
             <line-text text="Response Param"/>
-            <data-structure :show-list="respShowDataList" :entity="api.responseParamVo"
+            <data-structure :show-list="respShowDataList" :entity="api.responseParamVO"
                             :config="{onlyRead:true}" v-if="api.responseParamType===0"/>
-            <template v-else>{{api.responseParamVo.remark}}</template>
+            <template v-else>{{api.responseParamVO.remark}}</template>
         </template>
         <el-row>
             <el-col :span="12" v-if="api.apiSuccessMock!==''">
@@ -60,14 +60,14 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
-    import ApiHeaders from "../../components/apiHeaders/apiHeaders";
-    import LineText from "../../components/lineText/lineText";
-    import DataStructure from "../../components/dataStructure/dataStructure";
-    import SelectApiStatusDialog from "../../components/selectApiStatus/selectApiStatusDialog";
+import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
+import ApiHeaders from "../../components/apiHeaders/apiHeaders";
+import LineText from "../../components/lineText/lineText";
+import DataStructure from "../../components/dataStructure/dataStructure";
+import SelectApiStatusDialog from "../../components/selectApiStatus/selectApiStatusDialog";
 
-    export default {
+export default {
         name: 'detail',
         components: {SelectApiStatusDialog, DataStructure, LineText, ApiHeaders},
         data() {
@@ -82,11 +82,11 @@
                     apiRequestType: 0,
                     apiStatus: 0,
                     requestParamType: 0,
-                    requestParamVo: {
+                    requestParamVO: {
                         dataList: [],
                     },
                     responseParamType: 0,
-                    responseParamVo: {
+                    responseParamVO: {
                         dataList: [],
                     },
                     requestHeaders: [],
@@ -111,11 +111,11 @@
                 this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.api = resp.data.data;
-                        if (this.api.requestParamVo) {
-                            UTILS.fillShowList(this.api.requestParamVo.dataList, this.reqShowDataList, false, false);
+                        if (this.api.requestParamVO) {
+                            UTILS.fillShowList(this.api.requestParamVO.dataList, this.reqShowDataList, false, false);
                         }
-                        if (this.api.responseParamVo) {
-                            UTILS.fillShowList(this.api.responseParamVo.dataList, this.respShowDataList, false, false);
+                        if (this.api.responseParamVO) {
+                            UTILS.fillShowList(this.api.responseParamVO.dataList, this.respShowDataList, false, false);
                         }
                     }
                 });

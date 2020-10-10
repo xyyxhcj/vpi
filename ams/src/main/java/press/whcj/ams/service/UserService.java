@@ -36,7 +36,7 @@ public interface UserService {
      * findDetail
      *
      * @param id id
-     * @return press.whcj.ams.entity.vo.UserVo
+     * @return press.whcj.ams.entity.vo.UserVO
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:30
      **/
@@ -46,7 +46,7 @@ public interface UserService {
      * findPage
      *
      * @param userDTO userDTO
-     * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.vo.UserVo>
+     * @return press.whcj.ams.entity.MongoPage<press.whcj.ams.entity.vo.UserVO>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:29
      **/
@@ -65,7 +65,7 @@ public interface UserService {
      *
      * @param userDTO userDTO
      * @param request request
-     * @return press.whcj.ams.entity.vo.UserVo
+     * @return press.whcj.ams.entity.vo.UserVO
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:25
      **/

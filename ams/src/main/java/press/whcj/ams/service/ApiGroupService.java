@@ -17,7 +17,7 @@ public interface ApiGroupService {
      * findList
      *
      * @param apiGroupDTO apiGroupDTO
-     * @return java.util.List<press.whcj.ams.entity.vo.ApiGroupVo>
+     * @return java.util.List<press.whcj.ams.entity.vo.ApiGroupVO>
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:34
      **/

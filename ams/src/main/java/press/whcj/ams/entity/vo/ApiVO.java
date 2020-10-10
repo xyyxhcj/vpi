@@ -17,8 +17,8 @@ import press.whcj.ams.entity.ApiHeader;
 @ToString(callSuper = true)
 public class ApiVO extends Api {
 	private static final long serialVersionUID = 7302871133312701808L;
-	private StructureVO requestParamVo;
-	private StructureVO responseParamVo;
+	private StructureVO requestParamVO;
+	private StructureVO responseParamVO;
 	private Collection<ApiHeader> requestHeaders;
 	private Collection<ApiHeader> responseHeaders;
 }

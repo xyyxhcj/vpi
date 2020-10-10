@@ -143,10 +143,10 @@ public class ApiServiceImpl implements ApiService {
         ApiVO detail = mongoTemplate.findById(apiId, ApiVO.class, Constant.CollectionName.API);
         FastUtils.checkNull(detail);
         if (Objects.requireNonNull(detail).getRequestParam() != null) {
-            detail.setRequestParamVo(structureService.getStructureVoById(detail.getRequestParam().getId()));
+            detail.setRequestParamVO(structureService.getStructureVOById(detail.getRequestParam().getId()));
         }
         if (detail.getResponseParam() != null) {
-            detail.setResponseParamVo(structureService.getStructureVoById(detail.getResponseParam().getId()));
+            detail.setResponseParamVO(structureService.getStructureVOById(detail.getResponseParam().getId()));
         }
         List<ApiHeader> headers = mongoTemplate.find(new Query(Criteria.where(ColumnName.API_ID).is(apiId)), ApiHeader.class);
         detail.setRequestHeaders(new LinkedList<>());
@@ -257,49 +257,49 @@ public class ApiServiceImpl implements ApiService {
             if (StringUtils.isEmpty(dataDTO.getParentId())) {
                 if (!StringUtils.isEmpty(dataDTO.getReferenceStructureId())) {
                     // if reference
-                    StructureVO structureVo = structureDict.get(dataDTO.getReferenceStructureId());
-                    dataDTO.setReferenceStructureName(structureVo.getName());
-                    dataDTO.setSubList(structureVo.getDataList());
+                    StructureVO structureVO = structureDict.get(dataDTO.getReferenceStructureId());
+                    dataDTO.setReferenceStructureName(structureVO.getName());
+                    dataDTO.setSubList(structureVO.getDataList());
                 }
                 rootListDict.computeIfAbsent(dataDTO.getStructureId(), k -> new LinkedList<>()).add(dataDTO);
             } else {
                 structureDataDict.get(dataDTO.getParentId()).getSubList().add(dataDTO);
             }
         }
-        structureVOList.forEach(structureVo -> {
-            List<StructureDataDTO> rootList = rootListDict.get(structureVo.getId());
+        structureVOList.forEach(structureVO -> {
+            List<StructureDataDTO> rootList = rootListDict.get(structureVO.getId());
             if (rootList != null) {
-                structureVo.getDataList().addAll(rootList);
+                structureVO.getDataList().addAll(rootList);
             }
         });
-        apiVOList.forEach(apiVo -> {
-            if (apiVo.getRequestParam() != null) {
-                apiVo.setRequestParamVo(structureDict.get(apiVo.getRequestParam().getId()));
+        apiVOList.forEach(apiVO -> {
+            if (apiVO.getRequestParam() != null) {
+                apiVO.setRequestParamVO(structureDict.get(apiVO.getRequestParam().getId()));
             }
-            if (apiVo.getResponseParam() != null) {
-                apiVo.setResponseParamVo(structureDict.get(apiVo.getResponseParam().getId()));
+            if (apiVO.getResponseParam() != null) {
+                apiVO.setResponseParamVO(structureDict.get(apiVO.getResponseParam().getId()));
             }
-            apiVo.setRequestHeaders(new LinkedHashSet<>());
-            apiVo.setResponseHeaders(new LinkedHashSet<>());
-            List<ApiHeader> headers = headersDict.get(apiVo.getId());
+            apiVO.setRequestHeaders(new LinkedHashSet<>());
+            apiVO.setResponseHeaders(new LinkedHashSet<>());
+            List<ApiHeader> headers = headersDict.get(apiVO.getId());
             if (headers != null) {
                 for (ApiHeader header : headers) {
                     if (Constant.Is.YES.equals(header.getIsRequest())) {
-                        apiVo.getRequestHeaders().add(header);
+                        apiVO.getRequestHeaders().add(header);
                     } else {
-                        apiVo.getResponseHeaders().add(header);
+                        apiVO.getResponseHeaders().add(header);
                     }
                 }
             }
             if (addEnvUri) {
-                String apiUri = apiVo.getApiUri();
+                String apiUri = apiVO.getApiUri();
                 if (apiUri == null) {
                     apiUri = "";
                 }
-                apiVo.setApiUri(env.getFrontUri() + apiUri);
+                apiVO.setApiUri(env.getFrontUri() + apiUri);
             }
             if (addEnvHeader) {
-                apiVo.getRequestHeaders().addAll(envHeaders);
+                apiVO.getRequestHeaders().addAll(envHeaders);
             }
         });
         return apiVOList;
