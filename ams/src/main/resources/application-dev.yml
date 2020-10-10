@@ -4,7 +4,7 @@ spring:
   data:
     mongodb:
       option:
-        address: ['$mongodbAddress']
+        address: [ '$mongodbAddress' ]
         database: $mongodbDatabase
         username: $mongodbUsername
         password: $mongodbPassword
