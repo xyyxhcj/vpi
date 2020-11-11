@@ -12,10 +12,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../common/js/constant";
-    import GroupProjectTable from "../components/groupProjectTable/groupProjectTable";
+import {CONSTANT} from "@/common/js/constant";
+import GroupProjectTable from "../components/groupProjectTable/groupProjectTable";
 
-    export default {
+export default {
         name: 'index',
         components: {GroupProjectTable},
         data() {

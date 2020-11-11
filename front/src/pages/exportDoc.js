@@ -4,7 +4,7 @@ import ElementUI from 'element-ui';
 import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css';
 import Axios from '../common/js/http';
-import {CONSTANT} from "../common/js/constant";
+import {CONSTANT} from "@/common/js/constant";
 import ExportDoc from "./exportDoc.vue";
 
 Vue.use(ElementUI, {locale});
