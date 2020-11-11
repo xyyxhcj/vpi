@@ -1,6 +1,6 @@
 #! /bin/bash
 # mongodb 连接信息
-mongodbAddress='120.132.18.250:27017'
+mongodbAddress='127.0.0.1:27017'
 mongodbDatabase='github-ams'
 mongodbUsername='whcj'
 mongodbPassword='LYyVKh7spO7hzDLv'
