@@ -10,7 +10,7 @@ jdk1.8
 chromePlugin,  
 mongodb(init/install-mongodb.sh)
 nginx
-#if use sh/makeJar.sh，need install:git,maven,node
+#if use sh/makeJar.sh，need install:git,maven,npm
 ## Demo: 
 http://www.whcj.press  
 testAccount: lx/123456
