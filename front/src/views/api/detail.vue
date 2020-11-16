@@ -15,6 +15,7 @@
         <div style="text-align: left;margin: 5px;line-height: 30px">
             <div style="font-size: 22px">{{api.apiUri}}</div>
             <div style="font-size: 16px">{{api.name}}</div>
+            <div style="font-size: 16px;color: #999999">{{api.desc}}</div>
             <div style="font-size: 12px;color: #999999">
                 <span class="api-edit-info">group: {{api.group?api.group.name:'none'}}</span>
                 <span class="api-edit-info">create: {{api.createName}}</span>
@@ -78,6 +79,7 @@ export default {
                     projectId: this.$store.getters.selectedProjectId,
                     name: '',
                     apiUri: '/',
+                    desc: '',
                     type: '',
                     apiRequestType: 0,
                     apiStatus: 0,

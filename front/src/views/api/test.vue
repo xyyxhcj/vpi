@@ -13,6 +13,7 @@
                 </el-col>
             </el-row>
             <div style="text-align: left;margin: 5px;line-height: 30px;">{{api.name}}</div>
+            <div style="text-align: left;margin: 5px;line-height: 30px;color: #999999">{{api.desc}}</div>
             <el-tabs type="card" v-model="reqDefaultCard" style="line-height: 25px">
                 <el-tab-pane label="Request Header">
                     <api-headers :data-list="api.requestHeaders" ref="reqHeaders"
@@ -142,6 +143,7 @@ export default {
                     projectId: this.$store.getters.selectedProjectId,
                     name: '',
                     apiUri: '/',
+                    desc: '',
                     type: '',
                     apiRequestType: 0,
                     apiStatus: 0,
