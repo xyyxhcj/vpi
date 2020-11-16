@@ -463,7 +463,9 @@ export default {
             }
         },
         mounted() {
+          this.$nextTick(()=>{
             this.init();
+          })
         }
     };
 </script>
