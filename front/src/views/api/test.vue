@@ -47,8 +47,7 @@
                 <line-text style="color: #44B549" text="Headers"/>
                 <div id="resp-headers" ref="respHeaders" class="headers"></div>
                 <line-text style="color: #44B549" text="Response Body"/>
-                <el-dropdown size="mini" split-button type="primary" @click="saveMock(true)" @command="command"
-                             v-if="respData&&respData.length>0">
+                <el-dropdown size="mini" split-button type="primary" @click="saveMock(true)" @command="command">
                     Save Success Mock
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item :command="()=>saveMock(false)">saveFailureMock</el-dropdown-item>
@@ -190,13 +189,6 @@ export default {
                 testHistoryShowSelect: false,
             }
         },
-        computed: {
-            respData: {
-                get() {
-                    return this.$refs['respData'].innerHTML;
-                }
-            },
-        },
         methods: {
             delTestHistory(row) {
                 if (row.id) {
@@ -285,7 +277,7 @@ export default {
                         this.api = resp.data.data;
                         if (this.api.requestParamVO) {
                             UTILS.fillShowList(this.api.requestParamVO.dataList, this.reqShowDataList);
-                            this.$refs['reqDataStructure'].init();
+                            this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
                             this.$refs['reqHeaders'].selectAll();
                         }
                     }
@@ -386,7 +378,7 @@ export default {
                         url = 'http://' + url;
                     }
                     this.$refs['reqHeaders'].signSelected();
-                    this.$refs['reqDataStructure'].signSelected();
+                    this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
                     let headers = {};
                     this.api.requestHeaders.forEach(item => {
                         if (item.selected) {
@@ -446,8 +438,12 @@ export default {
                 a.click();
             },
             saveMock(isSuccess) {
-                let params = this.respData;
-                let cleanText = params.replace(/<br>/g, '');
+                const $ref = this.$refs['respData'];
+                if (!$ref || $ref.innerHTML === '') {
+                  this.$message.error('mock is empty!');
+                  return;
+                }
+                let cleanText = $ref.innerHTML.replace(/<br>/g, '');
                 let mock = UTILS.isJSON(cleanText) ? JSON.stringify(JSON.parse(cleanText)) : cleanText;
                 let reqData = {id: this.api.id};
                 if (isSuccess) {
@@ -463,9 +459,7 @@ export default {
             }
         },
         mounted() {
-          this.$nextTick(()=>{
             this.init();
-          })
         }
     };
 </script>

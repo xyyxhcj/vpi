@@ -223,7 +223,7 @@ export default {
                 } else {
                     this.rootList = [];
                     this.$nextTick(() => {
-                        this.$refs['reqDataStructure'].init();
+                        this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
                         this.$refs['respDataStructure'].init();
                         this.$refs['reqHeaders'].init();
                         this.$refs['respHeaders'].init();
