@@ -48,7 +48,7 @@
                 <div id="resp-headers" ref="respHeaders" class="headers"></div>
                 <line-text style="color: #44B549" text="Response Body"/>
                 <el-dropdown size="mini" split-button type="primary" @click="saveMock(true)" @command="command"
-                             v-if="$refs['respData']&&$refs['respData'].innerHTML.length>0">
+                             v-if="respData&&respData.length>0">
                     Save Success Mock
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item :command="()=>saveMock(false)">saveFailureMock</el-dropdown-item>
@@ -446,7 +446,7 @@ export default {
                 a.click();
             },
             saveMock(isSuccess) {
-                let params = this.$refs['respData'].innerHTML;
+                let params = this.respData;
                 let cleanText = params.replace(/<br>/g, '');
                 let mock = UTILS.isJSON(cleanText) ? JSON.stringify(JSON.parse(cleanText)) : cleanText;
                 let reqData = {id: this.api.id};
