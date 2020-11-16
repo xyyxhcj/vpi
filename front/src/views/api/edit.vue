@@ -40,6 +40,9 @@
             <el-form-item label="name" size="mini" prop="name">
                 <el-input v-model="form.name" size="mini"/>
             </el-form-item>
+            <el-form-item label="desc" prop="desc">
+                <el-input v-model="form.desc"/>
+            </el-form-item>
         </el-form>
         <el-tabs type="card" :value="reqDefaultCard" style="line-height: 25px">
             <el-tab-pane label="Request Header">
@@ -115,6 +118,7 @@ export default {
                     groupId: this.$route.query.groupId,
                     name: '',
                     apiUri: '/',
+                    desc: '',
                     type: '',
                     apiRequestType: 0,
                     apiStatus: 0,
