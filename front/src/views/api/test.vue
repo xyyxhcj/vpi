@@ -280,7 +280,10 @@ export default {
                         if (this.api.requestParamVO) {
                             UTILS.fillShowList(this.api.requestParamVO.dataList, this.reqShowDataList);
                             this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
-                            this.$refs['reqHeaders'].selectAll();
+                        }
+                        if (this.$refs['reqHeaders']) {
+                          this.$refs['reqHeaders'].selectAll();
+                          this.$refs['reqHeaders'].init();
                         }
                     }
                 });
