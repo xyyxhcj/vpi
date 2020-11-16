@@ -45,9 +45,9 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
+import {CONSTANT} from "../../common/js/constant";
 
-    export default {
+export default {
         name: 'apiHeaders',
         props: {
             dataList: {
@@ -96,12 +96,14 @@
                 }
             },
             init() {
+              this.$nextTick(()=>{
                 if (this.dataList.length === 0) {
-                    for (let i = 0; i < CONSTANT.CONFIG.DEFAULT_DATA_LIST_SIZE; i++) {
-                        let item = JSON.parse(this.itemTemplateStr);
-                        this.dataList.push(item);
-                    }
+                  for (let i = 0; i < CONSTANT.CONFIG.DEFAULT_DATA_LIST_SIZE; i++) {
+                    let item = JSON.parse(this.itemTemplateStr);
+                    this.dataList.push(item);
+                  }
                 }
+              })
             },
             selectAll() {
                 this.$refs[this.config.refPre + 'headerTable'].toggleAllSelection();
@@ -119,8 +121,6 @@
                 this.dataList.forEach(row => row.selected = selectedList.indexOf(row) > -1);
             },
         },
-        created() {
-        }
     };
 </script>
 
