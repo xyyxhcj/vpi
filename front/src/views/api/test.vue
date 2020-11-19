@@ -386,7 +386,7 @@ export default {
                     this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
                     let headers = {};
                     this.api.requestHeaders.forEach(item => {
-                        if (item.selected) {
+                        if (item.selected && item.name !== '') {
                             headers[item.name] = item.value;
                         }
                     });
