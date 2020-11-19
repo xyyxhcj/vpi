@@ -8,6 +8,22 @@ function concatZero(str) {
     return ('00' + str).substr(str.length);
 }
 
+function filterParam(subList, needFilters) {
+    for (let i = subList.length - 1; i >= 0; i--) {
+        let item = subList[i];
+        if (item.paramKey === '') {
+            subList.splice(i, 1);
+        } else {
+            if (item.paramDesc instanceof Array) {
+                item.paramDesc = item.paramDesc.toString();
+            }
+            if (item.subList.length > 0) {
+                needFilters.push(item.subList);
+            }
+        }
+    }
+}
+
 export const UTILS = {
     /**
      * get url param
@@ -314,24 +330,10 @@ export const UTILS = {
     },
     filterEmptyParams(params) {
         let needFilters = Array();
-        for (let i = params.length - 1; i >= 0; i--) {
-            let item = params[i];
-            if (item.paramKey === '') {
-                params.splice(i, 1);
-            } else if (item.subList.length > 0) {
-                needFilters.push(item.subList);
-            }
-        }
+        filterParam(params, needFilters);
         while (needFilters.length > 0) {
             let subList = needFilters.pop();
-            for (let i = subList.length - 1; i >= 0; i--) {
-                let item = subList[i];
-                if (item.paramKey === '') {
-                    subList.splice(i, 1);
-                } else if (item.subList.length > 0) {
-                    needFilters.push(item.subList);
-                }
-            }
+            filterParam(subList, needFilters);
         }
     },
     pushItemTemplate: function (treeList, dataList) {
@@ -379,6 +381,9 @@ export const UTILS = {
             let itemTemp = JSON.parse(CONSTANT.ITEM_TEMPLATE);
             itemTemp.paramKey = key;
             itemTemp.paramDesc = itemTemp.value = obj[key];
+            if (itemTemp.paramDesc instanceof Array) {
+                itemTemp.paramDesc = itemTemp.paramDesc.toString();
+            }
             itemTemp.level = level;
             if (itemTemp.value !== undefined && itemTemp.value !== null) {
                 if (itemTemp.value.constructor === undefined) {

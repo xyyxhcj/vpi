@@ -288,6 +288,8 @@ export default {
                     } else {
                         url = CONSTANT.REQUEST_URL.API_ADD;
                     }
+                    this.form.requestParamVo = null;
+                    this.form.responseParamVo = null;
                     this.$axios.post(url, this.form).then(resp => {
                         if (UTILS.checkResp(resp)) {
                             this.$router.push({
