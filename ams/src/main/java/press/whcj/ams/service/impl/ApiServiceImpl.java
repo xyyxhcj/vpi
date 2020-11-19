@@ -58,15 +58,16 @@ public class ApiServiceImpl implements ApiService {
             api = mongoTemplate.findById(apiDTO.getId(), Api.class);
             FastUtils.checkNull(api);
             Objects.requireNonNull(api).setUpdate(null);
+            if (!StringUtils.isEmpty(apiDTO.getGroupId())) {
+                api.setGroup(new ApiGroup(apiDTO.getGroupId()));
+            }
         } else {
             api = new Api();
+            if (!StringUtils.isEmpty(apiDTO.getGroupId())) {
+                api.setGroup(new ApiGroup(apiDTO.getGroupId()));
+            }
         }
         FastUtils.copyProperties(apiDTO, api);
-        if (StringUtils.isEmpty(apiDTO.getGroupId())) {
-            api.setGroup(null);
-        } else {
-            api.setGroup(new ApiGroup(apiDTO.getGroupId()));
-        }
         // save request params
         String reqParamsId = apiDTO.getRequestParamDTO().getId();
         if (apiDTO.getRequestParamDTO().isReference()) {
