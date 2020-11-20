@@ -153,15 +153,17 @@ public class StructureServiceImpl implements StructureService {
         Map<String, StructureDataDTO> allDataDict = allDataList.stream().collect(Collectors.toMap(StructureData::getId, v -> v));
         for (StructureDataDTO dataDTO : allDataList) {
             if (StringUtils.isEmpty(dataDTO.getParentId())) {
-                if (!StringUtils.isEmpty(dataDTO.getReferenceStructureId())) {
-                    StructureVO structureVO = getStructureVOById(dataDTO.getReferenceStructureId());
-                    dataDTO.setReferenceStructureName(structureVO.getName());
-                    dataDTO.setSubList(structureVO.getDataList());
-                }
+                // 父ID为空，表示为根结点
                 rootList.add(dataDTO);
             } else {
                 // put sub list
                 allDataDict.get(dataDTO.getParentId()).getSubList().add(dataDTO);
+            }
+            if (!StringUtils.isEmpty(dataDTO.getReferenceStructureId())) {
+                // 存在引用数据，放入
+                StructureVO structureVO = getStructureVOById(dataDTO.getReferenceStructureId());
+                dataDTO.setReferenceStructureName(structureVO.getName());
+                dataDTO.setSubList(structureVO.getDataList());
             }
         }
         return detail;
