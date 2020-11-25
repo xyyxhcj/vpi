@@ -7,7 +7,7 @@ mongodbPassword='LYyVKh7spO7hzDLv'
 # 后端接口地址 spring project url prefix
 prodApiUrl='http://120.132.18.250:11111'
 # 谷歌插件下载地址
-chromePluginDownloadUrl='http://www.whcj.press/Vpi-Plugin_v1.0.crx'
+chromePluginDownloadUrl='https://www.whcj.press/vpiChromePlugin.zip'
 
 # 项目根目录
 projectDir='/opt/project/vpi/'
