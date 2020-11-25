@@ -314,8 +314,12 @@ export default {
                             value = {};
                         }
                         data.subList.forEach(item => stack.push({keys: [paramKey], value: item}));
-                    } else if (data.value !== '' || data.paramType !== CONSTANT.PARAM_TYPE.ARRAY) {
+                    } else if (data.value !== '' ) {
+                      if (data.paramType !== CONSTANT.PARAM_TYPE.ARRAY) {
                         value = data.value;
+                      } else {
+                        value = eval('(' + data.value + ')');
+                      }
                     }
                     params[paramKey] = value;
                 });
@@ -343,9 +347,14 @@ export default {
                                 value: item
                             })
                         });
-                    } else if (pop.value !== '' || pop.paramType !== CONSTANT.PARAM_TYPE.ARRAY) {
+                    } else if (pop.value !== '') {
+                      if (pop.paramType !== CONSTANT.PARAM_TYPE.ARRAY) {
                         value = pop.value;
+                      } else {
+                        value = eval('(' + pop.value + ')');
+                      }
                     }
+                    console.log(pop.paramType);
                     let position = params;
                     keys.forEach(key => {
                         position = position[key]
