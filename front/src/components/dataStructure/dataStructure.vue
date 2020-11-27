@@ -61,7 +61,7 @@
           <span style="margin-left:15px" v-else>{{ scope.row.paramDesc }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="value" width="180">
+      <el-table-column label="example" width="180">
         <template slot-scope="scope">
           <el-input v-model.trim="scope.row.value" size="mini"
                     :ref="config.refPre+'value'+scope.$index"
