@@ -1,32 +1,35 @@
 <template>
     <div class="container">
-        <el-pagination background :current-page="query.page.current" :total="query.page.total"
-                       :page-size="query.page.size" :page-sizes="CONSTANT.CONFIG.PAGE_SIZES"
-                       @current-change="currentChange" @size-change="pageSizeChange"
-                       layout="total, sizes, prev, pager, next"/>
+    <el-button icon="el-icon-arrow-left" style="padding:10px" @click="prevEvent" :disabled="this.query.page.current == 1 ? true:false" ></el-button>
+     {{this.query.page.current}}
+    <el-button icon="el-icon-arrow-right" style="padding:10px" @click="nextEvent" :disabled="this.query.page.total < 20 ? true : false"></el-button>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {CONSTANT} from "../../common/js/constant";
-
     export default {
         name: 'pageTemplate',
         props: {
             query: Object
         },
         data() {
-            return {CONSTANT: CONSTANT}
+            return {
+            CONSTANT: CONSTANT,
+            total: 0,
+            size: 20,
+            currentPage: 1
+            }
         },
         methods: {
-            pageSizeChange(val) {
-                this.query.page.size = val;
-                this.$emit('flush');
+            prevEvent(){
+            this.query.page.current = this.query.page.current-1;
+            this.$emit('flush');
             },
-            currentChange(val) {
-                this.query.page.current = val;
-                this.$emit('flush');
-            }
+            nextEvent(){
+            this.query.page.current = this.query.page.current+1;
+            this.$emit('flush');
+            },
         }
     };
 </script>

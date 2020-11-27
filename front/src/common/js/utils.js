@@ -308,10 +308,10 @@ export const UTILS = {
                     dataObj.dataList = data.records;
                 }
                 dataObj.query.page.total = data.total;
-                if (data.total !== 0 && (dataObj.query.page.current - 1) * dataObj.query.page.size > data.total) {
-                    dataObj.query.page.current = 1;
-                    this.findPage($this, dataObj);
-                }
+                // if (data.total !== 0 && (dataObj.query.page.current - 1) * dataObj.query.page.size > data.total) {
+                //     dataObj.query.page.current = 1;
+                //     this.findPage($this, dataObj);
+                // }
                 func($this, dataObj);
             }
         });
