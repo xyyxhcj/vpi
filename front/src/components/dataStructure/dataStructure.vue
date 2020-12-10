@@ -1,6 +1,6 @@
 <template>
   <div class="data-structure-common">
-    <el-table :data="showList" style="width: 100%" :row-style="rowStyle" border :ref="config.refPre+'table'">
+    <el-table :data="showList" style="width: 100%" :row-style="rowStyle" border :ref="config.refPre+'table'" @select="selectHandler">
       <el-table-column type="index" width="40"/>
       <el-table-column type="selection" :width="config.test?25:1"/>
       <el-table-column label="paramKey" width="280" ref="param-key-container">
@@ -29,11 +29,11 @@
       </el-table-column>
       <el-table-column label="paramType" width="110">
         <template slot-scope="scope">
-          <el-select :value="scope.row.paramType+''" filterable size="mini"
+          <el-select :value="scope.row.paramType" filterable size="mini"
                      @change="(selectedValue)=>scope.row.paramType=selectedValue"
                      v-if="!config.onlyRead&&!scope.row.reference">
-            <el-option v-for="key in Object.keys(CONSTANT.PARAM_TYPE_STR)"
-                       :key="key" :label="CONSTANT.PARAM_TYPE_STR[key]" :value="key"/>
+            <el-option v-for="(paramTypeStrItem, i) in CONSTANT.PARAM_TYPE_STR"
+                       :key="i" :label="paramTypeStrItem" :value="i"/>
           </el-select>
           <span style="margin-left:15px" v-else>{{ CONSTANT.PARAM_TYPE_STR[scope.row.paramType] }}</span>
         </template>
@@ -440,6 +440,13 @@ export default {
         }
       }
       UTILS.fillShowList(this.entity.dataList, this.showList, this.entity.reference, false);
+    },
+    selectHandler(selection, row) {
+      if (row.subList.length > 0) {
+        row.subList.forEach(item=>{
+          this.$refs[this.config.refPre + 'table'].toggleRowSelection(item);
+        })
+      }
     }
   },
 };

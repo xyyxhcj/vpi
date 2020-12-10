@@ -6,7 +6,7 @@ import {UTILS} from "./utils";
 let loading;
 
 function startLoading(url) {
-    if (!UTILS.contains(CONSTANT.CLOSE_LOADING_URL, url, function (url1, url2) {
+    if (!UTILS.contains(CONSTANT.CLOSE_LOADING_URL, url, (url1, url2) => {
         return url2.endsWith(url1);
     })) {
         loading = Loading.service({
@@ -19,7 +19,7 @@ function startLoading(url) {
 }
 
 function endLoading(url) {
-    if (!UTILS.contains(CONSTANT.CLOSE_LOADING_URL, url, function (url1, url2) {
+    if (!UTILS.contains(CONSTANT.CLOSE_LOADING_URL, url, (url1, url2) => {
         return url2.endsWith(url1);
     })) {
         loading.close();

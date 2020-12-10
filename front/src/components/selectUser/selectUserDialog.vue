@@ -20,11 +20,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
-    import PageTemplate from "../pageTemplate/pageTemplate";
+import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
+import PageTemplate from "../pageTemplate/pageTemplate";
 
-    export default {
+export default {
         name: 'selectUserDialog',
         components: {PageTemplate},
         props: {
@@ -116,9 +116,9 @@
                         UTILS.findPage(this, this, CONSTANT.REQUEST_URL.USER_FIND_PAGE, function ($this) {
                             $this.selectRows(resp.data.data, $this);
                             let create = {id: $this.user.id};
-                            let isSelected = UTILS.contains($this.selectedList, create, function (selectedElement, element) {
-                                return selectedElement.id === element.id;
-                            });
+                          let isSelected = UTILS.contains($this.selectedList, create, (selectedElement, element) => {
+                            return selectedElement.id === element.id;
+                          });
                             if (!isSelected) {
                                 $this.selectedList.push(create);
                                 $this.$refs['userTable'].toggleRowSelection(create);
@@ -138,9 +138,9 @@
                     if (dataDictElement && row.userType !== undefined && row.userType !== null) {
                         dataDictElement.userType = row.userType;
                     }
-                    let isSelected = UTILS.contains(obj.selectedList, row, function (selectedElement, element) {
-                        return selectedElement.id === element.id;
-                    });
+                  let isSelected = UTILS.contains(obj.selectedList, row, (selectedElement, element) => {
+                    return selectedElement.id === element.id;
+                  });
                     if (!isSelected) {
                         obj.selectedList.push(row);
                         obj.$refs['userTable'].toggleRowSelection(row);
