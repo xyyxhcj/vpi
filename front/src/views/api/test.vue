@@ -333,7 +333,7 @@ export default {
                     if (pop.subList.length > 0) {
                         if (pop.paramType === CONSTANT.PARAM_TYPE.ARRAY) {
                             // array
-                            value = [{}];
+                            value = [];
                         } else {
                             // object
                             value = {};
@@ -354,13 +354,22 @@ export default {
                         value = eval('(' + pop.value + ')');
                       }
                     }
-                    console.log(pop.paramType);
                     let position = params;
                     keys.forEach(key => {
                         position = position[key]
                     });
                     if (Array.isArray(position)) {
-                        position[0][paramKey] = value;
+                        // array,split & push
+                        if (!value) {
+                          continue;
+                        }
+                        let split = value.split(CONSTANT.CONFIG.ARRAY_SPLIT_STR);
+                        for (let i = 0; i < split.length; i++) {
+                          if (i === position.length) {
+                            position.push({});
+                          }
+                          position[i][paramKey] = split[i];
+                        }
                     } else {
                         // object
                         position[paramKey] = value;
