@@ -64,6 +64,7 @@
       <el-table-column label="example" width="180">
         <template slot-scope="scope">
           <el-input v-model.trim="scope.row.value" size="mini"
+                    :placeholder="scope.row.paramType===CONSTANT.PARAM_TYPE.ARRAY?'try use `|` send array':''"
                     :ref="config.refPre+'value'+scope.$index"
                     @keyup.down.native="focusMoveDown(scope.$index,'value')"
                     @keyup.up.native="focusMoveUp(scope.$index,'value')"
