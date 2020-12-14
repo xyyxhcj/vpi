@@ -4,11 +4,13 @@ export const CONSTANT = {
         {
             path: '/',
             redirect: '/index',
+            meta: { title: 'vpi!'},
             noMenu: true
         },
         {
             path: '/index',
             name: 'index',
+            meta: { title: 'vpi!'},
             component: () => import('@/views/index'),
             noMenu: true
         },
