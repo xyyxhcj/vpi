@@ -46,7 +46,7 @@
             <el-col :span="12" v-if="api.apiSuccessMock!==''">
                 <line-text style="color: #44B549" text="Success Example"/>
                 <pre class="json-content">
-                    {{UTILS.isJSON(api.apiFailureMock)?UTILS.formatJson(api.apiSuccessMock):api.apiSuccessMock}}
+                    {{UTILS.isJSON(api.apiSuccessMock)?UTILS.formatJson(api.apiSuccessMock):api.apiSuccessMock}}
                 </pre>
             </el-col>
             <el-col :span="12" v-if="api.apiFailureMock!==''">
