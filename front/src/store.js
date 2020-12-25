@@ -61,7 +61,7 @@ export default new Vuex.Store({
             if (state.selectedGroupId) {
                 return state.selectedGroupId;
             }
-            return JSON.parse(localStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_GROUP_ID));
+            return localStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_GROUP_ID);
         },
         leftMenuIsCollapse(state) {
             if (state.leftMenuIsCollapse !== undefined) {
