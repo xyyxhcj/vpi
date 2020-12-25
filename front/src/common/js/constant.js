@@ -98,6 +98,7 @@ export const CONSTANT = {
         SELECTED_PROJECT_ID: 'selectedProjectId',
         SELECTED_PROJECT_NAME: 'selectedProjectName',
         SELECTED_PROJECT_USER_TYPE: 'selectedProjectUserType',
+        SELECTED_GROUP_ID: 'selectedGroupId',
         SELECTED_ENV: 'selectedEnv',
         LEFT_MENU_IS_COLLAPSE: 'leftMenuIsCollapse',
     },

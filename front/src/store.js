@@ -11,6 +11,7 @@ export default new Vuex.Store({
         menuTree: undefined,
         selectedProjectId: undefined,
         selectedProjectName: undefined,
+        selectedGroupId: undefined,
     },
     getters: {
         rememberInfo(state) {
@@ -56,6 +57,12 @@ export default new Vuex.Store({
                 return sessionStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_PROJECT_USER_TYPE);
             }
         },
+        selectedGroupId(state) {
+            if (state.selectedGroupId) {
+                return state.selectedGroupId;
+            }
+            return JSON.parse(localStorage.getItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_GROUP_ID));
+        },
         leftMenuIsCollapse(state) {
             if (state.leftMenuIsCollapse !== undefined) {
                 return state.leftMenuIsCollapse;
@@ -91,6 +98,10 @@ export default new Vuex.Store({
             state.leftMenuIsCollapse = isCollapse;
             sessionStorage.setItem(CONSTANT.SESSION_STORAGE_KEY.LEFT_MENU_IS_COLLAPSE, isCollapse.toString());
         },
+        selectGroupId(state, groupId) {
+            state.selectedGroupId = groupId;
+            sessionStorage.setItem(CONSTANT.SESSION_STORAGE_KEY.SELECTED_GROUP_ID, groupId);
+        },
         rememberInfo(state, info) {
             state.rememberInfo = info;
             localStorage.setItem(CONSTANT.LOCAL_STORAGE_KEY.REMEMBER_INFO, UTILS.aesEncrypt(JSON.stringify(info), CONSTANT.CONFIG.AES_KEY));
@@ -107,6 +118,9 @@ export default new Vuex.Store({
         },
         selectProject(context, project) {
             context.commit('selectProject', project);
+        },
+        selectGroupId(context, groupId) {
+            context.commit('selectGroupId', groupId);
         },
         setLeftMenuIsCollapse(context, isCollapse) {
             context.commit('setLeftMenuIsCollapse', isCollapse);
