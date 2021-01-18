@@ -97,7 +97,7 @@
               </el-dropdown>
             </el-col>
             <el-col style="width: 200px">
-              <el-input placeholder="search name or uri" v-model.trim="query.nameOrUri"
+              <el-input placeholder="search name or uri" v-model.trim="query.nameOrUri" clearable
                         @keyup.enter.native="findApiPage" size="mini" style="top:2px;width: 150px"/>
             </el-col>
             <el-col>
@@ -106,31 +106,22 @@
           </el-row>
         </div>
         <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" :height="tableHeight"
-                  :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table">
+                  :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table" size="small">
           <el-table-column type="selection" :width="showSelect?'20':'1'"/>
           <el-table-column width="81">
             <template slot-scope="scope">
-              <el-popover trigger="hover" placement="right-start" v-if="scope.row.group">
-                <p style="font-size: 10px">Group: {{ scope.row.group.name }}</p>
-                <div slot="reference">
-                  <el-tag size="mini" effect="plain" style="padding: 0 4px"
-                          :type="scope.row.apiStatus===0?'success':
-                                    scope.row.apiStatus===2||scope.row.apiStatus===8?'danger':'warning'">
-                    {{ CONSTANT.API_STATUS[scope.row.apiStatus] }}
-                  </el-tag>
-                </div>
-              </el-popover>
-              <el-tag size="mini" effect="plain" style="padding: 0 4px" v-else
+              <el-tag size="mini" effect="plain" style="padding: 0 4px"
                       :type="scope.row.apiStatus===0?'success':
                                     scope.row.apiStatus===2||scope.row.apiStatus===8?'danger':'warning'">
                 {{ CONSTANT.API_STATUS[scope.row.apiStatus] }}
               </el-tag>
             </template>
           </el-table-column>
+          <el-table-column label="group" width="110" :formatter="(row)=>row.group?row.group.name:''" style="font-size: 8px"/>
           <el-table-column label="name" prop="name" width="200"/>
-          <el-table-column label="apiUri" prop="apiUri" width="200"/>
-          <el-table-column label="createName" prop="createName" width="110"/>
-          <el-table-column label="updateName" prop="updateName" width="110"/>
+          <el-table-column label="apiUri" prop="apiUri" width="250" show-overflow-tooltip/>
+          <el-table-column label="createName" prop="createName" width="90"/>
+          <el-table-column label="updateName" prop="updateName" width="90"/>
           <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
           <el-table-column v-if="hasAuth" width="420">
             <template slot="header">
@@ -159,10 +150,11 @@
             <template slot-scope="scope">
               <el-button size="mini" @click.stop="testApi(scope.row)">Test</el-button>
               <el-button size="mini" @click.stop="editApi(scope.row)">Edit</el-button>
-              <el-button size="mini" @click.stop="viewApiByTab(scope.row)">New Tab</el-button>
-              <el-dropdown @command="command" style="padding-left: 10px">
+              <el-button size="mini" @click.stop="viewApiByTab(scope.row)" type="success" plain>New Tab</el-button>
+              <el-dropdown @command="command"
+                           style="padding-left: 10px;content: '';top: 0; bottom: -10px; left: -5px;">
                             <span class="el-dropdown-link" @click.stop="()=>{}">
-                                <i class="el-icon-arrow-down el-icon-more"/>
+<i class="el-icon-arrow-down el-icon-more"/>
                             </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item :command="()=>copyApi(scope.row)">Copy</el-dropdown-item>
@@ -184,8 +176,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {CONSTANT} from "../../common/js/constant";
-import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "@/common/js/constant";
+import {UTILS} from "@/common/js/utils";
 import EditApiGroupDialog from "./editApiGroupDialog";
 import PageTemplate from "../../components/pageTemplate/pageTemplate";
 import ConfirmDialog from "../../components/confirm/confirmDialog";
