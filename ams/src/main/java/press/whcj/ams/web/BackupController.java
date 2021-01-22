@@ -16,6 +16,7 @@ import press.whcj.ams.config.MongoPoolProperties;
 import press.whcj.ams.exception.ResultCode;
 import press.whcj.ams.exception.ServiceException;
 import press.whcj.ams.support.BaseController;
+import press.whcj.ams.support.Result;
 
 /**
  * 备份还原
@@ -29,7 +30,6 @@ public class BackupController extends BaseController {
     /**
      * 导出命令host,dbName,outDir,username,password
      **/
-    //private final static String DUMP_COMMAND = "D:\\Program Files\\MongoDB\\Server\\4.0\\bin\\mongodump.exe -h %s -d %s -o %s  -u %s -p %s";
     private final static String DUMP_COMMAND = "mongodump -h %s -d %s -o %s  -u %s -p %s";
     /**
      * 临时文件路径
@@ -71,7 +71,13 @@ public class BackupController extends BaseController {
         response.setContentType("application/x-compressed-tar");
         File targetFile = new File(targetFilePath);
         IOUtils.copyLarge(new FileInputStream(targetFile), response.getOutputStream());
-        //FileUtils.forceDeleteOnExit(new File(sourceFilePath));
-        //FileUtils.forceDeleteOnExit(targetFile);
+        FileUtils.forceDeleteOnExit(new File(sourceFilePath));
+        FileUtils.forceDeleteOnExit(targetFile);
+    }
+
+    @PostMapping("load")
+    public Result<Object> load() throws Exception {
+        // cjTodo 2021-01-22 导入数据，需要提供数据库名
+        return ok();
     }
 }
