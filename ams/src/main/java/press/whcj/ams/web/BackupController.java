@@ -29,7 +29,8 @@ public class BackupController extends BaseController {
     /**
      * 导出命令host,dbName,outDir,username,password
      **/
-    private final static String DUMP_COMMAND = "mongodump -h %s -d %s -o '%s'  -u %s -p %s";
+    //private final static String DUMP_COMMAND = "D:\\Program Files\\MongoDB\\Server\\4.0\\bin\\mongodump.exe -h %s -d %s -o %s  -u %s -p %s";
+    private final static String DUMP_COMMAND = "mongodump -h %s -d %s -o %s  -u %s -p %s";
     /**
      * 临时文件路径
      **/
@@ -38,7 +39,7 @@ public class BackupController extends BaseController {
      * save to .tar.gz
      * targetFile,sourceFile
      */
-    private final static String TAR_COMMAND = "tar -zcvPf '%s' '%s'";
+    private final static String TAR_COMMAND = "tar -zcvPf %s %s";
 
     @Resource
     private MongoPoolProperties mongoProperties;
@@ -53,7 +54,7 @@ public class BackupController extends BaseController {
         logger.info(command);
         Runtime runtime = Runtime.getRuntime();
         Process process = runtime.exec(command);
-        logger.info(IOUtils.toString(process.getErrorStream(), encoding));
+        logger.debug(IOUtils.toString(process.getErrorStream(), encoding));
         int exit = process.waitFor();
         if (exit != 0) {
             throw new ServiceException(ResultCode.OPERATION_FAILURE);
@@ -66,7 +67,7 @@ public class BackupController extends BaseController {
         if (exit != 0) {
             throw new ServiceException(ResultCode.OPERATION_FAILURE);
         }
-        logger.info(IOUtils.toString(process.getErrorStream(), encoding));
+        logger.debug(IOUtils.toString(process.getErrorStream(), encoding));
         response.setContentType("application/x-compressed-tar");
         File targetFile = new File(targetFilePath);
         IOUtils.copyLarge(new FileInputStream(targetFile), response.getOutputStream());
