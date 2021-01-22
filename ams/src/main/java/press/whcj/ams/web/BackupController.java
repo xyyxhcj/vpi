@@ -2,7 +2,6 @@ package press.whcj.ams.web;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import press.whcj.ams.config.MongoPoolProperties;
+import press.whcj.ams.exception.ResultCode;
+import press.whcj.ams.exception.ServiceException;
 import press.whcj.ams.support.BaseController;
 
 /**
@@ -28,7 +29,7 @@ public class BackupController extends BaseController {
     /**
      * 导出命令host,dbName,outDir,username,password
      **/
-    private final static String DUMP_COMMAND = "su;\n mongodump -h %s -d %s -o '%s'  -u %s -p %s";
+    private final static String DUMP_COMMAND = "su\n mongodump -h %s -d %s -o '%s'  -u %s -p %s";
     /**
      * 临时文件路径
      **/
@@ -37,13 +38,13 @@ public class BackupController extends BaseController {
      * save to .tar.gz
      * targetFile,sourceFile
      */
-    private final static String TAR_COMMAND = "su;\n tar -zcvPf '%s' '%s'";
+    private final static String TAR_COMMAND = "su\n tar -zcvPf '%s' '%s'";
 
     @Resource
     private MongoPoolProperties mongoProperties;
 
     @PostMapping("export")
-    public void export(HttpServletResponse response) throws IOException {
+    public void export(HttpServletResponse response) throws Exception {
         String encoding = "gbk";
         FileUtils.forceMkdir(new File(OUT_PATH));
         long now = System.currentTimeMillis();
@@ -53,6 +54,10 @@ public class BackupController extends BaseController {
         Runtime runtime = Runtime.getRuntime();
         Process process = runtime.exec(command);
         logger.info(IOUtils.toString(process.getErrorStream(), encoding));
+        int exit = process.waitFor();
+        if (exit != 0) {
+            throw new ServiceException(ResultCode.OPERATION_FAILURE);
+        }
         String targetFilePath = sourceFilePath + ".tar.gz";
         command = String.format(TAR_COMMAND, targetFilePath, sourceFilePath);
         logger.info(command);
