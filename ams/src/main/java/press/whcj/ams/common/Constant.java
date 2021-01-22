@@ -111,5 +111,4 @@ public interface Constant {
 		Byte API_CREATE = 0;
 		Byte USER_CREATE = 1;
 	}
-
 }
