@@ -28,7 +28,7 @@ public class BackupController extends BaseController {
     /**
      * 导出命令host,dbName,outDir,username,password
      **/
-    private final static String DUMP_COMMAND = "mongodump -h %s -d %s -o '%s'  -u %s -p %s";
+    private final static String DUMP_COMMAND = "su;\n mongodump -h %s -d %s -o '%s'  -u %s -p %s";
     /**
      * 临时文件路径
      **/
@@ -37,7 +37,7 @@ public class BackupController extends BaseController {
      * save to .tar.gz
      * targetFile,sourceFile
      */
-    private final static String TAR_COMMAND = "tar -zcvPf '%s' '%s'";
+    private final static String TAR_COMMAND = "su;\n tar -zcvPf '%s' '%s'";
 
     @Resource
     private MongoPoolProperties mongoProperties;
