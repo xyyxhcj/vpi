@@ -3,7 +3,6 @@ package press.whcj.ams.web;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +46,7 @@ public class BackupController extends BaseController {
     public void export(HttpServletResponse response) throws IOException {
         String encoding = "gbk";
         FileUtils.forceMkdir(new File(OUT_PATH));
-        LocalDateTime now = LocalDateTime.now();
+        long now = System.currentTimeMillis();
         String sourceFilePath = OUT_PATH + now;
         String command = String.format(DUMP_COMMAND, mongoProperties.getAddress()[0], mongoProperties.getDatabase(), sourceFilePath, mongoProperties.getUsername(), new String(mongoProperties.getPassword()));
         logger.info(command);
@@ -62,7 +61,7 @@ public class BackupController extends BaseController {
         response.setContentType("application/x-compressed-tar");
         File targetFile = new File(targetFilePath);
         IOUtils.copyLarge(new FileInputStream(targetFile), response.getOutputStream());
-        FileUtils.forceDeleteOnExit(new File(sourceFilePath));
-        FileUtils.forceDeleteOnExit(targetFile);
+        //FileUtils.forceDeleteOnExit(new File(sourceFilePath));
+        //FileUtils.forceDeleteOnExit(targetFile);
     }
 }
