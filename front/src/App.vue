@@ -40,7 +40,9 @@
           <el-col :span="10">
             <div class="user-info">
               <span class="add-user-icon" v-if="isAdmin">
-                <el-button type="primary" icon="el-icon-coin" circle size="mini" @click="exportData"/>
+                <el-tooltip content="back-up" placement="left" effect="light">
+                  <el-button type="primary" icon="el-icon-coin" circle size="mini" @click="exportData"/>
+                </el-tooltip>
                 <el-button type="success" icon="el-icon-plus" circle size="mini" @click="addUser"/>
                 <el-button type="danger" icon="el-icon-minus" circle size="mini" @click="delUser"/>
               </span>
@@ -141,28 +143,19 @@ export default {
       this.$refs['selectUserDialog'].findPageForDelete();
     },
     exportData() {
-      this.$axios.post(CONSTANT.REQUEST_URL.BACKUP_EXPORT, {}).then(resp => {
+      this.$axios.post(CONSTANT.REQUEST_URL.BACKUP_EXPORT, {},{responseType: 'blob'}).then(resp => {
         if (resp.data.code) {
-          console.error(resp.data);
           this.$message.error(resp.data);
           return;
         }
         let blob = new Blob([resp.data],{type: 'application/zip'});
-        // application/gzip
-        let downloadElement = document.createElement('a');
-        let href = window.URL.createObjectURL(blob); //创建下载的链接
-        downloadElement.href = href;
-        // downloadElement.download = new Date().getTime(); //下载后文件名
-        downloadElement.download = new Date().getTime() + ".zip"; //下载后文件名
-        document.body.appendChild(downloadElement);
-        console.log(blob);
-        downloadElement.click(); //点击下载
-        document.body.removeChild(downloadElement); //下载完成移除元素
+        let href = window.URL.createObjectURL(blob);
+        window.location.href = href;
         window.URL.revokeObjectURL(href);
       }).catch(resp => {
         console.error(resp);
       })
-    }
+    },
   },
   computed: {
     loginDialog: {
