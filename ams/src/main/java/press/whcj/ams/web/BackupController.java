@@ -40,7 +40,7 @@ public class BackupController extends BaseController {
      * save to .zip
      * targetFile,sourceFile
      */
-    private final static String ZIP_COMMAND = "zip -qrS %s %s";
+    private final static String ZIP_COMMAND = "zip -qr %s %s";
 
     @Resource
     private MongoPoolProperties mongoProperties;
@@ -66,9 +66,9 @@ public class BackupController extends BaseController {
         process = runtime.exec(command);
         exit = process.waitFor();
         if (exit != 0) {
+            logger.debug(IOUtils.toString(process.getErrorStream(), encoding));
             throw new ServiceException(ResultCode.OPERATION_FAILURE);
         }
-        logger.debug(IOUtils.toString(process.getErrorStream(), encoding));
         response.setContentType("application/zip");
         File targetFile = new File(targetFilePath);
         IOUtils.copyLarge(new FileInputStream(targetFile), response.getOutputStream());
