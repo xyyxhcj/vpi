@@ -40,8 +40,7 @@
           <el-col :span="10">
             <div class="user-info">
               <span class="add-user-icon" v-if="isAdmin">
-                <el-button type="primary" icon="el-icon-coin" circle size="mini" @click="exportData"
-                           :loading="exportLoading"/>
+                <el-button type="primary" icon="el-icon-coin" circle size="mini" @click="exportData"/>
                 <el-button type="success" icon="el-icon-plus" circle size="mini" @click="addUser"/>
                 <el-button type="danger" icon="el-icon-minus" circle size="mini" @click="delUser"/>
               </span>
@@ -104,7 +103,6 @@ export default {
         url: CONSTANT.REQUEST_URL.USER_REMOVE,
         forDel: true,
       },
-      exportLoading: false
     }
   },
   methods: {
@@ -143,28 +141,26 @@ export default {
       this.$refs['selectUserDialog'].findPageForDelete();
     },
     exportData() {
-      this.exportLoading = true;
-      let $this = this;
       this.$axios.post(CONSTANT.REQUEST_URL.BACKUP_EXPORT, {}).then(resp => {
         if (resp.data.code) {
           console.error(resp.data);
           this.$message.error(resp.data);
-          $this.exportLoading = false;
           return;
         }
-        let blob = new Blob([resp.data], { type: "application/x-compressed-tar"});
+        let blob = new Blob([resp.data],{type: 'application/zip'});
+        // application/gzip
         let downloadElement = document.createElement('a');
         let href = window.URL.createObjectURL(blob); //创建下载的链接
         downloadElement.href = href;
-        downloadElement.download = new Date().getTime() + ".tar.gz"; //下载后文件名
+        // downloadElement.download = new Date().getTime(); //下载后文件名
+        downloadElement.download = new Date().getTime() + ".zip"; //下载后文件名
         document.body.appendChild(downloadElement);
+        console.log(blob);
         downloadElement.click(); //点击下载
         document.body.removeChild(downloadElement); //下载完成移除元素
         window.URL.revokeObjectURL(href);
-        $this.exportLoading = false;
       }).catch(resp => {
         console.error(resp);
-        $this.exportLoading = false;
       })
     }
   },

@@ -35,11 +35,12 @@ public class BackupController extends BaseController {
      * 临时文件路径
      **/
     private final static String OUT_PATH = "/usr/temp/";
+
     /**
-     * save to .tar.gz
+     * save to .zip
      * targetFile,sourceFile
      */
-    private final static String TAR_COMMAND = "tar -zcvPf %s %s";
+    private final static String ZIP_COMMAND = "zip -qrS %s %s";
 
     @Resource
     private MongoPoolProperties mongoProperties;
@@ -59,8 +60,8 @@ public class BackupController extends BaseController {
         if (exit != 0) {
             throw new ServiceException(ResultCode.OPERATION_FAILURE);
         }
-        String targetFilePath = sourceFilePath + ".tar.gz";
-        command = String.format(TAR_COMMAND, targetFilePath, sourceFilePath);
+        String targetFilePath = sourceFilePath + ".zip";
+        command = String.format(ZIP_COMMAND, targetFilePath, sourceFilePath);
         logger.info(command);
         process = runtime.exec(command);
         exit = process.waitFor();
@@ -68,7 +69,7 @@ public class BackupController extends BaseController {
             throw new ServiceException(ResultCode.OPERATION_FAILURE);
         }
         logger.debug(IOUtils.toString(process.getErrorStream(), encoding));
-        response.setContentType("application/x-compressed-tar");
+        response.setContentType("application/zip");
         File targetFile = new File(targetFilePath);
         IOUtils.copyLarge(new FileInputStream(targetFile), response.getOutputStream());
         FileUtils.forceDelete(new File(sourceFilePath));
