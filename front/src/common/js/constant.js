@@ -112,6 +112,8 @@ export const CONSTANT = {
         USER_REMOVE: '/user/remove',
         USER_FIND_PAGE: '/user/findPage',
 
+        BACKUP_EXPORT: '/backup/export',
+
         PROJECT_ADD: '/project/add',
         PROJECT_EDIT: '/project/edit',
         PROJECT_REMOVE: '/project/remove',
