@@ -71,8 +71,8 @@ public class BackupController extends BaseController {
         response.setContentType("application/x-compressed-tar");
         File targetFile = new File(targetFilePath);
         IOUtils.copyLarge(new FileInputStream(targetFile), response.getOutputStream());
-        FileUtils.forceDeleteOnExit(new File(sourceFilePath));
-        FileUtils.forceDeleteOnExit(targetFile);
+        FileUtils.forceDelete(new File(sourceFilePath));
+        FileUtils.forceDelete(targetFile);
     }
 
     @PostMapping("load")
