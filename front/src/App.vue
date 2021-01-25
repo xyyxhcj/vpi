@@ -152,7 +152,7 @@ export default {
           $this.exportLoading = false;
           return;
         }
-        let blob = new Blob([resp.data]);
+        let blob = new Blob([resp.data], { type: "application/x-compressed-tar"});
         let downloadElement = document.createElement('a');
         let href = window.URL.createObjectURL(blob); //创建下载的链接
         downloadElement.href = href;
