@@ -239,10 +239,9 @@ export default {
                     this.$refs['reqHeaders'].selectAll();
                     this.$refs['reqHeaders'].init();
 
-                    document.getElementById('req-data').innerText =
-                        (typeof requestInfo.data === 'string' && !UTILS.isJSON(requestInfo.data)) ?
-                            requestInfo.data : UTILS.formatJson(requestInfo.data);
-
+                    let paramsJsonStr = (typeof requestInfo.data === 'string' && !UTILS.isJSON(requestInfo.data)) ?
+                        requestInfo.data : UTILS.formatJson(requestInfo.data);
+                    document.getElementById('req-data').innerText = paramsJsonStr;
                     let params = UTILS.json2ViewData(requestInfo.data, -1);
                     //重新赋值
                     UTILS.fillShowList(params, this.reqShowDataList);
