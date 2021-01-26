@@ -297,7 +297,6 @@ export default {
                 this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.api = resp.data.data;
-                        console.log(this.api)
                         if (this.api.requestParamVO) {
                             UTILS.fillShowList(this.api.requestParamVO.dataList, this.reqShowDataList);
                             this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
