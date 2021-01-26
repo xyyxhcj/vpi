@@ -226,10 +226,30 @@ export default {
                     let reqHeaderStr = '';
                     Object.keys(requestInfo.headers).forEach(key => reqHeaderStr = reqHeaderStr + key + ': ' + requestInfo.headers[key] + '\r\n');
                     document.getElementById('req-headers').innerText = reqHeaderStr;
+                    let auth = requestInfo.headers['auth'];
+                    let newHeaders  = [];
+                    newHeaders.push({
+                      name: 'auth',
+                      desc: "token",
+                      isRequest:0,
+                      requireType: 0,
+                      value: auth
+                    })
+                    this.api.requestHeaders = newHeaders;
+                    this.$refs['reqHeaders'].selectAll();
+                    this.$refs['reqHeaders'].init();
 
                     document.getElementById('req-data').innerText =
                         (typeof requestInfo.data === 'string' && !UTILS.isJSON(requestInfo.data)) ?
                             requestInfo.data : UTILS.formatJson(requestInfo.data);
+
+                    let params = UTILS.json2ViewData(requestInfo.data, -1);
+                    //重新赋值
+                    UTILS.fillShowList(params, this.reqShowDataList);
+                    //初始化
+                    this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
+
+
                     // show response info
                     let responseInfo = JSON.parse(row.responseInfo);
                     let respHeaderStr = '';
@@ -277,6 +297,7 @@ export default {
                 this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.api = resp.data.data;
+                        console.log(this.api)
                         if (this.api.requestParamVO) {
                             UTILS.fillShowList(this.api.requestParamVO.dataList, this.reqShowDataList);
                             this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
