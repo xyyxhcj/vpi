@@ -54,6 +54,9 @@
                         <el-dropdown-item :command="()=>saveMock(false)">saveFailureMock</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
+              <el-button style="margin-left: 20px" size="mini" split-button type="warning" @click="saveTestCase()" >
+                Save as Test Case
+              </el-button>
                 <pre id="resp-data" ref="respData" class="data"/>
             </el-tab-pane>
             <el-tab-pane label="Request Info" name="reqInfo">
@@ -224,17 +227,23 @@ export default {
                     // show request info
                     let requestInfo = JSON.parse(row.requestInfo);
                     let reqHeaderStr = '';
-                    Object.keys(requestInfo.headers).forEach(key => reqHeaderStr = reqHeaderStr + key + ': ' + requestInfo.headers[key] + '\r\n');
-                    document.getElementById('req-headers').innerText = reqHeaderStr;
-                    let auth = requestInfo.headers['auth'];
                     let newHeaders  = [];
-                    newHeaders.push({
-                      name: 'auth',
-                      desc: "token",
-                      isRequest:0,
-                      requireType: 0,
-                      value: auth
-                    })
+                    //处理成字符串
+                    Object.keys(requestInfo.headers).forEach(key =>
+                        reqHeaderStr = reqHeaderStr + key + ': ' + requestInfo.headers[key] + '\r\n'
+                    );
+                    //加入到新的请求头数组里
+                    Object.keys(requestInfo.headers).forEach(key =>{
+                          if(key != 'Content-Type'){
+                            newHeaders.push({
+                              name: key,
+                              isRequest:0,
+                              requireType: 0,
+                              value: requestInfo.headers[key]
+                            })
+                          }
+                    });
+                    document.getElementById('req-headers').innerText = reqHeaderStr;
                     this.api.requestHeaders = newHeaders;
                     this.$refs['reqHeaders'].selectAll();
                     this.$refs['reqHeaders'].init();
@@ -242,12 +251,14 @@ export default {
                     let paramsJsonStr = (typeof requestInfo.data === 'string' && !UTILS.isJSON(requestInfo.data)) ?
                         requestInfo.data : UTILS.formatJson(requestInfo.data);
                     document.getElementById('req-data').innerText = paramsJsonStr;
-                    let params = UTILS.json2ViewData(requestInfo.data, -1);
-                    //重新赋值
-                    UTILS.fillShowList(params, this.reqShowDataList);
-                    //初始化
-                    this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
-
+                    //如果不是json格式的字符串，则不进行参数自动填充
+                    if(UTILS.isJSON(paramsJsonStr)){
+                      let params = UTILS.json2ViewData(requestInfo.data, -1);
+                      //重新赋值
+                      UTILS.fillShowList(params, this.reqShowDataList);
+                      //初始化
+                      this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
+                    }
 
                     // show response info
                     let responseInfo = JSON.parse(row.responseInfo);
@@ -498,6 +509,38 @@ export default {
                         this.$message.success('saved');
                     }
                 });
+            },
+            saveTestCase(){
+              const $respRef = this.$refs['respData'];
+              const $reqRef = this.$refs['reqData'];
+              if (!$respRef || $respRef.innerHTML === '') {
+                this.$message.error('response info is empty!');
+                return;
+              }
+              if (!$reqRef || $reqRef.innerHTML === '') {
+                this.$message.error('request info is empty!');
+                return;
+              }
+              let cleanRespText = $respRef.innerHTML.replace(/<br>/g, '');
+              let cleanReqText = $reqRef.innerHTML.replace(/<br>/g, '');
+
+              let resp = UTILS.isJSON(cleanRespText) ? JSON.stringify(JSON.parse(cleanRespText)) : cleanRespText;
+              let req = UTILS.isJSON(cleanReqText) ? JSON.stringify(JSON.parse(cleanReqText)) : cleanReqText;
+
+              let testCase = {
+                projectId:this.api.projectId,
+                apiId:this.api.id,
+                name:this.api.name,
+                url:this.api.url,
+                method:this.api.apiRequestType == 0 ?'POST':'GET',
+                requestInfo:resp,
+                responseInfo:req
+              }
+              this.$axios.post(CONSTANT.REQUEST_URL.API_TEST_CASE_SAVE, testCase).then(resp => {
+                if (UTILS.checkResp(resp)) {
+                  this.$message.success('saved');
+                }
+              });
             }
         },
         mounted() {
