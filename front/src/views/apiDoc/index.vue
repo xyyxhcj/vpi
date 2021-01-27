@@ -118,7 +118,7 @@
             </template>
           </el-table-column>
           <el-table-column label="group" width="110" :formatter="(row)=>row.group?row.group.name:''" style="font-size: 8px"/>
-          <el-table-column label="name" prop="name" width="200"/>
+          <el-table-column label="name" prop="name" width="200" show-overflow-tooltip/>
           <el-table-column label="apiUri" prop="apiUri" width="250" show-overflow-tooltip/>
           <el-table-column label="createName" prop="createName" width="90"/>
           <el-table-column label="updateName" prop="updateName" width="90"/>
