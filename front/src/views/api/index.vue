@@ -7,15 +7,20 @@
             </template>
             <template v-if="$route.path==='/api/detail'">
                 <el-link class="a-link" @click="test">Test</el-link>
-                <el-link class="a-link">Test Case</el-link>
+                <el-link class="a-link" @click="testCase">Test Case</el-link>
                 <el-link class="a-link" @click="edit" v-if="hasAuth">Edit</el-link>
                 <el-link class="a-link" @click="copy" v-if="hasAuth">Copy</el-link>
                 <el-link class="a-link" @click="del" v-if="hasAuth">Delete</el-link>
             </template>
             <template v-if="$route.path==='/api/test'">
                 <el-link class="a-link" @click="edit" v-if="hasAuth">Edit</el-link>
-                <el-link class="a-link">Test Case</el-link>
+                <el-link class="a-link" @click="testCase">Test Case</el-link>
                 <el-link class="a-link" @click="view">View</el-link>
+            </template>
+            <template v-if="$route.path==='/api/testCase'">
+              <el-link class="a-link" @click="test">Test</el-link>
+              <el-link class="a-link" @click="edit" v-if="hasAuth">Edit</el-link>
+              <el-link class="a-link" @click="view">View</el-link>
             </template>
             <el-select v-model="selectedEnvName" filterable placeholder="choose environment" clearable
                        @change="selectEnv" style="float: right;margin-right: 30px" size="mini">
@@ -120,6 +125,12 @@
                     path: '/api/edit',
                     query: {id: this.$route.query.id, copy: true}
                 });
+            },
+            testCase(){
+              this.$router.push({
+                path: '/api/testCase',
+                query: {id: this.$route.query.id, copy: true}
+              });
             }
         },
         created() {

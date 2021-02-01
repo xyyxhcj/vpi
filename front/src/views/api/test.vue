@@ -234,10 +234,9 @@ export default {
                     );
                     //加入到新的请求头数组里
                     Object.keys(requestInfo.headers).forEach(key =>{
-                          if(key != 'Content-Type'){
+                          if(key !== 'Content-Type'){
                             newHeaders.push({
                               name: key,
-                              isRequest:0,
                               requireType: 0,
                               value: requestInfo.headers[key]
                             })
@@ -523,18 +522,16 @@ export default {
               }
               let cleanRespText = $respRef.innerHTML.replace(/<br>/g, '');
               let cleanReqText = $reqRef.innerHTML.replace(/<br>/g, '');
-
               let resp = UTILS.isJSON(cleanRespText) ? JSON.stringify(JSON.parse(cleanRespText)) : cleanRespText;
               let req = UTILS.isJSON(cleanReqText) ? JSON.stringify(JSON.parse(cleanReqText)) : cleanReqText;
-
               let testCase = {
                 projectId:this.api.projectId,
                 apiId:this.api.id,
                 name:this.api.name,
-                url:this.api.url,
-                method:this.api.apiRequestType == 0 ?'POST':'GET',
-                requestInfo:resp,
-                responseInfo:req
+                url:this.api.apiUri,
+                method:this.api.apiRequestType,
+                requestInfo:req,
+                responseInfo:resp
               }
               this.$axios.post(CONSTANT.REQUEST_URL.API_TEST_CASE_SAVE, testCase).then(resp => {
                 if (UTILS.checkResp(resp)) {
