@@ -57,12 +57,14 @@ public class Result<T> {
 	}
 
 	public Result<T> ok(T data) {
+		this.status = SUCCESS_STR;
 		this.code = SUCCESS;
 		this.data = data;
 		return this;
 	}
 
 	public Result<T> ok() {
+		this.status = SUCCESS_STR;
 		this.code = SUCCESS;
 		return this;
 	}
