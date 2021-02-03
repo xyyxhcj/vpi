@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
+    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" destroy-on-close
                :close-on-click-modal="false" center width="75%">
         <el-table :data="dataList" tooltip-effect="dark" style="width: 100%" ref="userTable" row-key="id"
                   @selection-change="selectedChange">

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
+  <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" destroy-on-close
              :close-on-click-modal="false" center width="35%">
     <el-form :model="form" ref="form" label-width="120px" :rules="form_rules">
       <el-form-item label="password" prop="password">

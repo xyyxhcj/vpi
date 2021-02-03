@@ -57,7 +57,7 @@
                 <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
             </el-table>
         </el-main>
-        <el-dialog :append-to-body="true" :visible.sync="showDetail" top="2px" width="85%"
+        <el-dialog :append-to-body="true" :visible.sync="showDetail" top="2px" width="85%" destroy-on-close
                    custom-class="export-api-detail">
             <el-row>
                 <el-col :span="12" style="text-align: left">

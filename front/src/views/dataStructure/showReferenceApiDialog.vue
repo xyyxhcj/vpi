@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :append-to-body="true" title="Reference Api" :visible.sync="dialog.show" width="980px">
+    <el-dialog :append-to-body="true" title="Reference Api" :visible.sync="dialog.show" width="980px" destroy-on-close>
         <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" height="700"
                   :row-style="{cursor:'pointer'}" @row-click="clickRow">
             <el-table-column width="85">
@@ -21,10 +21,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
 
-    export default {
+export default {
         name: 'showReferenceApiDialog',
         props: {
             dialog: {

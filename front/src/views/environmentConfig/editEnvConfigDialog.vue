@@ -1,6 +1,6 @@
 <template>
     <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" width="845px"
-               :close-on-click-modal="false">
+               :close-on-click-modal="false" destroy-on-close>
         <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
                  style="margin:10px 60px 10px 0;width:auto">
             <el-form-item label="name" label-width="100px" prop="name">
@@ -22,10 +22,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {UTILS} from "../../common/js/utils";
-    import ApiHeaders from "../../components/apiHeaders/apiHeaders";
+import {UTILS} from "../../common/js/utils";
+import ApiHeaders from "../../components/apiHeaders/apiHeaders";
 
-    export default {
+export default {
         name: 'editEnvConfigDialog',
         components: {ApiHeaders},
         props: {
