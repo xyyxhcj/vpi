@@ -22,6 +22,9 @@
               <el-link class="a-link" @click="edit" v-if="hasAuth">Edit</el-link>
               <el-link class="a-link" @click="view">View</el-link>
             </template>
+          <template v-if="$route.path==='/api/testCaseDetail'">
+            <el-link class="a-link" @click="$router.go(-1);">GoBack</el-link>
+          </template>
             <el-select v-model="selectedEnvName" filterable placeholder="choose environment" clearable
                        @change="selectEnv" style="float: right;margin-right: 30px" size="mini">
                 <el-option v-for="item in envConfigList" :key="item.id" :value="item">
@@ -74,22 +77,22 @@
             }
         },
         methods: {
-            init() {
+          init() {
                 this.$axios.post(CONSTANT.REQUEST_URL.API_ENV_FIND_LIST, {projectId: this.projectId}).then(resp => {
                     if (UTILS.checkResp(resp)) {
                         this.envConfigList = resp.data.data;
                     }
                 });
             },
-            selectEnv(env) {
-                this.selectedEnv = env;
-                this.selectedEnvName = env.name;
-                let $ref = this.$refs['api-sub-router'];
-                if ($ref.flushEnv) {
-                    $ref.flushEnv(env);
-                }
-            },
-            save() {
+          selectEnv(env) {
+            this.selectedEnv = env;
+            this.selectedEnvName = env.name;
+            let $ref = this.$refs['api-sub-router'];
+            if ($ref.flushEnv) {
+              $ref.flushEnv(env);
+            }
+          },
+          save() {
                 this.$refs['api-sub-router'].save();
             },
             edit() {
