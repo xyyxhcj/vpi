@@ -28,7 +28,19 @@
             prop="name"
             label="testCaseName"
             fit
+            show-overflow-tooltip
             >
+          <template slot-scope="scope">
+            <el-popover trigger="hover" placement="left-start">
+              <div style="max-height: 600px;max-width: 500px">
+                <pre>{{ transformInfo(scope.row.requestInfo, 'Request Header', 'Request Parameter') }}</pre>
+                <pre>{{ transformInfo(scope.row.responseInfo, 'Response Header', 'Response Parameter') }}</pre>
+              </div>
+              <div slot="reference">
+                {{ scope.row.name }}
+              </div>
+            </el-popover>
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -74,8 +86,8 @@
             label="operation"
             width="200">
           <template slot-scope="scope">
-            <el-button type="primary"  @click="toDetails(scope.row)">Details</el-button>
-            <el-button type="danger"  @click="runTest(scope)">Test</el-button>
+            <el-button size="mini" type="primary"  @click="toDetails(scope.row)">Details</el-button>
+            <el-button size="mini" type="danger"   @click="runTest(scope)">Test</el-button>
           </template>
         </el-table-column>
 
@@ -116,7 +128,7 @@ export default {
       },
       selectedEnv: {},
       testCaseList :[],
-      testCase:{}
+      testCase:{},
     };
   },
   methods: {
@@ -150,10 +162,8 @@ export default {
         this.$message.error('please install vpi plugin');
         return;
       }
-      // //获取测试样例的请求参数
-      // this.getTestCaseRequestParams(scope.row.id);
+      this.$set(scope.row,'testDisable',true);
       let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
-      this.sendDisable = true;
       let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
           : this.api.apiUri;
       try {
@@ -163,8 +173,14 @@ export default {
         } else if (!url.startsWith('http')) {
           url = 'http://' + url;
         }
-        let headers = {};
+
+        if(!UTILS.isJSON(this.testCaseList[scope.$index].requestInfo)){
+          this.$message.error('request params error :' + this.testCaseList[scope.$index].requestInfo);
+          return;
+        }
         let requestInfo = JSON.parse(this.testCaseList[scope.$index].requestInfo);
+        //testCase request headers
+        let headers = {};
         Object.keys(requestInfo.headers).forEach(function (key) {
           headers[key] = requestInfo.headers[key];
         });
@@ -174,6 +190,7 @@ export default {
           let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
           headers[contentTypeName] = contentTypeValue;
         }
+        //testCase request params
         let params = {};
         Object.keys(requestInfo.data).forEach(function (key) {
           params[key] = requestInfo.data[key];
@@ -207,7 +224,7 @@ export default {
           index:scope.$index
         }, '*');
       } finally {
-        setTimeout(() => this.sendDisable = false, 500);
+        setTimeout(() => scope.row.testDisable = false, 500);
       }
     },
     flushEnv(env) {
@@ -226,6 +243,13 @@ export default {
         });
         this.$refs['reqHeaders'].selectEnvHeader();
       }
+    },
+    transformInfo(info, headerTitle, paramTitle) {
+      let infoObj = JSON.parse(info);
+      let headerStr = '';
+      Object.keys(infoObj.headers).forEach(key => headerStr = headerStr + key + ': ' + infoObj.headers[key] + '\r\n');
+      let data = (typeof infoObj.data === 'string' && !UTILS.isJSON(infoObj.data)) ? infoObj.data : UTILS.formatJson(infoObj.data);
+      return '【' + headerTitle + '】 \r\n' + headerStr + '【' + paramTitle + '】 \r\n' + data;
     },
   },
   mounted(){

@@ -153,7 +153,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             let newResp = JSON.parse(resp);
             if(isDataStruError){
                 newResp.testCaseStatus = "error";
-                newResp.testCaseMsg = "data structure error";
             }else{
                 if(obj == parseInt(request.checkValue)){
                     newResp.testCaseStatus = "success";
