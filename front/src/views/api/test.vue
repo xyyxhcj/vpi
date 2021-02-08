@@ -46,7 +46,7 @@
         <el-tabs type="card" class="test-info" @tab-click="clickTab" v-model="testInfoDefaultCard" id="test-info">
             <el-tab-pane label="Response Info" name="respInfo">
                 <line-text style="color: #44B549" text="Headers"/>
-                <div id="resp-headers" ref="respHeaders" class="headers"></div>
+                <div id="resp-headers" class="headers"></div>
                 <line-text style="color: #44B549" text="Response Body"/>
                 <el-dropdown size="mini" split-button type="primary" @click="saveMock(true)" @command="command">
                     Save Success Mock
@@ -61,7 +61,7 @@
             </el-tab-pane>
             <el-tab-pane label="Request Info" name="reqInfo">
                 <line-text style="color: #44B549" text="Headers"/>
-                <div id="req-headers" ref="respHeaders" class="headers"></div>
+                <div id="req-headers" class="headers"></div>
                 <line-text style="color: #44B549" text="Request Body"/>
                 <pre id="req-data" ref="reqData" class="data"/>
             </el-tab-pane>
