@@ -1,6 +1,6 @@
 <template>
     <el-dialog id="selectApiStatusDialog" :append-to-body="true" title="Edit Api Status" :visible.sync="dialog.show"
-               :close-on-click-modal="false" width="665px">
+               :close-on-click-modal="false" width="665px" destroy-on-close>
         <el-radio-group size="small" v-model="dialog.apiStatus">
             <el-row class="row success">
                 <el-radio-button :label="0">{{CONSTANT.API_STATUS[0]}}</el-radio-button>
@@ -26,10 +26,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
 
-    export default {
+export default {
         name: 'selectApiStatusDialog',
         props: {
             dialog: {

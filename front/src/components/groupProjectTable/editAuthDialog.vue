@@ -1,5 +1,5 @@
 <template>
-    <el-dialog id="auth-dialog" :append-to-body="true" :visible.sync="dialog.show"
+    <el-dialog id="auth-dialog" :append-to-body="true" :visible.sync="dialog.show" destroy-on-close
                :close-on-click-modal="false" center width="78%" :fullscreen="true" @submit.native.prevent>
         <el-container>
             <el-aside width="200px" class="auth-aside">
@@ -45,11 +45,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
-    import SelectUserDialog from "../selectUser/selectUserDialog";
+import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
+import SelectUserDialog from "../selectUser/selectUserDialog";
 
-    export default {
+export default {
         name: 'editAuthDialog',
         components: {SelectUserDialog},
         props: {

@@ -1,6 +1,6 @@
 <template>
     <el-dialog id="editDataStructureDialog" :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
-               :close-on-click-modal="false" width="74%">
+               :close-on-click-modal="false" width="74%" destroy-on-close>
         <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
                  style="margin:10px 60px 10px 0;width:auto">
             <el-form-item label="name" label-width="100px" prop="name">
@@ -20,11 +20,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {UTILS} from "../../common/js/utils";
-    import {CONSTANT} from "../../common/js/constant";
-    import DataStructure from "./dataStructure";
+import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "../../common/js/constant";
+import DataStructure from "./dataStructure";
 
-    export default {
+export default {
         name: 'editDataStructureDialog',
         components: {DataStructure},
         props: {

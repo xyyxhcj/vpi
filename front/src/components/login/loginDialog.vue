@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="Login" :visible.sync="dialog.show" width="350px" class="login-dialog"
+    <el-dialog title="Login" :visible.sync="dialog.show" width="350px" class="login-dialog" destroy-on-close
                :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false" center>
         <el-form :model="user" status-icon ref="form" :rules="loginRules" label-width="100px">
             <el-form-item label="loginName" prop="loginName">
@@ -25,10 +25,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
 
-    export default {
+export default {
         name: 'loginDialog',
         props: {
             dialog: {

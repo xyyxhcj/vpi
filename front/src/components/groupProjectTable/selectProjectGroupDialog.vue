@@ -1,6 +1,6 @@
 <template>
     <el-dialog id="selectProjectGroupDialog" :append-to-body="true" title="Move Group" :visible.sync="dialog.show"
-               :close-on-click-modal="false" width="665px">
+               :close-on-click-modal="false" width="665px" destroy-on-close>
         <el-table :data="groups" row-key="id" border ref="select-project-group-dialog"
                   default-expand-all :tree-props="{children: 'childList'}"
                   highlight-current-row @current-change="selectRow"
@@ -18,10 +18,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
 
-    export default {
+export default {
         name: 'selectProjectGroupDialog',
         props: {
             dialog: {

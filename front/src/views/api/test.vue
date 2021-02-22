@@ -132,21 +132,119 @@
                     </el-button>
                   </template>
                 </el-col>
-              </el-row>
-            </template>
-            <template slot-scope="scope">
-              <el-button size="mini" type="danger" @click.stop="delTestHistory(scope.row)">Delete
+
+            </el-row>
+            <div style="text-align: left;margin: 5px;line-height: 30px;">{{api.name}}</div>
+            <div style="text-align: left;margin: 5px;line-height: 30px;color: #999999">{{api.desc}}</div>
+            <el-tabs type="card" v-model="reqDefaultCard" style="line-height: 25px">
+                <el-tab-pane label="Request Header">
+                    <api-headers :data-list="api.requestHeaders" ref="reqHeaders"
+                                 :config="{onlyRead:false,test:true,refPre:'req'}"/>
+                </el-tab-pane>
+                <el-tab-pane label="Request Param" name="requestParam">
+                    <div style="text-align: left;margin-left: 15px" v-if="api.apiRequestType!==1">
+                        <el-radio v-model.trim="api.requestParamType" :label="0" size="mini">
+                            {{CONSTANT.REQUEST_PARAM_TYPE[0]}}
+                        </el-radio>
+                        <el-radio v-model.trim="api.requestParamType" :label="1" size="mini">
+                            {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
+                        </el-radio>
+                    </div>
+                    <data-structure :show-list="reqShowDataList" :entity="api.requestParamVO"
+                                    ref="reqDataStructure" :config="{test:true}"/>
+                </el-tab-pane>
+            </el-tabs>
+            <div style="text-align: left;margin: 10px">
+                <el-dropdown size="small" split-button type="success" @command="command"
+                             @click="()=>!sendDisable?send():''">
+                    {{!sendDisable?'Send':'Wait...'}}
+                    <el-dropdown-menu>
+                        <el-dropdown-item :command="newTab">New Tab</el-dropdown-item>
+                        <el-dropdown-item :command="downloadChromePlugin">Download Chrome Plugin</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </div>
+        </div>
+        <el-tabs type="card" class="test-info" @tab-click="clickTab" v-model="testInfoDefaultCard" id="test-info">
+            <el-tab-pane label="Response Info" name="respInfo">
+                <line-text style="color: #44B549" text="Headers"/>
+                <div id="resp-headers" class="headers"></div>
+                <line-text style="color: #44B549" text="Response Body"/>
+                <el-dropdown size="mini" split-button type="primary" @click="saveMock(true)" @command="command">
+                    Save Success Mock
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item :command="()=>saveMock(false)">saveFailureMock</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+              <el-button style="margin-left: 20px" size="mini" split-button type="warning" @click="saveTestCase()" >
+                Save as Test Case
               </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <page-template :query="testHistory.query" @flush="testHistoryFindPage"/>
-      </el-tab-pane>
-    </el-tabs>
-    <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="testHistoryFindPage"/>
-  </div>
-
-
+                <pre id="resp-data" ref="respData" class="data"/>
+            </el-tab-pane>
+            <el-tab-pane label="Request Info" name="reqInfo">
+                <line-text style="color: #44B549" text="Headers"/>
+                <div id="req-headers" class="headers"></div>
+                <line-text style="color: #44B549" text="Request Body"/>
+                <pre id="req-data" ref="reqData" class="data"/>
+            </el-tab-pane>
+            <el-tab-pane label="Test History" name="testHistory">
+                <el-table :data="testHistory.dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
+                          :row-style="{cursor:'pointer'}" @row-click="selectTestHistory" ref="test-history-table"
+                          border stripe>
+                    <el-table-column type="selection" v-if="testHistoryShowSelect" width="20"/>
+                    <el-table-column label="url" width="400" show-overflow-tooltip class-name="th_content">
+                        <template slot-scope="scope">
+                            <el-popover trigger="hover" placement="left-start">
+                                <div style="max-height: 600px;max-width: 500px">
+                                    <pre>{{ transformInfo(scope.row.requestInfo,'Request Header','Request Parameter') }}</pre>
+                                    <pre>{{ transformInfo(scope.row.responseInfo,'Response Header','Response Parameter') }}</pre>
+                                </div>
+                                <div slot="reference">
+                                    <el-tag size="mini" v-if="scope.row.method">{{scope.row.method}}</el-tag>
+                                    {{scope.row.url}}
+                                </div>
+                            </el-popover>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="requestTime" width="200" class-name="th_content">
+                        <template slot-scope="scope">
+                            {{scope.row.requestTime?scope.row.requestTime+'ms':''}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="testName" prop="createName" width="150" class-name="th_content"/>
+                    <el-table-column label="testTime" width="200" :formatter="(row)=>dateFormat(row.createTime)"
+                                     class-name="th_content"/>
+                    <el-table-column>
+                        <template slot="header">
+                            <el-row>
+                                <el-col :span="24">
+                                    <template v-if="!testHistoryShowSelect">
+                                        <el-button size="mini" type="warning" @click="testHistoryBatchOperate">
+                                            Batch Operate
+                                        </el-button>
+                                    </template>
+                                    <template v-else>
+                                        <el-button size="mini" type="danger" @click.stop="delTestHistory">
+                                            Batch Delete
+                                        </el-button>
+                                        <el-button size="mini" @click.stop="testHistoryShowSelect=false">
+                                            Cancel
+                                        </el-button>
+                                    </template>
+                                </el-col>
+                            </el-row>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-button size="mini" type="danger" @click.stop="delTestHistory(scope.row)">Delete
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <page-template :query="testHistory.query" @flush="testHistoryFindPage"/>
+            </el-tab-pane>
+        </el-tabs>
+        <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="testHistoryFindPage"/>
+    </div>
 </template>
 
 <script type="text/ecmascript-6">

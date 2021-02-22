@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :append-to-body="true" :visible.sync="dialog.show" :title="dialog.title"
+    <el-dialog :append-to-body="true" :visible.sync="dialog.show" :title="dialog.title" destroy-on-close
                :close-on-click-modal="false" center width="50%">
         <el-input placeholder="search name or remark" v-model.trim="query.nameOrRemark"
                   @keyup.enter.native="findPage" size="mini" style="width: 160px"/>
@@ -13,11 +13,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {UTILS} from "../../common/js/utils";
-    import {CONSTANT} from "../../common/js/constant";
-    import PageTemplate from "../pageTemplate/pageTemplate";
+import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "../../common/js/constant";
+import PageTemplate from "../pageTemplate/pageTemplate";
 
-    export default {
+export default {
         name: 'selectDataStructureDialog',
         components: {PageTemplate},
         props: {

@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
+    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" destroy-on-close
                :close-on-click-modal="false" center width="400px">
         <el-form :model="form" ref="form" label-width="110px" :rules="form_rules" label-position="left">
             <el-form-item label="name" prop="name">
@@ -28,10 +28,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {UTILS} from "../../common/js/utils";
-    import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "../../common/js/constant";
 
-    export default {
+export default {
         name: 'editProjectDialog',
         props: {
             dialog: {
