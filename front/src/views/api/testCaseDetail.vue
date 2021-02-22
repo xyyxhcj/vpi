@@ -1,28 +1,9 @@
 <template>
   <div id="api-test-container" style="min-width: 1250px;line-height: 15px">
 
-    <el-dialog
-        title="saveTestCase"
-        :visible.sync="showTestCaseDialog"
-        width="30%">
-      <el-form ref="testCase" :model="testCase" label-width="120px" >
-        <el-form-item label="testCaseName">
-          <el-input v-model="testCase.name" placeholder="testCase name"></el-input>
-        </el-form-item>
-        <el-form-item label="checkField">
-          <el-input v-model="testCase.checkField" placeholder="like data.code"></el-input>
-        </el-form-item>
-        <el-form-item label="checkValue">
-          <el-input v-model="testCase.checkValue" placeholder="success code"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-      <el-button @click="handleClose()">cancel</el-button>
-      <el-button type="primary" @click="saveTestCase()">submit</el-button>
-    </span>
-    </el-dialog>
 
     <div id="test-up">
+
       <el-row>
         <el-col :span="24" style="text-align: left">
           <el-select v-model.trim="api.apiRequestType" style="width: 8%" size="mini">
@@ -76,9 +57,6 @@
             <el-dropdown-item :command="()=>saveMock(false)">saveFailureMock</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <el-button style="margin-left: 20px" size="mini" split-button type="warning" @click="showTestCase()">
-          Save as Test Case
-        </el-button>
         <pre id="resp-data" ref="respData" class="data"/>
       </el-tab-pane>
       <el-tab-pane label="Request Info" name="reqInfo">
@@ -132,119 +110,21 @@
                     </el-button>
                   </template>
                 </el-col>
-
-            </el-row>
-            <div style="text-align: left;margin: 5px;line-height: 30px;">{{api.name}}</div>
-            <div style="text-align: left;margin: 5px;line-height: 30px;color: #999999">{{api.desc}}</div>
-            <el-tabs type="card" v-model="reqDefaultCard" style="line-height: 25px">
-                <el-tab-pane label="Request Header">
-                    <api-headers :data-list="api.requestHeaders" ref="reqHeaders"
-                                 :config="{onlyRead:false,test:true,refPre:'req'}"/>
-                </el-tab-pane>
-                <el-tab-pane label="Request Param" name="requestParam">
-                    <div style="text-align: left;margin-left: 15px" v-if="api.apiRequestType!==1">
-                        <el-radio v-model.trim="api.requestParamType" :label="0" size="mini">
-                            {{CONSTANT.REQUEST_PARAM_TYPE[0]}}
-                        </el-radio>
-                        <el-radio v-model.trim="api.requestParamType" :label="1" size="mini">
-                            {{CONSTANT.REQUEST_PARAM_TYPE[1]}}
-                        </el-radio>
-                    </div>
-                    <data-structure :show-list="reqShowDataList" :entity="api.requestParamVO"
-                                    ref="reqDataStructure" :config="{test:true}"/>
-                </el-tab-pane>
-            </el-tabs>
-            <div style="text-align: left;margin: 10px">
-                <el-dropdown size="small" split-button type="success" @command="command"
-                             @click="()=>!sendDisable?send():''">
-                    {{!sendDisable?'Send':'Wait...'}}
-                    <el-dropdown-menu>
-                        <el-dropdown-item :command="newTab">New Tab</el-dropdown-item>
-                        <el-dropdown-item :command="downloadChromePlugin">Download Chrome Plugin</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </div>
-        </div>
-        <el-tabs type="card" class="test-info" @tab-click="clickTab" v-model="testInfoDefaultCard" id="test-info">
-            <el-tab-pane label="Response Info" name="respInfo">
-                <line-text style="color: #44B549" text="Headers"/>
-                <div id="resp-headers" class="headers"></div>
-                <line-text style="color: #44B549" text="Response Body"/>
-                <el-dropdown size="mini" split-button type="primary" @click="saveMock(true)" @command="command">
-                    Save Success Mock
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item :command="()=>saveMock(false)">saveFailureMock</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-              <el-button style="margin-left: 20px" size="mini" split-button type="warning" @click="saveTestCase()" >
-                Save as Test Case
+              </el-row>
+            </template>
+            <template slot-scope="scope">
+              <el-button size="mini" type="danger" @click.stop="delTestHistory(scope.row)">Delete
               </el-button>
-                <pre id="resp-data" ref="respData" class="data"/>
-            </el-tab-pane>
-            <el-tab-pane label="Request Info" name="reqInfo">
-                <line-text style="color: #44B549" text="Headers"/>
-                <div id="req-headers" class="headers"></div>
-                <line-text style="color: #44B549" text="Request Body"/>
-                <pre id="req-data" ref="reqData" class="data"/>
-            </el-tab-pane>
-            <el-tab-pane label="Test History" name="testHistory">
-                <el-table :data="testHistory.dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
-                          :row-style="{cursor:'pointer'}" @row-click="selectTestHistory" ref="test-history-table"
-                          border stripe>
-                    <el-table-column type="selection" v-if="testHistoryShowSelect" width="20"/>
-                    <el-table-column label="url" width="400" show-overflow-tooltip class-name="th_content">
-                        <template slot-scope="scope">
-                            <el-popover trigger="hover" placement="left-start">
-                                <div style="max-height: 600px;max-width: 500px">
-                                    <pre>{{ transformInfo(scope.row.requestInfo,'Request Header','Request Parameter') }}</pre>
-                                    <pre>{{ transformInfo(scope.row.responseInfo,'Response Header','Response Parameter') }}</pre>
-                                </div>
-                                <div slot="reference">
-                                    <el-tag size="mini" v-if="scope.row.method">{{scope.row.method}}</el-tag>
-                                    {{scope.row.url}}
-                                </div>
-                            </el-popover>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="requestTime" width="200" class-name="th_content">
-                        <template slot-scope="scope">
-                            {{scope.row.requestTime?scope.row.requestTime+'ms':''}}
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="testName" prop="createName" width="150" class-name="th_content"/>
-                    <el-table-column label="testTime" width="200" :formatter="(row)=>dateFormat(row.createTime)"
-                                     class-name="th_content"/>
-                    <el-table-column>
-                        <template slot="header">
-                            <el-row>
-                                <el-col :span="24">
-                                    <template v-if="!testHistoryShowSelect">
-                                        <el-button size="mini" type="warning" @click="testHistoryBatchOperate">
-                                            Batch Operate
-                                        </el-button>
-                                    </template>
-                                    <template v-else>
-                                        <el-button size="mini" type="danger" @click.stop="delTestHistory">
-                                            Batch Delete
-                                        </el-button>
-                                        <el-button size="mini" @click.stop="testHistoryShowSelect=false">
-                                            Cancel
-                                        </el-button>
-                                    </template>
-                                </el-col>
-                            </el-row>
-                        </template>
-                        <template slot-scope="scope">
-                            <el-button size="mini" type="danger" @click.stop="delTestHistory(scope.row)">Delete
-                            </el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <page-template :query="testHistory.query" @flush="testHistoryFindPage"/>
-            </el-tab-pane>
-        </el-tabs>
-        <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="testHistoryFindPage"/>
-    </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <page-template :query="testHistory.query" @flush="testHistoryFindPage"/>
+      </el-tab-pane>
+    </el-tabs>
+    <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="testHistoryFindPage"/>
+  </div>
+
+
 </template>
 
 <script type="text/ecmascript-6">
@@ -285,11 +165,13 @@ export default {
         apiSuccessMock: '',
         apiFailureMock: '',
       },
-      showTestCaseDialog: false,
       testCase:{
         name:"",
         checkField:"",
-        checkValue:""
+        checkValue:"",
+        requestInfo:"",
+        responseInfo:"",
+        method:"",
       },
       reqDefaultCard: 'requestParam',
       testInfoDefaultCard: 'respInfo',
@@ -378,7 +260,7 @@ export default {
         let paramsJsonStr = (typeof requestInfo.data === 'string' && !UTILS.isJSON(requestInfo.data)) ?
             requestInfo.data : UTILS.formatJson(requestInfo.data);
         document.getElementById('req-data').innerText = paramsJsonStr;
-        //是json格式的参数才进行自动填充
+        //如果不是json格式的字符串，则不进行参数自动填充
         if (UTILS.isJSON(paramsJsonStr)) {
           let params = UTILS.json2ViewData(requestInfo.data, -1);
           //重新赋值
@@ -403,72 +285,6 @@ export default {
       Object.keys(infoObj.headers).forEach(key => headerStr = headerStr + key + ': ' + infoObj.headers[key] + '\r\n');
       let data = (typeof infoObj.data === 'string' && !UTILS.isJSON(infoObj.data)) ? infoObj.data : UTILS.formatJson(infoObj.data);
       return '【' + headerTitle + '】 \r\n' + headerStr + '【' + paramTitle + '】 \r\n' + data;
-    },
-    send() {
-      let vpiPluginSign = document.getElementById('vpi-plugin-loaded');
-      if (!vpiPluginSign || vpiPluginSign.innerHTML === '') {
-        this.$message.error('please install vpi plugin');
-        return;
-      }
-      // empty test info
-      document.getElementById('req-headers').innerText = '';
-      document.getElementById('req-data').innerText = '';
-      document.getElementById('resp-headers').innerText = '';
-      document.getElementById('resp-data').innerText = '';
-      this.testInfoDefaultCard = 'respInfo';
-      let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
-      this.sendDisable = true;
-      let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
-          : this.api.apiUri;
-      try {
-        if (url.startsWith('/')) {
-          this.$message.error('url error：' + url);
-          return;
-        } else if (!url.startsWith('http')) {
-          url = 'http://' + url;
-        }
-        this.$refs['reqHeaders'].signSelected();
-        this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
-        let headers = {};
-        this.api.requestHeaders.forEach(item => {
-          if (item.selected && item.name !== '') {
-            headers[item.name] = item.value;
-          }
-        });
-        let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
-        if (this.api.apiRequestType !== 1) {
-          // Ignore Get
-          let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
-          headers[contentTypeName] = contentTypeValue;
-        }
-        let params = this.getParams();
-        if (this.api.apiRequestType === 1) {
-          // use Get
-          let paramStr = '';
-          Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
-          let index = url.indexOf('?');
-          if (index !== -1) {
-            url = url.substring(0, index);
-          }
-          url += '?' + paramStr;
-          params = paramStr;
-        }
-        let logHeaders = {};
-        logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
-        logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
-        window.postMessage({
-          url: url,
-          requestParamType: this.api.requestParamType,
-          headers: headers,
-          method: method,
-          params: params,
-          logUrl: HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
-          logHeaders: logHeaders,
-          apiId: this.api.id,
-        }, '*');
-      } finally {
-        setTimeout(() => this.sendDisable = false, 500);
-      }
     },
     dateFormat(time) {
       return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
@@ -497,17 +313,57 @@ export default {
       }
     },
     init() {
-      this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
+      this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.apiId}).then(resp => {
         if (UTILS.checkResp(resp)) {
           this.api = resp.data.data;
-          if (this.api.requestParamVO) {
-            UTILS.fillShowList(this.api.requestParamVO.dataList, this.reqShowDataList);
+        }
+      });
+      this.$axios.post(CONSTANT.REQUEST_URL.API_TEST_CASE_DETAIL, {id: this.$route.query.id}).then(resp => {
+        if (UTILS.checkResp(resp)) {
+          this.testCase = resp.data.data;
+          //处理请求头和请求参数，响应头和响应参数
+          let requestInfo = JSON.parse(this.testCase.requestInfo);
+          let reqHeaderStr = '';
+          let newHeaders = [];
+          //处理成字符串
+          Object.keys(requestInfo.headers).forEach(key =>
+              reqHeaderStr = reqHeaderStr + key + ': ' + requestInfo.headers[key] + '\r\n'
+          );
+          //加入到新的请求头数组里
+          Object.keys(requestInfo.headers).forEach(key => {
+            if (key !== 'Content-Type') {
+              newHeaders.push({
+                name: key,
+                requireType: 0,
+                value: requestInfo.headers[key]
+              })
+            }
+          });
+          document.getElementById('req-headers').innerText = reqHeaderStr;
+          this.api.requestHeaders = newHeaders;
+          this.$refs['reqHeaders'].selectAll();
+          this.$refs['reqHeaders'].init();
+
+          let paramsJsonStr = (typeof requestInfo.data === 'string' && !UTILS.isJSON(requestInfo.data)) ?
+              requestInfo.data : UTILS.formatJson(requestInfo.data);
+          document.getElementById('req-data').innerText = paramsJsonStr;
+          //是json格式的参数才进行自动填充
+          if (UTILS.isJSON(paramsJsonStr)) {
+            let params = UTILS.json2ViewData(requestInfo.data, -1);
+            //重新赋值
+            UTILS.fillShowList(params, this.reqShowDataList);
+            //初始化
             this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
           }
-          if (this.$refs['reqHeaders']) {
-            this.$refs['reqHeaders'].selectAll();
-            this.$refs['reqHeaders'].init();
-          }
+
+          // show response info
+          let responseInfo = JSON.parse(this.testCase.responseInfo);
+          let respHeaderStr = '';
+          Object.keys(responseInfo.headers).forEach(key => respHeaderStr = respHeaderStr + key + ': ' + responseInfo.headers[key] + '\r\n');
+          document.getElementById('resp-headers').innerText = respHeaderStr;
+          document.getElementById('resp-data').innerText =
+              (typeof responseInfo.data === 'string' && !UTILS.isJSON(responseInfo.data)) ?
+                  responseInfo.data : UTILS.formatJson(responseInfo.data);
         }
       });
     },
@@ -600,6 +456,77 @@ export default {
       }
       return params;
     },
+    send() {
+      let vpiPluginSign = document.getElementById('vpi-plugin-loaded');
+      if (!vpiPluginSign || vpiPluginSign.innerHTML === '') {
+        this.$message.error('please install vpi plugin');
+        return;
+      }
+      // empty test info
+      document.getElementById('req-headers').innerText = '';
+      document.getElementById('req-data').innerText = '';
+      document.getElementById('resp-headers').innerText = '';
+      document.getElementById('resp-data').innerText = '';
+      this.testInfoDefaultCard = 'respInfo';
+      let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
+      this.sendDisable = true;
+      let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
+          : this.api.apiUri;
+      try {
+        if (url.startsWith('/')) {
+          this.$message.error('url error：' + url);
+          return;
+        } else if (!url.startsWith('http')) {
+          url = 'http://' + url;
+        }
+        this.$refs['reqHeaders'].signSelected();
+        this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
+        let headers = {};
+        let requestInfo = JSON.parse(this.testCase.requestInfo);
+        Object.keys(requestInfo.headers).forEach(function (key) {
+          headers[key] = requestInfo.headers[key];
+        });
+        let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
+        if (this.api.apiRequestType !== 1) {
+          // Ignore Get
+          let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
+          headers[contentTypeName] = contentTypeValue;
+        }
+        let params = {};
+        Object.keys(requestInfo.data).forEach(function (key) {
+          params[key] = requestInfo.data[key];
+        });
+        if (this.api.apiRequestType === 1) {
+          // use Get
+          let paramStr = '';
+          Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
+          let index = url.indexOf('?');
+          if (index !== -1) {
+            url = url.substring(0, index);
+          }
+          url += '?' + paramStr;
+          params = paramStr;
+        }
+        let logHeaders = {};
+        logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
+        logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
+        window.postMessage({
+          url: url,
+          requestParamType: this.api.requestParamType,
+          headers: headers,
+          method: method,
+          params: params,
+          logUrl: HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
+          logHeaders: logHeaders,
+          apiId: this.api.id,
+          checkField:this.testCase.checkField,
+          checkValue:this.testCase.checkValue,
+          isTestCase:true
+        }, '*');
+      } finally {
+        setTimeout(() => this.sendDisable = false, 500);
+      }
+    },
     command(func) {
       if (func) {
         func();
@@ -636,74 +563,6 @@ export default {
           this.$message.success('saved');
         }
       });
-    },
-    saveTestCase() {
-      //请求头和响应头
-      const reqHead = document.getElementById("req-headers").innerHTML;
-      if (reqHead === '') {
-        this.$message.error('reqHead info is empty!');
-        return;
-      }
-      const respHead = document.getElementById("resp-headers").innerHTML;
-      if (respHead === '') {
-        this.$message.error('respHead info is empty!');
-        return;
-      }
-      var reqHeadArr = reqHead.split("<br>");
-      var respHeadArr = respHead.split("<br>");
-      let reqHeaderDict = {};
-      reqHeadArr.forEach(item => {
-        let keyValue = item.split(': ');
-        if ('' !== keyValue[0]) {
-          reqHeaderDict[keyValue[0]] = keyValue[1];
-        }
-      });
-      let respHeaderDict = {};
-      respHeadArr.forEach(item => {
-        let keyValue = item.split(': ');
-        if ('' !== keyValue[0]) {
-          respHeaderDict[keyValue[0]] = keyValue[1];
-        }
-      })
-      //请求参数和响应参数
-      const $respRef = this.$refs['respData'];
-      const $reqRef = this.$refs['reqData'];
-      if (!$respRef || $respRef.innerHTML === '') {
-        this.$message.error('response info is empty!');
-        return;
-      }
-      if (!$reqRef || $reqRef.innerHTML === '') {
-        this.$message.error('request info is empty!');
-        return;
-      }
-      let cleanRespText = $respRef.innerHTML.replace(/<br>/g, '');
-      let cleanReqText = $reqRef.innerHTML.replace(/<br>/g, '');
-      let resp = UTILS.isJSON(cleanRespText) ? JSON.stringify({headers:respHeaderDict,data:JSON.parse(cleanRespText)}) : cleanRespText;
-      let req = UTILS.isJSON(cleanReqText) ? JSON.stringify({headers:reqHeaderDict,data:JSON.parse(cleanReqText)}) : cleanReqText;
-      let testCase = {
-        projectId: this.api.projectId,
-        apiId: this.api.id,
-        name: this.testCase.name,
-        url: this.api.apiUri,
-        method: this.api.apiRequestType,
-        requestInfo: req,
-        responseInfo: resp,
-        checkField:this.testCase.checkField,
-        checkValue:this.testCase.checkValue
-      }
-      this.$axios.post(CONSTANT.REQUEST_URL.API_TEST_CASE_SAVE, testCase).then(resp => {
-        if (UTILS.checkResp(resp)) {
-          this.$message.success('saved');
-          this.handleClose();
-        }
-      });
-    },
-    handleClose(){
-      this.testCase = {};
-      this.showTestCaseDialog = false;
-    },
-    showTestCase(){
-      this.showTestCaseDialog = true;
     },
   },
   mounted() {

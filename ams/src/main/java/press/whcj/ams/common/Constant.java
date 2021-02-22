@@ -92,6 +92,7 @@ public interface Constant {
 		String STRUCTURE = "structure";
 		String STRUCTURE_DATA = "structureData";
 		String API = "api";
+		String API_TESTCASE = "apiTestCase";
 	}
 
 	/**

@@ -65,6 +65,11 @@ export const CONSTANT = {
                     name: 'api/testCase',
                     component: resolve => require(['@/views/api/testCase.vue'], resolve),
                 },
+                {
+                    path: '/api/testCaseDetail',
+                    name: 'api/testCaseDetail',
+                    component: resolve => require(['@/views/api/testCaseDetail.vue'], resolve),
+                },
             ],
         },
         {
@@ -168,6 +173,7 @@ export const CONSTANT = {
 
         API_TEST_CASE_FIND_PAGE:'/apiTestCase/findPage',
         API_TEST_CASE_SAVE:'/apiTestCase/add',
+        API_TEST_CASE_DETAIL:"/apiTestCase/detail",
     },
     CLOSE_LOADING_URL: [],
     RESULT_CODE: {
