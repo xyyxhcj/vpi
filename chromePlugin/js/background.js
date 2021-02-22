@@ -161,7 +161,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 }
             }
             newResp.isTestCase = true;
-            newResp.index = request.index;
+            newResp.testCaseId = request.testCaseId;
             resp = JSON.stringify(newResp)
         }
         //发送响应信息给content-script

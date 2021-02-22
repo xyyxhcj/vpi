@@ -12,9 +12,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     let respObj = JSON.parse(respData);
     if(respObj.isTestCase){
         //testCase
-        if(respObj.index != undefined){
+        if(respObj.testCaseId != undefined){
             //testCase List
-            let tableId = respObj.index;
+            let tableId = respObj.testCaseId;
             document.getElementById(tableId).innerText = respObj.testCaseStatus;
         }else{
             // testCase Detail
