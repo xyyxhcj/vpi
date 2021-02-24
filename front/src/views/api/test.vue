@@ -150,8 +150,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {CONSTANT} from "../../common/js/constant";
-import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "@/common/js/constant";
+import {UTILS} from "@/common/js/utils";
 import ApiHeaders from "../../components/apiHeaders/apiHeaders";
 import DataStructure from "../../components/dataStructure/dataStructure";
 import LineText from "../../components/lineText/lineText";
@@ -282,13 +282,10 @@ export default {
         document.getElementById('req-data').innerText = paramsJsonStr;
         //是json格式的参数才进行自动填充
         if (UTILS.isJSON(paramsJsonStr)) {
-          let params = UTILS.json2ViewData(requestInfo.data, -1);
-          //重新赋值
-          UTILS.fillShowList(params, this.reqShowDataList);
-          //初始化
-          this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
+          //重新赋值,初始化请求参数
+          this.api.requestParamVO.dataList = UTILS.json2ViewData(requestInfo.data, -1);
+          this.initParams();
         }
-
         // show response info
         let responseInfo = JSON.parse(row.responseInfo);
         let respHeaderStr = '';
@@ -326,11 +323,14 @@ export default {
         if (url.startsWith('/')) {
           this.$message.error('url error：' + url);
           return;
+        } else if (!this.checkURL(url)) {
+          this.$message.error('url error：' + url);
+          return;
         } else if (!url.startsWith('http')) {
           url = 'http://' + url;
         }
         this.$refs['reqHeaders'].signSelected();
-        this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
+        this.$refs['reqDataStructure']?.signSelected();
         let headers = {};
         this.api.requestHeaders.forEach(item => {
           if (item.selected && item.name !== '') {
@@ -400,17 +400,16 @@ export default {
     },
     init() {
       this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
-        if (UTILS.checkResp(resp)) {
-          this.api = resp.data.data;
-          if (this.api.requestParamVO) {
-            UTILS.fillShowList(this.api.requestParamVO.dataList, this.reqShowDataList);
-            this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
+          if (UTILS.checkResp(resp)) {
+            this.api = resp.data.data;
+            if (this.api.requestParamVO) {
+              this.initParams();
+            }
+            if (this.$refs['reqHeaders']) {
+              this.$refs['reqHeaders'].selectAll();
+              this.$refs['reqHeaders'].init();
+            }
           }
-          if (this.$refs['reqHeaders']) {
-            this.$refs['reqHeaders'].selectAll();
-            this.$refs['reqHeaders'].init();
-          }
-        }
       });
     },
     mergeHeader() {
@@ -507,6 +506,10 @@ export default {
         func();
       }
     },
+    initParams(){
+      UTILS.fillShowList(this.api.requestParamVO.dataList,this.reqShowDataList);
+      this.$refs['reqDataStructure']?.init();
+    },
     newTab() {
       let newTab = this.$router.resolve({
         path: '/api/test',
@@ -580,8 +583,14 @@ export default {
       }
       let cleanRespText = $respRef.innerHTML.replace(/<br>/g, '');
       let cleanReqText = $reqRef.innerHTML.replace(/<br>/g, '');
-      let resp = UTILS.isJSON(cleanRespText) ? JSON.stringify({headers:respHeaderDict,data:JSON.parse(cleanRespText)}) : cleanRespText;
-      let req = UTILS.isJSON(cleanReqText) ? JSON.stringify({headers:reqHeaderDict,data:JSON.parse(cleanReqText)}) : cleanReqText;
+      let resp = UTILS.isJSON(cleanRespText) ? JSON.stringify({
+        headers: respHeaderDict,
+        data: JSON.parse(cleanRespText)
+      }) : cleanRespText;
+      let req = UTILS.isJSON(cleanReqText) ? JSON.stringify({
+        headers: reqHeaderDict,
+        data: JSON.parse(cleanReqText)
+      }) : cleanReqText;
       let testCase = {
         projectId: this.api.projectId,
         apiId: this.api.id,
@@ -590,8 +599,8 @@ export default {
         method: this.api.apiRequestType,
         requestInfo: req,
         responseInfo: resp,
-        checkField:this.testCase.checkField,
-        checkValue:this.testCase.checkValue
+        checkField: this.testCase.checkField,
+        checkValue: this.testCase.checkValue
       }
       this.$axios.post(CONSTANT.REQUEST_URL.API_TEST_CASE_SAVE, testCase).then(resp => {
         if (UTILS.checkResp(resp)) {
@@ -600,12 +609,34 @@ export default {
         }
       });
     },
-    handleClose(){
+    handleClose() {
       this.testCase = {};
       this.showTestCaseDialog = false;
     },
-    showTestCase(){
+    showTestCase() {
       this.showTestCaseDialog = true;
+    },
+    checkURL(url) {
+      //url= 协议://(ftp的登录信息)[IP|域名](:端口号)(/或?请求参数)
+      var strRegex = '^((https|http|ftp)://)?'//(https或http或ftp):// 可有可无
+          + '(([\\w_!~*\'()\\.&=+$%-]+: )?[\\w_!~*\'()\\.&=+$%-]+@)?' //ftp的user@  可有可无
+          + '(([0-9]{1,3}\\.){3}[0-9]{1,3}' // IP形式的URL- 3位数字.3位数字.3位数字.3位数字
+          + '|' // 允许IP和DOMAIN（域名）
+          + '(localhost)|'	//匹配localhost
+          + '([\\w_!~*\'()-]+\\.)*' // 域名- 至少一个[英文或数字_!~*\'()-]加上.
+          + '\\w+\\.' // 一级域名 -英文或数字  加上.
+          + '[a-zA-Z]{1,6})' // 顶级域名- 1-6位英文
+          + '(:[0-9]{1,5})?' // 端口- :80 ,1-5位数字
+          + '((/?)|' // url无参数结尾 - 斜杆或这没有
+          + '(/[\\w_!~*\'()\\.;?:@&=+$,%#-]+)+/?)$';//请求参数结尾- 英文或数字和[]内的各种字符
+
+      var re = new RegExp(strRegex, 'i');//i不区分大小写
+      //将url做uri转码后再匹配，解除请求参数中的中文和空字符影响
+      if (re.test(encodeURI(url))) {
+        return (true);
+      } else {
+        return (false);
+      }
     },
   },
   mounted() {

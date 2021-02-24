@@ -480,7 +480,7 @@ export default {
           url = 'http://' + url;
         }
         this.$refs['reqHeaders'].signSelected();
-        this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
+        this.$refs['reqDataStructure']?.signSelected();
         let headers = {};
         let requestInfo = JSON.parse(this.testCase.requestInfo);
         Object.keys(requestInfo.headers).forEach(function (key) {
