@@ -12,7 +12,9 @@
         <span class="api-edit-info">create: {{ api.createName }}</span>
         <span class="api-edit-info">update: {{ api.updateName }}</span>
         <span class="api-edit-info">updateTime: {{ api.updateTime === "" ? "":dateFormat(api.updateTime) }}</span>
+
         <el-button class="test-all-button" size="small" type="success" @click="testAll()">Test All</el-button>
+
       </div>
     </div>
 
@@ -64,6 +66,7 @@
             prop="checkField"
             label="checkField"
             width="200">
+
         </el-table-column>
 
         <el-table-column
