@@ -123,6 +123,7 @@ export default {
         createName:'',
         updateName:'',
         updateTime:'',
+        requestHeaders:[],
         testCaseVO:{
           dataList:[]
         },
@@ -130,7 +131,7 @@ export default {
           dataList: [],
         },
       },
-      selectedEnv: {},
+      selectedEnv: this.$route.query.selectedEnv,
       testCaseList :[],
       testCase:{},
     };
@@ -156,7 +157,7 @@ export default {
     toDetails(row){
       this.$router.push({
         path: '/api/testCaseDetail',
-        query: {id:row.id,apiId:row.apiId}
+        query: {id:row.id,apiId:row.apiId,selectedEnv: this.selectedEnv}
       });
     },
     //单个测试

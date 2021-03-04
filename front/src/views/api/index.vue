@@ -132,7 +132,7 @@
             testCase(){
               this.$router.push({
                 path: '/api/testCase',
-                query: {id: this.$route.query.id, copy: true}
+                query: {id: this.$route.query.id, copy: true,selectedEnv: this.selectedEnv}
               });
             }
         },

@@ -1,26 +1,6 @@
 <template>
   <div id="api-test-container" style="min-width: 1250px;line-height: 15px">
 
-    <el-dialog
-        title="saveTestCase"
-        :visible.sync="showTestCaseDialog"
-        width="30%">
-      <el-form ref="testCase" :model="testCase" label-width="120px" >
-        <el-form-item label="testCaseName">
-          <el-input v-model="testCase.name" placeholder="testCase name"></el-input>
-        </el-form-item>
-        <el-form-item label="checkField">
-          <el-input v-model="testCase.checkField" placeholder="like data.code"></el-input>
-        </el-form-item>
-        <el-form-item label="checkValue">
-          <el-input v-model="testCase.checkValue" placeholder="success code"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-      <el-button @click="handleClose()">cancel</el-button>
-      <el-button type="primary" @click="saveTestCase()">submit</el-button>
-    </span>
-    </el-dialog>
 
     <div id="test-up">
       <el-row>
@@ -144,9 +124,30 @@
       </el-tab-pane>
     </el-tabs>
     <confirm-dialog :dialog="delConfirmDialog" :form="delForm" @flush="testHistoryFindPage"/>
+
+    <el-dialog
+        title="saveTestCase"
+        :visible.sync="showTestCaseDialog"
+        width="30%">
+      <el-form ref="testCase" :model="testCase" label-width="120px" >
+        <el-form-item label="testCaseName">
+          <el-input v-model="testCase.name" placeholder="testCase name"></el-input>
+        </el-form-item>
+        <el-form-item label="checkField">
+          <el-input v-model="testCase.checkField" placeholder="like data.code"></el-input>
+        </el-form-item>
+        <el-form-item label="checkValue">
+          <el-input v-model="testCase.checkValue" placeholder="success code"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+      <el-button @click="handleClose()">cancel</el-button>
+      <el-button type="primary" @click="saveTestCase()">submit</el-button>
+    </span>
+    </el-dialog>
+
+
   </div>
-
-
 </template>
 
 <script type="text/ecmascript-6">
