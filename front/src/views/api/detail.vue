@@ -96,6 +96,7 @@ export default {
         apiSuccessMock: '',
         apiFailureMock: '',
       },
+      selectedEnv: this.$route.query.selectedEnv,
       reqDefaultCard: 'requestParam',
       respDefaultCard: 'responseParam',
       reqShowDataList: [],

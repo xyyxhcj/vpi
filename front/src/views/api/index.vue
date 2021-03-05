@@ -23,7 +23,7 @@
               <el-link class="a-link" @click="view">View</el-link>
             </template>
           <template v-if="$route.path==='/api/testCaseDetail'">
-            <el-link class="a-link" @click="$router.go(-1);">GoBack</el-link>
+            <el-link class="a-link" @click="testCase">Test Case</el-link>
           </template>
             <el-select v-model="selectedEnvName" filterable placeholder="choose environment" clearable
                        @change="selectEnv" style="float: right;margin-right: 30px" size="mini">
