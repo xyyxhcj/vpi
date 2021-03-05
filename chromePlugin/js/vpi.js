@@ -12,9 +12,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     let respObj = JSON.parse(respData);
     if(respObj.isTestCase){
         //testCase
-        if(respObj.testCaseId != undefined){
+        if(respObj.testCaseId != '' || respObj.testCaseId != undefined){
             //testCase List
             let tableId = respObj.testCaseId;
+            if(respObj.status === "success"){
+                document.getElementById(tableId).style.color="blue";
+            }else if(respObj.status === "fail"){
+                document.getElementById(tableId).style.color="orange";
+            }else{
+                document.getElementById(tableId).style.color = "red";
+            }
+
             document.getElementById(tableId).innerText = respObj.testCaseStatus;
         }else{
             // testCase Detail

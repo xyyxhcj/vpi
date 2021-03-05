@@ -1,10 +1,18 @@
 <template>
   <div id="api-view-container" style="min-width: 1250px;line-height: 15px">
+
     <el-row>
-      <el-col :span="12" style="text-align: left">
-        <el-tag>{{ CONSTANT.REQUEST_TYPE[api.apiRequestType] }}</el-tag>
+      <el-col :span="24" style="text-align: left">
+        <el-select v-model.trim="api.apiRequestType" style="width: 8%" size="mini">
+          <el-option :label="CONSTANT.REQUEST_TYPE[0]" :value="0"/>
+          <el-option :label="CONSTANT.REQUEST_TYPE[1]" :value="1"/>
+        </el-select>
+        <el-input v-model="api.apiUri" size="mini" style="width: 91%">
+          <template slot="prepend">{{ selectedEnv ? selectedEnv.frontUri : '' }}</template>
+        </el-input>
       </el-col>
     </el-row>
+
     <div style="text-align: left;margin: 5px;line-height: 30px">
       <div style="font-size: 22px">{{ api.apiUri }}</div>
       <div style="font-size: 16px">{{ api.name }}</div>
@@ -81,7 +89,8 @@
             label="testResult"
             width="200">
           <template slot-scope="scope">
-            <span :id="scope.row.id"></span>
+            <div :id="scope.row.id">
+            </div>
           </template>
         </el-table-column>
 
@@ -321,7 +330,6 @@ export default {
           header.isEnvHeader = true;
           this.api.requestHeaders.unshift(header);
         });
-        this.$refs['reqHeaders'].selectEnvHeader();
       }
     },
     transformInfo(info, headerTitle, paramTitle) {

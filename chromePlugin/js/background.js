@@ -131,6 +131,7 @@ function axios(url, requestParamType, method, data, headers = undefined) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     let {url, requestParamType, headers, method, params, logUrl, logHeaders, apiId} = request;
+    console.log(url)
     if (!url) {
         return;
     }
