@@ -15,14 +15,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if(respObj.testCaseId != '' || respObj.testCaseId != undefined){
             //testCase List
             let tableId = respObj.testCaseId;
-            if(respObj.status === "success"){
-                document.getElementById(tableId).style.color="blue";
-            }else if(respObj.status === "fail"){
-                document.getElementById(tableId).style.color="orange";
+            if(respObj.testCaseStatus === "success"){
+                document.getElementById(tableId).style.color="#00EC00";
+            }else if(respObj.testCaseStatus === "fail"){
+                document.getElementById(tableId).style.color="#FFA042";
             }else{
-                document.getElementById(tableId).style.color = "red";
+                document.getElementById(tableId).style.color = "#FF0000";
             }
-
             document.getElementById(tableId).innerText = respObj.testCaseStatus;
         }else{
             // testCase Detail
