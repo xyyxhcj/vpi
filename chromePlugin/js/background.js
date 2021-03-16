@@ -92,7 +92,7 @@ function getCurrentTabId(callback) {
         if (callback) callback(tabs.length ? tabs[0].id : null);
     });
 }
-// 给content-script 发送消息
+
 function sendMessageToContentScript(message, callback) {
     getCurrentTabId((tabId) => {
         chrome.tabs.sendMessage(tabId, message, function (response) {
@@ -130,46 +130,18 @@ function axios(url, requestParamType, method, data, headers = undefined) {
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    let {url, requestParamType, headers, method, params, logUrl, logHeaders, apiId} = request;
+    let {url, requestParamType, headers, method, params, logUrl, logHeaders, apiId, testCaseInfo} = request;
     if (!url) {
         return;
     }
     let start = new Date().getTime();
     axios(url, requestParamType, method, params, headers).then(({resp, respHeaders}) => {
-        //如果是单元测试的请求，还需要处理响应信息
-        if(request.isTestCase === true){
-            let arr = request.checkField.split(".");
-            let obj = JSON.parse(resp)
-            let i = 0;
-            let isDataStruError = false;
-            while(i < arr.length){
-                if(obj[arr[i]] == null || obj[arr[i]] == undefined){
-                    isDataStruError = true;
-                    break;
-                }
-                obj = obj[arr[i]];
-                i++;
-            }
-            let newResp = JSON.parse(resp);
-            if(isDataStruError){
-                newResp.testCaseStatus = "error";
-            }else{
-                if(obj == parseInt(request.checkValue)){
-                    newResp.testCaseStatus = "success";
-                }else{
-                    newResp.testCaseStatus = "fail";
-                }
-            }
-            newResp.isTestCase = true;
-            newResp.testCaseId = request.testCaseId;
-            resp = JSON.stringify(newResp)
-        }
-        //发送响应信息给content-script
         sendMessageToContentScript({
             reqHeaders: headers,
             reqData: typeof params === 'string' && !isJSON(params) ? params : formatJson(params),
             respHeaders: respHeaders,
-            respData: typeof resp === 'string' && !isJSON(resp) ? resp : formatJson(resp)
+            respData: typeof resp === 'string' && !isJSON(resp) ? resp : formatJson(resp),
+            testCaseInfo,
         });
         // save history
         let split = respHeaders.split('\r\n');
@@ -190,7 +162,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             requestInfo: JSON.stringify({headers: headers, data: params}),
             responseInfo: JSON.stringify({headers: headerDict, data: resp}),
         }, logHeaders);
-    }).catch(error => console.log(error));
+    }).catch(error => {
+        console.log(error);
+        sendMessageToContentScript();
+    });
     sendResponse();
-    return true;
 });

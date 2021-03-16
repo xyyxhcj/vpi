@@ -1,6 +1,5 @@
 <template>
-  <div id="api-view-container" style="min-width: 1250px;line-height: 15px">
-
+  <div id="api-test-case-container" style="min-width: 1250px;line-height: 15px">
     <el-row>
       <el-col :span="24" style="text-align: left">
         <el-select v-model.trim="api.apiRequestType" style="width: 8%" size="mini">
@@ -19,7 +18,7 @@
       <div style="font-size: 12px;color: #999999">
         <span class="api-edit-info">create: {{ api.createName }}</span>
         <span class="api-edit-info">update: {{ api.updateName }}</span>
-        <span class="api-edit-info">updateTime: {{ api.updateTime === "" ? "":dateFormat(api.updateTime) }}</span>
+        <span class="api-edit-info">updateTime: {{ api.updateTime === "" ? "" : dateFormat(api.updateTime) }}</span>
 
         <el-button class="test-all-button" size="small" type="success" @click="testAll()">Test All</el-button>
 
@@ -40,7 +39,7 @@
             label="testCaseName"
             fit
             show-overflow-tooltip
-            >
+        >
           <template slot-scope="scope">
             <el-popover trigger="hover" placement="left-start">
               <div style="max-height: 600px;max-width: 500px">
@@ -163,21 +162,19 @@ export default {
         }
       });
     },
-    toDetails(row){
+    toDetails(row) {
       this.$router.push({
         path: '/api/testCaseDetail',
-        query: {id:row.id,apiId:row.apiId,selectedEnv: this.selectedEnv}
+        query: {id: row.id, apiId: row.apiId,selectedEnv: this.selectedEnv}
       });
     },
     //单个测试
-    runTest(scope){
-      //判断有误安装插件
-      let vpiPluginSign = document.getElementById('vpi-plugin-loaded');
-      if (!vpiPluginSign || vpiPluginSign.innerHTML === '') {
+    runTest(scope) {
+      if (UTILS.isNotInstallPlugin()) {
         this.$message.error('please install vpi plugin');
         return;
       }
-      this.$set(scope.row,'testDisable',true);
+      this.$set(scope.row, 'testDisable', true);
       let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
       let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
           : this.api.apiUri;
@@ -189,16 +186,14 @@ export default {
           url = 'http://' + url;
         }
 
-        if(!UTILS.isJSON(this.testCaseList[scope.$index].requestInfo)){
+        if (!UTILS.isJSON(this.testCaseList[scope.$index].requestInfo)) {
           this.$message.error('request params error :' + this.testCaseList[scope.$index].requestInfo);
           return;
         }
         let requestInfo = JSON.parse(this.testCaseList[scope.$index].requestInfo);
         //testCase request headers
         let headers = {};
-        Object.keys(requestInfo.headers).forEach(function (key) {
-          headers[key] = requestInfo.headers[key];
-        });
+        Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
         let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
         if (this.api.apiRequestType !== 1) {
           // Ignore Get
@@ -233,21 +228,19 @@ export default {
           logUrl: HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
           logHeaders: logHeaders,
           apiId: this.api.id,
-          checkField:scope.row.checkField,
-          checkValue:scope.row.checkValue,
-          isTestCase:true,
-          testCaseId:scope.row.id
+          testCaseInfo: {
+            checkField: scope.row.checkField,
+            checkValue: scope.row.checkValue,
+            testCaseId: scope.row.id
+          }
         }, '*');
       } finally {
         setTimeout(() => scope.row.testDisable = false, 500);
       }
     },
     //批量测试
-    testAll(){
-
-      //判断有误安装插件
-      let vpiPluginSign = document.getElementById('vpi-plugin-loaded');
-      if (!vpiPluginSign || vpiPluginSign.innerHTML === '') {
+    testAll() {
+      if (UTILS.isNotInstallPlugin()) {
         this.$message.error('please install vpi plugin');
         return;
       }
@@ -260,59 +253,58 @@ export default {
       } else if (!url.startsWith('http')) {
         url = 'http://' + url;
       }
-        //遍历所有测试样例，发送请求到插件
-        for(let item of this.testCaseList){
+      //遍历所有测试样例，发送请求到插件
+      for (let item of this.testCaseList) {
 
-          if(!UTILS.isJSON(item.requestInfo)){
-            this.$message.error('request params error :' + item.requestInfo);
-            return;
-          }
-          let requestInfo = JSON.parse(item.requestInfo);
-          //testCase request headers
-          let headers = {};
-          Object.keys(requestInfo.headers).forEach(function (key) {
-            headers[key] = requestInfo.headers[key];
-          });
-          let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
-          if (this.api.apiRequestType !== 1) {
-            // Ignore Get
-            let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
-            headers[contentTypeName] = contentTypeValue;
-          }
-          //testCase request params
-          let params = {};
-          Object.keys(requestInfo.data).forEach(function (key) {
-            params[key] = requestInfo.data[key];
-          });
-          if (this.api.apiRequestType === 1) {
-            // use Get
-            let paramStr = '';
-            Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
-            let index = url.indexOf('?');
-            if (index !== -1) {
-              url = url.substring(0, index);
-            }
-            url += '?' + paramStr;
-            params = paramStr;
-          }
-          let logHeaders = {};
-          logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
-          logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
-          window.postMessage({
-            url: url,
-            requestParamType: this.api.requestParamType,
-            headers: headers,
-            method: method,
-            params: params,
-            logUrl: HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
-            logHeaders: logHeaders,
-            apiId: this.api.id,
-            checkField:item.checkField,
-            checkValue:item.checkValue,
-            isTestCase:true,
-            testCaseId:item.id
-          }, '*');
+        if (!UTILS.isJSON(item.requestInfo)) {
+          this.$message.error('request params error :' + item.requestInfo);
+          return;
         }
+        let requestInfo = JSON.parse(item.requestInfo);
+        //testCase request headers
+        let headers = {};
+        Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
+        let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
+        if (this.api.apiRequestType !== 1) {
+          // Ignore Get
+          let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
+          headers[contentTypeName] = contentTypeValue;
+        }
+        //testCase request params
+        let params = {};
+        Object.keys(requestInfo.data).forEach(function (key) {
+          params[key] = requestInfo.data[key];
+        });
+        if (this.api.apiRequestType === 1) {
+          // use Get
+          let paramStr = '';
+          Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
+          let index = url.indexOf('?');
+          if (index !== -1) {
+            url = url.substring(0, index);
+          }
+          url += '?' + paramStr;
+          params = paramStr;
+        }
+        let logHeaders = {};
+        logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
+        logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
+        window.postMessage({
+          url: url,
+          requestParamType: this.api.requestParamType,
+          headers: headers,
+          method: method,
+          params: params,
+          logUrl: HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
+          logHeaders: logHeaders,
+          apiId: this.api.id,
+          testCaseInfo: {
+            checkField: item.checkField,
+            checkValue: item.checkValue,
+            testCaseId: item.id
+          }
+        }, '*');
+      }
 
 
     },
@@ -348,17 +340,7 @@ export default {
 
 <style lang="stylus" rel="stylesheet/stylus">
 
-.test-all-button {
-  float: right;
-  margin-right: 50px
-}
-
-.el-table .cell {
-  white-space: pre-line;
-}
-
-
-#api-test-container
+#api-test-case-container
   .api-edit-info
     margin-right 30px
 
@@ -407,4 +389,7 @@ export default {
       .el-button
         padding 5px 5px
         margin-top: 1.5px
+  .test-all-button
+    float: right;
+    margin-right: 50px
 </style>

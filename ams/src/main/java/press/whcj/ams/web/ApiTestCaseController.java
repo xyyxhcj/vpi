@@ -55,8 +55,8 @@ public class ApiTestCaseController extends BaseController {
     }
 
     @PostMapping("detail")
-    public Result<Object> detail(@RequestBody ApiTestCaseDTO apiTestCaseDTO){
-        return ok(apiTestCaseService.details(apiTestCaseDTO));
+    public Result<Object> findDetail(@RequestBody ApiTestCaseDTO apiTestCaseDTO){
+        return ok(apiTestCaseService.findDetail(apiTestCaseDTO));
     }
 
 }

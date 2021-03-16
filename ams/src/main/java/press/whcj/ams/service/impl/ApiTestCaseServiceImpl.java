@@ -69,8 +69,8 @@ public class ApiTestCaseServiceImpl implements ApiTestCaseService {
     }
 
     @Override
-    public ApiTestCase details(ApiTestCaseDTO apiTestCaseDTO) {
-        ApiTestCase apiTestCase = mongoTemplate.findById(apiTestCaseDTO.getId(), ApiTestCase.class, Constant.CollectionName.API_TESTCASE);
+    public ApiTestCase findDetail(ApiTestCaseDTO apiTestCaseDTO) {
+        ApiTestCase apiTestCase = mongoTemplate.findById(apiTestCaseDTO.getId(), ApiTestCase.class, Constant.CollectionName.API_TEST_CASE);
         FastUtils.checkNull(apiTestCase);
         return apiTestCase;
     }

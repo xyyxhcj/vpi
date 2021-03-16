@@ -457,8 +457,7 @@ export default {
       return params;
     },
     send() {
-      let vpiPluginSign = document.getElementById('vpi-plugin-loaded');
-      if (!vpiPluginSign || vpiPluginSign.innerHTML === '') {
+      if (UTILS.isNotInstallPlugin()) {
         this.$message.error('please install vpi plugin');
         return;
       }
@@ -483,9 +482,7 @@ export default {
         this.$refs['reqDataStructure']?.signSelected();
         let headers = {};
         let requestInfo = JSON.parse(this.testCase.requestInfo);
-        Object.keys(requestInfo.headers).forEach(function (key) {
-          headers[key] = requestInfo.headers[key];
-        });
+        Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
         let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
         if (this.api.apiRequestType !== 1) {
           // Ignore Get
@@ -519,9 +516,11 @@ export default {
           logUrl: HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
           logHeaders: logHeaders,
           apiId: this.api.id,
-          checkField:this.testCase.checkField,
-          checkValue:this.testCase.checkValue,
-          isTestCase:true
+          testCaseInfo: {
+            checkField: this.testCase.checkField,
+            checkValue: this.testCase.checkValue,
+            testCaseId: this.testCase.testCaseId,
+          }
         }, '*');
       } finally {
         setTimeout(() => this.sendDisable = false, 500);

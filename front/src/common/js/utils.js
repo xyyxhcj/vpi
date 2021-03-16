@@ -442,4 +442,8 @@ export const UTILS = {
         }
         return result;
     },
+    isNotInstallPlugin() {
+        let vpiPluginSign = document.getElementById('vpi-plugin-loaded');
+        return !vpiPluginSign || vpiPluginSign.innerHTML === '';
+    }
 };
