@@ -331,7 +331,7 @@ export default {
           url = 'http://' + url;
         }
         this.$refs['reqHeaders'].signSelected();
-        this.$refs['reqDataStructure']?.signSelected();
+        this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
         let headers = {};
         this.api.requestHeaders.forEach(item => {
           if (item.selected && item.name !== '') {
@@ -509,7 +509,7 @@ export default {
     },
     initParams(){
       UTILS.fillShowList(this.api.requestParamVO.dataList,this.reqShowDataList);
-      this.$refs['reqDataStructure']?.init();
+      this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
     },
     newTab() {
       let newTab = this.$router.resolve({

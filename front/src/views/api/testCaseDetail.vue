@@ -478,8 +478,8 @@ export default {
         } else if (!url.startsWith('http')) {
           url = 'http://' + url;
         }
-        this.$refs['reqHeaders'].signSelected();
-        this.$refs['reqDataStructure']?.signSelected();
+        this.$refs['reqHeaders'] && this.$refs['reqHeaders'].signSelected();
+        this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
         let headers = {};
         let requestInfo = JSON.parse(this.testCase.requestInfo);
         Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
