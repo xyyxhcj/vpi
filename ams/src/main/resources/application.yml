@@ -21,15 +21,15 @@ spring:
   data:
     mongodb:
       option:
-        maxWaitTime: 30
-        maxConnectionIdleTime: 0
+        maxWaitTime: 60
+        maxConnectionIdleTime: 60
         maxConnectionLifeTime: 0
         sslEnabled: false
         sslInvalidHostNameAllowed: false
-        connectTimeout: 10000
-        heartbeatFrequency: 10000
-        minHeartbeatFrequency: 500
-        serverSelectionTimeout: 30000
+        connectTimeout: 10
+        heartbeatFrequency: 20
+        minHeartbeatFrequency: 1
+        serverSelectionTimeout: 30
         localThreshold: 15
 logging:
   config: classpath:logback.xml

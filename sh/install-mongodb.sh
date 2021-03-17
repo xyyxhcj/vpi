@@ -39,6 +39,7 @@ db.createUser(
     ]
   }
 )
+use github-ams
 db.createUser({user:"vpi",pwd:"LYyVKh7spO7hzDLv",roles:[{role:"dbOwner",db:"github-ams"}]})
 db.grantRolesToUser('vpi',[{ role: "readWrite", db: "github-ams" }])
 
