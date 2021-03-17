@@ -11,10 +11,10 @@ jdk1.8
 chrome插件,  
 mongodb(init/install-mongodb.sh),
 nginx
-#如果使用sh/makeJar.sh，需要安装git,maven,node
+#如果使用sh/start.sh sh/makeJar.sh，需要安装git,maven,node
 ## 演示:
-http://www.whcj.press  
+http://42.192.227.159 
 测试账号: lx/123456
 ## 帮助文档:  
-http://www.whcj.press/help  
+http://42.192.227.159/help  
 

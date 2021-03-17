@@ -14,10 +14,10 @@ nginx
 if use sh/makeJar.sh，need install:git,maven,npm
 ```  
 ## Demo:   
-http://www.whcj.press    
+http://42.192.227.159  
 testAccount: lx/123456  
 ## Help:    
-http://www.whcj.press/help    
+http://42.192.227.159/help    
 
 
 

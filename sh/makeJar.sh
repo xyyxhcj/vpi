@@ -1,13 +1,14 @@
 #! /bin/bash
+### need edit Start
 # mongodb 连接信息
 mongodbAddress='127.0.0.1:27017'
 mongodbDatabase='github-ams'
-mongodbUsername='whcj'
+mongodbUsername='vpi'
 mongodbPassword='LYyVKh7spO7hzDLv'
 # 后端接口地址 spring project url prefix
-prodApiUrl='http://120.132.18.250:11111'
+prodApiUrl='http://42.192.227.159:11111'
 # 谷歌插件下载地址
-chromePluginDownloadUrl='https://www.whcj.press/vpiChromePlugin.zip'
+chromePluginDownloadUrl='https://42.192.227.159/vpiChromePlugin.zip'
 
 # 项目根目录
 projectDir='/opt/project/vpi/'
@@ -18,6 +19,7 @@ nginxStaticDir='/opt/uploadFile/'
 # jar存放目录
 jarSaveDir='/usr/local/'
 
+### need edit End
 if  [ "$projectDir" = "" ] ;then
     echo "Missing parameter: projectDir!"
     return

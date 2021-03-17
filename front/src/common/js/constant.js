@@ -95,7 +95,7 @@ export const CONSTANT = {
         getProfilesActive: (debug) => debug ? 'dev' : 'prod'
     },
     HOST_URL: {
-        dev: 'http://120.132.18.250:11111',
+        dev: 'http://42.192.227.159:11111',
         // dev: 'http://127.0.0.1:11111',
         prod: '$prodApiUrl',
     },
