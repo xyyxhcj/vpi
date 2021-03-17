@@ -54,6 +54,11 @@ sed -i "s|\$prodApiUrl|${prodApiUrl}|g" ${projectDir}front/vue.config.js
 
 # build
 cd front || exit
+
+npm cache clean --force
+npm config set registry http://registry.npmjs.org/
+rm -rf package-lock.json
+
 npm install
 npm run build
 cd ${projectDir}chromePlugin && zip -r vpiChromePlugin.zip ./*
