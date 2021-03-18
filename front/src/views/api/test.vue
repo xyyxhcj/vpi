@@ -316,7 +316,6 @@ export default {
       document.getElementById('resp-headers').innerText = '';
       document.getElementById('resp-data').innerText = '';
       this.testInfoDefaultCard = 'respInfo';
-      let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
       this.sendDisable = true;
       let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
           : this.api.apiUri;
@@ -365,7 +364,7 @@ export default {
           headers: headers,
           method: method,
           params: params,
-          logUrl: HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
+          logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
           logHeaders: logHeaders,
           apiId: this.api.id,
         }, '*');

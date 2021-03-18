@@ -161,7 +161,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             requestTime: new Date().getTime() - start,
             requestInfo: JSON.stringify({headers: headers, data: params}),
             responseInfo: JSON.stringify({headers: headerDict, data: resp}),
-        }, logHeaders);
+        }, logHeaders).catch(error => {
+            console.log(error);
+            sendMessageToContentScript();
+        });
     }).catch(error => {
         console.log(error);
         sendMessageToContentScript();

@@ -11,6 +11,7 @@
         <div class="select-all" @click="selectGroup">all</div>
         <el-tree :data="groups" :props="{label:'name',children:'childList'}" :expand-on-click-node="false"
                  node-key="id" default-expand-all @node-click="selectGroup"
+                 style="height: 86vh;overflow-y:auto"
                  draggable @node-drop="moveNode" highlight-current>
                     <span class="api-group-node" slot-scope="{node,data}">
                         <span style="float:left;padding-left: 1px" :id="data.id">
@@ -105,7 +106,8 @@
             </el-col>
           </el-row>
         </div>
-        <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" :height="tableHeight"
+        <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
+                  height="85vh"
                   :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table" size="small">
           <el-table-column type="selection" :width="showSelect?'20':'1'"/>
           <el-table-column width="81">
@@ -117,7 +119,8 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="group" width="110" :formatter="(row)=>row.group?row.group.name:''" style="font-size: 8px"/>
+          <el-table-column label="group" width="110" :formatter="(row)=>row.group?row.group.name:''"
+                           style="font-size: 8px"/>
           <el-table-column label="name" prop="name" width="200" show-overflow-tooltip/>
           <el-table-column label="apiUri" prop="apiUri" width="250" show-overflow-tooltip/>
           <el-table-column label="createName" prop="createName" width="90"/>
@@ -233,7 +236,6 @@ export default {
         ids: [],
         projectId: this.$store.getters.selectedProjectId,
       },
-      tableHeight: window.innerHeight - 149,
     }
   },
   computed: {

@@ -1,12 +1,7 @@
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const HOST_URL = {
-    dev: 'http://42.192.227.159:11111',
-    // dev: 'http://127.0.0.1:11111',
-    prod: '$prodApiUrl',
-};
+
 const debug = process.env.NODE_ENV !== 'production';
-const profilesActive = debug ? 'dev' : 'prod';
 
 // https://github.com/vuejs/vue-cli/tree/dev/docs/zh/config
 module.exports = {
@@ -94,7 +89,7 @@ module.exports = {
         progress: true,
         proxy: {
             '/vpi/': {
-                target: HOST_URL[profilesActive],
+                target: process.env.API_URL,
                 ws: true,
                 changOrigin: true,
                 pathRewrite: {

@@ -55,7 +55,6 @@ public interface Constant {
 		String SALT = "v2Ll6EmXPQIf";
 		String AUTH_HEADER = "auth";
 		int SESSION_TIME_OUT = 60 * 60 * 2;
-		String FRONT_HOST = "http://42.192.227.159";
 	}
 
 	interface Url {

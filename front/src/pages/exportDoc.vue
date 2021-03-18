@@ -28,8 +28,7 @@
             </el-tree>
         </el-aside>
         <el-main>
-            <el-table :data="filterDataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
-                      :height="tableHeight" border
+            <el-table :data="filterDataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}" border
                       :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table">
                 <el-table-column width="100">
                     <template slot-scope="scope">
@@ -152,7 +151,6 @@ export default {
                 },
                 dataList: [],
                 filterDataList: [],
-                tableHeight: 0,
                 reqShowDataList: [],
                 respShowDataList: [],
                 showDetail: false,
@@ -285,9 +283,6 @@ export default {
         mounted() {
             this.findApiGroups();
             this.findAllApi();
-            this.$nextTick(() => {
-                this.tableHeight = window.innerHeight - 20;
-            })
         },
     };
 </script>

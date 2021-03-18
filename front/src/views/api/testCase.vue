@@ -175,7 +175,6 @@ export default {
         return;
       }
       this.$set(scope.row, 'testDisable', true);
-      let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
       let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
           : this.api.apiUri;
       try {
@@ -225,7 +224,7 @@ export default {
           headers: headers,
           method: method,
           params: params,
-          logUrl: HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
+          logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
           logHeaders: logHeaders,
           apiId: this.api.id,
           testCaseInfo: {
@@ -244,7 +243,6 @@ export default {
         this.$message.error('please install vpi plugin');
         return;
       }
-      let HOST = CONSTANT.HOST_URL[CONSTANT.CONFIG.getProfilesActive(CONSTANT.CONFIG.DEBUG)];
       let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
           : this.api.apiUri;
       if (url.startsWith('/')) {
@@ -295,7 +293,7 @@ export default {
           headers: headers,
           method: method,
           params: params,
-          logUrl: HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
+          logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
           logHeaders: logHeaders,
           apiId: this.api.id,
           testCaseInfo: {

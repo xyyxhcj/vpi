@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         let fieldQueue=checkField.split('.')
         let respObj;
         try {
-            let respObj = JSON.parse(respData);
+            respObj = JSON.parse(respData);
         } catch (e) {
             console.error("response data not json!", e, respData);
             return;

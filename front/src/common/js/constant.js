@@ -89,15 +89,9 @@ export const CONSTANT = {
         USER_SHOW_STYLE: '{userName} ({loginName})',
         ADMIN_LOGIN_NAME: 'admin',
         DEFAULT_DATA_LIST_SIZE: 3,
-        DEBUG: process.env.NODE_ENV !== 'production',
         AES_KEY: 'QuBabnE0dR1pb29h',
         ARRAY_SPLIT_STR: '|',
-        getProfilesActive: (debug) => debug ? 'dev' : 'prod'
-    },
-    HOST_URL: {
-        dev: 'http://42.192.227.159:11111',
-        // dev: 'http://127.0.0.1:11111',
-        prod: '$prodApiUrl',
+        HOST: process.env.API_URL,
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
@@ -113,6 +107,7 @@ export const CONSTANT = {
         LEFT_MENU_IS_COLLAPSE: 'leftMenuIsCollapse',
     },
     REQUEST_URL: {
+        // TODO 移至配置文件夹
         CHROME_PLUGIN_DOWNLOAD : '$chromePluginDownloadUrl',
 
         LOGIN: '/user/login',
