@@ -12,24 +12,12 @@ chromePluginDownloadUrl='https://42.192.227.159/vpiChromePlugin.zip'
 
 # 项目根目录
 projectDir='/opt/project/vpi/'
-# nginx安装目录/html
-nginxHtmlDir='/usr/local/nginx/html/'
-# nginx静态文件匹配目录
-nginxStaticDir='/opt/uploadFile/'
 # jar存放目录
 jarSaveDir='/usr/local/'
 
 ### need edit End
 if  [ "$projectDir" = "" ] ;then
     echo "Missing parameter: projectDir!"
-    return
-fi
-if  [ "$nginxHtmlDir" = "" ] ;then
-    echo "Missing parameter: nginxHtmlDir!"
-    return
-fi
-if  [ "$nginxStaticDir" = "" ] ;then
-    echo "Missing parameter: nginxStaticDir!"
     return
 fi
 if  [ "$jarSaveDir" = "" ] ;then
@@ -72,11 +60,8 @@ if  [ "$appPid" != "" ] ;then
 fi
 
 # move to nginx file & start
-cp ${projectDir}front/dist/index.html ${nginxHtmlDir}
-rm -rf ${nginxStaticDir}assets
-rm -rf ${nginxStaticDir}static
-cp ${projectDir}front/dist/* ${nginxStaticDir} -r
-mv ${projectDir}chromePlugin/vpiChromePlugin.zip ${nginxStaticDir}
+
+mv ${projectDir}chromePlugin/vpiChromePlugin.zip ${projectDir}front/dist/
 mv ${projectDir}ams/target/ams.jar ${jarSaveDir}
 cd ${jarSaveDir} || exit
 nohup java -jar -XX:+HeapDumpOnOutOfMemoryError ${jarSaveDir}ams.jar > vpiNohup.out 2>&1 &
