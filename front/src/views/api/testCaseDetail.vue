@@ -457,73 +457,71 @@ export default {
       return params;
     },
     send() {
-      if (UTILS.isNotInstallPlugin()) {
-        this.$message.error('please install vpi plugin');
-        return;
-      }
-      // empty test info
-      document.getElementById('req-headers').innerText = '';
-      document.getElementById('req-data').innerText = '';
-      document.getElementById('resp-headers').innerText = '';
-      document.getElementById('resp-data').innerText = '';
-      this.testInfoDefaultCard = 'respInfo';
-      this.sendDisable = true;
-      let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
-          : this.api.apiUri;
-      try {
-        if (url.startsWith('/')) {
-          this.$message.error('url error：' + url);
-          return;
-        } else if (!url.startsWith('http')) {
-          url = 'http://' + url;
-        }
-        this.$refs['reqHeaders'] && this.$refs['reqHeaders'].signSelected();
-        this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
-        let headers = {};
-        let requestInfo = JSON.parse(this.testCase.requestInfo);
-        Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
-        let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
-        if (this.api.apiRequestType !== 1) {
-          // Ignore Get
-          let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
-          headers[contentTypeName] = contentTypeValue;
-        }
-        let params = {};
-        Object.keys(requestInfo.data).forEach(function (key) {
-          params[key] = requestInfo.data[key];
-        });
-        if (this.api.apiRequestType === 1) {
-          // use Get
-          let paramStr = '';
-          Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
-          let index = url.indexOf('?');
-          if (index !== -1) {
-            url = url.substring(0, index);
+      UTILS.checkChromePlugin().then(()=>{
+        // empty test info
+        document.getElementById('req-headers').innerText = '';
+        document.getElementById('req-data').innerText = '';
+        document.getElementById('resp-headers').innerText = '';
+        document.getElementById('resp-data').innerText = '';
+        this.testInfoDefaultCard = 'respInfo';
+        this.sendDisable = true;
+        let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
+            : this.api.apiUri;
+        try {
+          if (url.startsWith('/')) {
+            this.$message.error('url error：' + url);
+            return;
+          } else if (!url.startsWith('http')) {
+            url = 'http://' + url;
           }
-          url += '?' + paramStr;
-          params = paramStr;
-        }
-        let logHeaders = {};
-        logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
-        logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
-        window.postMessage({
-          url: url,
-          requestParamType: this.api.requestParamType,
-          headers: headers,
-          method: method,
-          params: params,
-          logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
-          logHeaders: logHeaders,
-          apiId: this.api.id,
-          testCaseInfo: {
-            checkField: this.testCase.checkField,
-            checkValue: this.testCase.checkValue,
-            testCaseId: this.testCase.testCaseId,
+          this.$refs['reqHeaders'] && this.$refs['reqHeaders'].signSelected();
+          this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
+          let headers = {};
+          let requestInfo = JSON.parse(this.testCase.requestInfo);
+          Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
+          let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
+          if (this.api.apiRequestType !== 1) {
+            // Ignore Get
+            let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
+            headers[contentTypeName] = contentTypeValue;
           }
-        }, '*');
-      } finally {
-        setTimeout(() => this.sendDisable = false, 500);
-      }
+          let params = {};
+          Object.keys(requestInfo.data).forEach(function (key) {
+            params[key] = requestInfo.data[key];
+          });
+          if (this.api.apiRequestType === 1) {
+            // use Get
+            let paramStr = '';
+            Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
+            let index = url.indexOf('?');
+            if (index !== -1) {
+              url = url.substring(0, index);
+            }
+            url += '?' + paramStr;
+            params = paramStr;
+          }
+          let logHeaders = {};
+          logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
+          logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
+          window.postMessage({
+            url: url,
+            requestParamType: this.api.requestParamType,
+            headers: headers,
+            method: method,
+            params: params,
+            logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
+            logHeaders: logHeaders,
+            apiId: this.api.id,
+            testCaseInfo: {
+              checkField: this.testCase.checkField,
+              checkValue: this.testCase.checkValue,
+              testCaseId: this.testCase.testCaseId,
+            }
+          }, '*');
+        } finally {
+          setTimeout(() => this.sendDisable = false, 500);
+        }
+      });
     },
     command(func) {
       if (func) {

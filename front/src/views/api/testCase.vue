@@ -98,11 +98,10 @@
             label="operation"
             width="200">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary"  @click="toDetails(scope.row)">Details</el-button>
-            <el-button size="mini" type="danger"   @click="runTest(scope.row)">Test</el-button>
+            <el-button size="mini" type="primary" @click="toDetails(scope.row)">Details</el-button>
+            <el-button size="mini" type="danger" @click="runTest(scope.row)">Test</el-button>
           </template>
         </el-table-column>
-
       </el-table>
     </template>
   </div>
@@ -115,7 +114,7 @@ import LineText from "@/components/lineText/lineText";
 
 export default {
   name: "testCase",
-  components: { LineText},
+  components: {LineText},
   data() {
     return {
       CONSTANT,
@@ -128,27 +127,27 @@ export default {
         type: '',
         apiRequestType: 0,
         apiStatus: 0,
-        createName:'',
-        updateName:'',
-        updateTime:'',
-        requestHeaders:[],
-        testCaseVO:{
-          dataList:[]
+        createName: '',
+        updateName: '',
+        updateTime: '',
+        requestHeaders: [],
+        testCaseVO: {
+          dataList: []
         },
         requestParamVO: {
           dataList: [],
         },
       },
       selectedEnv: this.$route.query.selectedEnv,
-      testCaseList :[],
-      testCase:{},
+      testCaseList: [],
+      testCase: {},
     };
   },
   methods: {
     dateFormat(time) {
       return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
     },
-    init(){
+    init() {
       //api相关信息
       this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
         if (UTILS.checkResp(resp)) {
@@ -165,144 +164,138 @@ export default {
     toDetails(row) {
       this.$router.push({
         path: '/api/testCaseDetail',
-        query: {id: row.id, apiId: row.apiId,selectedEnv: this.selectedEnv}
+        query: {id: row.id, apiId: row.apiId, selectedEnv: this.selectedEnv}
       });
     },
     //单个测试
     runTest(row) {
-      if (UTILS.isNotInstallPlugin()) {
-        this.$message.error('please install vpi plugin');
-        return;
-      }
-      this.$set(row, 'testDisable', true);
-      let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
-          : this.api.apiUri;
-      try {
+      UTILS.checkChromePlugin().then(() => {
+        this.$set(row, 'testDisable', true);
+        let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
+            : this.api.apiUri;
+        try {
+          if (url.startsWith('/')) {
+            this.$message.error('url error：' + url);
+            return;
+          } else if (!url.startsWith('http')) {
+            url = 'http://' + url;
+          }
+          if (!UTILS.isJSON(row.requestInfo)) {
+            this.$message.error('request params error :' + row.requestInfo);
+            return;
+          }
+          let requestInfo = JSON.parse(row.requestInfo);
+          //testCase request headers
+          let headers = {};
+          Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
+          let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
+          if (this.api.apiRequestType !== 1) {
+            // Ignore Get
+            let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
+            headers[contentTypeName] = contentTypeValue;
+          }
+          //testCase request params
+          let params = {};
+          Object.keys(requestInfo.data).forEach(function (key) {
+            params[key] = requestInfo.data[key];
+          });
+          if (this.api.apiRequestType === 1) {
+            // use Get
+            let paramStr = '';
+            Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
+            let index = url.indexOf('?');
+            if (index !== -1) {
+              url = url.substring(0, index);
+            }
+            url += '?' + paramStr;
+            params = paramStr;
+          }
+          let logHeaders = {};
+          logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
+          logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
+          window.postMessage({
+            url: url,
+            requestParamType: this.api.requestParamType,
+            headers: headers,
+            method: method,
+            params: params,
+            logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
+            logHeaders: logHeaders,
+            apiId: this.api.id,
+            testCaseInfo: {
+              checkField: row.checkField,
+              checkValue: row.checkValue,
+              testCaseId: row.id
+            },
+          }, '*');
+        } finally {
+          setTimeout(() => row.testDisable = false, 500);
+        }
+      })
+    },
+    //批量测试
+    testAll() {
+      UTILS.checkChromePlugin().then(()=>{
+        let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
+            : this.api.apiUri;
         if (url.startsWith('/')) {
           this.$message.error('url error：' + url);
           return;
         } else if (!url.startsWith('http')) {
           url = 'http://' + url;
         }
-        if (!UTILS.isJSON(row.requestInfo)) {
-          this.$message.error('request params error :' + row.requestInfo);
-          return;
-        }
-        let requestInfo = JSON.parse(row.requestInfo);
-        //testCase request headers
-        let headers = {};
-        Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
-        let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
-        if (this.api.apiRequestType !== 1) {
-          // Ignore Get
-          let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
-          headers[contentTypeName] = contentTypeValue;
-        }
-        //testCase request params
-        let params = {};
-        Object.keys(requestInfo.data).forEach(function (key) {
-          params[key] = requestInfo.data[key];
-        });
-        if (this.api.apiRequestType === 1) {
-          // use Get
-          let paramStr = '';
-          Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
-          let index = url.indexOf('?');
-          if (index !== -1) {
-            url = url.substring(0, index);
+        //遍历所有测试样例，发送请求到插件
+        for (let item of this.testCaseList) {
+          if (!UTILS.isJSON(item.requestInfo)) {
+            this.$message.error('request params error :' + item.requestInfo);
+            return;
           }
-          url += '?' + paramStr;
-          params = paramStr;
-        }
-        let logHeaders = {};
-        logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
-        logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
-        window.postMessage({
-          url: url,
-          requestParamType: this.api.requestParamType,
-          headers: headers,
-          method: method,
-          params: params,
-          logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
-          logHeaders: logHeaders,
-          apiId: this.api.id,
-          testCaseInfo: {
-            checkField: row.checkField,
-            checkValue: row.checkValue,
-            testCaseId: row.id
-          },
-        }, '*');
-      } finally {
-        setTimeout(() => row.testDisable = false, 500);
-      }
-    },
-    //批量测试
-    testAll() {
-      if (UTILS.isNotInstallPlugin()) {
-        this.$message.error('please install vpi plugin');
-        return;
-      }
-      let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
-          : this.api.apiUri;
-      if (url.startsWith('/')) {
-        this.$message.error('url error：' + url);
-        return;
-      } else if (!url.startsWith('http')) {
-        url = 'http://' + url;
-      }
-      //遍历所有测试样例，发送请求到插件
-      for (let item of this.testCaseList) {
-        if (!UTILS.isJSON(item.requestInfo)) {
-          this.$message.error('request params error :' + item.requestInfo);
-          return;
-        }
-        let requestInfo = JSON.parse(item.requestInfo);
-        //testCase request headers
-        let headers = {};
-        Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
-        let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
-        if (this.api.apiRequestType !== 1) {
-          // Ignore Get
-          let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
-          headers[contentTypeName] = contentTypeValue;
-        }
-        //testCase request params
-        let params = {};
-        Object.keys(requestInfo.data).forEach(function (key) {
-          params[key] = requestInfo.data[key];
-        });
-        if (this.api.apiRequestType === 1) {
-          // use Get
-          let paramStr = '';
-          Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
-          let index = url.indexOf('?');
-          if (index !== -1) {
-            url = url.substring(0, index);
+          let requestInfo = JSON.parse(item.requestInfo);
+          //testCase request headers
+          let headers = {};
+          Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
+          let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
+          if (this.api.apiRequestType !== 1) {
+            // Ignore Get
+            let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
+            headers[contentTypeName] = contentTypeValue;
           }
-          url += '?' + paramStr;
-          params = paramStr;
-        }
-        let logHeaders = {};
-        logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
-        logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
-        window.postMessage({
-          url: url,
-          requestParamType: this.api.requestParamType,
-          headers: headers,
-          method: method,
-          params: params,
-          logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
-          logHeaders: logHeaders,
-          apiId: this.api.id,
-          testCaseInfo: {
-            checkField: item.checkField,
-            checkValue: item.checkValue,
-            testCaseId: item.id
+          //testCase request params
+          let params = {};
+          Object.keys(requestInfo.data).forEach(function (key) {
+            params[key] = requestInfo.data[key];
+          });
+          if (this.api.apiRequestType === 1) {
+            // use Get
+            let paramStr = '';
+            Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
+            let index = url.indexOf('?');
+            if (index !== -1) {
+              url = url.substring(0, index);
+            }
+            url += '?' + paramStr;
+            params = paramStr;
           }
-        }, '*');
-      }
-
-
+          let logHeaders = {};
+          logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
+          logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
+          window.postMessage({
+            url: url,
+            requestParamType: this.api.requestParamType,
+            headers: headers,
+            method: method,
+            params: params,
+            logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
+            logHeaders: logHeaders,
+            apiId: this.api.id,
+            testCaseInfo: {
+              checkField: item.checkField,
+              checkValue: item.checkValue,
+              testCaseId: item.id
+            }
+          }, '*');
+        }
+      });
     },
     flushEnv(env) {
       this.selectedEnv = env;
@@ -328,7 +321,7 @@ export default {
       return '【' + headerTitle + '】 \r\n' + headerStr + '【' + paramTitle + '】 \r\n' + data;
     },
   },
-  mounted(){
+  mounted() {
     this.init();
   }
 }
@@ -385,6 +378,7 @@ export default {
       .el-button
         padding 5px 5px
         margin-top: 1.5px
+
   .test-all-button
     float: right;
     margin-right: 50px
