@@ -1,5 +1,5 @@
 <template>
-  <div id="api-view-container" style="min-width: 1250px;line-height: 15px">
+  <div id="api-view-container" class="api-container">
     <el-row>
       <el-col :span="12" style="text-align: left">
         <el-tag>{{ CONSTANT.REQUEST_TYPE[api.apiRequestType] }}</el-tag>

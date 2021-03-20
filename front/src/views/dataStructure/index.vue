@@ -1,5 +1,5 @@
 <template>
-    <div id="data-container" style="min-width: 1250px">
+    <div id="data-container" class="api-container">
         <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
                   :row-style="{cursor:'pointer'}" @row-click="showDataStructure">
             <el-table-column label="name" prop="name" width="200"/>
@@ -36,14 +36,14 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import EditDataStructureDialog from "../../components/dataStructure/editDataStructureDialog";
-    import PageTemplate from "../../components/pageTemplate/pageTemplate";
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
-    import ShowReferenceApiDialog from "./showReferenceApiDialog";
-    import ConfirmDialog from "../../components/confirm/confirmDialog";
+import EditDataStructureDialog from "../../components/dataStructure/editDataStructureDialog";
+import PageTemplate from "../../components/pageTemplate/pageTemplate";
+import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
+import ShowReferenceApiDialog from "./showReferenceApiDialog";
+import ConfirmDialog from "../../components/confirm/confirmDialog";
 
-    export default {
+export default {
         name: 'index',
         components: {ConfirmDialog, ShowReferenceApiDialog, PageTemplate, EditDataStructureDialog},
         data() {

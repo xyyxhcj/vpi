@@ -1,7 +1,5 @@
 <template>
-  <div id="api-test-container" style="min-width: 1250px;line-height: 15px">
-
-
+  <div id="api-test-container" class="api-container">
     <div id="test-up">
       <el-row>
         <el-col :span="24" style="text-align: left">

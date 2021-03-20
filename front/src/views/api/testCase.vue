@@ -1,5 +1,5 @@
 <template>
-  <div id="api-test-case-container" style="min-width: 1250px;line-height: 15px">
+  <div id="api-test-case-container" class="api-container">
     <el-row>
       <el-col :span="24" style="text-align: left">
         <el-select v-model.trim="api.apiRequestType" style="width: 8%" size="mini">

@@ -1,5 +1,5 @@
 <template>
-    <el-container id="api-container" style="min-width: 1250px">
+    <el-container id="api-container" class="api-container">
         <el-header height="45px" style="padding:10px;text-align: left;line-height: 25px;">
             <template v-if="$route.path==='/api/edit'">
                 <el-button type="success" size="mini" @click="save">Save</el-button>
