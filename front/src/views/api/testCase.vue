@@ -99,7 +99,7 @@
             width="200">
           <template slot-scope="scope">
             <el-button size="mini" type="primary"  @click="toDetails(scope.row)">Details</el-button>
-            <el-button size="mini" type="danger"   @click="runTest(scope)">Test</el-button>
+            <el-button size="mini" type="danger"   @click="runTest(scope.row)">Test</el-button>
           </template>
         </el-table-column>
 
@@ -169,12 +169,12 @@ export default {
       });
     },
     //单个测试
-    runTest(scope) {
+    runTest(row) {
       if (UTILS.isNotInstallPlugin()) {
         this.$message.error('please install vpi plugin');
         return;
       }
-      this.$set(scope.row, 'testDisable', true);
+      this.$set(row, 'testDisable', true);
       let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
           : this.api.apiUri;
       try {
@@ -184,12 +184,11 @@ export default {
         } else if (!url.startsWith('http')) {
           url = 'http://' + url;
         }
-
-        if (!UTILS.isJSON(this.testCaseList[scope.$index].requestInfo)) {
-          this.$message.error('request params error :' + this.testCaseList[scope.$index].requestInfo);
+        if (!UTILS.isJSON(row.requestInfo)) {
+          this.$message.error('request params error :' + row.requestInfo);
           return;
         }
-        let requestInfo = JSON.parse(this.testCaseList[scope.$index].requestInfo);
+        let requestInfo = JSON.parse(row.requestInfo);
         //testCase request headers
         let headers = {};
         Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
@@ -228,13 +227,13 @@ export default {
           logHeaders: logHeaders,
           apiId: this.api.id,
           testCaseInfo: {
-            checkField: scope.row.checkField,
-            checkValue: scope.row.checkValue,
-            testCaseId: scope.row.id
-          }
+            checkField: row.checkField,
+            checkValue: row.checkValue,
+            testCaseId: row.id
+          },
         }, '*');
       } finally {
-        setTimeout(() => scope.row.testDisable = false, 500);
+        setTimeout(() => row.testDisable = false, 500);
       }
     },
     //批量测试
@@ -253,7 +252,6 @@ export default {
       }
       //遍历所有测试样例，发送请求到插件
       for (let item of this.testCaseList) {
-
         if (!UTILS.isJSON(item.requestInfo)) {
           this.$message.error('request params error :' + item.requestInfo);
           return;
