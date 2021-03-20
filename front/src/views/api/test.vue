@@ -600,7 +600,7 @@ export default {
         checkField: this.testCase.checkField,
         checkValue: this.testCase.checkValue
       }
-      this.$axios.post(CONSTANT.REQUEST_URL.API_TEST_CASE_SAVE, testCase).then(resp => {
+      this.$axios.post(CONSTANT.REQUEST_URL.API_TEST_CASE_ADD, testCase).then(resp => {
         if (UTILS.checkResp(resp)) {
           this.$message.success('saved');
           this.handleClose();

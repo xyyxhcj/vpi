@@ -3,7 +3,7 @@ server:
   shutdown: graceful
 spring:
   profiles:
-    active: dev
+    active: prod
   application:
     name: ams
   jackson:

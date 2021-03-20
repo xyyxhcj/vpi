@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
   data:
     mongodb:
       option:
@@ -11,4 +11,4 @@ spring:
 
 system:
   properties:
-    profileActive: dev
+    profileActive: prod

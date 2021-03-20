@@ -101,6 +101,13 @@ function sendMessageToContentScript(message, callback) {
     });
 }
 
+function sendError(error) {
+    if (error && error !== '') {
+        console.log(error);
+        sendMessageToContentScript(error.toString());
+    }
+}
+
 function axios(url, requestParamType, method, data, headers = undefined) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -164,15 +171,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             requestTime: new Date().getTime() - start,
             requestInfo: JSON.stringify({headers: headers, data: params}),
             responseInfo: JSON.stringify({headers: headerDict, data: resp}),
-        }, logHeaders).catch(error => {
-            console.log(error);
-            sendMessageToContentScript(error.toString());
-        });
-    }).catch(error => {
-        if (error && error !== '') {
-            console.log(error);
-            sendMessageToContentScript(error.toString());
-        }
-    });
+        }, logHeaders).catch(error => sendError(error));
+    }).catch(error => sendError(error));
     sendResponse();
 });

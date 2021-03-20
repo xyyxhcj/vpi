@@ -102,8 +102,7 @@ export const CONSTANT = {
         LEFT_MENU_IS_COLLAPSE: 'leftMenuIsCollapse',
     },
     REQUEST_URL: {
-        // TODO 移至配置文件夹
-        CHROME_PLUGIN_DOWNLOAD : '$chromePluginDownloadUrl',
+        CHROME_PLUGIN_DOWNLOAD : process.env.VUE_APP_API_URL4PLUGIN_DOWNLOAD,
 
         LOGIN: '/user/login',
         LOGIN_OUT: '/user/loginOut',
@@ -161,9 +160,9 @@ export const CONSTANT = {
         API_TEST_HISTORY_DELETE: '/apiTestHistory/delete',
         API_TEST_HISTORY_FIND_PAGE: '/apiTestHistory/findPage',
 
+        API_TEST_CASE_ADD:'/apiTestCase/add',
+        API_TEST_CASE_DETAIL:"/apiTestCase/findDetail",
         API_TEST_CASE_FIND_PAGE:'/apiTestCase/findPage',
-        API_TEST_CASE_SAVE:'/apiTestCase/add',
-        API_TEST_CASE_DETAIL:"/apiTestCase/detail",
     },
     CLOSE_LOADING_URL: [],
     RESULT_CODE: {

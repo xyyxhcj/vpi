@@ -44,13 +44,12 @@ git reset --hard develop
 git pull
 
 # replace parameter
-sed -i "s|\$mongodbAddress|${mongodbAddress}|g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s|\$mongodbDatabase|${mongodbDatabase}|g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s|\$mongodbUsername|${mongodbUsername}|g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s|\$mongodbPassword|${mongodbPassword}|g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s|\$prodApiUrl|${prodApiUrl}|g" ${projectDir}front/src/common/js/constant.js
-sed -i "s|\$chromePluginDownloadUrl|${chromePluginDownloadUrl}|g" ${projectDir}front/src/common/js/constant.js
-sed -i "s|\$prodApiUrl|${prodApiUrl}|g" ${projectDir}front/vue.config.js
+sed -i "s|\$mongodbAddress|${mongodbAddress}|g" ${projectDir}ams/src/main/resources/application-prod.yml
+sed -i "s|\$mongodbDatabase|${mongodbDatabase}|g" ${projectDir}ams/src/main/resources/application-prod.yml
+sed -i "s|\$mongodbUsername|${mongodbUsername}|g" ${projectDir}ams/src/main/resources/application-prod.yml
+sed -i "s|\$mongodbPassword|${mongodbPassword}|g" ${projectDir}ams/src/main/resources/application-prod.yml
+sed -i "s|\$prodApiUrl|${prodApiUrl}|g" ${projectDir}front/.env.production
+sed -i "s|\$chromePluginDownloadUrl|${chromePluginDownloadUrl}|g" ${projectDir}front/.env.production
 
 # build
 cd front || exit
@@ -80,5 +79,5 @@ cp ${projectDir}front/dist/* ${nginxStaticDir} -r
 mv ${projectDir}chromePlugin/vpiChromePlugin.zip ${nginxStaticDir}
 mv ${projectDir}ams/target/ams.jar ${jarSaveDir}
 cd ${jarSaveDir} || exit
-nohup java -jar -XX:+HeapDumpOnOutOfMemoryError ${jarSaveDir}ams.jar --spring.profiles.active=dev > vpiNohup.out 2>&1 &
+nohup java -jar -XX:+HeapDumpOnOutOfMemoryError ${jarSaveDir}ams.jar > vpiNohup.out 2>&1 &
 tail -f ${jarSaveDir}vpiNohup.out
