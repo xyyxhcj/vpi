@@ -1,6 +1,5 @@
 import CryptoJS from 'crypto-js/crypto-js';
 import {CONSTANT} from "./constant";
-import Vue from 'vue';
 
 /**
  * concat date
@@ -443,15 +442,4 @@ export const UTILS = {
         }
         return result;
     },
-    checkChromePlugin() {
-        return new Promise((resolve,reject) => {
-            let vpiPluginSign = document.getElementById('vpi-plugin-loaded');
-            if (!vpiPluginSign || vpiPluginSign.innerHTML === '') {
-                resolve();
-            } else {
-                Vue.message.error('please install vpi plugin');
-                reject();
-            }
-        });
-    }
 };

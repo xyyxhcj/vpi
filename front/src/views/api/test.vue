@@ -127,7 +127,7 @@
         title="saveTestCase"
         :visible.sync="showTestCaseDialog"
         width="30%">
-      <el-form ref="testCase" :model="testCase" label-width="120px" >
+      <el-form ref="testCase" :model="testCase" label-width="120px">
         <el-form-item label="testCaseName">
           <el-input v-model="testCase.name" placeholder="testCase name"></el-input>
         </el-form-item>
@@ -156,6 +156,7 @@ import DataStructure from "../../components/dataStructure/dataStructure";
 import LineText from "../../components/lineText/lineText";
 import PageTemplate from "../../components/pageTemplate/pageTemplate";
 import ConfirmDialog from "../../components/confirm/confirmDialog";
+import {PLUGIN_UTILS} from "@/common/js/pluginUtils";
 
 export default {
   name: 'test',
@@ -187,10 +188,10 @@ export default {
         apiFailureMock: '',
       },
       showTestCaseDialog: false,
-      testCase:{
-        name:"",
-        checkField:"",
-        checkValue:""
+      testCase: {
+        name: "",
+        checkField: "",
+        checkValue: ""
       },
       reqDefaultCard: 'requestParam',
       testInfoDefaultCard: 'respInfo',
@@ -303,72 +304,16 @@ export default {
       return '【' + headerTitle + '】 \r\n' + headerStr + '【' + paramTitle + '】 \r\n' + data;
     },
     send() {
-      let vpiPluginSign = document.getElementById('vpi-plugin-loaded');
-      if (!vpiPluginSign || vpiPluginSign.innerHTML === '') {
-        this.$message.error('please install vpi plugin');
-        return;
-      }
-      // empty test info
-      document.getElementById('req-headers').innerText = '';
-      document.getElementById('req-data').innerText = '';
-      document.getElementById('resp-headers').innerText = '';
-      document.getElementById('resp-data').innerText = '';
-      this.testInfoDefaultCard = 'respInfo';
-      this.sendDisable = true;
-      let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
-          : this.api.apiUri;
-      try {
-        if (url.startsWith('/')) {
-          this.$message.error('url error：' + url);
-          return;
-        } else if (!this.checkURL(url)) {
-          this.$message.error('url error：' + url);
-          return;
-        } else if (!url.startsWith('http')) {
-          url = 'http://' + url;
-        }
-        this.$refs['reqHeaders'].signSelected();
-        this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
-        let headers = {};
-        this.api.requestHeaders.forEach(item => {
-          if (item.selected && item.name !== '') {
-            headers[item.name] = item.value;
-          }
-        });
-        let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
-        if (this.api.apiRequestType !== 1) {
-          // Ignore Get
-          let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
-          headers[contentTypeName] = contentTypeValue;
-        }
-        let params = this.getParams();
-        if (this.api.apiRequestType === 1) {
-          // use Get
-          let paramStr = '';
-          Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
-          let index = url.indexOf('?');
-          if (index !== -1) {
-            url = url.substring(0, index);
-          }
-          url += '?' + paramStr;
-          params = paramStr;
-        }
-        let logHeaders = {};
-        logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
-        logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
-        window.postMessage({
-          url: url,
-          requestParamType: this.api.requestParamType,
-          headers: headers,
-          method: method,
-          params: params,
-          logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
-          logHeaders: logHeaders,
-          apiId: this.api.id,
-        }, '*');
-      } finally {
-        setTimeout(() => this.sendDisable = false, 500);
-      }
+      PLUGIN_UTILS.checkValid().then(() => {
+        // empty test info
+        document.getElementById('req-headers').innerText = '';
+        document.getElementById('req-data').innerText = '';
+        document.getElementById('resp-headers').innerText = '';
+        document.getElementById('resp-data').innerText = '';
+        this.testInfoDefaultCard = 'respInfo';
+        PLUGIN_UTILS.setLoading(this, 'sendDisable');
+        PLUGIN_UTILS.send2Plugin(this.selectedEnv, this.api, this.getHeaders(), this.getParams());
+      }).catch();
     },
     dateFormat(time) {
       return UTILS.formatDate(new Date(time), CONSTANT.CONFIG.DATE_FORMAT);
@@ -398,16 +343,16 @@ export default {
     },
     init() {
       this.$axios.post(CONSTANT.REQUEST_URL.API_FIND_DETAIL, {id: this.$route.query.id}).then(resp => {
-          if (UTILS.checkResp(resp)) {
-            this.api = resp.data.data;
-            if (this.api.requestParamVO) {
-              this.initParams();
-            }
-            if (this.$refs['reqHeaders']) {
-              this.$refs['reqHeaders'].selectAll();
-              this.$refs['reqHeaders'].init();
-            }
+        if (UTILS.checkResp(resp)) {
+          this.api = resp.data.data;
+          if (this.api.requestParamVO) {
+            this.initParams();
           }
+          if (this.$refs['reqHeaders']) {
+            this.$refs['reqHeaders'].selectAll();
+            this.$refs['reqHeaders'].init();
+          }
+        }
       });
     },
     mergeHeader() {
@@ -504,8 +449,8 @@ export default {
         func();
       }
     },
-    initParams(){
-      UTILS.fillShowList(this.api.requestParamVO.dataList,this.reqShowDataList);
+    initParams() {
+      UTILS.fillShowList(this.api.requestParamVO.dataList, this.reqShowDataList);
       this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].init();
     },
     newTab() {
@@ -614,27 +559,16 @@ export default {
     showTestCase() {
       this.showTestCaseDialog = true;
     },
-    checkURL(url) {
-      //url= 协议://(ftp的登录信息)[IP|域名](:端口号)(/或?请求参数)
-      var strRegex = '^((https|http|ftp)://)?'//(https或http或ftp):// 可有可无
-          + '(([\\w_!~*\'()\\.&=+$%-]+: )?[\\w_!~*\'()\\.&=+$%-]+@)?' //ftp的user@  可有可无
-          + '(([0-9]{1,3}\\.){3}[0-9]{1,3}' // IP形式的URL- 3位数字.3位数字.3位数字.3位数字
-          + '|' // 允许IP和DOMAIN（域名）
-          + '(localhost)|'	//匹配localhost
-          + '([\\w_!~*\'()-]+\\.)*' // 域名- 至少一个[英文或数字_!~*\'()-]加上.
-          + '\\w+\\.' // 一级域名 -英文或数字  加上.
-          + '[a-zA-Z]{1,6})' // 顶级域名- 1-6位英文
-          + '(:[0-9]{1,5})?' // 端口- :80 ,1-5位数字
-          + '((/?)|' // url无参数结尾 - 斜杆或这没有
-          + '(/[\\w_!~*\'()\\.;?:@&=+$,%#-]+)+/?)$';//请求参数结尾- 英文或数字和[]内的各种字符
-
-      var re = new RegExp(strRegex, 'i');//i不区分大小写
-      //将url做uri转码后再匹配，解除请求参数中的中文和空字符影响
-      if (re.test(encodeURI(url))) {
-        return (true);
-      } else {
-        return (false);
-      }
+    getHeaders() {
+      this.$refs['reqHeaders'].signSelected();
+      this.$refs['reqDataStructure'] && this.$refs['reqDataStructure'].signSelected();
+      let headers = {};
+      this.api.requestHeaders.forEach(item => {
+        if (item.selected && item.name !== '') {
+          headers[item.name] = item.value;
+        }
+      });
+      return headers;
     },
   },
   mounted() {

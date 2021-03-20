@@ -11,7 +11,6 @@
         </el-input>
       </el-col>
     </el-row>
-
     <div style="text-align: left;margin: 5px;line-height: 30px">
       <div style="font-size: 22px">{{ api.apiUri }}</div>
       <div style="font-size: 16px">{{ api.name }}</div>
@@ -19,27 +18,13 @@
         <span class="api-edit-info">create: {{ api.createName }}</span>
         <span class="api-edit-info">update: {{ api.updateName }}</span>
         <span class="api-edit-info">updateTime: {{ api.updateTime === "" ? "" : dateFormat(api.updateTime) }}</span>
-
         <el-button class="test-all-button" size="small" type="success" @click="testAll()">Test All</el-button>
-
       </div>
     </div>
-
     <line-text text="Test Case"/>
-    <template v-if="testCaseList.length>0">
-      <el-table
-          align="center"
-          :data="testCaseList"
-          stripe
-          border
-          style="width: 100%">
-        <el-table-column
-            align="center"
-            prop="name"
-            label="testCaseName"
-            fit
-            show-overflow-tooltip
-        >
+    <template v-if="testCaseList&&testCaseList.length>0">
+      <el-table align="center" :data="testCaseList" stripe border>
+        <el-table-column align="center" label="testCaseName" fit show-overflow-tooltip>
           <template slot-scope="scope">
             <el-popover trigger="hover" placement="left-start">
               <div style="max-height: 600px;max-width: 500px">
@@ -52,53 +37,19 @@
             </el-popover>
           </template>
         </el-table-column>
-
-        <el-table-column
-            align="center"
-            prop="createName"
-            label="createName"
-            width="200">
-        </el-table-column>
-
-        <el-table-column
-            align="center"
-            prop="createTime"
-            :formatter="(row)=>dateFormat(row.updateTime)"
-            label="createTime"
-            width="200">
-        </el-table-column>
-
-        <el-table-column
-            align="center"
-            prop="checkField"
-            label="checkField"
-            width="200">
-
-        </el-table-column>
-
-        <el-table-column
-            align="center"
-            prop="checkValue"
-            label="checkValue"
-            width="200">
-        </el-table-column>
-
-        <el-table-column
-            align="center"
-            label="testResult"
-            width="200">
+        <el-table-column align="center" prop="createName" label="createName" width="200"/>
+        <el-table-column align="center" :formatter="(row)=>dateFormat(row.createTime)" label="createTime" width="200"/>
+        <el-table-column align="center" prop="checkField" label="checkField" width="200"/>
+        <el-table-column align="center" prop="checkValue" label="checkValue" width="200"/>
+        <el-table-column align="center" label="testResult" width="200">
           <template slot-scope="scope">
-            <div :id="scope.row.id">
-            </div>
+            <div :id="scope.row.id"/>
           </template>
         </el-table-column>
-
-        <el-table-column
-            align="center"
-            label="operation"
-            width="200">
-          <template slot-scope="scope">
-            <el-button size="mini" type="danger" @click="runTest(scope.row)">Test</el-button>
+        <el-table-column align="center" label="operation">
+          <template #default="scope">
+            <el-button size="mini" type="primary" @click="runTest(scope.row)" :loading="scope.row.isLoading4Test">Test
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -110,6 +61,7 @@
 import {CONSTANT} from "@/common/js/constant";
 import {UTILS} from "@/common/js/utils";
 import LineText from "@/components/lineText/lineText";
+import {PLUGIN_UTILS} from "@/common/js/pluginUtils";
 
 export default {
   name: "testCase",
@@ -160,135 +112,46 @@ export default {
         }
       });
     },
+    getHeaders(requestInfo) {
+      let headers = {};
+      Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
+      return headers;
+    },
+    getParams(requestInfo) {
+      let params = {};
+      Object.keys(requestInfo.data).forEach(function (key) {
+        params[key] = requestInfo.data[key];
+      });
+      return params;
+    },
+    rowTest(row) {
+      document.getElementById(row.id).innerText = '';
+      PLUGIN_UTILS.setLoading(row, 'isLoading4Test');
+      let requestInfo = JSON.parse(row.requestInfo)
+      PLUGIN_UTILS.send2Plugin(this.selectedEnv, this.api, this.getHeaders(requestInfo)
+          , this.getParams(requestInfo)
+          , {
+            checkField: row.checkField,
+            checkValue: row.checkValue,
+            testCaseId: row.id
+          });
+    },
     //单个测试
     runTest(row) {
-      UTILS.checkChromePlugin().then(() => {
-        this.$set(row, 'testDisable', true);
-        let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
-            : this.api.apiUri;
-        try {
-          if (url.startsWith('/')) {
-            this.$message.error('url error：' + url);
-            return;
-          } else if (!url.startsWith('http')) {
-            url = 'http://' + url;
-          }
-          if (!UTILS.isJSON(row.requestInfo)) {
-            this.$message.error('request params error :' + row.requestInfo);
-            return;
-          }
-          let requestInfo = JSON.parse(row.requestInfo);
-          //testCase request headers
-          let headers = {};
-          Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
-          let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
-          if (this.api.apiRequestType !== 1) {
-            // Ignore Get
-            let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
-            headers[contentTypeName] = contentTypeValue;
-          }
-          //testCase request params
-          let params = {};
-          Object.keys(requestInfo.data).forEach(function (key) {
-            params[key] = requestInfo.data[key];
-          });
-          if (this.api.apiRequestType === 1) {
-            // use Get
-            let paramStr = '';
-            Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
-            let index = url.indexOf('?');
-            if (index !== -1) {
-              url = url.substring(0, index);
-            }
-            url += '?' + paramStr;
-            params = paramStr;
-          }
-          let logHeaders = {};
-          logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
-          logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
-          window.postMessage({
-            url: url,
-            requestParamType: this.api.requestParamType,
-            headers: headers,
-            method: method,
-            params: params,
-            logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
-            logHeaders: logHeaders,
-            apiId: this.api.id,
-            testCaseInfo: {
-              checkField: row.checkField,
-              checkValue: row.checkValue,
-              testCaseId: row.id
-            },
-          }, '*');
-        } finally {
-          setTimeout(() => row.testDisable = false, 500);
-        }
-      })
+      PLUGIN_UTILS.checkValid().then(() => {
+        this.rowTest(row);
+      }).catch();
     },
     //批量测试
     testAll() {
-      UTILS.checkChromePlugin().then(()=>{
-        let url = this.selectedEnv && this.selectedEnv.frontUri ? (this.selectedEnv.frontUri + this.api.apiUri)
-            : this.api.apiUri;
-        if (url.startsWith('/')) {
-          this.$message.error('url error：' + url);
-          return;
-        } else if (!url.startsWith('http')) {
-          url = 'http://' + url;
-        }
-        //遍历所有测试样例，发送请求到插件
-        for (let item of this.testCaseList) {
-          if (!UTILS.isJSON(item.requestInfo)) {
-            this.$message.error('request params error :' + item.requestInfo);
-            return;
-          }
-          let requestInfo = JSON.parse(item.requestInfo);
-          //testCase request headers
-          let headers = {};
-          Object.keys(requestInfo.headers).forEach(key => headers[key] = requestInfo.headers[key]);
-          let method = CONSTANT.REQUEST_TYPE[this.api.apiRequestType];
-          if (this.api.apiRequestType !== 1) {
-            // Ignore Get
-            let [contentTypeName, contentTypeValue] = CONSTANT.CONTENT_TYPE[this.api.requestParamType];
-            headers[contentTypeName] = contentTypeValue;
-          }
-          //testCase request params
-          let params = {};
-          Object.keys(requestInfo.data).forEach(function (key) {
-            params[key] = requestInfo.data[key];
-          });
-          if (this.api.apiRequestType === 1) {
-            // use Get
-            let paramStr = '';
-            Object.keys(params).forEach(key => paramStr += (key + '=' + params[key] + '&'));
-            let index = url.indexOf('?');
-            if (index !== -1) {
-              url = url.substring(0, index);
-            }
-            url += '?' + paramStr;
-            params = paramStr;
-          }
-          let logHeaders = {};
-          logHeaders[CONSTANT.LOCAL_STORAGE_KEY.LOGIN_AUTH] = this.$store.getters.loginAuth;
-          logHeaders[CONSTANT.CONTENT_TYPE[0][0]] = CONSTANT.CONTENT_TYPE[0][1];
-          window.postMessage({
-            url: url,
-            requestParamType: this.api.requestParamType,
-            headers: headers,
-            method: method,
-            params: params,
-            logUrl: CONSTANT.CONFIG.HOST + CONSTANT.REQUEST_URL.API_TEST_HISTORY_ADD,
-            logHeaders: logHeaders,
-            apiId: this.api.id,
-            testCaseInfo: {
-              checkField: item.checkField,
-              checkValue: item.checkValue,
-              testCaseId: item.id
-            }
-          }, '*');
-        }
-      });
+      if (!this.testCaseList || this.testCaseList.length === 0) {
+        return;
+      }
+      PLUGIN_UTILS.checkValid().then(() => {
+        this.testCaseList.forEach(row => {
+          this.rowTest(row);
+        })
+      }).catch();
     },
     flushEnv(env) {
       this.selectedEnv = env;
