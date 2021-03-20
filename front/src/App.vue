@@ -187,7 +187,7 @@ export default {
     }
   },
   created() {
-    console.error(process);
+    console.error(process.env);
   }
 }
 </script>

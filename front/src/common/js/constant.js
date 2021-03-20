@@ -91,7 +91,7 @@ export const CONSTANT = {
         DEFAULT_DATA_LIST_SIZE: 3,
         AES_KEY: 'QuBabnE0dR1pb29h',
         ARRAY_SPLIT_STR: '|',
-        HOST: process.env.API_URL,
+        HOST: process.env.VUE_APP_API_URL_1,
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',

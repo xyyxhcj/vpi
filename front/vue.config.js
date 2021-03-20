@@ -89,7 +89,7 @@ module.exports = {
         progress: true,
         proxy: {
             '/vpi/': {
-                target: process.env.API_URL,
+                target: process.env.VUE_APP_API_URL_1,
                 ws: true,
                 changOrigin: true,
                 pathRewrite: {

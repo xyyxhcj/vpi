@@ -108,6 +108,9 @@ function axios(url, requestParamType, method, data, headers = undefined) {
         if (headers) {
             Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
         }
+        xhr.onerror = function (e) {
+            alert("Unknown Error Occurred. Server response not received.");
+        };
         xhr.onreadystatechange = () => {
             if (xhr.readyState !== 4) {
                 return;
@@ -163,11 +166,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             responseInfo: JSON.stringify({headers: headerDict, data: resp}),
         }, logHeaders).catch(error => {
             console.log(error);
-            sendMessageToContentScript();
+            sendMessageToContentScript(error.toString());
         });
     }).catch(error => {
-        console.log(error);
-        sendMessageToContentScript();
+        if (error && error !== '') {
+            console.log(error);
+            sendMessageToContentScript(error.toString());
+        }
     });
     sendResponse();
 });

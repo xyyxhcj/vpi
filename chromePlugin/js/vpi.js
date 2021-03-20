@@ -7,8 +7,8 @@ window.addEventListener("message", function (e) {
 
 // listen background message
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request === undefined) {
-        console.error('abnormal operation');
+    if (typeof request === 'string') {
+        console.error('abnormal operation', request);
         return;
     }
     let {reqHeaders, reqData, respHeaders, respData, testCaseInfo} = request;
