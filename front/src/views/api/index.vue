@@ -22,9 +22,6 @@
               <el-link class="a-link" @click="edit" v-if="hasAuth">Edit</el-link>
               <el-link class="a-link" @click="view">View</el-link>
             </template>
-          <template v-if="$route.path==='/api/testCaseDetail'">
-            <el-link class="a-link" @click="testCase">Test Case</el-link>
-          </template>
             <el-select v-model="selectedEnvName" filterable placeholder="choose environment" clearable
                        @change="selectEnv" style="float: right;margin-right: 30px" size="mini">
                 <el-option v-for="item in envConfigList" :key="item.id" :value="item">
@@ -42,11 +39,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
-    import ConfirmDialog from "../../components/confirm/confirmDialog";
+import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
+import ConfirmDialog from "../../components/confirm/confirmDialog";
 
-    export default {
+export default {
         name: 'index',
         components: {ConfirmDialog},
         data() {

@@ -98,7 +98,6 @@
             label="operation"
             width="200">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="toDetails(scope.row)">Details</el-button>
             <el-button size="mini" type="danger" @click="runTest(scope.row)">Test</el-button>
           </template>
         </el-table-column>
@@ -159,12 +158,6 @@ export default {
         if (UTILS.checkResp(resp)) {
           this.testCaseList = resp.data.data.records;
         }
-      });
-    },
-    toDetails(row) {
-      this.$router.push({
-        path: '/api/testCaseDetail',
-        query: {id: row.id, apiId: row.apiId, selectedEnv: this.selectedEnv}
       });
     },
     //单个测试

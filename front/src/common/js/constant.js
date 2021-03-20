@@ -65,11 +65,6 @@ export const CONSTANT = {
                     name: 'api/testCase',
                     component: resolve => require(['@/views/api/testCase.vue'], resolve),
                 },
-                {
-                    path: '/api/testCaseDetail',
-                    name: 'api/testCaseDetail',
-                    component: resolve => require(['@/views/api/testCaseDetail.vue'], resolve),
-                },
             ],
         },
         {
