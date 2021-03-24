@@ -29,7 +29,7 @@
         <el-table-column align="center" label="testCaseName" fit show-overflow-tooltip>
           <template slot-scope="scope">
             <el-popover trigger="hover" placement="left-start">
-              <div style="max-height: 600px;max-width: 500px">
+              <div class="test-info-popover">
                 <pre>{{ transformInfo(scope.row.requestInfo, 'Request Header', 'Request Parameter') }}</pre>
                 <pre>{{ transformInfo(scope.row.responseInfo, 'Response Header', 'Response Parameter') }}</pre>
               </div>
@@ -45,7 +45,12 @@
         <el-table-column align="center" prop="checkValue" label="checkValue" width="200"/>
         <el-table-column align="center" label="testResult" width="200">
           <template slot-scope="scope">
-            <div :id="scope.row.id"/>
+            <el-popover
+                placement="bottom"
+                trigger="click">
+              <div class="test-info-popover" :id="scope.row.id+'-popover'"/>
+              <div slot="reference" :id="scope.row.id" class="cursor"/>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column align="center" label="operation">
@@ -241,4 +246,13 @@ export default {
   .test-all-button
     float: right;
     margin-right: 50px
+
+  .test-info-popover
+    max-height 600px
+    max-width 800px
+
+  .cursor
+    cursor pointer
+    &:hover
+      color #409EFF
 </style>

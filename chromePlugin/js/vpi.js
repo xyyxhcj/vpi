@@ -5,6 +5,12 @@ window.addEventListener("message", function (e) {
     }
 }, false);
 
+function getHeaderStr(reqHeaders) {
+    let headerStr = '';
+    Object.keys(reqHeaders).forEach(key => headerStr = headerStr + key + ': ' + reqHeaders[key] + '\r\n');
+    return headerStr;
+}
+
 // listen background message
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     try {
@@ -48,13 +54,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             if (background) {
                 element.style.background = background;
             }
+            document.getElementById(testCaseId + '-popover').innerText = 'Request Info:\r\n'
+                + getHeaderStr(reqHeaders) + '\r\n' + reqData + '\r\nResponse Info:\r\n'
+                + respHeaders + '\r\n' + respData
             //  todo info write to each row, add checkVal type
             return;
         }
         if (reqHeaders) {
-            let headerStr = '';
-            Object.keys(reqHeaders).forEach(key => headerStr = headerStr + key + ': ' + reqHeaders[key] + '\r\n');
-            document.getElementById('req-headers').innerText = headerStr;
+            document.getElementById('req-headers').innerText = getHeaderStr(reqHeaders);
         }
         document.getElementById('resp-headers').innerText = respHeaders;
         document.getElementById('req-data').innerText = reqData;
