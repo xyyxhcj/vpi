@@ -6,7 +6,7 @@
                 <el-input v-model.trim="user.loginName"/>
             </el-form-item>
             <el-form-item label="password" prop="password" style="height: 25px">
-                <el-input type="password" v-model.trim="user.password" @keyup.enter.native="submitForm"/>
+                <el-input show-password v-model.trim="user.password" @keyup.enter.native="submitForm"/>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">

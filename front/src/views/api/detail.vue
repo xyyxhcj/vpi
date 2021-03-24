@@ -6,7 +6,7 @@
         <el-button style="margin-left: 10px"
                    :type="api.apiStatus===0?'success':api.apiStatus===2||api.apiStatus===8?'danger':'warning'"
                    size="mini"
-                   circle plain
+                   round plain
                    icon="el-icon-s-help" @click="switchStatus">
           {{ CONSTANT.API_STATUS[api.apiStatus] }}
         </el-button>
