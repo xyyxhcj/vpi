@@ -18,7 +18,8 @@
         <span class="api-edit-info">create: {{ api.createName }}</span>
         <span class="api-edit-info">update: {{ api.updateName }}</span>
         <span class="api-edit-info">updateTime: {{ api.updateTime === "" ? "" : dateFormat(api.updateTime) }}</span>
-        <el-button class="test-all-button" size="small" type="success" @click="testAll()">Test All</el-button>
+        <el-button class="test-all-button" :disabled="!this.testCaseList || this.testCaseList.length === 0" size="mini"
+                   type="success" @click="testAll()">Test All</el-button>
       </div>
     </div>
     <line-text text="Test Case"/>
@@ -144,9 +145,6 @@ export default {
     },
     //批量测试
     testAll() {
-      if (!this.testCaseList || this.testCaseList.length === 0) {
-        return;
-      }
       PLUGIN_UTILS.checkValid().then(() => {
         this.testCaseList.forEach(row => {
           this.rowTest(row);
