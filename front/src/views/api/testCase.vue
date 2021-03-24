@@ -19,7 +19,8 @@
         <span class="api-edit-info">update: {{ api.updateName }}</span>
         <span class="api-edit-info">updateTime: {{ api.updateTime === "" ? "" : dateFormat(api.updateTime) }}</span>
         <el-button class="test-all-button" :disabled="!this.testCaseList || this.testCaseList.length === 0" size="mini"
-                   type="success" @click="testAll()">Test All</el-button>
+                   type="success" @click="testAll()">Test All
+        </el-button>
       </div>
     </div>
     <line-text text="Test Case"/>
@@ -126,7 +127,9 @@ export default {
       return params;
     },
     rowTest(row) {
-      document.getElementById(row.id).innerText = '';
+      const element = document.getElementById(row.id);
+      element.innerText = '';
+      element.background = '';
       PLUGIN_UTILS.setLoading(row, 'isLoading4Test');
       let requestInfo = JSON.parse(row.requestInfo)
       PLUGIN_UTILS.send2Plugin(this.selectedEnv, this.api, this.getHeaders(requestInfo)
@@ -134,7 +137,9 @@ export default {
           , {
             checkField: row.checkField,
             checkValue: row.checkValue,
-            testCaseId: row.id
+            testCaseId: row.id,
+            errorBackground: 'rgba(245,108,108,0.4)',
+            failBackground: 'rgba(230,162,60,0.4)',
           });
     },
     //单个测试
