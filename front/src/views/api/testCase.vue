@@ -247,12 +247,12 @@ export default {
     float: right;
     margin-right: 50px
 
-  .test-info-popover
-    max-height 600px
-    max-width 800px
-
   .cursor
     cursor pointer
     &:hover
       color #409EFF
+.test-info-popover
+  overflow-y auto
+  height 600px
+  max-width 800px
 </style>

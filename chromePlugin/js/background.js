@@ -104,7 +104,7 @@ function sendMessageToContentScript(message, callback) {
 function sendError(error) {
     if (error && error !== '') {
         console.log(error);
-        sendMessageToContentScript(error.toString());
+        sendMessageToContentScript(JSON.stringify(error));
     }
 }
 
@@ -125,7 +125,7 @@ function axios(url, requestParamType, method, data, headers = undefined) {
             if (xhr.status === 200) {
                 resolve({resp: xhr.response, respHeaders: xhr.getAllResponseHeaders()});
             } else {
-                reject(xhr.statusText);
+                reject({status: xhr.status, statusText: xhr.statusText});
             }
         };
         let reqData = '';
@@ -173,7 +173,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 requestInfo: JSON.stringify({headers: headers, data: params}),
                 responseInfo: JSON.stringify({headers: headerDict, data: resp}),
             }, logHeaders).catch(error => sendError(error));
-        }).catch(error => sendError(error));
+            }).catch(error => sendError(error));
     } finally {
         sendResponse();
     }

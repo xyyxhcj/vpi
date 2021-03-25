@@ -15,7 +15,7 @@ function getHeaderStr(reqHeaders) {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     try {
         if (typeof request === 'string') {
-            console.error('abnormal operation', request);
+            console.log('abnormal operation >>> ', request);
             return;
         }
         let {reqHeaders, reqData, respHeaders, respData, testCaseInfo} = request;
@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             try {
                 respObj = JSON.parse(respData);
             } catch (e) {
-                console.error("response data not json!", e, respData);
+                console.warn("response data not json!", e, respData);
                 return;
             }
             let fieldVal = undefined;
