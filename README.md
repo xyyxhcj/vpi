@@ -1,5 +1,5 @@
 A powerful All-in-one API management and testing platform, we devote to making APIs Management easier!  
-<a href="develop/README_zh_CN.md">中文</a>  
+<a href="README_zh_CN.md">中文文档</a>  
 
 Use  **sh/makeJar.sh**, set config to start!  
 ## Config files:  

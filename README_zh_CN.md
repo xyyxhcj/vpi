@@ -25,11 +25,11 @@
 - maven
 - node
 
-可以使用 <a href="develop/sh/makeJar.sh">sh/makeJar.sh</a> 进行项目配置，启动！
+可以使用 <a href="sh/makeJar.sh">sh/makeJar.sh</a> 进行项目配置，启动！
 #### 配置文件:
-<a href="develop/front/.env.production">front/.env.production</a>
-<a href="develop/ams/src/main/java/press/whcj/ams/common.SysConfig">ams/src/main/java/press/whcj/ams/common.SysConfig</a>
-<a href="develop/ams/src/main/resources/application-prod.yml">ams/src/main/resources/application-prod.yml</a>
+<a href="front/.env.production">front/.env.production</a>
+<a href="ams/src/main/java/press/whcj/ams/common.SysConfig">ams/src/main/java/press/whcj/ams/common.SysConfig</a>
+<a href="ams/src/main/resources/application-prod.yml">ams/src/main/resources/application-prod.yml</a>
 
 #### 演示地址:
 http://42.192.227.159  
