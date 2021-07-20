@@ -6,9 +6,9 @@ mongodbDatabase='github-ams'
 mongodbUsername='vpi'
 mongodbPassword='LYyVKh7spO7hzDLv'
 # 后端接口地址 spring project url prefix
-prodApiUrl='http://42.192.227.159:11111'
+prodApiUrl='http://www.whcj.press:11111'
 # 谷歌插件下载地址
-chromePluginDownloadUrl='https://42.192.227.159/vpiChromePlugin.zip'
+chromePluginDownloadUrl='https://www.whcj.press/vpiChromePlugin.zip'
 
 # 项目根目录
 projectDir='/opt/project/vpi/'

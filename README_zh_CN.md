@@ -32,8 +32,8 @@
 <a href="ams/src/main/resources/application-prod.yml">ams/src/main/resources/application-prod.yml</a>  
 
 #### 演示地址:
-http://42.192.227.159  
+http://www.whcj.press  
 测试账号/密码: lx/123456
 #### 帮助文档:  
-http://42.192.227.159/help  
+http://www.whcj.press/help  
 
