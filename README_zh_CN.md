@@ -18,14 +18,17 @@
 #### 部署要求
 - JDK 8+
 - mongodb-org-4.0(init/install-mongodb.sh)
-- nginx
+- nginx(可选)
 - chrome插件(可选)
 #### 构建工具
 - git
 - maven
 - node
 
-可以使用 <a href="sh/makeJar.sh">sh/makeJar.sh</a> 进行项目配置，启动！
+#### 启动   
+前后端分离可使用 <a href="sh/makeJar.sh">sh/makeJar.sh</a>  
+单体应用（将vue构建后的文件放入jar）可使用 <a href="sh/start-springboot.sh">sh/start-springboot.sh</a>
+
 #### 配置文件:
 <a href="front/.env.production">front/.env.production</a>  
 <a href="ams/src/main/java/press/whcj/ams/common/Constant.java">ams/src/main/java/press/whcj/ams/common/Constant.java#SysConfig</a>  
@@ -37,3 +40,8 @@ http://www.whcj.press
 #### 帮助文档:  
 http://www.whcj.press/help  
 
+*版本v1.03+,配置mongoDB连接信息后可直接启动jar*
+```
+# mongoDB连接配置：conf/application-prod.yml
+nohup java -jar ams.jar --spring.config.location=classpath:/application.yml,conf/application-prod.yml > vpi.log 2>&1 &
+```
