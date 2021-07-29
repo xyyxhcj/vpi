@@ -69,13 +69,6 @@ public interface Constant {
 	}
 
 	/**
-	 * property name
-	 */
-	interface PropertyName {
-		String OPTIONS = "options";
-	}
-
-	/**
 	 * yes or no
 	 */
 	interface Is {

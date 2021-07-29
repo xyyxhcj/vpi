@@ -1,5 +1,11 @@
 package press.whcj.ams.handler;
 
+import java.io.IOException;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.session.data.mongo.MongoIndexedSessionRepository;
@@ -7,15 +13,11 @@ import org.springframework.session.data.mongo.MongoSession;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
 import press.whcj.ams.common.Constant;
 import press.whcj.ams.exception.ResultCode;
 import press.whcj.ams.support.Result;
 import press.whcj.ams.util.JsonUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * @author xyyxhcj@qq.com
@@ -28,7 +30,8 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
-        if (Constant.PropertyName.OPTIONS.equalsIgnoreCase(request.getMethod())) {
+        String method = request.getMethod();
+        if ("OPTIONS".equalsIgnoreCase(method)||"GET".equals(method)) {
             return true;
         }
         String userToken = request.getHeader(Constant.SysConfig.AUTH_HEADER);

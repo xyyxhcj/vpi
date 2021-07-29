@@ -31,6 +31,10 @@ spring:
         minHeartbeatFrequency: 1
         serverSelectionTimeout: 30
         localThreshold: 15
+  mvc:
+    view:
+      prefix: /
+      suffix: .html
 logging:
   config: classpath:logback.xml
   register-shutdown-hook: true
