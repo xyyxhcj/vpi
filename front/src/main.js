@@ -5,7 +5,7 @@ import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css';
 import router from './router';
 import App from './App.vue';
-import '../public/static/css/reset.styl';
+import '@/assets/styl/reset.styl';
 import store from './store';
 import Axios from './common/js/http';
 import {CONSTANT} from "./common/js/constant";
