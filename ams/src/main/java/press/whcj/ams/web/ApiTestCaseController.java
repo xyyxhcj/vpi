@@ -53,4 +53,10 @@ public class ApiTestCaseController extends BaseController {
     public Result<MongoPage<ApiTestCase>> findPage(@RequestBody ApiTestCaseDTO apiTestCaseDTO) {
         return ok(apiTestCaseService.findPage(apiTestCaseDTO));
     }
+
+    @PostMapping("findDetail")
+    public Result<Object> findDetail(@RequestBody ApiTestCaseDTO apiTestCaseDTO){
+        return ok(apiTestCaseService.findDetail(apiTestCaseDTO));
+    }
+
 }

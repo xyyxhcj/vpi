@@ -1,9 +1,9 @@
 <template>
     <div id="env-container">
         <el-table :data="tableData" :header-cell-style="{color:'#44B549','font-weight':'bold'}">
-            <el-table-column label="name" prop="name"/>
-            <el-table-column label="desc" prop="desc"/>
-            <el-table-column label="frontUri" prop="frontUri"/>
+            <el-table-column label="Name" prop="name"/>
+            <el-table-column label="Desc" prop="desc"/>
+            <el-table-column label="Front uri" prop="frontUri"/>
             <el-table-column width="300">
                 <template slot="header">
                     <el-row :gutter="11">
@@ -38,12 +38,12 @@
 
 <script type="text/ecmascript-6">
 
-    import EditEnvConfigDialog from "./editEnvConfigDialog";
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
-    import ConfirmDialog from "../../components/confirm/confirmDialog";
+import EditEnvConfigDialog from "./editEnvConfigDialog";
+import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "../../common/js/utils";
+import ConfirmDialog from "../../components/confirm/confirmDialog";
 
-    export default {
+export default {
         name: 'index',
         components: {ConfirmDialog, EditEnvConfigDialog},
         data() {

@@ -1,17 +1,17 @@
 <template>
-    <el-dialog title="Login" :visible.sync="dialog.show" width="350px" class="login-dialog"
+    <el-dialog title="Login" :visible.sync="dialog.show" width="350px" class="login-dialog" destroy-on-close
                :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false" center>
         <el-form :model="user" status-icon ref="form" :rules="loginRules" label-width="100px">
-            <el-form-item label="loginName" prop="loginName">
+            <el-form-item label="Login name" prop="loginName">
                 <el-input v-model.trim="user.loginName"/>
             </el-form-item>
-            <el-form-item label="password" prop="password" style="height: 25px">
-                <el-input type="password" v-model.trim="user.password" @keyup.enter.native="submitForm"/>
+            <el-form-item label="Password" prop="password" style="height: 25px">
+                <el-input show-password v-model.trim="user.password" @keyup.enter.native="submitForm"/>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-checkbox-group v-model="checkList" style="line-height: 30px">
-                <el-checkbox label="Remember Me" @change="user.isRememberMe=!user.isRememberMe"/>
+                <el-checkbox label="Remember me" @change="user.isRememberMe=!user.isRememberMe"/>
             </el-checkbox-group>
             <el-button @click="resetForm" style="position: relative;z-index: 100">Reset</el-button>
             <el-button type="primary" style="position: relative;z-index: 100" @click.stop="submitForm">Login</el-button>
@@ -25,10 +25,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "@/common/js/constant";
+import {UTILS} from "@/common/js/utils";
 
-    export default {
+export default {
         name: 'loginDialog',
         props: {
             dialog: {
@@ -101,7 +101,7 @@
             if (user) {
                 this.user = user;
                 if (user.isRememberMe) {
-                    this.checkList.push('Remember Me');
+                    this.checkList.push('Remember me');
                 }
             }
         }

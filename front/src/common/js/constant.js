@@ -4,11 +4,13 @@ export const CONSTANT = {
         {
             path: '/',
             redirect: '/index',
+            meta: { title: 'vpi!'},
             noMenu: true
         },
         {
             path: '/index',
             name: 'index',
+            meta: { title: 'vpi!'},
             component: () => import('@/views/index'),
             noMenu: true
         },
@@ -58,6 +60,11 @@ export const CONSTANT = {
                     name: 'api/test',
                     component: resolve => require(['@/views/api/test.vue'], resolve),
                 },
+                {
+                    path: '/api/testCase',
+                    name: 'api/testCase',
+                    component: resolve => require(['@/views/api/testCase.vue'], resolve),
+                },
             ],
         },
         {
@@ -77,14 +84,9 @@ export const CONSTANT = {
         USER_SHOW_STYLE: '{userName} ({loginName})',
         ADMIN_LOGIN_NAME: 'admin',
         DEFAULT_DATA_LIST_SIZE: 3,
-        DEBUG: process.env.NODE_ENV !== 'production',
         AES_KEY: 'QuBabnE0dR1pb29h',
-        getProfilesActive: (debug) => debug ? 'dev' : 'prod'
-    },
-    HOST_URL: {
-        dev: 'http://120.132.18.250:11111',
-        // dev: 'http://127.0.0.1:11111',
-        prod: '$prodApiUrl',
+        ARRAY_SPLIT_STR: '|',
+        HOST: process.env.VUE_APP_API_URL_1,
     },
     LOCAL_STORAGE_KEY: {
         LOGIN_AUTH: 'auth',
@@ -95,11 +97,12 @@ export const CONSTANT = {
         SELECTED_PROJECT_ID: 'selectedProjectId',
         SELECTED_PROJECT_NAME: 'selectedProjectName',
         SELECTED_PROJECT_USER_TYPE: 'selectedProjectUserType',
+        SELECTED_GROUP_ID: 'selectedGroupId',
         SELECTED_ENV: 'selectedEnv',
         LEFT_MENU_IS_COLLAPSE: 'leftMenuIsCollapse',
     },
     REQUEST_URL: {
-        CHROME_PLUGIN_DOWNLOAD : '$chromePluginDownloadUrl',
+        CHROME_PLUGIN_DOWNLOAD : process.env.VUE_APP_API_URL4PLUGIN_DOWNLOAD,
 
         LOGIN: '/user/login',
         LOGIN_OUT: '/user/loginOut',
@@ -107,6 +110,8 @@ export const CONSTANT = {
         USER_UPDATE: '/user/update',
         USER_REMOVE: '/user/remove',
         USER_FIND_PAGE: '/user/findPage',
+
+        BACKUP_EXPORT: '/backup/export',
 
         PROJECT_ADD: '/project/add',
         PROJECT_EDIT: '/project/edit',
@@ -154,6 +159,10 @@ export const CONSTANT = {
         API_TEST_HISTORY_ADD: '/apiTestHistory/add',
         API_TEST_HISTORY_DELETE: '/apiTestHistory/delete',
         API_TEST_HISTORY_FIND_PAGE: '/apiTestHistory/findPage',
+
+        API_TEST_CASE_ADD:'/apiTestCase/add',
+        API_TEST_CASE_DETAIL:"/apiTestCase/findDetail",
+        API_TEST_CASE_FIND_PAGE:'/apiTestCase/findPage',
     },
     CLOSE_LOADING_URL: [],
     RESULT_CODE: {
@@ -191,27 +200,27 @@ export const CONSTANT = {
         OBJECT: 8,
         NULL: 9,
     },
-    PARAM_TYPE_STR: {
-        0: 'string',
-        1: 'file',
-        2: 'json',
-        3: 'number',
-        4: 'double',
-        5: 'time',
-        6: 'boolean',
-        7: 'array',
-        8: 'object',
-        9: 'null',
-    },
+    PARAM_TYPE_STR: [
+        'string',
+        'file',
+        'json',
+        'number',
+        'double',
+        'time',
+        'boolean',
+        'array',
+        'object',
+        'null',
+    ],
     REQUIRED_TYPE: {
         REQUIRED: 0,
         OPTIONAL: 1,
         SPECIAL: 2,
     },
     REQUIRED_TYPE_STR: {
-        0: 'required',
-        1: 'optional',
-        2: 'special',
+        0: 'Required',
+        1: 'Optional',
+        2: 'Special',
     },
     REQUEST_TYPE: {
         0: 'POST', 1: 'GET',

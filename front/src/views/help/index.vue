@@ -6,11 +6,9 @@
                 admin/xyyxhcj@qq.com<br/>
                 你需要安装mongodb，并且修改以下配置文件，默认的管理员账号: admin/xyyxhcj@qq.com
                 <div class="title">config files:</div>
-                front/vue.config.js<br/>
-                front/src/common/js/constant.js<br/>
+                front/.env.production<br/>
                 ams/src/main/java/press/whcj/ams/common.SysConfig<br/>
-                ams/src/main/resources/application.yml<br/>
-                ams/src/main/resources/application-dev.yml
+                ams/src/main/resources/application-prod.yml<br/>
                 <div class="title">build vue:</div>
                 npm i<br/>
                 npm run build
@@ -21,14 +19,13 @@
         <el-collapse-item title="Main config desc/主要配置项说明">
             <div class="content">
                 <img src="../../../public/static/img/configDesc1.png" alt=""/><br/>
-                front/vue.config.js -> HOST_URL.prod: set jar access address<br/>
-                front/src/common/js/constant.js -> HOST_URL.prod: set jar access address<br/>
+                front/.env.production -> set api request url<br/>
                 <br/>
                 <img src="../../../public/static/img/configDesc2.png" alt=""/><br/>
                 ams/src/main/java/press/whcj/ams/common.SysConfig -> ADMIN_PWD: default admin password<br/>
                 <br/>
                 <img src="../../../public/static/img/configDesc3.png" alt=""/><br/>
-                ams/src/main/resources/application-dev.yml -><br/>
+                ams/src/main/resources/application-prod.yml -><br/>
                 address,database,username,password: mongodb access config<br/>
             </div>
         </el-collapse-item>

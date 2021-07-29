@@ -55,7 +55,6 @@ public interface Constant {
 		String SALT = "v2Ll6EmXPQIf";
 		String AUTH_HEADER = "auth";
 		int SESSION_TIME_OUT = 60 * 60 * 2;
-		String FRONT_HOST = "http://www.whcj.press";
 	}
 
 	interface Url {
@@ -67,13 +66,6 @@ public interface Constant {
 	 */
 	interface SessionKey {
 		String USER_INFO = "user_info";
-	}
-
-	/**
-	 * property name
-	 */
-	interface PropertyName {
-		String OPTIONS = "options";
 	}
 
 	/**
@@ -92,6 +84,7 @@ public interface Constant {
 		String STRUCTURE = "structure";
 		String STRUCTURE_DATA = "structureData";
 		String API = "api";
+		String API_TEST_CASE = "apiTestCase";
 	}
 
 	/**
@@ -111,5 +104,4 @@ public interface Constant {
 		Byte API_CREATE = 0;
 		Byte USER_CREATE = 1;
 	}
-
 }

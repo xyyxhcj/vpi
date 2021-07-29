@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>press.whcj</groupId>
 	<artifactId>ams</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>v1.03</version>
 	<name>ams</name>
 	<description>api manager system</description>
 
@@ -17,7 +17,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<spring-cloud.version>Hoxton.SR4</spring-cloud.version>
 		<lombok.version>1.18.2</lombok.version>
 		<querydsl.version>4.2.2</querydsl.version>
 		<mongodb.version>4.0.3</mongodb.version>
@@ -25,17 +24,6 @@
 		<jsoup.version>1.13.1</jsoup.version>
 	</properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

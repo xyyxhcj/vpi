@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import press.whcj.ams.common.ColumnName;
+import press.whcj.ams.common.Constant;
 import press.whcj.ams.entity.ApiTestCase;
 import press.whcj.ams.entity.MongoPage;
 import press.whcj.ams.entity.dto.ApiTestCaseDTO;
@@ -65,5 +66,12 @@ public class ApiTestCaseServiceImpl implements ApiTestCaseService {
             return page;
         }
         return page.setRecords(mongoTemplate.find(query, ApiTestCase.class));
+    }
+
+    @Override
+    public ApiTestCase findDetail(ApiTestCaseDTO apiTestCaseDTO) {
+        ApiTestCase apiTestCase = mongoTemplate.findById(apiTestCaseDTO.getId(), ApiTestCase.class, Constant.CollectionName.API_TEST_CASE);
+        FastUtils.checkNull(apiTestCase);
+        return apiTestCase;
     }
 }

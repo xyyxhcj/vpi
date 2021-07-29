@@ -1,7 +1,7 @@
 #!/bin/sh
 HOST='127.0.0.1:27017'
 DB_NAME='github-ams'
-USER='whcj'
+USER='vpi'
 PASSWORD='password'
 # mongodump path
 DUMP=/usr/bin/mongodump

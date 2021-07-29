@@ -101,6 +101,13 @@ function sendMessageToContentScript(message, callback) {
     });
 }
 
+function sendError(error) {
+    if (error && error !== '') {
+        console.log(error);
+        sendMessageToContentScript(JSON.stringify(error));
+    }
+}
+
 function axios(url, requestParamType, method, data, headers = undefined) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -108,6 +115,9 @@ function axios(url, requestParamType, method, data, headers = undefined) {
         if (headers) {
             Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
         }
+        xhr.onerror = function (e) {
+            alert("Unknown Error Occurred. Server response not received.");
+        };
         xhr.onreadystatechange = () => {
             if (xhr.readyState !== 4) {
                 return;
@@ -115,7 +125,7 @@ function axios(url, requestParamType, method, data, headers = undefined) {
             if (xhr.status === 200) {
                 resolve({resp: xhr.response, respHeaders: xhr.getAllResponseHeaders()});
             } else {
-                reject(xhr.statusText);
+                reject({status: xhr.status, statusText: xhr.statusText});
             }
         };
         let reqData = '';
@@ -130,37 +140,41 @@ function axios(url, requestParamType, method, data, headers = undefined) {
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    let {url, requestParamType, headers, method, params, logUrl, logHeaders, apiId} = request;
-    if (!url) {
-        return;
+    try {
+        let {url, requestParamType, headers, method, params, logUrl, logHeaders, apiId, testCaseInfo} = request;
+        if (!url) {
+            return;
+        }
+        let start = new Date().getTime();
+        axios(url, requestParamType, method, params, headers).then(({resp, respHeaders}) => {
+            sendMessageToContentScript({
+                reqHeaders: headers,
+                reqData: typeof params === 'string' && !isJSON(params) ? params : formatJson(params),
+                respHeaders: respHeaders,
+                respData: typeof resp === 'string' && !isJSON(resp) ? resp : formatJson(resp),
+                testCaseInfo,
+            });
+            // save history
+            let split = respHeaders.split('\r\n');
+            let headerDict = {};
+            split.forEach(item => {
+                let keyValue = item.split(': ');
+                if ('' !== keyValue[0]) {
+                    headerDict[keyValue[0]] = keyValue[1];
+                }
+            });
+            let jsonHeaders = JSON.stringify(headerDict);
+            // save  method,url,requestTime
+            axios(logUrl, 0, 'POST', {
+                apiId: apiId,
+                method: method,
+                url: url,
+                requestTime: new Date().getTime() - start,
+                requestInfo: JSON.stringify({headers: headers, data: params}),
+                responseInfo: JSON.stringify({headers: headerDict, data: resp}),
+            }, logHeaders).catch(error => sendError(error));
+            }).catch(error => sendError(error));
+    } finally {
+        sendResponse();
     }
-    let start = new Date().getTime();
-    axios(url, requestParamType, method, params, headers).then(({resp, respHeaders}) => {
-        sendMessageToContentScript({
-            reqHeaders: headers,
-            reqData: typeof params === 'string' && !isJSON(params) ? params : formatJson(params),
-            respHeaders: respHeaders,
-            respData: typeof resp === 'string' && !isJSON(resp) ? resp : formatJson(resp)
-        });
-        // save history
-        let split = respHeaders.split('\r\n');
-        let headerDict = {};
-        split.forEach(item => {
-            let keyValue = item.split(': ');
-            if ('' !== keyValue[0]) {
-                headerDict[keyValue[0]] = keyValue[1];
-            }
-        });
-        let jsonHeaders = JSON.stringify(headerDict);
-        // save  method,url,requestTime
-        axios(logUrl, 0, 'POST', {
-            apiId: apiId,
-            method: method,
-            url: url,
-            requestTime: new Date().getTime() - start,
-            requestInfo: JSON.stringify({headers: headers, data: params}),
-            responseInfo: JSON.stringify({headers: headerDict, data: resp}),
-        }, logHeaders);
-    }).catch(error => console.log(error));
-    sendResponse();
 });

@@ -37,6 +37,7 @@ public class ProjectUserServiceImpl implements ProjectUserService {
         } else {
             ProjectUser projectUser = mongoTemplate.findById(projectUserDTO.getId(), ProjectUser.class);
             FastUtils.checkNull(projectUser);
+            assert projectUser != null;
             mongoTemplate.save(Objects.requireNonNull(FastUtils.copyProperties(projectUserDTO, projectUser)));
         }
     }

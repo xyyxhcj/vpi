@@ -1,38 +1,46 @@
 <template>
-    <div class="container">
-        <el-pagination background :current-page="query.page.current" :total="query.page.total"
-                       :page-size="query.page.size" :page-sizes="CONSTANT.CONFIG.PAGE_SIZES"
-                       @current-change="currentChange" @size-change="pageSizeChange"
-                       layout="total, sizes, prev, pager, next"/>
-    </div>
+  <div class="container">
+    <el-button class="page-content" icon="el-icon-arrow-left" @click="prevEvent" size="mini"
+               :disabled="query.page.current === 1"></el-button>
+    <span class="page-content">{{ this.query.page.current }}</span>
+    <el-button class="page-content" icon="el-icon-arrow-right" @click="nextEvent" size="mini"
+               :disabled="query.page.total < size"></el-button>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
+import {CONSTANT} from "@/common/js/constant";
 
-    export default {
+export default {
         name: 'pageTemplate',
         props: {
-            query: Object
+          query: Object
         },
         data() {
-            return {CONSTANT: CONSTANT}
+          return {
+            CONSTANT: CONSTANT,
+            total: 0,
+            size: 20,
+            currentPage: 1
+          }
         },
         methods: {
-            pageSizeChange(val) {
-                this.query.page.size = val;
-                this.$emit('flush');
-            },
-            currentChange(val) {
-                this.query.page.current = val;
-                this.$emit('flush');
-            }
+          prevEvent() {
+            this.query.page.current = this.query.page.current - 1;
+            this.$emit('flush');
+          },
+          nextEvent() {
+            this.query.page.current = this.query.page.current + 1;
+            this.$emit('flush');
+          },
         }
     };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
-    .container
-        padding: 10px
-        background-color: #fff
+.container
+  padding 7px
+  background-color #fff
+  .page-content
+    padding 7px
 </style>

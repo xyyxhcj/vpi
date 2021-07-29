@@ -58,14 +58,11 @@ public class ApiServiceImpl implements ApiService {
             api = mongoTemplate.findById(apiDTO.getId(), Api.class);
             FastUtils.checkNull(api);
             Objects.requireNonNull(api).setUpdate(null);
-            if (!StringUtils.isEmpty(apiDTO.getGroupId())) {
-                api.setGroup(new ApiGroup(apiDTO.getGroupId()));
-            }
         } else {
             api = new Api();
-            if (!StringUtils.isEmpty(apiDTO.getGroupId())) {
-                api.setGroup(new ApiGroup(apiDTO.getGroupId()));
-            }
+        }
+        if (!StringUtils.isEmpty(apiDTO.getGroupId())) {
+            api.setGroup(new ApiGroup(apiDTO.getGroupId()));
         }
         FastUtils.copyProperties(apiDTO, api);
         // save request params
@@ -92,20 +89,20 @@ public class ApiServiceImpl implements ApiService {
             mongoTemplate.remove(new Query(Criteria.where(ColumnName.API_ID).is(apiId)), ApiHeader.class);
         }
         if (!CollectionUtils.isEmpty(apiDTO.getRequestHeaders())) {
-            for (ApiHeader header : apiDTO.getRequestHeaders()) {
-                header.setApiId(apiId);
-                header.setIsRequest(Constant.Is.YES);
-            }
-            mongoTemplate.insertAll(apiDTO.getRequestHeaders());
+            saveHeaders(apiId, apiDTO.getRequestHeaders(), Constant.Is.YES);
         }
         if (!CollectionUtils.isEmpty(apiDTO.getResponseHeaders())) {
-            for (ApiHeader header : apiDTO.getResponseHeaders()) {
-                header.setApiId(apiId);
-                header.setIsRequest(Constant.Is.NO);
-            }
-            mongoTemplate.insertAll(apiDTO.getResponseHeaders());
+            saveHeaders(apiId, apiDTO.getResponseHeaders(), Constant.Is.NO);
         }
         return apiId;
+    }
+
+    private void saveHeaders(String apiId, Collection<ApiHeader> headers, Byte isRequest) {
+        for (ApiHeader header : headers) {
+            header.setApiId(apiId);
+            header.setIsRequest(isRequest);
+        }
+        mongoTemplate.insertAll(headers);
     }
 
     @Override
@@ -144,10 +141,10 @@ public class ApiServiceImpl implements ApiService {
         ApiVO detail = mongoTemplate.findById(apiId, ApiVO.class, Constant.CollectionName.API);
         FastUtils.checkNull(detail);
         if (Objects.requireNonNull(detail).getRequestParam() != null) {
-            detail.setRequestParamVO(structureService.getStructureVOById(detail.getRequestParam().getId()));
+            detail.setRequestParamVO(structureService.getStructureById(detail.getRequestParam().getId()));
         }
         if (detail.getResponseParam() != null) {
-            detail.setResponseParamVO(structureService.getStructureVOById(detail.getResponseParam().getId()));
+            detail.setResponseParamVO(structureService.getStructureById(detail.getResponseParam().getId()));
         }
         List<ApiHeader> headers = mongoTemplate.find(new Query(Criteria.where(ColumnName.API_ID).is(apiId)), ApiHeader.class);
         detail.setRequestHeaders(new LinkedList<>());

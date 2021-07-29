@@ -1,20 +1,20 @@
 <template>
-    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
-               :close-on-click-modal="false" center width="35%">
-        <el-form :model="form" ref="form" label-width="120px" :rules="form_rules">
-            <el-form-item label="loginName" prop="loginName">
+    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" destroy-on-close
+               :close-on-click-modal="false" center width="35%" style="min-width: 900px">
+        <el-form :model="form" ref="form" label-width="140px" :rules="form_rules">
+            <el-form-item label="Login name" prop="loginName">
                 <el-input v-model.trim="form.loginName"/>
             </el-form-item>
-            <el-form-item label="password" prop="password">
+            <el-form-item label="Password" prop="password">
                 <el-input v-model.trim="form.password" type="password"/>
             </el-form-item>
-            <el-form-item label="rePassword" prop="rePassword">
+            <el-form-item label="Retype password" prop="rePassword">
                 <el-input v-model.trim="form.rePassword" type="password"/>
             </el-form-item>
-            <el-form-item label="userName" prop="userName">
+            <el-form-item label="User name" prop="userName">
                 <el-input v-model.trim="form.userName"/>
             </el-form-item>
-            <el-form-item label="phone" prop="phone">
+            <el-form-item label="Phone" prop="phone">
                 <el-input v-model.trim="form.phone"/>
             </el-form-item>
         </el-form>
@@ -26,9 +26,9 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {UTILS} from "../../common/js/utils";
+import {UTILS} from "@/common/js/utils";
 
-    export default {
+export default {
         name: 'editUserDialog',
         props: {
             dialog: {
@@ -57,7 +57,7 @@
         data() {
             let validateRePassword = (rule, value, callback) => {
                 if (value !== this.form.password) {
-                    callback(new Error('re-password error'));
+                    callback(new Error('retype password error'));
                 } else {
                     callback();
                 }

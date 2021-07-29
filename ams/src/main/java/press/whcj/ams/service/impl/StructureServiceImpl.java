@@ -140,11 +140,11 @@ public class StructureServiceImpl implements StructureService {
     public StructureVO findDetail(StructureDTO structureDTO) {
         String structureId = structureDTO.getId();
         FastUtils.checkParams(structureId);
-        return getStructureVOById(structureId);
+        return getStructureById(structureId);
     }
 
     @Override
-    public StructureVO getStructureVOById(String structureId) {
+    public StructureVO getStructureById(String structureId) {
         StructureVO detail = mongoTemplate.findById(structureId, StructureVO.class, Constant.CollectionName.STRUCTURE);
         FastUtils.checkNull(detail);
         List<StructureDataDTO> allDataList = mongoTemplate.find(new Query(Criteria.where(ColumnName.STRUCTURE_ID).is(structureId)), StructureDataDTO.class, Constant.CollectionName.STRUCTURE_DATA);
@@ -153,15 +153,17 @@ public class StructureServiceImpl implements StructureService {
         Map<String, StructureDataDTO> allDataDict = allDataList.stream().collect(Collectors.toMap(StructureData::getId, v -> v));
         for (StructureDataDTO dataDTO : allDataList) {
             if (StringUtils.isEmpty(dataDTO.getParentId())) {
-                if (!StringUtils.isEmpty(dataDTO.getReferenceStructureId())) {
-                    StructureVO structureVO = getStructureVOById(dataDTO.getReferenceStructureId());
-                    dataDTO.setReferenceStructureName(structureVO.getName());
-                    dataDTO.setSubList(structureVO.getDataList());
-                }
+                // 父ID为空，表示为根结点
                 rootList.add(dataDTO);
             } else {
                 // put sub list
                 allDataDict.get(dataDTO.getParentId()).getSubList().add(dataDTO);
+            }
+            if (!StringUtils.isEmpty(dataDTO.getReferenceStructureId())) {
+                // 存在引用数据，放入
+                StructureVO structureVO = getStructureById(dataDTO.getReferenceStructureId());
+                dataDTO.setReferenceStructureName(structureVO.getName());
+                dataDTO.setSubList(structureVO.getDataList());
             }
         }
         return detail;

@@ -1,14 +1,14 @@
 <template>
-    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
+    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" destroy-on-close
                :close-on-click-modal="false" center width="75%">
         <el-table :data="dataList" tooltip-effect="dark" style="width: 100%" ref="userTable" row-key="id"
                   @selection-change="selectedChange">
             <el-table-column type="selection" width="55" :selectable="notCurrUser" :reserve-selection="true">
             </el-table-column>
-            <el-table-column prop="userName" label="userName" width="150"/>
-            <el-table-column prop="loginName" label="loginName" width="150"/>
-            <el-table-column prop="phone" label="phone" width="150"/>
-            <el-table-column prop="email" label="email" width="150"/>
+            <el-table-column prop="userName" label="User name" width="150"/>
+            <el-table-column prop="loginName" label="Login name" width="150"/>
+            <el-table-column prop="phone" label="Phone" width="150"/>
+            <el-table-column prop="email" label="Email" width="150"/>
         </el-table>
         <page-template :query="query" @flush="()=>dialog.forDel?findPageForDelete():findPage()"/>
         <div slot="footer" class="footer-container">
@@ -20,11 +20,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
-    import PageTemplate from "../pageTemplate/pageTemplate";
+import {CONSTANT} from "@/common/js/constant";
+import {UTILS} from "@/common/js/utils";
+import PageTemplate from "../pageTemplate/pageTemplate";
 
-    export default {
+export default {
         name: 'selectUserDialog',
         components: {PageTemplate},
         props: {
@@ -116,9 +116,9 @@
                         UTILS.findPage(this, this, CONSTANT.REQUEST_URL.USER_FIND_PAGE, function ($this) {
                             $this.selectRows(resp.data.data, $this);
                             let create = {id: $this.user.id};
-                            let isSelected = UTILS.contains($this.selectedList, create, function (selectedElement, element) {
-                                return selectedElement.id === element.id;
-                            });
+                          let isSelected = UTILS.contains($this.selectedList, create, (selectedElement, element) => {
+                            return selectedElement.id === element.id;
+                          });
                             if (!isSelected) {
                                 $this.selectedList.push(create);
                                 $this.$refs['userTable'].toggleRowSelection(create);
@@ -138,9 +138,9 @@
                     if (dataDictElement && row.userType !== undefined && row.userType !== null) {
                         dataDictElement.userType = row.userType;
                     }
-                    let isSelected = UTILS.contains(obj.selectedList, row, function (selectedElement, element) {
-                        return selectedElement.id === element.id;
-                    });
+                  let isSelected = UTILS.contains(obj.selectedList, row, (selectedElement, element) => {
+                    return selectedElement.id === element.id;
+                  });
                     if (!isSelected) {
                         obj.selectedList.push(row);
                         obj.$refs['userTable'].toggleRowSelection(row);

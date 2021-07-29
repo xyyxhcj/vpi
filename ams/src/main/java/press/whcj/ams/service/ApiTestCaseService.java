@@ -40,4 +40,14 @@ public interface ApiTestCaseService {
      * @date 2020/7/25 9:01
      **/
     MongoPage<ApiTestCase> findPage(ApiTestCaseDTO apiTestCaseDTO);
+
+    /**
+     * find detail
+     *
+     * @param apiTestCaseDTO apiTestCaseDTO
+     * @return press.whcj.ams.entity.ApiTestCase
+     * @author xyyxhcj@qq.com
+     * @date 2021-02-22 18:40
+     **/
+    ApiTestCase findDetail(ApiTestCaseDTO apiTestCaseDTO);
 }

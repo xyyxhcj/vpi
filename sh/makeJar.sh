@@ -1,33 +1,23 @@
 #! /bin/bash
+### need edit Start
 # mongodb 连接信息
 mongodbAddress='127.0.0.1:27017'
 mongodbDatabase='github-ams'
-mongodbUsername='whcj'
+mongodbUsername='vpi'
 mongodbPassword='LYyVKh7spO7hzDLv'
 # 后端接口地址 spring project url prefix
-prodApiUrl='http://120.132.18.250:11111'
+prodApiUrl='http://www.whcj.press:11111'
 # 谷歌插件下载地址
-chromePluginDownloadUrl='http://www.whcj.press/Vpi-Plugin_v1.0.crx'
+chromePluginDownloadUrl='https://www.whcj.press/vpiChromePlugin.zip'
 
 # 项目根目录
 projectDir='/opt/project/vpi/'
-# nginx安装目录/html
-nginxHtmlDir='/usr/local/nginx/html/'
-# nginx静态文件匹配目录
-nginxStaticDir='/opt/uploadFile/'
 # jar存放目录
 jarSaveDir='/usr/local/'
 
+### need edit End
 if  [ "$projectDir" = "" ] ;then
     echo "Missing parameter: projectDir!"
-    return
-fi
-if  [ "$nginxHtmlDir" = "" ] ;then
-    echo "Missing parameter: nginxHtmlDir!"
-    return
-fi
-if  [ "$nginxStaticDir" = "" ] ;then
-    echo "Missing parameter: nginxStaticDir!"
     return
 fi
 if  [ "$jarSaveDir" = "" ] ;then
@@ -42,16 +32,20 @@ git reset --hard develop
 git pull
 
 # replace parameter
-sed -i "s|\$mongodbAddress|${mongodbAddress}|g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s|\$mongodbDatabase|${mongodbDatabase}|g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s|\$mongodbUsername|${mongodbUsername}|g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s|\$mongodbPassword|${mongodbPassword}|g" ${projectDir}ams/src/main/resources/application-dev.yml
-sed -i "s|\$prodApiUrl|${prodApiUrl}|g" ${projectDir}front/src/common/js/constant.js
-sed -i "s|\$chromePluginDownloadUrl|${chromePluginDownloadUrl}|g" ${projectDir}front/src/common/js/constant.js
-sed -i "s|\$prodApiUrl|${prodApiUrl}|g" ${projectDir}front/vue.config.js
+sed -i "s|\$mongodbAddress|${mongodbAddress}|g" ${projectDir}ams/src/main/resources/application-prod.yml
+sed -i "s|\$mongodbDatabase|${mongodbDatabase}|g" ${projectDir}ams/src/main/resources/application-prod.yml
+sed -i "s|\$mongodbUsername|${mongodbUsername}|g" ${projectDir}ams/src/main/resources/application-prod.yml
+sed -i "s|\$mongodbPassword|${mongodbPassword}|g" ${projectDir}ams/src/main/resources/application-prod.yml
+sed -i "s|\$prodApiUrl|${prodApiUrl}|g" ${projectDir}front/.env.production
+sed -i "s|\$chromePluginDownloadUrl|${chromePluginDownloadUrl}|g" ${projectDir}front/.env.production
 
 # build
 cd front || exit
+
+npm cache clean --force
+npm config set registry http://registry.npmjs.org/
+rm -rf package-lock.json
+
 npm install
 npm run build
 cd ${projectDir}chromePlugin && zip -r vpiChromePlugin.zip ./*
@@ -66,12 +60,9 @@ if  [ "$appPid" != "" ] ;then
 fi
 
 # move to nginx file & start
-cp ${projectDir}front/dist/index.html ${nginxHtmlDir}
-rm -rf ${nginxStaticDir}assets
-rm -rf ${nginxStaticDir}static
-cp ${projectDir}front/dist/* ${nginxStaticDir} -r
-mv ${projectDir}chromePlugin/vpiChromePlugin.zip ${nginxStaticDir}
+
+mv ${projectDir}chromePlugin/vpiChromePlugin.zip ${projectDir}front/dist/
 mv ${projectDir}ams/target/ams.jar ${jarSaveDir}
 cd ${jarSaveDir} || exit
-nohup java -jar -XX:+HeapDumpOnOutOfMemoryError ${jarSaveDir}ams.jar --spring.profiles.active=dev > vpiNohup.out 2>&1 &
+nohup java -jar -XX:+HeapDumpOnOutOfMemoryError ${jarSaveDir}ams.jar > vpiNohup.out 2>&1 &
 tail -f ${jarSaveDir}vpiNohup.out

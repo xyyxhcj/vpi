@@ -1,8 +1,8 @@
 <template>
-    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
+    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" destroy-on-close
                :close-on-click-modal="false" center width="400px" @submit.native.prevent>
         <el-form :model="form" ref="form" label-width="80px" :rules="form_rules">
-            <el-form-item label="name" prop="name">
+            <el-form-item label="Name" prop="name">
                 <el-input v-model.trim="form.name" style="width: 75%"/>
             </el-form-item>
         </el-form>
@@ -14,9 +14,9 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {UTILS} from "../../common/js/utils";
+import {UTILS} from "@/common/js/utils";
 
-    export default {
+export default {
         name: 'editProjectGroupDialog',
         props: {
             dialog: {

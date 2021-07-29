@@ -1,23 +1,23 @@
 <template>
-    <el-dialog :append-to-body="true" :visible.sync="dialog.show" :title="dialog.title"
+    <el-dialog :append-to-body="true" :visible.sync="dialog.show" :title="dialog.title" destroy-on-close
                :close-on-click-modal="false" center width="50%">
         <el-input placeholder="search name or remark" v-model.trim="query.nameOrRemark"
                   @keyup.enter.native="findPage" size="mini" style="width: 160px"/>
         <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
                   highlight-current-row @current-change="selectDataStructure" :row-style="{cursor:'pointer'}">
-            <el-table-column label="name" prop="name"/>
-            <el-table-column label="remark" prop="remark"/>
+            <el-table-column label="Name" prop="name"/>
+            <el-table-column label="Remark" prop="remark"/>
         </el-table>
         <page-template :query="query" @flush="findPage"/>
     </el-dialog>
 </template>
 
 <script type="text/ecmascript-6">
-    import {UTILS} from "../../common/js/utils";
-    import {CONSTANT} from "../../common/js/constant";
-    import PageTemplate from "../pageTemplate/pageTemplate";
+import {UTILS} from "@/common/js/utils";
+import {CONSTANT} from "@/common/js/constant";
+import PageTemplate from "../pageTemplate/pageTemplate";
 
-    export default {
+export default {
         name: 'selectDataStructureDialog',
         components: {PageTemplate},
         props: {

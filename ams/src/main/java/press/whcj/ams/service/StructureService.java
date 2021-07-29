@@ -50,7 +50,7 @@ public interface StructureService {
      * @author xyyxhcj@qq.com
      * @date 2020/5/18 19:31
      **/
-    StructureVO getStructureVOById(String structureId);
+    StructureVO getStructureById(String structureId);
 
     /**
      * remove

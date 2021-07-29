@@ -1,7 +1,7 @@
 <template>
     <div id="api-edit-container">
         <el-form :model="form" label-position="left" label-width="80px" ref="form" :rules="form_rules">
-            <el-form-item label="apiStatus" size="mini" style="text-align: left">
+            <el-form-item label="Api status" size="mini" style="text-align: left">
                 <el-radio v-model.trim="form.apiStatus" :label="0" size="mini" class="success">
                     {{CONSTANT.API_STATUS[0]}}
                 </el-radio>
@@ -30,17 +30,17 @@
                     {{CONSTANT.API_STATUS[2]}}
                 </el-radio>
             </el-form-item>
-            <el-form-item label="path" size="mini">
+            <el-form-item label="Path" size="mini">
                 <el-select v-model.trim="form.apiRequestType" style="width: 8%">
                     <el-option :label="CONSTANT.REQUEST_TYPE[0]" :value="0"/>
                     <el-option :label="CONSTANT.REQUEST_TYPE[1]" :value="1"/>
                 </el-select>
                 <el-input v-model="form.apiUri" size="mini" style="width: 92%"/>
             </el-form-item>
-            <el-form-item label="name" size="mini" prop="name">
+            <el-form-item label="Name" size="mini" prop="name">
                 <el-input v-model="form.name" size="mini"/>
             </el-form-item>
-            <el-form-item label="desc" prop="desc">
+            <el-form-item label="Desc" prop="desc">
                 <el-input v-model="form.desc"/>
             </el-form-item>
         </el-form>
@@ -101,8 +101,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {UTILS} from "../../common/js/utils";
-import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "@/common/js/utils";
+import {CONSTANT} from "@/common/js/constant";
 import DataStructure from "../../components/dataStructure/dataStructure";
 import ApiHeaders from "../../components/apiHeaders/apiHeaders";
 import EditDataStructureDialog from "../../components/dataStructure/editDataStructureDialog";

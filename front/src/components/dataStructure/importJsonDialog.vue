@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show"
+    <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" destroy-on-close
                :close-on-click-modal="false" center width="60%">
         <el-input type="textarea" :rows="15" placeholder="please input json data" v-model="jsonData">
         </el-input>
@@ -11,9 +11,9 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {UTILS} from "../../common/js/utils";
+import {UTILS} from "@/common/js/utils";
 
-    export default {
+export default {
         name: 'importJsonDialog',
         props: {
             dialog: {
