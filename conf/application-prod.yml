@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: prod
+  data:
+    mongodb:
+      option:
+        address: [ '127.0.0.1:27017' ]
+        database: github-ams
+        username: vpi
+        password: LYyVKh7spO7hzDLv
+
+system:
+  properties:
+    profileActive: prod
