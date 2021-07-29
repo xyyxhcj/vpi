@@ -9,7 +9,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {UTILS} from "../../common/js/utils";
+import {UTILS} from "@/common/js/utils";
 
 export default {
   name: 'confirmDialog',

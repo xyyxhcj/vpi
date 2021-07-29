@@ -33,7 +33,7 @@
         </el-tab-pane>
       </el-tabs>
       <div style="text-align: left;margin: 10px">
-        <el-dropdown size="small" split-button type="success" @command="command"
+        <el-dropdown size="small" split-button type="success" @command="command" trigger="click"
                      @click="()=>!sendDisable?send():''">
           {{ !sendDisable ? 'Send' : 'Wait...' }}
           <el-dropdown-menu>
@@ -48,7 +48,7 @@
         <line-text style="color: #44B549" text="Headers"/>
         <div id="resp-headers" ref="respHeaders" class="headers"></div>
         <line-text style="color: #44B549" text="Response Body"/>
-        <el-dropdown size="mini" split-button type="primary" @click="saveMock(true)" @command="command">
+        <el-dropdown size="mini" split-button type="primary" @click="saveMock(true)" @command="command" trigger="click">
           Save Success Mock
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item :command="()=>saveMock(false)">saveFailureMock</el-dropdown-item>
@@ -70,7 +70,7 @@
                   :row-style="{cursor:'pointer'}" @row-click="selectTestHistory" ref="test-history-table"
                   border stripe>
           <el-table-column type="selection" v-if="testHistoryShowSelect" width="20"/>
-          <el-table-column label="url" width="400" show-overflow-tooltip class-name="th_content">
+          <el-table-column label="Url" width="400" show-overflow-tooltip class-name="th_content">
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="left-start">
                 <div style="max-height: 600px;max-width: 500px">
@@ -84,13 +84,13 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column label="requestTime" width="200" class-name="th_content">
+          <el-table-column label="Request time" width="200" class-name="th_content">
             <template slot-scope="scope">
               {{ scope.row.requestTime ? scope.row.requestTime + 'ms' : '' }}
             </template>
           </el-table-column>
-          <el-table-column label="testName" prop="createName" width="150" class-name="th_content"/>
-          <el-table-column label="testTime" width="200" :formatter="(row)=>dateFormat(row.createTime)"
+          <el-table-column label="Test name" prop="createName" width="150" class-name="th_content"/>
+          <el-table-column label="Test time" width="200" :formatter="(row)=>dateFormat(row.createTime)"
                            class-name="th_content"/>
           <el-table-column>
             <template slot="header">
@@ -128,13 +128,13 @@
         :visible.sync="showTestCaseDialog"
         width="30%">
       <el-form ref="testCase" :model="testCase" label-width="120px">
-        <el-form-item label="testCaseName">
+        <el-form-item label="Test case name">
           <el-input v-model="testCase.name" placeholder="testCase name"></el-input>
         </el-form-item>
-        <el-form-item label="checkField">
+        <el-form-item label="Check field">
           <el-input v-model="testCase.checkField" placeholder="like data.code"></el-input>
         </el-form-item>
-        <el-form-item label="checkValue">
+        <el-form-item label="Check value">
           <el-input v-model="testCase.checkValue" placeholder="success code"></el-input>
         </el-form-item>
       </el-form>

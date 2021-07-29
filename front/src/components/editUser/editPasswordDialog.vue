@@ -1,14 +1,14 @@
 <template>
   <el-dialog :append-to-body="true" :title="dialog.title" :visible.sync="dialog.show" destroy-on-close
-             :close-on-click-modal="false" center width="35%">
-    <el-form :model="form" ref="form" label-width="120px" :rules="form_rules">
-      <el-form-item label="password" prop="password">
+             :close-on-click-modal="false" center width="35%" style="min-width: 900px">
+    <el-form :model="form" ref="form" label-width="140px" :rules="form_rules">
+      <el-form-item label="Password" prop="password">
         <el-input v-model.trim="form.password" type="password"/>
       </el-form-item>
-      <el-form-item label="rePassword" prop="rePassword">
+      <el-form-item label="Retype password" prop="rePassword">
         <el-input v-model.trim="form.rePassword" type="password"/>
       </el-form-item>
-      <el-form-item label="old password" prop="oldPwd">
+      <el-form-item label="Old password" prop="oldPwd">
         <el-input v-model.trim="form.oldPwd" type="password"/>
       </el-form-item>
     </el-form>
@@ -20,7 +20,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {UTILS} from "../../common/js/utils";
+import {UTILS} from "@/common/js/utils";
 
 export default {
   name: 'editPasswordDialog',
@@ -50,7 +50,7 @@ export default {
     let validateRePassword = (rule, value, callback) => {
       console.log(value, this.form.password);
       if (value !== this.form.password) {
-        callback(new Error('re-password error'));
+        callback(new Error('retype password error'));
       } else {
         callback();
       }

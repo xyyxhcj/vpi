@@ -5,7 +5,7 @@
         <div class="api-group-header">
           <el-button type="primary" icon="el-icon-plus" size="mini" @click="addSubGroup(null)"
                      v-if="hasAuth">
-            group
+            Group
           </el-button>
         </div>
         <div class="select-all" @click="selectGroup">all</div>
@@ -28,7 +28,7 @@
                                 {{ node.label }}
                             </template>
                         </span>
-                        <el-dropdown @command="command" style="float:right;padding-right: 5px">
+                        <el-dropdown @command="command" style="float:right;padding-right: 5px" trigger="click">
                             <span class="el-dropdown-link" @click.stop="()=>{}">
                                 <i class="el-icon-arrow-down el-icon-more"/>
                             </span>
@@ -46,12 +46,12 @@
         <div style="width: auto;background-color:#fff;text-align: left;padding:5px 0 0 10px">
           <el-row type="flex">
             <el-col style="width: 155px">
-              <el-dropdown size="mini" @command="command">
+              <el-dropdown size="mini" @command="command" trigger="click">
                 <el-button size="mini"
                            :type="query.apiStatus===undefined?'primary':
                                    (query.apiStatus===0?'success':
                                         query.apiStatus===2||query.apiStatus===8?'danger':'warning')">
-                  {{ query.apiStatus === undefined ? 'filter status' : CONSTANT.API_STATUS[query.apiStatus] }}
+                  {{ query.apiStatus === undefined ? 'Filter status' : CONSTANT.API_STATUS[query.apiStatus] }}
                   <i class="el-icon-arrow-down el-icon--right"/>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
@@ -108,7 +108,7 @@
         </div>
         <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
                   height="85vh"
-                  :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table" size="small">
+                  :row-style="{cursor:'pointer'}" @row-click.self.prevent="clickRow" row-key="id" ref="api-doc-table" size="small">
           <el-table-column type="selection" :width="showSelect?'20':'1'"/>
           <el-table-column width="81">
             <template slot-scope="scope">
@@ -119,13 +119,13 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="group" width="110" :formatter="(row)=>row.group?row.group.name:''"
+          <el-table-column label="Group" width="110" :formatter="(row)=>row.group?row.group.name:''"
                            style="font-size: 8px"/>
-          <el-table-column label="name" prop="name" width="200" show-overflow-tooltip/>
-          <el-table-column label="apiUri" prop="apiUri" width="250" show-overflow-tooltip/>
-          <el-table-column label="createName" prop="createName" width="90"/>
-          <el-table-column label="updateName" prop="updateName" width="90"/>
-          <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
+          <el-table-column label="Name" prop="name" width="200" show-overflow-tooltip/>
+          <el-table-column label="Api uri" prop="apiUri" width="250" show-overflow-tooltip/>
+          <el-table-column label="Create name" prop="createName" width="90"/>
+          <el-table-column label="Update name" prop="updateName" width="90"/>
+          <el-table-column label="Update time" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
           <el-table-column v-if="hasAuth" width="420">
             <template slot="header">
               <el-row>
@@ -154,8 +154,9 @@
               <el-button size="mini" @click.stop="testApi(scope.row)">Test</el-button>
               <el-button size="mini" @click.stop="editApi(scope.row)">Edit</el-button>
               <el-button size="mini" @click.stop="viewApiByTab(scope.row)" type="success" plain>New Tab</el-button>
-              <el-dropdown @command="command"
-                           style="padding-left: 10px;content: '';top: 0; bottom: -10px; left: -5px;">
+
+              <el-dropdown @command="command" trigger="click"
+                           style="padding-left: 10px;content: '';top: 0">
                             <span class="el-dropdown-link" @click.stop="()=>{}">
 <i class="el-icon-arrow-down el-icon-more"/>
                             </span>

@@ -3,10 +3,10 @@
                :close-on-click-modal="false" width="74%" destroy-on-close>
         <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
                  style="margin:10px 60px 10px 0;width:auto">
-            <el-form-item label="name" label-width="100px" prop="name">
+            <el-form-item label="Name" label-width="100px" prop="name">
                 <el-input v-model="form.name" size="mini"/>
             </el-form-item>
-            <el-form-item label="remark" label-width="100px" prop="remark">
+            <el-form-item label="Remark" label-width="100px" prop="remark">
                 <el-input v-model="form.remark" size="mini"/>
             </el-form-item>
         </el-form>
@@ -20,8 +20,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {UTILS} from "../../common/js/utils";
-import {CONSTANT} from "../../common/js/constant";
+import {UTILS} from "@/common/js/utils";
+import {CONSTANT} from "@/common/js/constant";
 import DataStructure from "./dataStructure";
 
 export default {

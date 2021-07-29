@@ -20,10 +20,12 @@ export default new Vuex.Store({
             } else {
                 let rememberInfo = localStorage.getItem(CONSTANT.LOCAL_STORAGE_KEY.REMEMBER_INFO);
                 if (rememberInfo) {
-                    return JSON.parse(UTILS.aesDecrypt(rememberInfo, CONSTANT.CONFIG.AES_KEY));
-                } else {
-                    return undefined;
+                    const decrypt = UTILS.aesDecrypt(rememberInfo, CONSTANT.CONFIG.AES_KEY);
+                    if (decrypt) {
+                        return JSON.parse(decrypt);
+                    }
                 }
+                return undefined;
             }
         },
         user(state) {

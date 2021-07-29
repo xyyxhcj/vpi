@@ -9,7 +9,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {CONSTANT} from "../../common/js/constant";
+import {CONSTANT} from "@/common/js/constant";
 
 export default {
         name: 'pageTemplate',

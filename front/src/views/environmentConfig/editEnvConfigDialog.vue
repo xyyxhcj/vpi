@@ -3,13 +3,13 @@
                :close-on-click-modal="false" destroy-on-close>
         <el-form :model="form" :rules="form_rules" label-width="100px" ref="form"
                  style="margin:10px 60px 10px 0;width:auto">
-            <el-form-item label="name" label-width="100px" prop="name">
+            <el-form-item label="Name" label-width="100px" prop="name">
                 <el-input v-model.trim="form.name"/>
             </el-form-item>
-            <el-form-item label="desc" label-width="100px" prop="desc">
+            <el-form-item label="Desc" label-width="100px" prop="desc">
                 <el-input v-model.trim="form.desc"/>
             </el-form-item>
-            <el-form-item label="frontUri" label-width="100px">
+            <el-form-item label="Front uri" label-width="100px">
                 <el-input v-model.trim="form.frontUri"/>
             </el-form-item>
         </el-form>
@@ -22,7 +22,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {UTILS} from "../../common/js/utils";
+import {UTILS} from "@/common/js/utils";
 import ApiHeaders from "../../components/apiHeaders/apiHeaders";
 
 export default {

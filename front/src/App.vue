@@ -23,17 +23,17 @@
           </el-col>
           <el-col :span="4">
             <div class="project-name">
-              <el-dropdown @command="changeProject" v-if="selectedProjectName">
+              <el-dropdown @command="changeProject" v-if="selectedProjectName" trigger="click">
                 <span class="el-dropdown-link">
                   {{ selectedProjectName }}
                   <i class="el-icon-arrow-down el-icon--right"/>
                 </span>
                 <el-dropdown-menu>
-                  <el-dropdown-item>switch project</el-dropdown-item>
+                  <el-dropdown-item>Switch Project</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
               <el-button type="text" style="padding: 0;color: red" @click="changeProject" v-else>
-                choose project
+                Choose Project
               </el-button>
             </div>
           </el-col>
@@ -46,14 +46,14 @@
                 <el-button type="success" icon="el-icon-plus" circle size="mini" @click="addUser"/>
                 <el-button type="danger" icon="el-icon-minus" circle size="mini" @click="delUser"/>
               </span>
-              <el-dropdown @command="userCommand">
+              <el-dropdown @command="userCommand" trigger="click">
                 <span class="el-dropdown-link">
                   {{ user ? user.loginName : '' }}
                   <i class="el-icon-arrow-down el-icon--right" style="cursor:pointer"/>
                 </span>
                 <el-dropdown-menu>
-                  <el-dropdown-item :command="modify">modify</el-dropdown-item>
-                  <el-dropdown-item :command="loginOut">login out</el-dropdown-item>
+                  <el-dropdown-item :command="modify">Modify</el-dropdown-item>
+                  <el-dropdown-item :command="loginOut">Logout</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
               <i class="el-icon-help" style="margin-left:15px;color:#409EFF;cursor:pointer"
@@ -114,12 +114,16 @@ export default {
       }
     },
     changeProject() {
-      this.$router.push('/');
+      if ('index' !== this.$route.name) {
+        this.$router.push('/');
+      } else {
+        this.$message.error('please select project');
+      }
     },
     addUser() {
       this.editUserDialog = {
         show: true,
-        title: 'add user',
+        title: 'Add user',
         url: CONSTANT.REQUEST_URL.USER_ADD,
       };
     },
@@ -134,7 +138,7 @@ export default {
     modify() {
       this.editPwdDialog = {
         show: true,
-        title: 'modify password',
+        title: 'Modify Password',
         url: CONSTANT.REQUEST_URL.USER_UPDATE,
       };
     },

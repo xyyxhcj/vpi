@@ -3,7 +3,7 @@
     <el-table :data="showList" style="width: 100%" :row-style="rowStyle" border :ref="config.refPre+'table'" @select="selectHandler">
       <el-table-column type="index" width="40"/>
       <el-table-column type="selection" :width="config.test?25:1"/>
-      <el-table-column label="paramKey" width="280" ref="param-key-container">
+      <el-table-column label="Param key" width="280" ref="param-key-container">
         <template slot-scope="scope">
                     <span :style="{padding:countKeyPadding(scope.row)}">
                         <template v-if="scope.row.subList.length>0">
@@ -27,7 +27,7 @@
           <template v-else>{{ scope.row.paramKey }}</template>
         </template>
       </el-table-column>
-      <el-table-column label="paramType" width="110">
+      <el-table-column label="Param type" width="110">
         <template slot-scope="scope">
           <el-select :value="scope.row.paramType" filterable size="mini"
                      @change="(selectedValue)=>scope.row.paramType=selectedValue"
@@ -38,7 +38,7 @@
           <span style="margin-left:15px" v-else>{{ CONSTANT.PARAM_TYPE_STR[scope.row.paramType] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="requireType" width="125" v-if="!config.test">
+      <el-table-column label="Require type" width="125" v-if="!config.test">
         <template slot-scope="scope">
           <el-select :value="scope.row.requireType+''" size="mini"
                      @change="(selectedValue)=>scope.row.requireType=selectedValue"
@@ -51,7 +51,7 @@
                 v-else>{{ scope.row.requireType === 1 ? '' : CONSTANT.REQUIRED_TYPE_STR[scope.row.requireType] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="paramDesc" width="180">
+      <el-table-column label="Param desc" width="180">
         <template slot-scope="scope">
           <el-input v-model.trim="scope.row.paramDesc" size="mini"
                     :ref="config.refPre+'paramDesc'+scope.$index"
@@ -61,7 +61,7 @@
           <span style="margin-left:15px" v-else>{{ scope.row.paramDesc }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="example" width="180">
+      <el-table-column label="Example" width="180">
         <template slot-scope="scope">
           <el-input v-model.trim="scope.row.value" size="mini"
                     :placeholder="scope.row.paramType===CONSTANT.PARAM_TYPE.ARRAY?'try use `|` send array':''"
@@ -122,9 +122,9 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {CONSTANT} from "../../common/js/constant";
+import {CONSTANT} from "@/common/js/constant";
 import ImportJsonDialog from "./importJsonDialog";
-import {UTILS} from "../../common/js/utils";
+import {UTILS} from "@/common/js/utils";
 import MoreOperate from "./components/moreOperate";
 import SelectDataStructureDialog from "./selectDataStructureDialog";
 import ReferenceInfo from "./components/referenceInfo";

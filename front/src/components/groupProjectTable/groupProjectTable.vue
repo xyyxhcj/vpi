@@ -7,9 +7,9 @@
             <el-table-column width="350">
                 <template slot="header">
                     name
-                    <el-tag size="mini" style="margin:0 10px;cursor:pointer;" @click="return2Previous"
-                            v-if="selectedGroup!==undefined">
-                        return to previous
+                    <el-tag size="mini" style="margin:0 10px;cursor:pointer;" @click="return2Previous" v-if="selectedGroup!==undefined">
+                        <i class="el-icon-back"/>
+                        return previous
                     </el-tag>
                 </template>
                 <template slot-scope="scope">
@@ -17,11 +17,11 @@
                     <span>{{scope.row.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="projectVersion" prop="projectVersion" width="115"/>
-            <el-table-column label="projectType" width="98" :formatter="projectTypeFormat"/>
-            <el-table-column label="desc" prop="desc" width="200"/>
-            <el-table-column label="create" prop="createName" width="150" v-if="!config.isOwner"/>
-            <el-table-column label="updateTime" width="160" :formatter="(row)=>dateFormat(row.updateTime)"/>
+            <el-table-column label="Project version" prop="projectVersion" width="115"/>
+            <el-table-column label="Project type" width="98" :formatter="projectTypeFormat"/>
+            <el-table-column label="Desc" prop="desc" width="200"/>
+            <el-table-column label="Create" prop="createName" width="150" v-if="!config.isOwner"/>
+            <el-table-column label="Update time" width="160" :formatter="(row)=>dateFormat(row.updateTime)"/>
             <el-table-column min-width="330" v-if="config.isOwner">
                 <template slot="header">
                     <template v-if="!showSelect">
@@ -63,15 +63,15 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {CONSTANT} from "../../common/js/constant";
-    import {UTILS} from "../../common/js/utils";
-    import ConfirmDialog from "../confirm/confirmDialog";
-    import EditAuthDialog from "./editAuthDialog";
-    import EditProjectDialog from "./editProjectDialog";
-    import EditProjectGroupDialog from "./editProjectGroupDialog";
-    import SelectProjectGroupDialog from "./selectProjectGroupDialog";
+import {CONSTANT} from "@/common/js/constant";
+import {UTILS} from "@/common/js/utils";
+import ConfirmDialog from "../confirm/confirmDialog";
+import EditAuthDialog from "./editAuthDialog";
+import EditProjectDialog from "./editProjectDialog";
+import EditProjectGroupDialog from "./editProjectGroupDialog";
+import SelectProjectGroupDialog from "./selectProjectGroupDialog";
 
-    export default {
+export default {
         name: 'groupProjectTable',
         components: {
             SelectProjectGroupDialog,

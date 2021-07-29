@@ -26,7 +26,7 @@
     <line-text text="Test Case"/>
     <template v-if="testCaseList&&testCaseList.length>0">
       <el-table align="center" :data="testCaseList" stripe border>
-        <el-table-column align="center" label="testCaseName" fit show-overflow-tooltip>
+        <el-table-column align="center" label="Test case name" fit show-overflow-tooltip>
           <template slot-scope="scope">
             <el-popover trigger="hover" placement="left-start">
               <div class="test-info-popover">
@@ -39,11 +39,11 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="createName" label="createName" width="200"/>
-        <el-table-column align="center" :formatter="(row)=>dateFormat(row.createTime)" label="createTime" width="200"/>
-        <el-table-column align="center" prop="checkField" label="checkField" width="200"/>
-        <el-table-column align="center" prop="checkValue" label="checkValue" width="200"/>
-        <el-table-column align="center" label="testResult" width="200">
+        <el-table-column align="center" prop="createName" label="Create name" width="200"/>
+        <el-table-column align="center" :formatter="(row)=>dateFormat(row.createTime)" label="Create time" width="200"/>
+        <el-table-column align="center" prop="checkField" label="Check field" width="200"/>
+        <el-table-column align="center" prop="checkValue" label="Check value" width="200"/>
+        <el-table-column align="center" label="Test result" width="200">
           <template slot-scope="scope">
             <el-popover
                 placement="bottom"
@@ -53,7 +53,7 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="operation">
+        <el-table-column align="center" label="Operation">
           <template #default="scope">
             <el-button size="mini" type="primary" @click="runTest(scope.row)" :loading="scope.row.isLoading4Test">Test
             </el-button>

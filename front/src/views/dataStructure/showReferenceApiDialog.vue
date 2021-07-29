@@ -11,18 +11,18 @@
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="name" prop="name" width="200"/>
-            <el-table-column label="apiUri" prop="apiUri" width="200"/>
-            <el-table-column label="createName" prop="createName" width="120"/>
-            <el-table-column label="updateName" prop="updateName" width="120"/>
-            <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
+            <el-table-column label="Name" prop="name" width="200"/>
+            <el-table-column label="Api uri" prop="apiUri" width="200"/>
+            <el-table-column label="Create name" prop="createName" width="120"/>
+            <el-table-column label="Update name" prop="updateName" width="120"/>
+            <el-table-column label="Update time" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
         </el-table>
     </el-dialog>
 </template>
 
 <script type="text/ecmascript-6">
-import {CONSTANT} from "../../common/js/constant";
-import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "@/common/js/constant";
+import {UTILS} from "@/common/js/utils";
 
 export default {
         name: 'showReferenceApiDialog',

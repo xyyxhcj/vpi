@@ -5,9 +5,9 @@
                   default-expand-all :tree-props="{children: 'childList'}"
                   highlight-current-row @current-change="selectRow"
                   :row-style="{cursor:'pointer'}">
-            <el-table-column prop="name" label="name" width="464"
+            <el-table-column prop="name" label="Name" width="464"
                              :row-style="{cursor:'pointer'}"/>
-            <el-table-column label="updateTime" width="160" :formatter="(row)=>dateFormat(row.updateTime)"/>
+            <el-table-column label="Update time" width="160" :formatter="(row)=>dateFormat(row.updateTime)"/>
         </el-table>
         <div slot="footer" style="text-align: left">
             <el-button @click="dialog.show = false" round>Cancel</el-button>
@@ -18,8 +18,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {CONSTANT} from "../../common/js/constant";
-import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "@/common/js/constant";
+import {UTILS} from "@/common/js/utils";
 
 export default {
         name: 'selectProjectGroupDialog',

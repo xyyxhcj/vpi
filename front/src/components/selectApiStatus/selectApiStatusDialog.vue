@@ -26,8 +26,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {CONSTANT} from "../../common/js/constant";
-import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "@/common/js/constant";
+import {UTILS} from "@/common/js/utils";
 
 export default {
         name: 'selectApiStatusDialog',

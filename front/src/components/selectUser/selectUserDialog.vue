@@ -5,10 +5,10 @@
                   @selection-change="selectedChange">
             <el-table-column type="selection" width="55" :selectable="notCurrUser" :reserve-selection="true">
             </el-table-column>
-            <el-table-column prop="userName" label="userName" width="150"/>
-            <el-table-column prop="loginName" label="loginName" width="150"/>
-            <el-table-column prop="phone" label="phone" width="150"/>
-            <el-table-column prop="email" label="email" width="150"/>
+            <el-table-column prop="userName" label="User name" width="150"/>
+            <el-table-column prop="loginName" label="Login name" width="150"/>
+            <el-table-column prop="phone" label="Phone" width="150"/>
+            <el-table-column prop="email" label="Email" width="150"/>
         </el-table>
         <page-template :query="query" @flush="()=>dialog.forDel?findPageForDelete():findPage()"/>
         <div slot="footer" class="footer-container">
@@ -20,8 +20,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {CONSTANT} from "../../common/js/constant";
-import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "@/common/js/constant";
+import {UTILS} from "@/common/js/utils";
 import PageTemplate from "../pageTemplate/pageTemplate";
 
 export default {

@@ -218,9 +218,9 @@ export const CONSTANT = {
         SPECIAL: 2,
     },
     REQUIRED_TYPE_STR: {
-        0: 'required',
-        1: 'optional',
-        2: 'special',
+        0: 'Required',
+        1: 'Optional',
+        2: 'Special',
     },
     REQUEST_TYPE: {
         0: 'POST', 1: 'GET',

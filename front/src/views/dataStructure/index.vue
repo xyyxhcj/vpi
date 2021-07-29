@@ -2,10 +2,10 @@
     <div id="data-container" class="api-container">
         <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
                   :row-style="{cursor:'pointer'}" @row-click="showDataStructure">
-            <el-table-column label="name" prop="name" width="200"/>
-            <el-table-column label="remark" prop="remark" width="200"/>
-            <el-table-column label="createName" prop="createName" width="150"/>
-            <el-table-column label="updateTime" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
+            <el-table-column label="Name" prop="name" width="200"/>
+            <el-table-column label="Remark" prop="remark" width="200"/>
+            <el-table-column label="Create name" prop="createName" width="150"/>
+            <el-table-column label="Update time" width="200" :formatter="(row)=>dateFormat(row.updateTime)"/>
             <el-table-column>
                 <template slot="header" v-if="hasAuth">
                     <el-row>

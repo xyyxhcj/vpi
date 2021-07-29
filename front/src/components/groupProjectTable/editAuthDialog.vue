@@ -16,8 +16,8 @@
                 <el-main>
                     <el-table :data="projectUserList"
                               :header-cell-style="{color:'#44B549','font-weight':'bold'}">
-                        <el-table-column label="user" :formatter="formatUser"/>
-                        <el-table-column label="role" width="200">
+                        <el-table-column label="User" :formatter="formatUser"/>
+                        <el-table-column label="Role" width="200">
                             <template slot-scope="scope">
                                 <el-select :value="scope.row.userType+''"
                                            @change="(selectedValue)=>changeUserType(selectedValue,scope.row)">
@@ -45,8 +45,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {CONSTANT} from "../../common/js/constant";
-import {UTILS} from "../../common/js/utils";
+import {CONSTANT} from "@/common/js/constant";
+import {UTILS} from "@/common/js/utils";
 import SelectUserDialog from "../selectUser/selectUserDialog";
 
 export default {
