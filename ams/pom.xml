@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>press.whcj</groupId>
 	<artifactId>ams</artifactId>
-	<version>v1.03</version>
+	<version>v1.04</version>
 	<name>ams</name>
 	<description>api manager system</description>
 
