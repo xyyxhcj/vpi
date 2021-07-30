@@ -8,13 +8,13 @@
             Group
           </el-button>
         </div>
-        <div class="select-all" @click="selectGroup">all</div>
+        <div :class="{'select-all':true,current:!selectedGroupId}" @click="()=>selectGroup()">all</div>
         <el-tree :data="groups" :props="{label:'name',children:'childList'}" :expand-on-click-node="false"
                  node-key="id" default-expand-all @node-click="selectGroup"
                  style="height: 86vh;overflow-y:auto"
                  draggable @node-drop="moveNode" highlight-current>
                     <span class="api-group-node" slot-scope="{node,data}">
-                        <span style="float:left;padding-left: 1px" :id="data.id">
+                        <span style="float:left;padding-left: 1px" :id="data.id" :class="{current:selectedGroupId===data.id}">
                             <template v-if="node.label.length>14-data.getLevel(data)*3">
                                 <el-popover popper-class="api-doc-popover" placement="top-end" :close-delay="0"
                                             trigger="hover">
@@ -28,17 +28,19 @@
                                 {{ node.label }}
                             </template>
                         </span>
-                        <el-dropdown @command="command" style="float:right;padding-right: 5px" trigger="click">
-                            <span class="el-dropdown-link" @click.stop="()=>{}">
-                                <i class="el-icon-arrow-down el-icon-more"/>
-                            </span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item :command="()=>addSubGroup(data)">add sub group</el-dropdown-item>
-                                <el-dropdown-item :command="()=>editSubGroup(data)">edit</el-dropdown-item>
-                                <el-dropdown-item :command="()=>delApiGroup(data)"
-                                                  style="color: red">delete</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
+                        <div @click.stop>
+                          <el-dropdown @command="command" style="float:right;padding-right: 5px" trigger="click">
+                              <span class="el-dropdown-link">
+                                  <i class="el-icon-arrow-down el-icon-more"/>
+                              </span>
+                              <el-dropdown-menu slot="dropdown">
+                                  <el-dropdown-item :command="()=>addSubGroup(data)">add sub group</el-dropdown-item>
+                                  <el-dropdown-item :command="()=>editSubGroup(data)">edit</el-dropdown-item>
+                                  <el-dropdown-item :command="()=>delApiGroup(data)"
+                                                    style="color: red">delete</el-dropdown-item>
+                              </el-dropdown-menu>
+                          </el-dropdown>
+                        </div>
                     </span>
         </el-tree>
       </el-aside>
@@ -108,7 +110,7 @@
         </div>
         <el-table :data="dataList" :header-cell-style="{color:'#44B549','font-weight':'bold'}"
                   height="85vh"
-                  :row-style="{cursor:'pointer'}" @row-click.self.prevent="clickRow" row-key="id" ref="api-doc-table" size="small">
+                  :row-style="{cursor:'pointer'}" @row-click="clickRow" row-key="id" ref="api-doc-table" size="small">
           <el-table-column type="selection" :width="showSelect?'20':'1'"/>
           <el-table-column width="81">
             <template slot-scope="scope">
@@ -131,41 +133,41 @@
               <el-row>
                 <el-col :span="24">
                   <template v-if="!showSelect">
-                    <el-button size="mini" type="success" @click.stop="addApi">Add</el-button>
-                    <el-button size="mini" type="warning" @click.stop="batchOperate">
+                    <el-button size="mini" type="success" @click="addApi">Add</el-button>
+                    <el-button size="mini" type="warning" @click="batchOperate">
                       Batch Operate
                     </el-button>
                   </template>
                   <template v-else>
-                    <el-button size="mini" @click.stop="showSelect=false">Cancel</el-button>
-                    <el-button size="mini" type="primary" @click.stop="switchStatus">
+                    <el-button size="mini" @click="showSelect=false">Cancel</el-button>
+                    <el-button size="mini" type="primary" @click="switchStatus">
                       Switch Status
                     </el-button>
-                    <el-button size="mini" type="primary" @click.stop="moveGroup">
+                    <el-button size="mini" type="primary" @click="moveGroup">
                       Move Group
                     </el-button>
-                    <el-button size="mini" type="danger" @click.stop="delApi">Batch Delete
+                    <el-button size="mini" type="danger" @click="delApi">Batch Delete
                     </el-button>
                   </template>
                 </el-col>
               </el-row>
             </template>
             <template slot-scope="scope">
-              <el-button size="mini" @click.stop="testApi(scope.row)">Test</el-button>
-              <el-button size="mini" @click.stop="editApi(scope.row)">Edit</el-button>
-              <el-button size="mini" @click.stop="viewApiByTab(scope.row)" type="success" plain>New Tab</el-button>
-
-              <el-dropdown @command="command" trigger="click"
-                           style="padding-left: 10px;content: '';top: 0">
-                            <span class="el-dropdown-link" @click.stop="()=>{}">
-<i class="el-icon-arrow-down el-icon-more"/>
-                            </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item :command="()=>copyApi(scope.row)">Copy</el-dropdown-item>
-                  <el-dropdown-item :command="()=>delApi(scope.row)" style="color: red">Delete
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+              <div @click.stop>
+                <el-button size="mini" @click="testApi(scope.row)">Test</el-button>
+                <el-button size="mini" @click="editApi(scope.row)">Edit</el-button>
+                <el-button size="mini" @click="viewApiByTab(scope.row)" type="success" plain>New Tab</el-button>
+                <el-dropdown @command="command" trigger="click">
+                <span class="el-dropdown-link">
+                  <i class="el-icon-arrow-down el-icon-more"/>
+                </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item :command="()=>copyApi(scope.row)">Copy</el-dropdown-item>
+                    <el-dropdown-item :command="()=>delApi(scope.row)" style="color: red">Delete
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -508,7 +510,14 @@ export default {
     margin-top 1.5px
 
   .select-all
+    text-align left
+    padding-left 10px
     cursor pointer
+  .select-all:hover
+    background-color #F5F7FA
+  .select-all.current
+    background-color #F2F6FC
+
 
   .el-aside
     background-color #fff
@@ -518,6 +527,8 @@ export default {
 
     .api-group-node
       width 100%
+    .current
+      font-weight bold
 
   .api-group-header
     text-align left
@@ -529,4 +540,9 @@ export default {
 
   .el-main
     padding 0 0 0 5px
+
+    .el-dropdown-link
+      padding 3px 10px
+      content ''
+      top 0
 </style>

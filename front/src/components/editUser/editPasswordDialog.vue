@@ -48,7 +48,6 @@ export default {
   },
   data() {
     let validateRePassword = (rule, value, callback) => {
-      console.log(value, this.form.password);
       if (value !== this.form.password) {
         callback(new Error('retype password error'));
       } else {
