@@ -33,6 +33,6 @@ use <a href="sh/makeJar.sh">sh/makeJar.sh</a>
 
 ## Demo:   
 http://www.whcj.press  
-testAccount: lx/123456  
+Test account: lx/123456  
 ## Help:    
 http://www.whcj.press/#/help
