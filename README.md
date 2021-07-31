@@ -35,4 +35,4 @@ use <a href="sh/makeJar.sh">sh/makeJar.sh</a>
 http://www.whcj.press  
 testAccount: lx/123456  
 ## Help:    
-http://www.whcj.press/help
+http://www.whcj.press/#/help

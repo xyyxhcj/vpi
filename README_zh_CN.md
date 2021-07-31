@@ -38,7 +38,7 @@
 http://www.whcj.press  
 测试账号/密码: lx/123456
 #### 帮助文档:  
-http://www.whcj.press/help  
+http://www.whcj.press/#/help
 
 *版本v1.03+,配置mongoDB连接信息后可直接启动jar*
 ```
