@@ -14,7 +14,7 @@ use <a href="sh/makeJar.sh">sh/makeJar.sh</a>
         mongodb(init/install-mongodb.sh)    
         nginx  
         maven
-        node
+        node(npm7.5.4)
 
 * Build an application with a monolithic architecture(put the html into jar after building)     
   use <a href="sh/start-springboot.sh">sh/start-springboot.sh</a>   
@@ -24,7 +24,7 @@ use <a href="sh/makeJar.sh">sh/makeJar.sh</a>
         chromePlugin(Optional)
         mongodb(init/install-mongodb.sh)    
         maven(Optional)
-        node(Optional)
+        node(npm7.5.4)(Optional)
   *Version v1.03+, run jar with your configuration of mongoDB*
     ```
     # mongoDB configurations: conf/application-prod.yml

@@ -23,7 +23,7 @@
 #### 构建工具
 - git
 - maven
-- node
+- node(npm7.5.4)
 
 #### 启动   
 前后端分离可使用 <a href="sh/makeJar.sh">sh/makeJar.sh</a>  
