@@ -1,7 +1,7 @@
 #! /bin/bash
 # build vue project,and put into jar(springboot),without nginx
 # config variable dbConfig:../conf/application-prod.yml
-chromePluginDownloadUrl='https://www.whcj.press/vpiChromePlugin.zip'
+chromePluginDownloadUrl='http://www.whcj.press/vpiChromePlugin.zip'
 
 cd ../front || exit
 
